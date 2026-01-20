@@ -492,9 +492,9 @@ def main():
                     break  # success
                     
                 except Exception as e:
-                    logger.warning("Deep warm-up attempt %d failed: %s", warmup_attempt, e)
+                    logger.warning("Optional browser warm-up attempt %d failed (non-critical): %s", warmup_attempt, e)
                     if warmup_attempt == 3:
-                        logger.error("All deep warm-up attempts failed. Proceeding with caution.")
+                        logger.info("Proceeding without browser warm-up. Primary bypass (Cloudscraper) will be used.")
                 finally:
                     if driver:
                         try:

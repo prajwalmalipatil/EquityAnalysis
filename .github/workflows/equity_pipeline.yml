@@ -33,7 +33,7 @@ jobs:
           --symbols "@symbols.txt" \
           --out-dir equity_data \
           --overwrite \
-          --fast \
+          --no-browser \
           --workers 3
       continue-on-error: true
 
