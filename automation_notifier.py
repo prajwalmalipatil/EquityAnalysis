@@ -6,6 +6,7 @@ Sends HTML email reports with professional Trade Analysis layout
 import os
 import smtplib
 import ssl
+import pandas as pd
 from email.message import EmailMessage
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
@@ -97,23 +98,56 @@ def generate_html_report(stats, results_list, trending_list, ticker_list):
         row += "</tr>"
         table_rows += row
 
-    ticker_content = "".join([f"""
-    <div class="ticker-card">
-        <div style="display: flex; align-items: center;">
-            <span class="ticker-symbol">{sym}</span>
-            <span class="ticker-badge">High Probability</span>
+    ticker_content = ""
+    if ticker_list:
+        for ticker_data in ticker_list:
+            sym = ticker_data['symbol']
+            sig_type = ticker_data.get('signal_type', 'VSA Pattern Detected')
+            effort = ticker_data.get('effort', 'N/A')
+            spread = ticker_data.get('spread', 'N/A')
+            confidence = ticker_data.get('confidence', 'N/A')
+            
+            # Formatting spread and confidence if they are floats
+            try:
+                if isinstance(spread, (int, float)): spread = f"{spread:.2f}"
+                if isinstance(confidence, (int, float)): confidence = f"{confidence:.2f}"
+            except: pass
+
+            ticker_content += f"""
+            <div class="ticker-card">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <span class="ticker-symbol">{sym}</span>
+                    <span class="ticker-badge">{sig_type}</span>
+                </div>
+                <div style="margin-top: 12px; font-size: 13px; color: #4a5568; border-top: 1px solid #edf2f7; padding-top: 10px;">
+                    <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
+                        <tr>
+                            <td style="color: #718096; padding: 4px 0;">Effort vs Result:</td>
+                            <td style="font-weight: 700; text-align: right; color: #2d3748;">{effort}</td>
+                        </tr>
+                        <tr>
+                            <td style="color: #718096; padding: 4px 0;">Spread Ratio:</td>
+                            <td style="font-weight: 700; text-align: right; color: #2d3748;">{spread}</td>
+                        </tr>
+                        <tr>
+                            <td style="color: #718096; padding: 4px 0;">Pattern Confidence:</td>
+                            <td style="font-weight: 700; text-align: right; color: #2d3748;">{confidence}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="font-size: 12px; color: #718096; margin-top: 10px; font-style: italic;">
+                    Asset is showing structural strength with institutional demand absorption.
+                </div>
+                <div class="ticker-status">Requires Immediate Review</div>
+            </div>
+            """
+    else:
+        ticker_content = """
+        <div style="text-align: center; padding: 30px; border: 1px dashed #cbd5e0; border-radius: 8px; color: #718096; font-size: 12px;">
+            <div style="font-size: 24px; margin-bottom: 10px;">🛡️</div>
+            No high-probability "No Demand/Supply" signals detected in the latest session.
         </div>
-        <div style="font-size: 13px; color: #4a5568; margin-top: 8px;">
-            VSA confirmation pattern detected. Asset is showing structural strength with institutional demand absorption.
-        </div>
-        <div class="ticker-status">Requires Immediate Review</div>
-    </div>
-    """ for sym in ticker_list]) if ticker_list else """
-    <div style="text-align: center; padding: 30px; border: 1px dashed #cbd5e0; border-radius: 8px; color: #718096; font-size: 12px;">
-        <div style="font-size: 24px; margin-bottom: 10px;">🛡️</div>
-        No high-probability "No Demand/Supply" signals detected in the latest session.
-    </div>
-    """
+        """
 
     html = f"""
     <!DOCTYPE html>
@@ -215,10 +249,46 @@ def get_pipeline_data(base_dir: Path):
             clean_list.append(parts[0].strip())
         return sorted(list(set(clean_list)))
 
+    def get_symbol_details(path, symbol_name):
+        """Read latest signal details from Processing_Log sheet"""
+        excel_files = list(path.glob(f"{symbol_name}*.xlsx"))
+        if not excel_files: return None
+        
+        try:
+            # Use openpyxl engine specifically for multi-sheet reads
+            df_log = pd.read_excel(excel_files[0], sheet_name="Processing_Log")
+            if df_log.empty: return None
+            
+            # Sort by Date descending to ensure latest is first (C2 row)
+            if 'Date' in df_log.columns:
+                df_log['Date'] = pd.to_datetime(df_log['Date'])
+                df_log = df_log.sort_values('Date', ascending=False)
+            
+            latest = df_log.iloc[0]
+            return {
+                "symbol": symbol_name,
+                "signal_type": latest.get('Signal_Type', 'Unknown'),
+                "effort": latest.get('Effort_Result', 'N/A'),
+                "spread": latest.get('Spread_Ratio', 'N/A'),
+                "confidence": latest.get('Pattern_Confidence', 'N/A')
+            }
+        except Exception as e:
+            print(f"Error reading details for {symbol_name}: {e}")
+            return {"symbol": symbol_name}
+
     extraction_count = count_files(equity_data, "*.csv")
     results_list = get_symbol_list(results)
     trending_list = get_symbol_list(trending)
-    ticker_list = get_symbol_list(ticker)
+    
+    # Enrich ticker list with technical details
+    ticker_symbols = get_symbol_list(ticker)
+    ticker_list = []
+    for sym in ticker_symbols:
+        details = get_symbol_details(ticker, sym)
+        if details:
+            ticker_list.append(details)
+        else:
+            ticker_list.append({"symbol": sym})
 
     stats = {
         "extraction": extraction_count,
