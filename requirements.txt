@@ -1,0 +1,9 @@
+aiohttp
+numpy
+pandas
+colorama
+openpyxl
+psutil
+playwright
+cloudscraper
+requests
