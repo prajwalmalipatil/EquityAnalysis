@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Automation Notifier for Equity Analysis Pipeline
-Sends HTML email reports with analysis summary
+Sends HTML email reports with professional Trade Analysis layout
 """
 import os
 import smtplib
@@ -10,44 +10,78 @@ from email.message import EmailMessage
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
 
+def generate_smart_summary(stats, ticker_list):
+    """Generate an intelligent, context-aware analysis summary."""
+    extraction_rate = (stats['extraction'] / 208) * 100
+    ticker_count = len(ticker_list)
+    trending_count = stats['trending']
+    
+    # 1. Opening Statement based on signals
+    if ticker_count > 10:
+        opening = "The latest market analysis reveals a highly dynamic landscape with significant momentum across multiple sectors."
+    elif ticker_count > 0:
+        opening = "The latest market analysis reveals a selective landscape with robust trends and high-probability entry points identifying specific sector strength."
+    else:
+        opening = "The latest session reflects a consolidative phase across the benchmark universe, with limited high-probability breakouts detected."
+
+    # 2. Middle detail based on processing
+    if extraction_rate >= 95:
+        detail = f"Our pipeline has successfully processed {stats['vsa']} symbols, identifying {trending_count} robust trends."
+    else:
+        detail = f"Our pipeline has analyzed {stats['vsa']} symbols during this session, focusing on high-liquidity segments."
+
+    # 3. Closing tone
+    closing = "The data suggests a healthy market participation with localized strength in trending assets. We remain highly optimistic about the attention for potential breakouts. The overall market breadth remains supportive of strategic long-term publications."
+    
+    return f"{opening} {detail} {closing}"
+
 def generate_html_report(stats, results_list, trending_list, ticker_list):
-    """Generate a premium HTML report with CSS and professional layout."""
-    # Ensure IST time regardless of server location (UTC -> IST)
+    """Generate a premium Trade Analysis Report in green theme."""
     ist_now = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
     date_str = ist_now.strftime('%d-%m-%Y %H:%M')
     
-    # CSS remains inline for email compatibility
+    smart_summary = generate_smart_summary(stats, ticker_list)
+    
     styles = """
     <style>
-        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f0f4f0; margin: 0; padding: 20px; color: #2d3748; }
-        .container { max-width: 850px; margin: 0 auto; background: #ffffff; border-radius: 20px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); overflow: hidden; border: 1px solid #e2e8f0; }
-        .header { background: linear-gradient(135deg, #4F46E5, #7C3AED); color: white; padding: 40px 30px; text-align: center; }
-        .header h1 { margin: 0; font-size: 28px; font-weight: 800; }
-        .header p { margin: 15px 0 0; opacity: 0.95; font-size: 15px; }
-        .content { padding: 35px; }
-        .section { margin-bottom: 30px; background: white; border-radius: 16px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #f1f5f9; }
-        .section-title { font-size: 18px; font-weight: 800; color: #1e293b; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; }
-        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .stat-card { background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; }
-        .stat-card .label { font-size: 12px; color: #6b7280; text-transform: uppercase; font-weight: 700; }
-        .stat-card .value { font-size: 24px; color: #4F46E5; font-weight: 800; margin-top: 8px; }
-        .ticker-item { background: #fef2f2; border-left: 5px solid #ef4444; padding: 15px; margin-bottom: 12px; border-radius: 0 12px 12px 0; font-weight: 600; color: #991b1b; }
-        .footer { background: #f8fafc; padding: 30px; text-align: center; font-size: 13px; color: #64748b; border-top: 1px solid #e2e8f0; }
+        body { font-family: 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif; background-color: #fcfdfc; margin: 0; padding: 20px; color: #1a202c; }
+        .container { max-width: 800px; margin: 0 auto; background: #ffffff; border-radius: 4px; border: 1px solid #e2e8f0; }
+        .header { background-color: #7cb342; color: white; padding: 30px 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; font-weight: 700; text-transform: none; }
+        .header p { margin: 10px 0 0; font-size: 13px; opacity: 0.9; }
+        .content { padding: 25px; }
+        .section { margin-bottom: 30px; }
+        .section-header { font-size: 15px; font-weight: 800; color: #2d3748; padding-bottom: 8px; border-bottom: 1.5px solid #edf2f7; margin-bottom: 15px; display: flex; align-items: center; }
+        .section-header span { margin-right: 8px; }
+        .stat-box { border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 12px; padding: 15px; background: #fff; }
+        .stat-label { font-size: 11px; text-transform: uppercase; color: #718096; font-weight: 700; letter-spacing: 0.5px; }
+        .stat-value { font-size: 20px; font-weight: 800; color: #2d3748; margin-top: 4px; }
+        
+        /* 3-Column Table Logic */
+        .symbol-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        .symbol-table td { padding: 8px 12px; border-bottom: 1px solid #f7fafc; color: #4a5568; font-weight: 600; width: 33.33%; text-transform: uppercase; }
+        
+        .ticker-bubble { background: #fffcfc; border-left: 4px solid #f56565; padding: 12px 15px; margin-bottom: 10px; font-size: 13px; color: #4a5568; }
+        .summary-box { background: #f9fafb; padding: 20px; border-radius: 4px; line-height: 1.6; font-size: 13px; color: #4a5568; }
+        .footer { padding: 20px; text-align: center; font-size: 11px; color: #a0aec0; border-top: 1px solid #edf2f7; }
     </style>
     """
 
-    header_html = f"""
-    <div class="header">
-        <h1>📊 Equity Analysis Report</h1>
-        <p>Generated on {date_str} IST | Automated Pipeline</p>
-    </div>
-    """
+    # Format Trending Symbols into 3 columns
+    table_rows = ""
+    for i in range(0, len(trending_list), 3):
+        chunk = trending_list[i:i+3]
+        row = "<tr>"
+        for sym in chunk:
+            row += f"<td>{sym}</td>"
+        # Pad row if less than 3 columns
+        for _ in range(3 - len(chunk)):
+            row += "<td></td>"
+        row += "</tr>"
+        table_rows += row
 
-    ticker_html = "".join([f'<div class="ticker-item">⚠️ SIGNAL: {sym}</div>' for sym in ticker_list]) \
-                  if ticker_list else '<p style="color: #64748b; font-style: italic;">No high-probability signals detected.</p>'
-    
-    trending_html = ", ".join(trending_list[:20]) + ("..." if len(trending_list) > 20 else "") \
-                    if trending_list else "No trending symbols identified."
+    ticker_content = "".join([f'<div class="ticker-bubble">🎯 PATTERN ALERT: <b>{sym}</b> detected with high confirmation.</div>' for sym in ticker_list]) \
+                     if ticker_list else '<p style="color: #718096; font-style: italic; font-size: 12px;">No high-probability signals detected in the latest session.</p>'
 
     html = f"""
     <!DOCTYPE html>
@@ -55,43 +89,59 @@ def generate_html_report(stats, results_list, trending_list, ticker_list):
     <head>{styles}</head>
     <body>
         <div class="container">
-            {header_html}
+            <div class="header">
+                <h1>Trade Analysis Report</h1>
+                <p>Generated on {date_str} IST | V² Money Publications</p>
+            </div>
+            
             <div class="content">
+                <!-- STAGE STATISTICS -->
                 <div class="section">
-                    <div class="section-title">📊 Pipeline Statistics</div>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="label">Extraction Success</div>
-                            <div class="value">{stats['extraction']} / 208</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="label">VSA Symbols Analyzed</div>
-                            <div class="value">{stats['vsa']}</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="label">Trending Identified</div>
-                            <div class="value">{stats['trending']}</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="label">High-Prob Signals</div>
-                            <div class="value">{stats['ticker']}</div>
-                        </div>
+                    <div class="section-header">📊 STAGE STATISTICS</div>
+                    <div class="stat-box">
+                        <div class="stat-label">EXTRACTION SUCCESS</div>
+                        <div class="stat-value">{stats['extraction']} / 208</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">VSA SYMBOLS ANALYZED</div>
+                        <div class="stat-value">{stats['vsa']}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">TRENDING IDENTIFIED</div>
+                        <div class="stat-value">{stats['trending']}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">HIGH-PROB SIGNALS</div>
+                        <div class="stat-value">{stats['ticker']}</div>
                     </div>
                 </div>
 
+                <!-- TICKER SIGNALS -->
                 <div class="section">
-                    <div class="section-title">🎯 Ticker Signals</div>
-                    {ticker_html}
+                    <div class="section-header">🎯 TICKER SIGNALS (Action Required)</div>
+                    {ticker_content}
                 </div>
 
+                <!-- TRENDING SYMBOLS -->
                 <div class="section">
-                    <div class="section-title">📈 Trending Symbols</div>
-                    <p>{trending_html}</p>
+                    <div class="section-header">📈 TRENDING SYMBOLS</div>
+                    <p style="font-size: 11px; color: #718096; margin-bottom: 10px;">TRENDING STOCKS LIST ▼</p>
+                    <table class="symbol-table">
+                        {table_rows}
+                    </table>
+                </div>
+
+                <!-- RESULTS SUMMARY -->
+                <div class="section">
+                    <div class="section-header">📒 Results: Analysis Summary</div>
+                    <div class="summary-box">
+                        {smart_summary}
+                    </div>
                 </div>
             </div>
 
             <div class="footer">
-                <p>Automated Equity Analysis Pipeline</p>
+                <p>&copy; {datetime.now().year} V² Money Publications - Automated Equity Pipeline</p>
             </div>
         </div>
     </body>
@@ -100,13 +150,26 @@ def generate_html_report(stats, results_list, trending_list, ticker_list):
     return html
 
 def get_pipeline_data(base_dir: Path):
-    """Scan all output folders and return data for the HTML report."""
-    equity_data = base_dir / "equity_data"
+    """Scan output folders and return data for the report."""
+    # Use equity_data if it exists, otherwise fall back to current directory scan
+    # Priority: equity_data_manual (for test runs) > equity_data (production)
+    search_dirs = ["equity_data_manual", "equity_data", "."]
+    
+    equity_data = None
+    for d in search_dirs:
+        if (base_dir / d / "Results").exists():
+            equity_data = base_dir / d
+            break
+    
+    if not equity_data:
+        # Fallback to current directory
+        equity_data = base_dir
+
     results = equity_data / "Results"
     ticker = equity_data / "Ticker"
     trending = equity_data / "Trending"
 
-    def count_files(path, ext="*"):
+    def count_files(path, ext="*.csv"):
         return len(list(path.glob(ext))) if path.exists() else 0
     
     def get_symbol_list(path, suffix="_VSA.xlsx"):
@@ -115,8 +178,9 @@ def get_pipeline_data(base_dir: Path):
         clean_list = []
         for sym in raw_list:
             clean = sym.upper().replace(suffix.upper(), "").replace(".XLSX", "").replace(".CSV", "")
-            clean = clean.replace("_1Y_", "_").split("_")[0]
-            clean_list.append(clean.strip())
+            # Remove date if present (e.g., RELIANCE_1Y_20260121 -> RELIANCE)
+            parts = clean.split('_')
+            clean_list.append(parts[0].strip())
         return sorted(list(set(clean_list)))
 
     extraction_count = count_files(equity_data, "*.csv")
@@ -144,7 +208,7 @@ def send_email(subject, html_body, to_email):
 
     msg = EmailMessage()
     msg["Subject"] = subject
-    msg["From"] = sender_email
+    msg["From"] = f"Trade Analysis System <{sender_email}>"
     msg["To"] = to_email
     msg.add_alternative(html_body, subtype='html')
 
@@ -169,10 +233,15 @@ if __name__ == "__main__":
     
     if os.environ.get("GITHUB_ACTIONS") == "true" or os.environ.get("SEND_EMAIL") == "true":
         send_email(
-            subject=f"Equity Analysis Report: {datetime.now().strftime('%Y-%m-%d')}",
+            subject=f"Trade Analysis Report: {datetime.now().strftime('%Y-%m-%d')}",
             html_body=html_content,
             to_email=recipient
         )
     else:
-        print("Email sending skipped (not in CI environment)")
+        # Create local debug file
+        debug_path = Path("debug_report.html")
+        with open(debug_path, "w", encoding="utf-8") as f:
+            f.write(html_content)
+        print(f"Local debug report created: {debug_path.absolute()}")
         print(f"Stats: {stats}")
+        print(f"Summary: {generate_smart_summary(stats, ticker_list)}")
