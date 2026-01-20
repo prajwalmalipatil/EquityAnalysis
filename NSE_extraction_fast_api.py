@@ -49,10 +49,10 @@ except Exception:
 class Config:
     """Centralized configuration with environment variable support"""
     NSE_HOME = "https://www.nseindia.com/"  # base site used for referer and warm-up
-    USER_AGENT = (  # user-agent string to mimic a modern Chrome browser
+    USER_AGENT = (  # Updated to a more modern Chrome version
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/116.0.0.0 Safari/537.36"
+        "Chrome/120.0.0.0 Safari/537.36"
     )
     DEFAULT_DOWNLOAD_DIR = Path.cwd() / ("run_" + datetime.now().strftime("%Y%m%d_%H%M%S"))  # default output dir with timestamp
     MAX_WORKERS = min(50, (os.cpu_count() or 4) * 5)  # reasonable default based on CPU cores
@@ -149,8 +149,9 @@ def ensure_dir(p: Path) -> None:
 @lru_cache(maxsize=1)
 def compute_1y_range() -> Tuple[str, str]:
     """Cache the date range since it doesn't change during execution"""
-    to_dt = datetime.now().date()  # today's date
-    from_dt = to_dt - timedelta(days=365)  # one year ago
+    # Use yesterday as the "to" date to ensure data availability and avoid 404s
+    to_dt = datetime.now().date() - timedelta(days=1)
+    from_dt = to_dt - timedelta(days=364)  # roughly one year
     return from_dt.strftime("%d-%m-%Y"), to_dt.strftime("%d-%m-%Y")  # return strings in dd-mm-YYYY format
 
 @contextmanager
@@ -421,6 +422,9 @@ def main():
                     WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.TAG_NAME, "body")))  # wait for body there too
                 for c in driver.get_cookies():
                     base_session.cookies.set(c["name"], c["value"], domain=c.get("domain", ".nseindia.com"))  # copy cookies from browser to requests session
+                
+                cookie_names = [c["name"] for c in driver.get_cookies()]
+                logger.info("Selenium warm-up success. Cookies captured: %s", ", ".join(cookie_names))
             except Exception as e:
                 logger.warning("Selenium warm-up failed: %s", e)  # warn if warm-up failed but continue (fallback to requests only)
             finally:

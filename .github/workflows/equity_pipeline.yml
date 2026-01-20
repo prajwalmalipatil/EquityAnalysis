@@ -33,8 +33,8 @@ jobs:
           --symbols "$(cat symbols.txt | tr '\n' ',' | sed 's/,$//')" \
           --out-dir equity_data \
           --overwrite \
-          --no-browser \
-          --workers 10
+          --fast \
+          --workers 5
       continue-on-error: true
 
     - name: "Run Stage 2: VSA Processing"
