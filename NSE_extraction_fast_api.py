@@ -28,7 +28,7 @@ from contextlib import contextmanager  # context manager decorator
 from datetime import datetime, timedelta  # date utilities
 from pathlib import Path  # Path class for filesystem paths
 from functools import lru_cache  # cache decorator for compute_1y_range
-from typing import List, Dict, Optional, Tuple, Union  # type hints
+from typing import List, Dict, Optional, Tuple, Union, Generator  # type hints
 import requests  # HTTP client for API calls
 from requests.adapters import HTTPAdapter  # adapter to tune retries/pooling
 from urllib3.util.retry import Retry  # retry strategy for requests
