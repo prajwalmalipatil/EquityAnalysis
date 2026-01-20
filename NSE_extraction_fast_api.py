@@ -293,7 +293,7 @@ def fetch_nse_csv_and_save(
     
     raise RuntimeError(f"[{symbol}] Failed after {Config.MAX_ATTEMPTS} attempts")  # safety net (shouldn't reach due to raises above)
 
-def setup_chrome(download_dir: Path, headless: bool = True) -> webdriver.Chrome:
+def setup_chrome(download_dir: Path, headless: bool = True) -> "webdriver.Chrome":
     """Setup Chrome WebDriver with security-hardened options"""
     opts = webdriver.ChromeOptions()  # Chrome options container
     if headless:

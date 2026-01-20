@@ -7,3 +7,5 @@ psutil
 playwright
 cloudscraper
 requests
+selenium
+webdriver-manager
