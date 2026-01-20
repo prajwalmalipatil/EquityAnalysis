@@ -30,6 +30,7 @@ from pathlib import Path  # Path class for filesystem paths
 from functools import lru_cache  # cache decorator for compute_1y_range
 from typing import List, Dict, Optional, Tuple, Union, Generator  # type hints
 import requests  # HTTP client for API calls
+import pandas as pd # Data manipulation for CSV normalization
 from requests.adapters import HTTPAdapter  # adapter to tune retries/pooling
 from urllib3.util.retry import Retry  # retry strategy for requests
 
@@ -125,20 +126,19 @@ def sanitize_filename(symbol: str) -> str:
 
 def validate_and_clean_symbols(symbols_input: str) -> List[str]:
     """Parse, validate, and clean symbol input"""
+    # Standardize delimiters: replace newlines with commas
+    normalized = symbols_input.replace('\n', ',').replace('\r', ',')
     symbols = []
-    for s in symbols_input.split(","):
-        clean_s = s.strip().upper()
-        if clean_s and validate_symbol(clean_s):
-            symbols.append(clean_s)
+    for s in normalized.split(","):
+        s = s.strip().upper()
+        if not s:
+            continue
+        if validate_symbol(s):
+            symbols.append(s)
+        else:
+            logger.warning(f"Invalid symbol ignored: {s}")
     
-    # Deduplicate
-    seen = set()
-    deduped = []
-    for s in symbols:
-        if s not in seen:
-            seen.add(s)
-            deduped.append(s)
-    return deduped
+    return sorted(list(set(symbols))) # Deduplicate and sort
 
 # ---- Helpers ----
 def ensure_dir(p: Path) -> None:
@@ -147,7 +147,8 @@ def ensure_dir(p: Path) -> None:
 @lru_cache(maxsize=1)
 def compute_1y_range() -> Tuple[str, str]:
     """Cache the date range"""
-    to_dt = datetime.now().date() - timedelta(days=1)
+    # Use today's date as it is compatible with the historicalOR endpoint
+    to_dt = datetime.now().date()
     from_dt = to_dt - timedelta(days=364)
     return from_dt.strftime("%d-%m-%Y"), to_dt.strftime("%d-%m-%Y")
 
@@ -155,13 +156,7 @@ def compute_1y_range() -> Tuple[str, str]:
 def managed_session() -> Generator[requests.Session, None, None]:
     """Context manager for requests/cloudscraper session"""
     if HAS_CLOUDSCRAPER:
-        session = cloudscraper.create_scraper(
-            browser={
-                'browser': 'chrome',
-                'platform': 'windows',
-                'desktop': True
-            }
-        )
+        session = cloudscraper.create_scraper()
         logger.info("Using cloudscraper for enhanced stealth")
     else:
         session = requests.Session()
@@ -173,7 +168,6 @@ def managed_session() -> Generator[requests.Session, None, None]:
     session.headers.update({
         "User-Agent": Config.USER_AGENT,
         "Accept-Language": "en-US,en;q=0.9",
-        "Accept-Encoding": "gzip, deflate, br",
         "Connection": "keep-alive",
     })
     try:
@@ -201,20 +195,14 @@ def fetch_nse_csv_and_save(
     dry_run: bool = False
 ) -> Path:
     """Fetch NSE CSV data and save to file with comprehensive error handling"""
-    base = "https://www.nseindia.com/api/historical/cm/equity"  # API endpoint for historical equity CSV
-    params = {
-        "symbol": symbol,  # symbol parameter
-        "series": '["EQ"]',  # series filter as JSON string
-        "from": from_date,  # from-date dd-mm-YYYY
-        "to": to_date,  # to-date dd-mm-YYYY
-        "csv": "true",  # request CSV format
-    }
+    # Updated endpoint based on browser verification
+    url = f"https://www.nseindia.com/api/historicalOR/generateSecurityWiseHistoricalData?from={from_date}&to={to_date}&symbol={symbol}&type=priceVolumeDeliverable&series=ALL&csv=true"
+    
     headers = {
-        "User-Agent": Config.USER_AGENT,  # request-specific UA
-        "Accept": "text/csv,*/*;q=0.9",  # prefer CSV
+        "User-Agent": Config.USER_AGENT,
+        "Accept": "text/csv,*/*;q=0.9",
         "Accept-Language": "en-US,en;q=0.9",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Referer": "https://www.nseindia.com/report-detail/equity-historical-search",
+        "Referer": "https://www.nseindia.com/report-detail/eq_security",
         "X-Requested-With": "XMLHttpRequest",
         "Sec-Fetch-Dest": "empty",
         "Sec-Fetch-Mode": "cors",
@@ -224,9 +212,10 @@ def fetch_nse_csv_and_save(
     
     for attempt in range(1, Config.MAX_ATTEMPTS + 1):  # attempt loop 1..MAX_ATTEMPTS
         try:
-            resp = session.get(base, params=params, headers=headers, timeout=(8, 40))  # perform GET with connect/read timeouts
+            # Use the full URL directly to ensure exact parameter ordering/encoding
+            resp = session.get(url, headers=headers, timeout=(8, 40)) 
             content_length = len(resp.content)  # measure response byte length
-            logger.info("[%s] Attempt %d: GET %s -> %d, length %d", symbol, attempt, resp.url, resp.status_code, content_length)  # log attempt result
+            logger.info("[%s] Attempt %d: GET %s -> %d, length %d", symbol, attempt, url, resp.status_code, content_length)  # log attempt result
             
             if resp.status_code == 429:  # rate-limited
                 retry_after = 1  # default wait if no header
@@ -275,13 +264,46 @@ def fetch_nse_csv_and_save(
             # Success path: valid CSV content
             if not dry_run:
                 ensure_dir(out_path.parent)  # ensure parent directory exists
-                with tempfile.NamedTemporaryFile(dir=out_path.parent, delete=False, mode="wb") as tmp:
-                    tmp.write(resp.content)  # write response bytes to temp file (atomicish)
-                os.rename(tmp.name, str(out_path))  # atomically rename temp to final target (on same filesystem)
-                logger.info("[%s] Saved CSV to %s", symbol, out_path)  # log success
+                
+                # Normalize CSV: strip column name spaces and remap to classic format
+                import io
+                try:
+                    df_temp = pd.read_csv(io.BytesIO(resp.content), encoding='utf-8-sig')
+                    # 1. Strip spaces from headers
+                    df_temp.columns = [c.strip() for c in df_temp.columns]
+                    
+                    # 2. Map new API columns to classic format expected by vsa_processor
+                    col_map = {
+                        "Open Price": "open",
+                        "High Price": "high",
+                        "Low Price": "low",
+                        "Close Price": "close",
+                        "Total Traded Quantity": "volume",
+                        "Turnover": "turnover", # Corrected from "Total Traded Value"
+                        "Date": "date",
+                        "Symbol": "symbol",
+                        "Series": "series"
+                    }
+                    df_temp = df_temp.rename(columns=col_map)
+                    
+                    # 3. Ensure essential columns exist (lowercase after normalization)
+                    essential = ["date", "symbol", "series", "open", "high", "low", "close", "volume"]
+                    missing = [c for c in essential if c not in df_temp.columns]
+                    if missing:
+                        logger.warning("[%s] Missing essential columns after remap: %s", symbol, missing)
+                    
+                    with tempfile.NamedTemporaryFile(dir=out_path.parent, delete=False, mode="w", encoding="utf-8", newline='') as tmp:
+                        df_temp.to_csv(tmp.name, index=False) # Save cleaned CSV
+                    os.replace(tmp.name, str(out_path)) # os.replace overwrites on Windows
+                    logger.info("[%s] Saved cleaned & remapped CSV to %s", symbol, out_path)
+                except Exception as e:
+                    logger.warning("[%s] Failed to normalize CSV headers: %s. Saving raw bytes.", symbol, e)
+                    with tempfile.NamedTemporaryFile(dir=out_path.parent, delete=False, mode="wb") as tmp:
+                        tmp.write(resp.content)
+                    os.replace(tmp.name, str(out_path))
             else:
-                logger.info("[%s] Dry-run: would save CSV to %s (length %d)", symbol, out_path, content_length)  # dry-run log
-            return out_path  # return path on success
+                logger.info("[%s] Dry-run: would save CSV to %s (length %d)", symbol, out_path, content_length)
+            return out_path
         
         except Exception as e:
             logger.warning("[%s] Attempt %d failed: %s", symbol, attempt, e)  # log exception for this attempt
@@ -391,7 +413,18 @@ def main():
             logger.warning(f"Configuration file not found: {config_path}")
 
     # Validate and clean symbols with security checks
-    symbols = validate_and_clean_symbols(args.symbols)
+    symbol_input = args.symbols
+    if symbol_input.startswith('@'):
+        filepath = Path(symbol_input[1:])
+        if filepath.exists():
+            symbols = validate_and_clean_symbols(filepath.read_text())
+            logger.info(f"Loaded {len(symbols)} symbols from {filepath}")
+        else:
+            logger.error(f"Symbol file not found: {filepath}")
+            sys.exit(1)
+    else:
+        symbols = validate_and_clean_symbols(symbol_input)
+        
     if not symbols:
         logger.error("No valid symbols provided. Symbols must be valid NSE format (e.g., INFY, TCS, RELIANCE)")
         sys.exit(1)
@@ -420,21 +453,27 @@ def main():
                     driver = setup_chrome(out_dir, headless=args.fast)
                     
                     # 1. Load Homepage
+                    logger.info("Loading homepage: %s", Config.NSE_HOME)
                     driver.get(Config.NSE_HOME)
                     WebDriverWait(driver, 30).until(lambda d: d.execute_script("return document.readyState") == "complete")
+                    logger.info("Homepage loaded successfully.")
                     time.sleep(2)
                     
                     # 2. Visit Historical Data Search page
-                    report_url = "https://www.nseindia.com/report-detail/equity-historical-search"
+                    report_url = "https://www.nseindia.com/report-detail/eq_security"
+                    logger.info("Loading report page: %s", report_url)
                     driver.get(report_url)
-                    WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "reports_tab")))
+                    WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.ID, "equity_historical_search")))
+                    logger.info("Report page loaded successfully.")
                     time.sleep(2)
                     
                     # 3. Prime session via a specific quote page
                     if symbols:
                         quote_url = f"https://www.nseindia.com/get-quotes/equity?symbol={symbols[0]}"
+                        logger.info("Loading quote page for priming: %s", quote_url)
                         driver.get(quote_url)
                         WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.ID, "quoteName")))
+                        logger.info("Quote page loaded, session primed.")
                         time.sleep(1)
                     
                     # Capture and transfer cookies

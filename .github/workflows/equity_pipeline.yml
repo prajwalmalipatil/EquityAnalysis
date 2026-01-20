@@ -30,11 +30,11 @@ jobs:
     - name: "Run Stage 1: Extraction"
       run: |
         python NSE_extraction_fast_api.py \
-          --symbols "$(cat symbols.txt | tr '\n' ',' | sed 's/,$//')" \
+          --symbols "@symbols.txt" \
           --out-dir equity_data \
           --overwrite \
           --fast \
-          --workers 1
+          --workers 3
       continue-on-error: true
 
     - name: "Run Stage 2: VSA Processing"

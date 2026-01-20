@@ -2563,6 +2563,7 @@ Examples:
             # FUNCTIONALITY FIX: Copy trending symbols and apply formatting
     trending_symbols: List[str] = []
     efforts_symbols: List[str] = []
+    ticker_symbols: List[str] = []
     
     if success_count > 0:
         logger.info("\n" + "="*60)
