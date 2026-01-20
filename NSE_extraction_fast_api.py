@@ -33,35 +33,41 @@ import requests  # HTTP client for API calls
 from requests.adapters import HTTPAdapter  # adapter to tune retries/pooling
 from urllib3.util.retry import Retry  # retry strategy for requests
 
-# --- Selenium optional ---
+# --- Selenium & Cloudscraper optional ---
 try:
-    from selenium import webdriver  # selenium browser automation (optional)
-    from selenium.webdriver.chrome.service import Service  # manage chromedriver service
-    from selenium.webdriver.common.by import By  # locator types
-    from selenium.webdriver.support.ui import WebDriverWait  # explicit waits
-    from selenium.webdriver.support import expected_conditions as EC  # expected conditions
-    from webdriver_manager.chrome import ChromeDriverManager  # auto-install chromedriver
-    HAS_SELENIUM = True  # flag that selenium imports succeeded
+    import cloudscraper
+    HAS_CLOUDSCRAPER = True
+except ImportError:
+    HAS_CLOUDSCRAPER = False
+
+try:
+    from selenium import webdriver  # selenium browser automation
+    from selenium.webdriver.chrome.service import Service
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+    from webdriver_manager.chrome import ChromeDriverManager
+    HAS_SELENIUM = True
 except Exception:
-    HAS_SELENIUM = False  # selenium not available; script will run without browser warm-up
+    HAS_SELENIUM = False
 
 # ---- Configuration Class ----
 class Config:
     """Centralized configuration with environment variable support"""
-    NSE_HOME = "https://www.nseindia.com/"  # base site used for referer and warm-up
-    USER_AGENT = (  # Updated to a more modern Chrome version
+    NSE_HOME = "https://www.nseindia.com/"
+    USER_AGENT = (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
         "Chrome/120.0.0.0 Safari/537.36"
     )
-    DEFAULT_DOWNLOAD_DIR = Path.cwd() / ("run_" + datetime.now().strftime("%Y%m%d_%H%M%S"))  # default output dir with timestamp
-    MAX_WORKERS = 1  # Forced to 1 for high reliability against 403 Access Denied
-    MAX_ATTEMPTS = 5  # max HTTP attempts per symbol
-    BACKOFF_FACTOR = 3.0  # more aggressive backoff
-    JITTER_MIN = 0.8  # minimal jitter multiplier
-    JITTER_MAX = 2.0  # increased jitter range
-    MIN_DELAY = 2.0  # increased minimal delay to 2s
-    MAX_DELAY = 5.0  # increased maximal delay to 5s
+    DEFAULT_DOWNLOAD_DIR = Path.cwd() / ("run_" + datetime.now().strftime("%Y%m%d_%H%M%S"))
+    MAX_WORKERS = 1  # Standardized to 1 for high stealth
+    MAX_ATTEMPTS = 5
+    BACKOFF_FACTOR = 3.0
+    JITTER_MIN = 0.8
+    JITTER_MAX = 2.0
+    MIN_DELAY = 1.0
+    MAX_DELAY = 3.0
     
     @classmethod
     def from_env(cls):
@@ -93,32 +99,28 @@ class Config:
             cls.MIN_DELAY = section.getfloat('min_delay', cls.MIN_DELAY)
             cls.MAX_DELAY = section.getfloat('max_delay', cls.MAX_DELAY)
 
-# Initialize configuration from environment
+# Initialize configuration
 Config.from_env()
 
 logging.basicConfig(
-    level=logging.INFO,  # default logging level
-    format="%(asctime)s [%(levelname)s] %(message)s",  # log format
-    handlers=[logging.StreamHandler(sys.stdout)],  # output to stdout
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)],
 )
-logger = logging.getLogger(__name__)  # module-level logger
+logger = logging.getLogger(__name__)
 
 # ---- Security & Validation ----
 def validate_symbol(symbol: str) -> bool:
-    """Validate NSE symbol format to prevent injection attacks"""
+    """Validate symbol format"""
     if not symbol or len(symbol) > 20:
         return False
-    # NSE symbols: start with letter, contain only letters/numbers/ampersand
     return bool(re.match(r'^[A-Z0-9][A-Z0-9&.\-]{0,19}$', symbol))
 
 def sanitize_filename(symbol: str) -> str:
-    """Sanitize symbol for safe filename usage, preventing path traversal"""
-    # Replace any non-alphanumeric/underscore/dash/dot with underscore
-    # But preserve hyphens and dots that are valid in NSE symbols
+    """Sanitize symbol for safe filename usage"""
     sanitized = re.sub(r'[^\w\-_.]', '_', symbol)
-    # Additional safety: prevent directory traversal attempts
-    sanitized = re.sub(r'^\.+', '', sanitized)  # Remove leading dots
-    sanitized = re.sub(r'[\\/]', '_', sanitized)  # Replace path separators
+    sanitized = re.sub(r'^\.+', '', sanitized)
+    sanitized = re.sub(r'[\\/]', '_', sanitized)
     return sanitized
 
 def validate_and_clean_symbols(symbols_input: str) -> List[str]:
@@ -128,66 +130,56 @@ def validate_and_clean_symbols(symbols_input: str) -> List[str]:
         clean_s = s.strip().upper()
         if clean_s and validate_symbol(clean_s):
             symbols.append(clean_s)
-        elif clean_s:
-            logger.warning(f"Invalid symbol format (skipping): {clean_s}")
     
-    # Remove duplicates while preserving order
+    # Deduplicate
     seen = set()
     deduped = []
     for s in symbols:
         if s not in seen:
             seen.add(s)
             deduped.append(s)
-    
     return deduped
 
 # ---- Helpers ----
 def ensure_dir(p: Path) -> None:
-    """Create directory if missing (no error if exists)"""
     p.mkdir(parents=True, exist_ok=True)
 
 @lru_cache(maxsize=1)
 def compute_1y_range() -> Tuple[str, str]:
-    """Cache the date range since it doesn't change during execution"""
-    # Use yesterday as the "to" date to ensure data availability and avoid 404s
+    """Cache the date range"""
     to_dt = datetime.now().date() - timedelta(days=1)
-    from_dt = to_dt - timedelta(days=364)  # roughly one year
-    return from_dt.strftime("%d-%m-%Y"), to_dt.strftime("%d-%m-%Y")  # return strings in dd-mm-YYYY format
+    from_dt = to_dt - timedelta(days=364)
+    return from_dt.strftime("%d-%m-%Y"), to_dt.strftime("%d-%m-%Y")
 
 @contextmanager
-def managed_session():
-    """Context manager for proper session cleanup"""
-    session = create_base_session()
+def managed_session() -> Generator[requests.Session, None, None]:
+    """Context manager for requests/cloudscraper session"""
+    if HAS_CLOUDSCRAPER:
+        session = cloudscraper.create_scraper(
+            browser={
+                'browser': 'chrome',
+                'platform': 'windows',
+                'desktop': True
+            }
+        )
+        logger.info("Using cloudscraper for enhanced stealth")
+    else:
+        session = requests.Session()
+        retry_strategy = Retry(total=3, backoff_factor=0.5, status_forcelist=[500, 502, 503, 504])
+        adapter = HTTPAdapter(max_retries=retry_strategy, pool_connections=10, pool_maxsize=20)
+        session.mount("https://", adapter)
+        session.mount("http://", adapter)
+    
+    session.headers.update({
+        "User-Agent": Config.USER_AGENT,
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Connection": "keep-alive",
+    })
     try:
         yield session
     finally:
         session.close()
-
-def create_base_session() -> requests.Session:
-    """Create a requests session with basic retry and pooling"""
-    session = requests.Session()  # new persistent session for connection pooling
-    retry_strategy = Retry(
-        total=3,  # number of retries for connection errors
-        backoff_factor=0.5,  # base backoff multiplier for urllib3's Retry
-        status_forcelist=[500, 502, 503, 504],  # retry on these server error statuses
-    )
-    adapter = HTTPAdapter(
-        max_retries=retry_strategy, 
-        pool_connections=Config.MAX_WORKERS, 
-        pool_maxsize=Config.MAX_WORKERS * 2
-    )  # configure connection pooling and retries
-    session.mount("https://", adapter)  # use adapter for HTTPS
-    session.mount("http://", adapter)  # use adapter for HTTP
-    
-    headers = {
-        "User-Agent": Config.USER_AGENT,  # set UA for session
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",  # accept HTML/XML primarily
-        "Accept-Language": "en-US,en;q=0.9",  # prefer english
-        "Referer": Config.NSE_HOME,  # set referer to home page
-    }
-    session.headers.update(headers)  # add these headers to the session
-    
-    return session  # return configured session
 
 def save_debug(resp: requests.Response, path: Path, symbol: str) -> None:
     """Save debug information for failed requests"""
@@ -424,24 +416,26 @@ def main():
             for warmup_attempt in range(1, 4):  # up to 3 attempts for warm-up
                 driver = None
                 try:
-                    logger.info("Starting browser warm-up (attempt %d/3)...", warmup_attempt)
+                    logger.info("Starting deep browser warm-up (attempt %d/3)...", warmup_attempt)
                     driver = setup_chrome(out_dir, headless=args.fast)
-                    driver.get(Config.NSE_HOME)  # load homepage
                     
-                    # Wait for site to actually load
+                    # 1. Load Homepage
+                    driver.get(Config.NSE_HOME)
                     WebDriverWait(driver, 30).until(lambda d: d.execute_script("return document.readyState") == "complete")
+                    time.sleep(2)
                     
-                    # Navigate to the specific historical data search page - KEY for getting right cookies
+                    # 2. Visit Historical Data Search page
                     report_url = "https://www.nseindia.com/report-detail/equity-historical-search"
                     driver.get(report_url)
-                    # Use a more reliable wait for report page
                     WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "reports_tab")))
+                    time.sleep(2)
                     
-                    # Also visit one symbol page for good measure
+                    # 3. Prime session via a specific quote page
                     if symbols:
                         quote_url = f"https://www.nseindia.com/get-quotes/equity?symbol={symbols[0]}"
                         driver.get(quote_url)
                         WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.ID, "quoteName")))
+                        time.sleep(1)
                     
                     # Capture and transfer cookies
                     browser_cookies = driver.get_cookies()
@@ -449,20 +443,19 @@ def main():
                         raise RuntimeError("No cookies captured from browser")
                         
                     for c in browser_cookies:
-                        # Copy cookie to session
                         domain = c.get("domain", ".nseindia.com")
                         if domain.startswith("www."):
-                            domain = domain[3:] # standardize to .nseindia.com if needed
+                            domain = domain[3:] # standardize
                         base_session.cookies.set(c["name"], c["value"], domain=domain)
                     
                     cookie_names = [c["name"] for c in browser_cookies]
-                    logger.info("Selenium warm-up success. Cookies captured: %s", ", ".join(cookie_names))
-                    break  # success, exit retry loop
+                    logger.info("Deep warm-up success. Cookies captured: %s", ", ".join(cookie_names))
+                    break  # success
                     
                 except Exception as e:
-                    logger.warning("Browser warm-up attempt %d failed: %s", warmup_attempt, e)
+                    logger.warning("Deep warm-up attempt %d failed: %s", warmup_attempt, e)
                     if warmup_attempt == 3:
-                        logger.error("All browser warm-up attempts failed. Proceeding without browser cookies (may fail).")
+                        logger.error("All deep warm-up attempts failed. Proceeding with caution.")
                 finally:
                     if driver:
                         try:
