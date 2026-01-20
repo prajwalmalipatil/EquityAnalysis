@@ -61,7 +61,12 @@ def generate_html_report(stats, results_list, trending_list, ticker_list):
         .symbol-table { width: 100%; border-collapse: collapse; font-size: 11px; }
         .symbol-table td { padding: 8px 12px; border-bottom: 1px solid #f7fafc; color: #4a5568; font-weight: 600; width: 33.33%; text-transform: uppercase; }
         
-        .ticker-bubble { background: #fffcfc; border-left: 4px solid #f56565; padding: 12px 15px; margin-bottom: 10px; font-size: 13px; color: #4a5568; }
+        .ticker-card { background: #fff; border: 1.5px solid #edf2f7; border-left: 5px solid #e53e3e; border-radius: 6px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .ticker-symbol { font-size: 18px; font-weight: 800; color: #2d3748; letter-spacing: -0.5px; }
+        .ticker-badge { background: #fff5f5; color: #c53030; font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 99px; text-transform: uppercase; margin-left: 10px; border: 1px solid #feb2b2; }
+        .ticker-status { font-size: 11px; color: #718096; margin-top: 8px; font-weight: 600; display: flex; align-items: center; }
+        .ticker-status::before { content: "●"; color: #e53e3e; margin-right: 6px; font-size: 14px; }
+        
         .summary-box { background: #f9fafb; padding: 20px; border-radius: 4px; line-height: 1.6; font-size: 13px; color: #4a5568; }
         .footer { padding: 20px; text-align: center; font-size: 11px; color: #a0aec0; border-top: 1px solid #edf2f7; }
     </style>
@@ -80,8 +85,23 @@ def generate_html_report(stats, results_list, trending_list, ticker_list):
         row += "</tr>"
         table_rows += row
 
-    ticker_content = "".join([f'<div class="ticker-bubble">🎯 PATTERN ALERT: <b>{sym}</b> detected with high confirmation.</div>' for sym in ticker_list]) \
-                     if ticker_list else '<p style="color: #718096; font-style: italic; font-size: 12px;">No high-probability signals detected in the latest session.</p>'
+    ticker_content = "".join([f"""
+    <div class="ticker-card">
+        <div style="display: flex; align-items: center;">
+            <span class="ticker-symbol">{sym}</span>
+            <span class="ticker-badge">High Probability</span>
+        </div>
+        <div style="font-size: 13px; color: #4a5568; margin-top: 8px;">
+            VSA confirmation pattern detected. Asset is showing structural strength with institutional demand absorption.
+        </div>
+        <div class="ticker-status">Requires Immediate Review</div>
+    </div>
+    """ for sym in ticker_list]) if ticker_list else """
+    <div style="text-align: center; padding: 30px; border: 1px dashed #cbd5e0; border-radius: 8px; color: #718096; font-size: 12px;">
+        <div style="font-size: 24px; margin-bottom: 10px;">🛡️</div>
+        No high-probability "No Demand/Supply" signals detected in the latest session.
+    </div>
+    """
 
     html = f"""
     <!DOCTYPE html>
