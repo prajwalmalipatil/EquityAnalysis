@@ -34,7 +34,7 @@ jobs:
           --out-dir equity_data \
           --overwrite \
           --fast \
-          --workers 5
+          --workers 1
       continue-on-error: true
 
     - name: "Run Stage 2: VSA Processing"

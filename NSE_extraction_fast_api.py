@@ -55,13 +55,13 @@ class Config:
         "Chrome/120.0.0.0 Safari/537.36"
     )
     DEFAULT_DOWNLOAD_DIR = Path.cwd() / ("run_" + datetime.now().strftime("%Y%m%d_%H%M%S"))  # default output dir with timestamp
-    MAX_WORKERS = min(50, (os.cpu_count() or 4) * 5)  # reasonable default based on CPU cores
+    MAX_WORKERS = 1  # Forced to 1 for high reliability against 403 Access Denied
     MAX_ATTEMPTS = 5  # max HTTP attempts per symbol
-    BACKOFF_FACTOR = 2.0  # exponential backoff base
-    JITTER_MIN = 0.5  # minimal jitter multiplier
-    JITTER_MAX = 1.5  # maximal jitter multiplier
-    MIN_DELAY = 0.2  # minimal inter-symbol pause
-    MAX_DELAY = 0.5  # maximal inter-symbol pause
+    BACKOFF_FACTOR = 3.0  # more aggressive backoff
+    JITTER_MIN = 0.8  # minimal jitter multiplier
+    JITTER_MAX = 2.0  # increased jitter range
+    MIN_DELAY = 2.0  # increased minimal delay to 2s
+    MAX_DELAY = 5.0  # increased maximal delay to 5s
     
     @classmethod
     def from_env(cls):
@@ -220,8 +220,14 @@ def fetch_nse_csv_and_save(
     headers = {
         "User-Agent": Config.USER_AGENT,  # request-specific UA
         "Accept": "text/csv,*/*;q=0.9",  # prefer CSV
-        "Referer": f"https://www.nseindia.com/get-quotes/equity?symbol={symbol}",  # referer for API
-        "X-Requested-With": "XMLHttpRequest",  # indicate AJAX request
+        "Accept-Language": "en-US,en;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Referer": "https://www.nseindia.com/report-detail/equity-historical-search",
+        "X-Requested-With": "XMLHttpRequest",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin",
+        "Connection": "keep-alive",
     }
     
     for attempt in range(1, Config.MAX_ATTEMPTS + 1):  # attempt loop 1..MAX_ATTEMPTS
@@ -422,14 +428,20 @@ def main():
                     driver = setup_chrome(out_dir, headless=args.fast)
                     driver.get(Config.NSE_HOME)  # load homepage
                     
-                    # Wait for site to actually load (NSE can be slow)
-                    WebDriverWait(driver, 20).until(lambda d: d.execute_script("return document.readyState") == "complete")
+                    # Wait for site to actually load
+                    WebDriverWait(driver, 30).until(lambda d: d.execute_script("return document.readyState") == "complete")
                     
+                    # Navigate to the specific historical data search page - KEY for getting right cookies
+                    report_url = "https://www.nseindia.com/report-detail/equity-historical-search"
+                    driver.get(report_url)
+                    # Use a more reliable wait for report page
+                    WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CLASS_NAME, "reports_tab")))
+                    
+                    # Also visit one symbol page for good measure
                     if symbols:
-                        # Navigate to a specific symbol page to trigger more security cookies
                         quote_url = f"https://www.nseindia.com/get-quotes/equity?symbol={symbols[0]}"
                         driver.get(quote_url)
-                        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "quoteName")))
+                        WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.ID, "quoteName")))
                     
                     # Capture and transfer cookies
                     browser_cookies = driver.get_cookies()
