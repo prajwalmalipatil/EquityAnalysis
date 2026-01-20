@@ -300,16 +300,19 @@ def setup_chrome(download_dir: Path, headless: bool = True) -> "webdriver.Chrome
     if headless:
         opts.add_argument("--headless=new")  # use new headless mode flag for modern Chrome
     opts.add_argument(f"--user-agent={Config.USER_AGENT}")  # set UA to the same UA used in requests
-    opts.add_argument("--disable-gpu")  # disable GPU (some headless envs require this)
-    opts.add_argument("--no-sandbox")  # disable sandbox (required in some CI/docker)
+    opts.add_argument("--disable-gpu")  # disable GPU
+    opts.add_argument("--no-sandbox")  # disable sandbox
+    opts.add_argument("--disable-dev-shm-usage")  # fix for resource-constrained environments like CI
+    opts.add_argument("--window-size=1920,1080")  # set window size for consistency
+    
     prefs = {
         "download.default_directory": str(download_dir.resolve()),  # set Chrome download default folder
         "download.prompt_for_download": False,  # disable download prompt
     }
     opts.add_experimental_option("prefs", prefs)  # add prefs to options
-    service = Service(ChromeDriverManager().install())  # install chromedriver via webdriver-manager and create Service
-    driver = webdriver.Chrome(service=service, options=opts)  # instantiate Chrome WebDriver
-    driver.set_page_load_timeout(30)  # set page load timeout to 30s
+    service = Service(ChromeDriverManager().install())  # install chromedriver
+    driver = webdriver.Chrome(service=service, options=opts)  # instantiate driver
+    driver.set_page_load_timeout(60)  # increased timeout to 60s for slow CI networks
     return driver  # return the driver instance
 
 def process_symbol(
@@ -412,24 +415,48 @@ def main():
         driver = None  # init driver variable
 
         if use_browser:
-            driver = setup_chrome(out_dir, headless=args.fast)  # start a browser for warm-up (headless if fast)
-            try:
-                driver.get(Config.NSE_HOME)  # load homepage to establish cookies/headers
-                WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.TAG_NAME, "body")))  # wait until body present
-                if symbols:
-                    quote_url = f"https://www.nseindia.com/get-quotes/equity?symbol={symbols[0]}"  # navigate to first symbol page
-                    driver.get(quote_url)  # open symbol page to ensure API endpoint accessible
-                    WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.TAG_NAME, "body")))  # wait for body there too
-                for c in driver.get_cookies():
-                    base_session.cookies.set(c["name"], c["value"], domain=c.get("domain", ".nseindia.com"))  # copy cookies from browser to requests session
-                
-                cookie_names = [c["name"] for c in driver.get_cookies()]
-                logger.info("Selenium warm-up success. Cookies captured: %s", ", ".join(cookie_names))
-            except Exception as e:
-                logger.warning("Selenium warm-up failed: %s", e)  # warn if warm-up failed but continue (fallback to requests only)
-            finally:
-                if driver:
-                    driver.quit()  # close browser used for warm-up
+            for warmup_attempt in range(1, 4):  # up to 3 attempts for warm-up
+                driver = None
+                try:
+                    logger.info("Starting browser warm-up (attempt %d/3)...", warmup_attempt)
+                    driver = setup_chrome(out_dir, headless=args.fast)
+                    driver.get(Config.NSE_HOME)  # load homepage
+                    
+                    # Wait for site to actually load (NSE can be slow)
+                    WebDriverWait(driver, 20).until(lambda d: d.execute_script("return document.readyState") == "complete")
+                    
+                    if symbols:
+                        # Navigate to a specific symbol page to trigger more security cookies
+                        quote_url = f"https://www.nseindia.com/get-quotes/equity?symbol={symbols[0]}"
+                        driver.get(quote_url)
+                        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "quoteName")))
+                    
+                    # Capture and transfer cookies
+                    browser_cookies = driver.get_cookies()
+                    if not browser_cookies:
+                        raise RuntimeError("No cookies captured from browser")
+                        
+                    for c in browser_cookies:
+                        # Copy cookie to session
+                        domain = c.get("domain", ".nseindia.com")
+                        if domain.startswith("www."):
+                            domain = domain[3:] # standardize to .nseindia.com if needed
+                        base_session.cookies.set(c["name"], c["value"], domain=domain)
+                    
+                    cookie_names = [c["name"] for c in browser_cookies]
+                    logger.info("Selenium warm-up success. Cookies captured: %s", ", ".join(cookie_names))
+                    break  # success, exit retry loop
+                    
+                except Exception as e:
+                    logger.warning("Browser warm-up attempt %d failed: %s", warmup_attempt, e)
+                    if warmup_attempt == 3:
+                        logger.error("All browser warm-up attempts failed. Proceeding without browser cookies (may fail).")
+                finally:
+                    if driver:
+                        try:
+                            driver.quit()
+                        except:
+                            pass
 
         else:
             # Quick warm-up without browser
