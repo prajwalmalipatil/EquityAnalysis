@@ -11,36 +11,48 @@ from pathlib import Path
 from datetime import datetime, timedelta, timezone
 
 def generate_smart_summary(stats, ticker_list):
-    """Generate an intelligent, context-aware analysis summary."""
-    extraction_rate = (stats['extraction'] / 208) * 100
+    """Generate an intelligent, multi-paragraph analysis summary."""
     ticker_count = len(ticker_list)
     trending_count = stats['trending']
+    vsa_count = stats['vsa']
     
-    # 1. Opening Statement based on signals
-    if ticker_count > 10:
-        opening = "The latest market analysis reveals a highly dynamic landscape with significant momentum across multiple sectors."
+    # 1. Market Landscape Paragraph
+    if trending_count > 25:
+        landscape = f"The latest market analysis reveals a dynamic landscape with significant momentum across key sectors. Our pipeline has successfully processed {vsa_count} symbols, identifying robust trends and high-probability entry points."
+    elif trending_count > 10:
+        landscape = f"The latest market analysis reveals a selective landscape with emerging momentum in specific sectors. Our pipeline has successfully processed {vsa_count} symbols, identifying {trending_count} robust trends."
+    else:
+        landscape = f"The latest market analysis reveals a consolidative landscape with limited directional momentum. Our pipeline has processed {vsa_count} symbols, focusing on identifying underlying structural support."
+
+    # 2. Market Participation & Signal Emphasis Paragraph
+    participation = "The data suggests a healthy market participation with localized strength in trending assets."
+    if ticker_count > 0:
+        signal_focus = f"We remain highly optimistic about the identified signals, particularly the {ticker_count} high-probability ticker alerts which warrant immediate attention for potential breakouts."
+    else:
+        signal_focus = "While high-probability ticker alerts were absent this session, we remain vigilant for emerging patterns that may warrant immediate attention."
+    
+    breadth = "The overall market breadth remains supportive of strategic long-term publications."
+
+    # 3. Dynamic Outlook Line
+    if ticker_count > 5 or trending_count > 30:
+        outlook = "🚀 Outlook: Strong Positive Momentum. Market continues to present lucrative opportunities for the disciplined trader."
     elif ticker_count > 0:
-        opening = "The latest market analysis reveals a selective landscape with robust trends and high-probability entry points identifying specific sector strength."
+        outlook = "🚀 Outlook: Cautiously Optimistic. Selective opportunities present high-conviction entry points for strategic positioning."
     else:
-        opening = "The latest session reflects a consolidative phase across the benchmark universe, with limited high-probability breakouts detected."
+        outlook = "🚀 Outlook: Neutral/Consolidative. Patience is advised as the market prepares for its next directional move."
 
-    # 2. Middle detail based on processing
-    if extraction_rate >= 95:
-        detail = f"Our pipeline has successfully processed {stats['vsa']} symbols, identifying {trending_count} robust trends."
-    else:
-        detail = f"Our pipeline has analyzed {stats['vsa']} symbols during this session, focusing on high-liquidity segments."
-
-    # 3. Closing tone
-    closing = "The data suggests a healthy market participation with localized strength in trending assets. We remain highly optimistic about the attention for potential breakouts. The overall market breadth remains supportive of strategic long-term publications."
-    
-    return f"{opening} {detail} {closing}"
+    return f"""
+    <p>{landscape}</p>
+    <p>{participation} {signal_focus} {breadth}</p>
+    <p style="font-weight: 800; color: #2d3748; margin-top: 15px;">{outlook}</p>
+    """
 
 def generate_html_report(stats, results_list, trending_list, ticker_list):
     """Generate a premium Trade Analysis Report in green theme."""
     ist_now = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
     date_str = ist_now.strftime('%d-%m-%Y %H:%M')
     
-    smart_summary = generate_smart_summary(stats, ticker_list)
+    smart_summary_html = generate_smart_summary(stats, ticker_list)
     
     styles = """
     <style>
@@ -155,7 +167,7 @@ def generate_html_report(stats, results_list, trending_list, ticker_list):
                 <div class="section">
                     <div class="section-header">📒 Results: Analysis Summary</div>
                     <div class="summary-box">
-                        {smart_summary}
+                        {smart_summary_html}
                     </div>
                 </div>
             </div>
