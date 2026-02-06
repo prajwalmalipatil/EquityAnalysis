@@ -48,13 +48,85 @@ def generate_smart_summary(stats, ticker_list):
     <p style="font-weight: 800; color: #2d3748; margin-top: 15px;">{outlook}</p>
     """
 
-def generate_html_report(stats, results_list, trending_list, ticker_list):
+def generate_html_report(stats, results_list, trending_list, ticker_list, triggers_list):
     """Generate a premium Trade Analysis Report in green theme."""
     ist_now = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
     date_str = ist_now.strftime('%d-%m-%Y %H:%M')
     
     smart_summary_html = generate_smart_summary(stats, ticker_list)
     
+    
+    # Generate Trigger Section HTML
+    triggers_content = ""
+    if triggers_list:
+        rows = ""
+        for t in triggers_list:
+            vol_color = "#e53e3e" if t['vol_pct'] < 0 else "#38a169"
+            spr_color = "#38a169" if t['spread_pct'] > 0 else "#e53e3e"
+            
+            rows += f"""
+            <tr style="border-bottom: 1px solid #f7fafc;">
+                <td style="padding: 10px; font-weight: 700; color: #2d3748;">{t['symbol']}</td>
+                <td style="padding: 10px; text-align: right; color: #718096; font-size: 11px;">{int(t['prev_vol']):,}</td>
+                <td style="padding: 10px; text-align: right; font-weight: 700; color: #2d3748;">{int(t['curr_vol']):,}</td>
+                <td style="padding: 10px; text-align: right; color: #718096; font-size: 11px;">{t['prev_spread']:.2f}</td>
+                <td style="padding: 10px; text-align: right; font-weight: 700; color: #2d3748;">{t['curr_spread']:.2f}</td>
+                <td style="padding: 10px; text-align: right; font-weight: 700; color: {vol_color};">{t['vol_pct']:.1f}%</td>
+                <td style="padding: 10px; text-align: right; font-weight: 700; color: {spr_color};">{t['spread_pct']:.1f}%</td>
+            </tr>
+            """
+            
+        triggers_content = f"""
+        <div class="section">
+            <div class="section-header" style="color: #c53030;">📊 VSA Triggered Stocks – Vol Contraction + Spread Expansion</div>
+            
+            <div style="background: #fff; border: 1px solid #fed7d7; padding: 15px; border-radius: 6px; margin-bottom: 15px; font-size: 12px; color: #742a2a; line-height: 1.5;">
+                <strong>Trigger Logic:</strong> Volume decreased from previous day while Spread expanded. This anomaly suggests potential supply removal facilitating easier price movement.
+            </div>
+
+            <div class="stat-box" style="display: flex; justify-content: space-between; align-items: center; border-color: #feb2b2; background: #fff5f5;">
+                <div>
+                    <div class="stat-label" style="color: #9b2c2c;">TRIGGERED STOCKS</div>
+                    <div class="stat-value" style="color: #c53030;">{len(triggers_list)}</div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="stat-label" style="color: #9b2c2c;">ANALYSIS DATE</div>
+                    <div class="stat-value" style="color: #c53030; font-size: 14px; margin-top: 4px;">{date_str.split()[0]}</div>
+                </div>
+            </div>
+
+            <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; background: #fff; border: 1px solid #edf2f7;">
+                <thead style="background: #f7fafc; color: #4a5568;">
+                    <tr>
+                        <th style="padding: 10px; text-align: left; font-weight: 700;">SYMBOL</th>
+                        <th style="padding: 10px; text-align: right; font-weight: 600;">PREV VOL</th>
+                        <th style="padding: 10px; text-align: right; font-weight: 600;">CURR VOL</th>
+                        <th style="padding: 10px; text-align: right; font-weight: 600;">PREV SPR</th>
+                        <th style="padding: 10px; text-align: right; font-weight: 600;">CURR SPR</th>
+                        <th style="padding: 10px; text-align: right; font-weight: 600;">VOL %</th>
+                        <th style="padding: 10px; text-align: right; font-weight: 600;">SPR %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {rows}
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 12px; font-size: 11px; color: #718096; font-style: italic; border-left: 3px solid #cbd5e0; padding-left: 10px;">
+                <strong>Observational Note:</strong> Stocks with >30% volume drop and significant spread expansion (>50%) warrant close monitoring for continuation.
+            </div>
+        </div>
+        """
+    else:
+        triggers_content = """
+        <div class="section">
+             <div class="section-header" style="color: #718096;">📊 VSA Triggered Stocks</div>
+             <div style="padding: 20px; text-align: center; color: #a0aec0; border: 1px dashed #e2e8f0; border-radius: 6px; font-size: 12px; font-style: italic;">
+                No stocks met the Volume Contraction + Spread Expansion criteria today.
+             </div>
+        </div>
+        """
+
     styles = """
     <style>
         body { font-family: 'Inter', 'Segoe UI', Helvetica, Arial, sans-serif; background-color: #fcfdfc; margin: 0; padding: 20px; color: #1a202c; }
@@ -188,6 +260,9 @@ def generate_html_report(stats, results_list, trending_list, ticker_list):
                     {ticker_content}
                 </div>
 
+                <!-- VSA TRIGGERED STOCKS (NEW SECTION) -->
+                {triggers_content}
+
                 <!-- TRENDING SYMBOLS -->
                 <div class="section">
                     <div class="section-header">📈 TRENDING SYMBOLS</div>
@@ -234,6 +309,7 @@ def get_pipeline_data(base_dir: Path):
     results = equity_data / "Results"
     ticker = equity_data / "Ticker"
     trending = equity_data / "Trending"
+    triggers = equity_data / "Triggers"
 
     def count_files(path, ext="*.csv"):
         return len(list(path.glob(ext))) if path.exists() else 0
@@ -274,11 +350,61 @@ def get_pipeline_data(base_dir: Path):
             }
         except Exception as e:
             print(f"Error reading details for {symbol_name}: {e}")
+            print(f"Error reading details for {symbol_name}: {e}")
             return {"symbol": symbol_name}
+
+    def get_trigger_details(path, symbol_name):
+        """Read trigger metrics from VSA_Analysis sheet"""
+        excel_files = list(path.glob(f"{symbol_name}*.xlsx"))
+        if not excel_files: return None
+        
+        try:
+            # Read VSA_Analysis sheet
+            df = pd.read_excel(excel_files[0], sheet_name="VSA_Analysis")
+            if len(df) < 2: return None
+            
+            # Ensure sorting
+            if "Date" in df.columns:
+                df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+                df = df.sort_values("Date")
+            
+            curr = df.iloc[-1]
+            prev = df.iloc[-2]
+            
+            # Metric calculations
+            vol_curr = float(curr.get("Volume", 0))
+            vol_prev = float(prev.get("Volume", 1)) # avoid div/0
+            spr_curr = float(curr.get("Spread", 0))
+            spr_prev = float(prev.get("Spread", 1))
+            
+            vol_change = ((vol_curr - vol_prev) / vol_prev) * 100
+            spread_change = ((spr_curr - spr_prev) / spr_prev) * 100
+            
+            return {
+                "symbol": symbol_name,
+                "prev_vol": vol_prev,
+                "curr_vol": vol_curr,
+                "prev_spread": spr_prev,
+                "curr_spread": spr_curr,
+                "vol_pct": vol_change,
+                "spread_pct": spread_change
+            }
+        except Exception as e:
+            print(f"Error extracting trigger details for {symbol_name}: {e}")
+            return None
 
     extraction_count = count_files(equity_data, "*.csv")
     results_list = get_symbol_list(results)
     trending_list = get_symbol_list(trending)
+    triggers_raw = get_symbol_list(triggers)
+    
+    # Process trigger list with details
+    triggers_list = []
+    for sym in triggers_raw:
+        details = get_trigger_details(triggers, sym)
+        if details:
+            triggers_list.append(details)
+            
     
     # Enrich ticker list with technical details
     ticker_symbols = get_symbol_list(ticker)
@@ -294,10 +420,11 @@ def get_pipeline_data(base_dir: Path):
         "extraction": extraction_count,
         "vsa": len(results_list),
         "trending": len(trending_list),
-        "ticker": len(ticker_list)
+        "ticker": len(ticker_list),
+        "triggers": len(triggers_list)
     }
     
-    return stats, results_list, trending_list, ticker_list
+    return stats, results_list, trending_list, ticker_list, triggers_list
 
 def send_email(subject, html_body, to_email):
     """Send HTML email using SMTP."""
@@ -327,9 +454,9 @@ def send_email(subject, html_body, to_email):
 
 if __name__ == "__main__":
     base_dir = Path(".")
-    stats, results_list, trending_list, ticker_list = get_pipeline_data(base_dir)
+    stats, results_list, trending_list, ticker_list, triggers_list = get_pipeline_data(base_dir)
     
-    html_content = generate_html_report(stats, results_list, trending_list, ticker_list)
+    html_content = generate_html_report(stats, results_list, trending_list, ticker_list, triggers_list)
     
     recipient = os.environ.get("RECIPIENT_EMAIL", "Prajwalmalipatil@gmail.com")
     

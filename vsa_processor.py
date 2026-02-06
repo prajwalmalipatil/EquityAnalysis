@@ -1799,6 +1799,87 @@ def create_ticker_folder(results_dir: Path, ticker_dir: Path) -> List[str]:
 
 
 # --------------------------
+# Triggers Folder Logic (Strict Condition)
+# --------------------------
+def create_triggers_folder(results_dir: Path, triggers_dir: Path) -> List[str]:
+    """
+    Create Triggers folder for stocks matching Strict VSA Trigger Condition:
+    Current Day Volume < Previous Day Volume AND Current Day Spread > Previous Day Spread
+    
+    Args:
+        results_dir: Directory containing processed VSA Excel files
+        triggers_dir: Destination directory for trigger files
+    
+    Returns:
+        List of symbol names that qualified for triggers folder
+    """
+    triggers_symbols: List[str] = []
+    
+    triggers_dir.mkdir(parents=True, exist_ok=True)
+    
+    logger.info(f"\nScanning Results folder for Triggers (Vol < Prev & Spread > Prev)...")
+    
+    for excel_file in results_dir.glob("*_VSA.xlsx"):
+        try:
+            # Read minimal columns for efficiency
+            try:
+                # Check columns first
+                df_check = pd.read_excel(excel_file, sheet_name="VSA_Analysis", nrows=1)
+                required = ["Date", "Volume", "Spread"]
+                if not all(col in df_check.columns for col in required):
+                    continue
+            except:
+                continue
+                
+            df = pd.read_excel(
+                excel_file, 
+                sheet_name="VSA_Analysis", 
+                usecols=["Date", "Volume", "Spread"]
+            )
+            
+            if len(df) < 2:
+                continue
+                
+            # Parse dates and sort
+            df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+            df = df.dropna(subset=["Date"]).sort_values("Date")
+            
+            if len(df) < 2:
+                continue
+            
+            # Get last 2 trading days
+            curr = df.iloc[-1]
+            prev = df.iloc[-2]
+            
+            # Condition check
+            if (pd.notna(curr["Volume"]) and pd.notna(prev["Volume"]) and
+                pd.notna(curr["Spread"]) and pd.notna(prev["Spread"])):
+                
+                if (curr["Volume"] < prev["Volume"] and 
+                    curr["Spread"] > prev["Spread"]):
+                    
+                    symbol_name = excel_file.stem.replace("_VSA", "")
+                    trigger_file = triggers_dir / excel_file.name
+                    
+                    try:
+                        shutil.copy2(excel_file, trigger_file)
+                        triggers_symbols.append(symbol_name)
+                        
+                        logger.info(
+                            f"{symbol_name} → Trigger Found! "
+                            f"(Vol: {prev['Volume']}->{curr['Volume']}, "
+                            f"Spread: {prev['Spread']:.2f}->{curr['Spread']:.2f})"
+                        )
+                    except (PermissionError, OSError) as e:
+                        logger.error(f"Failed to copy {symbol_name} to triggers: {type(e).__name__}: {e}")
+                        
+        except Exception as e:
+            logger.warning(f"Error processing {excel_file.name} for triggers: {e}")
+            
+    return triggers_symbols
+
+
+# --------------------------
 # Worker Process Function (DATA INTEGRITY FIX)
 # --------------------------
 def worker_process_file(file_path_str: str) -> Dict:
@@ -2317,9 +2398,9 @@ Examples:
     trending_dir = folder / "Trending"
     efforts_dir = folder / "Efforts"
     ticker_dir = folder / "Ticker"  # NEW: Ticker folder for pattern-filtered symbols
-
+    triggers_dir = folder / "Triggers" # NEW: VSA Triggers folder
     
-    for directory in [logs_dir, results_dir, trending_dir, efforts_dir, ticker_dir]:
+    for directory in [logs_dir, results_dir, trending_dir, efforts_dir, ticker_dir, triggers_dir]:
         try:
             directory.mkdir(parents=True, exist_ok=True)
         except (PermissionError, OSError) as e:
@@ -2327,7 +2408,7 @@ Examples:
             sys.exit(1)
 
     # SECURITY FIX: Setup path validator
-    path_validator = SecurePathValidator([folder, logs_dir, results_dir, trending_dir, efforts_dir, ticker_dir])
+    path_validator = SecurePathValidator([folder, logs_dir, results_dir, trending_dir, efforts_dir, ticker_dir, triggers_dir])
     
     # Find CSV files
     csv_files = list(folder.glob("*.csv"))
@@ -2564,6 +2645,7 @@ Examples:
     trending_symbols: List[str] = []
     efforts_symbols: List[str] = []
     ticker_symbols: List[str] = []
+    triggers_symbols: List[str] = []
     
     if success_count > 0:
         logger.info("\n" + "="*60)
@@ -2616,6 +2698,13 @@ Examples:
         
         except Exception as e:
             logger.error(f"Ticker analysis failed: {type(e).__name__}: {e}")
+
+        # NEW FEATURE: Triggers folder creation
+        try:
+            triggers_symbols = create_triggers_folder(results_dir, triggers_dir)
+            logger.info(f"Created {len(triggers_symbols)} Trigger folder files")
+        except Exception as e:
+            logger.error(f"Trigger analysis failed: {type(e).__name__}: {e}")
 
     # Final summary report
     end_time = time.perf_counter()
@@ -2672,6 +2761,16 @@ Examples:
     else:
         logger.info("  No symbols qualified for ticker folder")
 
+    logger.info("")
+    logger.info("TRIGGER ANALYSIS:")
+    if triggers_symbols:
+        logger.info(f"  Triggered Symbols: {len(triggers_symbols)}")
+        logger.info(f"  Top Triggers: {', '.join(triggers_symbols[:10])}")
+        if len(triggers_symbols) > 10:
+            logger.info(f"    ... and {len(triggers_symbols) - 10} more")
+    else:
+        logger.info("  No symbols qualified for triggers folder")
+
 
     logger.info("")
     logger.info("OUTPUT LOCATIONS:")
@@ -2680,6 +2779,7 @@ Examples:
     logger.info(f"  Trending: {trending_dir} ({len(trending_symbols)} files)")
     logger.info(f"  Efforts:  {efforts_dir} ({len(efforts_symbols)} files)")
     logger.info(f"  Ticker:   {ticker_dir} ({len(ticker_symbols) if 'ticker_symbols' in locals() else 0} files)")
+    logger.info(f"  Triggers: {triggers_dir} ({len(triggers_symbols) if 'triggers_symbols' in locals() else 0} files)")
     logger.info("="*60)
     
     if success_count > 0:
