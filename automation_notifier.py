@@ -48,7 +48,7 @@ def generate_smart_summary(stats, ticker_list):
     <p style="font-weight: 800; color: #2d3748; margin-top: 15px;">{outlook}</p>
     """
 
-def generate_html_report(stats, results_list, trending_list, ticker_list, triggers_list):
+def generate_html_report(stats, results_list, trending_list, ticker_list, triggers_list, anomaly_list):
     """Generate a premium Trade Analysis Report in green theme."""
     ist_now = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
     date_str = ist_now.strftime('%d-%m-%Y %H:%M')
@@ -123,6 +123,74 @@ def generate_html_report(stats, results_list, trending_list, ticker_list, trigge
              <div class="section-header" style="color: #718096;">📊 VSA Triggered Stocks</div>
              <div style="padding: 20px; text-align: center; color: #a0aec0; border: 1px dashed #e2e8f0; border-radius: 6px; font-size: 12px; font-style: italic;">
                 No stocks met the Volume Contraction + Spread Expansion criteria today.
+             </div>
+        </div>
+        """
+
+    # Generate Anomaly Section HTML (Volume Build-Up then Drop)
+    anomaly_content = ""
+    if anomaly_list:
+        anomaly_rows = ""
+        for a in anomaly_list:
+            drop_color = "#e53e3e" if a['drop_pct'] < 0 else "#38a169"
+            
+            anomaly_rows += f"""
+            <tr style="border-bottom: 1px solid #f7fafc;">
+                <td style="padding: 10px; font-weight: 700; color: #2d3748;">{a['symbol']}</td>
+                <td style="padding: 10px; text-align: right; color: #718096; font-size: 11px;">{int(a['vol_t3']):,}</td>
+                <td style="padding: 10px; text-align: right; color: #718096; font-size: 11px;">{int(a['vol_t2']):,}</td>
+                <td style="padding: 10px; text-align: right; color: #718096; font-size: 11px;">{int(a['vol_t1']):,}</td>
+                <td style="padding: 10px; text-align: right; font-weight: 700; color: #2d3748;">{int(a['vol_tday']):,}</td>
+                <td style="padding: 10px; text-align: right; font-weight: 700; color: {drop_color};">{a['drop_pct']:.1f}%</td>
+            </tr>
+            """
+            
+        anomaly_content = f"""
+        <div class="section">
+            <div class="section-header" style="color: #c05621;">⚠️ Volume Anomaly – Build-Up then Drop</div>
+            
+            <div style="background: #fff; border: 1px solid #feebc8; padding: 15px; border-radius: 6px; margin-bottom: 15px; font-size: 12px; color: #7b341e; line-height: 1.5;">
+                <strong>Anomaly Logic:</strong> Volume was rising for 3 consecutive days (T-3 → T-2 → T-1) but dropped on the current trading day (T-day). This pattern suggests potential institutional supply absorption or quiet accumulation before a move.
+            </div>
+
+            <div class="stat-box" style="display: flex; justify-content: space-between; align-items: center; border-color: #fbd38d; background: #fffaf0;">
+                <div>
+                    <div class="stat-label" style="color: #975a16;">ANOMALY STOCKS</div>
+                    <div class="stat-value" style="color: #c05621;">{len(anomaly_list)}</div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="stat-label" style="color: #975a16;">ANALYSIS DATE</div>
+                    <div class="stat-value" style="color: #c05621; font-size: 14px; margin-top: 4px;">{date_str.split()[0]}</div>
+                </div>
+            </div>
+
+            <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; background: #fff; border: 1px solid #edf2f7;">
+                <thead style="background: #f7fafc; color: #4a5568;">
+                    <tr>
+                        <th style="padding: 10px; text-align: left; font-weight: 700;">SYMBOL</th>
+                        <th style="padding: 10px; text-align: right; font-weight: 600;">T-3 VOL</th>
+                        <th style="padding: 10px; text-align: right; font-weight: 600;">T-2 VOL</th>
+                        <th style="padding: 10px; text-align: right; font-weight: 600;">T-1 VOL</th>
+                        <th style="padding: 10px; text-align: right; font-weight: 600;">T-DAY VOL</th>
+                        <th style="padding: 10px; text-align: right; font-weight: 600;">DROP %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {anomaly_rows}
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 12px; font-size: 11px; color: #718096; font-style: italic; border-left: 3px solid #fbd38d; padding-left: 10px;">
+                <strong>Observational Note:</strong> Stocks with >30% volume drop after a 3-day build-up may indicate smart money positioning. Monitor for breakout or breakdown confirmation.
+            </div>
+        </div>
+        """
+    else:
+        anomaly_content = """
+        <div class="section">
+             <div class="section-header" style="color: #718096;">⚠️ Volume Anomaly Stocks</div>
+             <div style="padding: 20px; text-align: center; color: #a0aec0; border: 1px dashed #e2e8f0; border-radius: 6px; font-size: 12px; font-style: italic;">
+                No stocks met the Volume Build-Up then Drop criteria today.
              </div>
         </div>
         """
@@ -252,6 +320,10 @@ def generate_html_report(stats, results_list, trending_list, ticker_list, trigge
                         <div class="stat-label">HIGH-PROB SIGNALS</div>
                         <div class="stat-value">{stats['ticker']}</div>
                     </div>
+                    <div class="stat-box">
+                        <div class="stat-label">ANOMALY DETECTIONS</div>
+                        <div class="stat-value">{stats['anomaly']}</div>
+                    </div>
                 </div>
 
                 <!-- TICKER SIGNALS -->
@@ -262,6 +334,9 @@ def generate_html_report(stats, results_list, trending_list, ticker_list, trigge
 
                 <!-- VSA TRIGGERED STOCKS (NEW SECTION) -->
                 {triggers_content}
+
+                <!-- VOLUME ANOMALY STOCKS (NEW SECTION) -->
+                {anomaly_content}
 
                 <!-- TRENDING SYMBOLS -->
                 <div class="section">
@@ -310,6 +385,7 @@ def get_pipeline_data(base_dir: Path):
     ticker = equity_data / "Ticker"
     trending = equity_data / "Trending"
     triggers = equity_data / "Triggers"
+    anomaly = equity_data / "Anomaly"
 
     def count_files(path, ext="*.csv"):
         return len(list(path.glob(ext))) if path.exists() else 0
@@ -393,6 +469,44 @@ def get_pipeline_data(base_dir: Path):
             print(f"Error extracting trigger details for {symbol_name}: {e}")
             return None
 
+    def get_anomaly_details(path, symbol_name):
+        """Read anomaly volume metrics from VSA_Analysis sheet (4-day volume)"""
+        excel_files = list(path.glob(f"{symbol_name}*.xlsx"))
+        if not excel_files: return None
+        
+        try:
+            df = pd.read_excel(excel_files[0], sheet_name="VSA_Analysis")
+            if len(df) < 4: return None
+            
+            # Ensure sorting
+            if "Date" in df.columns:
+                df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+                df = df.sort_values("Date")
+            
+            t_day = df.iloc[-1]
+            t_m1 = df.iloc[-2]
+            t_m2 = df.iloc[-3]
+            t_m3 = df.iloc[-4]
+            
+            vol_tday = float(t_day.get("Volume", 0))
+            vol_tm1 = float(t_m1.get("Volume", 1))
+            vol_tm2 = float(t_m2.get("Volume", 1))
+            vol_tm3 = float(t_m3.get("Volume", 1))
+            
+            drop_pct = ((vol_tday - vol_tm1) / vol_tm1) * 100 if vol_tm1 > 0 else 0
+            
+            return {
+                "symbol": symbol_name,
+                "vol_t3": vol_tm3,
+                "vol_t2": vol_tm2,
+                "vol_t1": vol_tm1,
+                "vol_tday": vol_tday,
+                "drop_pct": drop_pct
+            }
+        except Exception as e:
+            print(f"Error extracting anomaly details for {symbol_name}: {e}")
+            return None
+
     extraction_count = count_files(equity_data, "*.csv")
     results_list = get_symbol_list(results)
     trending_list = get_symbol_list(trending)
@@ -404,7 +518,15 @@ def get_pipeline_data(base_dir: Path):
         details = get_trigger_details(triggers, sym)
         if details:
             triggers_list.append(details)
-            
+
+    # Process anomaly list with details
+    anomaly_raw = get_symbol_list(anomaly)
+    anomaly_list = []
+    for sym in anomaly_raw:
+        details = get_anomaly_details(anomaly, sym)
+        if details:
+            anomaly_list.append(details)
+
     
     # Enrich ticker list with technical details
     ticker_symbols = get_symbol_list(ticker)
@@ -421,10 +543,11 @@ def get_pipeline_data(base_dir: Path):
         "vsa": len(results_list),
         "trending": len(trending_list),
         "ticker": len(ticker_list),
-        "triggers": len(triggers_list)
+        "triggers": len(triggers_list),
+        "anomaly": len(anomaly_list)
     }
     
-    return stats, results_list, trending_list, ticker_list, triggers_list
+    return stats, results_list, trending_list, ticker_list, triggers_list, anomaly_list
 
 def send_email(subject, html_body, to_email):
     """Send HTML email using SMTP."""
@@ -454,9 +577,9 @@ def send_email(subject, html_body, to_email):
 
 if __name__ == "__main__":
     base_dir = Path(".")
-    stats, results_list, trending_list, ticker_list, triggers_list = get_pipeline_data(base_dir)
+    stats, results_list, trending_list, ticker_list, triggers_list, anomaly_list = get_pipeline_data(base_dir)
     
-    html_content = generate_html_report(stats, results_list, trending_list, ticker_list, triggers_list)
+    html_content = generate_html_report(stats, results_list, trending_list, ticker_list, triggers_list, anomaly_list)
     
     recipient = os.environ.get("RECIPIENT_EMAIL", "Prajwalmalipatil@gmail.com")
     

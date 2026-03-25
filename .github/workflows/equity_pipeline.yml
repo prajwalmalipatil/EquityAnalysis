@@ -56,4 +56,5 @@ jobs:
           equity_data/Results/
           equity_data/Ticker/
           equity_data/Trending/
+          equity_data/Anomaly/
         retention-days: 7

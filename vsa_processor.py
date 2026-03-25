@@ -1880,6 +1880,110 @@ def create_triggers_folder(results_dir: Path, triggers_dir: Path) -> List[str]:
 
 
 # --------------------------
+# Anomaly Folder Logic (Volume Build-Up then Drop)
+# --------------------------
+def create_anomaly_folder(results_dir: Path, anomaly_dir: Path) -> List[str]:
+    """
+    Create Anomaly folder for stocks matching Volume Anomaly Condition:
+    T-day Volume < T-1 day Volume AND T-1 Volume > T-2 Volume AND T-2 Volume > T-3 Volume
+    
+    This identifies stocks where volume was consistently rising (T-3 → T-2 → T-1)
+    but then suddenly dropped on T-day — a classic sign of institutional supply 
+    absorption or quiet accumulation.
+    
+    Args:
+        results_dir: Directory containing processed VSA Excel files
+        anomaly_dir: Destination directory for anomaly files
+    
+    Returns:
+        List of symbol names that qualified for anomaly folder
+    """
+    anomaly_symbols: List[str] = []
+    
+    anomaly_dir.mkdir(parents=True, exist_ok=True)
+    
+    logger.info(f"\nScanning Results folder for Anomalies (Vol drop after 3-day build-up)...")
+    
+    for excel_file in results_dir.glob("*_VSA.xlsx"):
+        try:
+            # Check columns first
+            try:
+                df_check = pd.read_excel(excel_file, sheet_name="VSA_Analysis", nrows=1)
+                required = ["Date", "Volume"]
+                if not all(col in df_check.columns for col in required):
+                    continue
+            except:
+                continue
+                
+            df = pd.read_excel(
+                excel_file, 
+                sheet_name="VSA_Analysis", 
+                usecols=["Date", "Volume"]
+            )
+            
+            if len(df) < 4:
+                continue
+                
+            # Parse dates and sort
+            df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+            df = df.dropna(subset=["Date"]).sort_values("Date")
+            
+            if len(df) < 4:
+                continue
+            
+            # Get last 4 trading days: T-day, T-1, T-2, T-3
+            t_day = df.iloc[-1]   # Current trading day (most recent)
+            t_m1 = df.iloc[-2]    # T-1 day
+            t_m2 = df.iloc[-3]    # T-2 day
+            t_m3 = df.iloc[-4]    # T-3 day
+            
+            # Validate all volumes are present
+            volumes_valid = all(
+                pd.notna(row["Volume"]) 
+                for row in [t_day, t_m1, t_m2, t_m3]
+            )
+            
+            if not volumes_valid:
+                continue
+            
+            vol_tday = float(t_day["Volume"])
+            vol_tm1 = float(t_m1["Volume"])
+            vol_tm2 = float(t_m2["Volume"])
+            vol_tm3 = float(t_m3["Volume"])
+            
+            # Anomaly Condition:
+            # 1. T-day Volume < T-1 Volume (sudden drop)
+            # 2. T-1 Volume > T-2 Volume (was rising)
+            # 3. T-2 Volume > T-3 Volume (was rising before that too)
+            if (vol_tday < vol_tm1 and 
+                vol_tm1 > vol_tm2 and 
+                vol_tm2 > vol_tm3):
+                
+                symbol_name = excel_file.stem.replace("_VSA", "")
+                anomaly_file = anomaly_dir / excel_file.name
+                
+                try:
+                    shutil.copy2(excel_file, anomaly_file)
+                    anomaly_symbols.append(symbol_name)
+                    
+                    # Calculate percentage changes for logging
+                    drop_pct = ((vol_tday - vol_tm1) / vol_tm1) * 100
+                    
+                    logger.info(
+                        f"{symbol_name} → Anomaly Found! "
+                        f"(Vol: {int(vol_tm3):,}→{int(vol_tm2):,}→{int(vol_tm1):,}→{int(vol_tday):,}, "
+                        f"Drop: {drop_pct:.1f}%)"
+                    )
+                except (PermissionError, OSError) as e:
+                    logger.error(f"Failed to copy {symbol_name} to anomaly: {type(e).__name__}: {e}")
+                    
+        except Exception as e:
+            logger.warning(f"Error processing {excel_file.name} for anomaly: {e}")
+            
+    return anomaly_symbols
+
+
+# --------------------------
 # Worker Process Function (DATA INTEGRITY FIX)
 # --------------------------
 def worker_process_file(file_path_str: str) -> Dict:
@@ -2399,8 +2503,9 @@ Examples:
     efforts_dir = folder / "Efforts"
     ticker_dir = folder / "Ticker"  # NEW: Ticker folder for pattern-filtered symbols
     triggers_dir = folder / "Triggers" # NEW: VSA Triggers folder
+    anomaly_dir = folder / "Anomaly"  # NEW: Volume Anomaly folder
     
-    for directory in [logs_dir, results_dir, trending_dir, efforts_dir, ticker_dir, triggers_dir]:
+    for directory in [logs_dir, results_dir, trending_dir, efforts_dir, ticker_dir, triggers_dir, anomaly_dir]:
         try:
             directory.mkdir(parents=True, exist_ok=True)
         except (PermissionError, OSError) as e:
@@ -2408,7 +2513,7 @@ Examples:
             sys.exit(1)
 
     # SECURITY FIX: Setup path validator
-    path_validator = SecurePathValidator([folder, logs_dir, results_dir, trending_dir, efforts_dir, ticker_dir, triggers_dir])
+    path_validator = SecurePathValidator([folder, logs_dir, results_dir, trending_dir, efforts_dir, ticker_dir, triggers_dir, anomaly_dir])
     
     # Find CSV files
     csv_files = list(folder.glob("*.csv"))
@@ -2428,6 +2533,7 @@ Examples:
     logger.info(f"  Trending: {trending_dir}")
     logger.info(f"  Efforts:  {efforts_dir}")
     logger.info(f"  Ticker:   {ticker_dir}")
+    logger.info(f"  Anomaly:  {anomaly_dir}")
     logger.info("="*60)
 
     # Performance tracking
@@ -2646,6 +2752,7 @@ Examples:
     efforts_symbols: List[str] = []
     ticker_symbols: List[str] = []
     triggers_symbols: List[str] = []
+    anomaly_symbols: List[str] = []
     
     if success_count > 0:
         logger.info("\n" + "="*60)
@@ -2705,6 +2812,13 @@ Examples:
             logger.info(f"Created {len(triggers_symbols)} Trigger folder files")
         except Exception as e:
             logger.error(f"Trigger analysis failed: {type(e).__name__}: {e}")
+
+        # NEW FEATURE: Anomaly folder creation (Volume build-up then drop)
+        try:
+            anomaly_symbols = create_anomaly_folder(results_dir, anomaly_dir)
+            logger.info(f"Created {len(anomaly_symbols)} Anomaly folder files")
+        except Exception as e:
+            logger.error(f"Anomaly analysis failed: {type(e).__name__}: {e}")
 
     # Final summary report
     end_time = time.perf_counter()
@@ -2771,6 +2885,16 @@ Examples:
     else:
         logger.info("  No symbols qualified for triggers folder")
 
+    logger.info("")
+    logger.info("ANOMALY ANALYSIS:")
+    if anomaly_symbols:
+        logger.info(f"  Anomaly Symbols: {len(anomaly_symbols)}")
+        logger.info(f"  Top Anomalies: {', '.join(anomaly_symbols[:10])}")
+        if len(anomaly_symbols) > 10:
+            logger.info(f"    ... and {len(anomaly_symbols) - 10} more")
+    else:
+        logger.info("  No symbols qualified for anomaly folder")
+
 
     logger.info("")
     logger.info("OUTPUT LOCATIONS:")
@@ -2780,6 +2904,7 @@ Examples:
     logger.info(f"  Efforts:  {efforts_dir} ({len(efforts_symbols)} files)")
     logger.info(f"  Ticker:   {ticker_dir} ({len(ticker_symbols) if 'ticker_symbols' in locals() else 0} files)")
     logger.info(f"  Triggers: {triggers_dir} ({len(triggers_symbols) if 'triggers_symbols' in locals() else 0} files)")
+    logger.info(f"  Anomaly:  {anomaly_dir} ({len(anomaly_symbols) if 'anomaly_symbols' in locals() else 0} files)")
     logger.info("="*60)
     
     if success_count > 0:
