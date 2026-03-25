@@ -1,0 +1,230 @@
+﻿python : 2026-01-21 
+01:33:16 [INFO] 
+__main__: ===========
+=====================
+=====================
+=======
+At line:1 char:1
++ python 
+vsa_processor.py 
+--folder 
+equity_data_manual 
+--workers 1 2>&1  ...
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (2026-01   
+ -21 01:3...=====    
+==========:Strin    
+g) [], RemoteExc    
+eption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+2026-01-21 01:33:16 
+[INFO] __main__: VSA 
+Processor - 
+Production Hardened 
+Edition
+2026-01-21 01:33:16 
+[INFO] __main__: ====
+=====================
+=====================
+==============
+2026-01-21 01:33:16 
+[INFO] __main__: 
+Processing 3 files 
+from D:\Prajwal\Equit
+yAnalysis\equity_data
+_manual
+2026-01-21 01:33:16 
+[INFO] __main__: 
+Using 1 worker 
+processes
+2026-01-21 01:33:16 
+[INFO] __main__: 
+Output directories:
+2026-01-21 01:33:16 
+[INFO] __main__:   
+Results:  D:\Prajwal\
+EquityAnalysis\equity
+_data_manual\Results
+2026-01-21 01:33:16 
+[INFO] __main__:   
+Logs:     D:\Prajwal\
+EquityAnalysis\equity
+_data_manual\Logs
+2026-01-21 01:33:16 
+[INFO] __main__:   
+Trending: D:\Prajwal\
+EquityAnalysis\equity
+_data_manual\Trending
+2026-01-21 01:33:16 
+[INFO] __main__:   
+Efforts:  D:\Prajwal\
+EquityAnalysis\equity
+_data_manual\Efforts
+2026-01-21 01:33:16 
+[INFO] __main__:   
+Ticker:   D:\Prajwal\
+EquityAnalysis\equity
+_data_manual\Ticker
+2026-01-21 01:33:16 
+[INFO] __main__: ====
+=====================
+=====================
+==============
+2026-01-21 01:33:16 
+[INFO] __main__: 
+Processing 3 
+validated files...
+2026-01-21 01:33:17 
+[WARNING] __main__: 
+INFY_1Y_20260121.csv 
+\u2192 Processing 
+error: KeyError: 
+['Open', 'High', 
+'Low', 'Close', 
+'Volume']
+2026-01-21 01:33:17 
+[WARNING] __main__: R
+ELIANCE_1Y_20260121.c
+sv \u2192 Processing 
+error: KeyError: 
+['Open', 'High', 
+'Low', 'Close', 
+'Volume']
+2026-01-21 01:33:17 
+[WARNING] __main__: 
+TCS_1Y_20260121.csv 
+\u2192 Processing 
+error: KeyError: 
+['Open', 'High', 
+'Low', 'Close', 
+'Volume']
+2026-01-21 01:33:17 
+[INFO] __main__: 
+=====================
+=====================
+==================
+2026-01-21 01:33:17 
+[INFO] __main__: 
+PROCESSING COMPLETE
+2026-01-21 01:33:17 
+[INFO] __main__: ====
+=====================
+=====================
+==============
+2026-01-21 01:33:17 
+[INFO] __main__: 
+Processing Time: 1.0 
+seconds
+2026-01-21 01:33:17 
+[INFO] __main__: 
+Files Found: 3
+2026-01-21 01:33:17 
+[INFO] __main__: 
+Successfully 
+Processed: 0
+2026-01-21 01:33:17 
+[INFO] __main__: 
+Skipped/Failed: 3
+2026-01-21 01:33:17 
+[INFO] __main__: 
+Throughput: 0.0 
+files/sec
+2026-01-21 01:33:17 
+[INFO] __main__: 
+2026-01-21 01:33:17 
+[INFO] __main__: 
+SIGNAL ANALYSIS:
+2026-01-21 01:33:17 
+[INFO] __main__:   
+Total Signals 
+Detected: 0
+2026-01-21 01:33:17 
+[INFO] __main__:   
+Confirmed: 0
+2026-01-21 01:33:17 
+[INFO] __main__:   
+Failed: 0
+2026-01-21 01:33:17 
+[INFO] __main__:   
+Pending: 0
+2026-01-21 01:33:17 
+[INFO] __main__:   
+Fire Signals: 0
+2026-01-21 01:33:17 
+[INFO] __main__: 
+2026-01-21 01:33:17 
+[INFO] __main__: 
+TRENDING ANALYSIS:
+2026-01-21 01:33:17 
+[INFO] __main__:   
+No symbols qualified 
+for trending folder
+2026-01-21 01:33:17 
+[INFO] __main__: 
+2026-01-21 01:33:17 
+[INFO] __main__: 
+EFFORTS ANALYSIS:
+2026-01-21 01:33:17 
+[INFO] __main__:   
+No symbols qualified 
+for efforts folder
+2026-01-21 01:33:17 
+[INFO] __main__: 
+2026-01-21 01:33:17 
+[INFO] __main__: 
+TICKER ANALYSIS:
+2026-01-21 01:33:17 
+[INFO] __main__:   
+No symbols qualified 
+for ticker folder
+2026-01-21 01:33:17 
+[INFO] __main__: 
+2026-01-21 01:33:17 
+[INFO] __main__: 
+OUTPUT LOCATIONS:
+2026-01-21 01:33:17 
+[INFO] __main__:   
+Results:  D:\Prajwal\
+EquityAnalysis\equity
+_data_manual\Results
+2026-01-21 01:33:17 
+[INFO] __main__:   
+Logs:     D:\Prajwal\
+EquityAnalysis\equity
+_data_manual\Logs
+2026-01-21 01:33:17 
+[INFO] __main__:   
+Trending: D:\Prajwal\
+EquityAnalysis\equity
+_data_manual\Trending
+ (0 files)
+2026-01-21 01:33:17 
+[INFO] __main__:   
+Efforts:  D:\Prajwal\
+EquityAnalysis\equity
+_data_manual\Efforts 
+(0 files)
+2026-01-21 01:33:17 
+[INFO] __main__:   
+Ticker:   D:\Prajwal\
+EquityAnalysis\equity
+_data_manual\Ticker 
+(0 files)
+2026-01-21 01:33:17 
+[INFO] __main__: ====
+=====================
+=====================
+==============
+2026-01-21 01:33:17 
+[ERROR] __main__: 
+\u274c No files were 
+processed 
+successfully
