@@ -1,0 +1,3 @@
+# Data files
+equity_data/*.csv
+!equity_data/.gitkeep
