@@ -27,6 +27,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Clean Data Directory
+      run: mkdir -p equity_data && rm -rf equity_data/*.csv equity_data/Results/* equity_data/Trending/* equity_data/Anomaly/* equity_data/Ticker/* equity_data/Triggers/*
+
     - name: "Run Stage 1: Extraction"
       run: |
         python NSE_extraction_fast_api.py \

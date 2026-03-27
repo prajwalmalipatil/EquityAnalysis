@@ -1,3 +1,3 @@
-# Data files
-equity_data/*.csv
+# Ignore all data, results, and logs
+equity_data/**
 !equity_data/.gitkeep
