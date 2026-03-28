@@ -69,104 +69,85 @@ class VSAProcessorService:
     def _load_and_clean(self, path: Path) -> pd.DataFrame:
         """
         Standardizes CSV columns and validates OHLC data.
-        Handles commas in numeric strings and case-insensitive column variations.
+        Handles BOM, trailing spaces, commas in numeric strings, and duplicate headers.
         """
         try:
-            df = pd.read_csv(path)
+            # 1. Handle BOM and initial load
+            df = pd.read_csv(path, encoding="utf-8-sig")
             if df.empty:
                 logger.warning("EMPTY_CSV_FILE", extra={"file": str(path)})
                 return pd.DataFrame()
-                
-            # Normalize column names (Lower, Strip, Underscore, No Special Chars)
-            df.columns = (
-                df.columns.str.strip().str.lower()
-                .str.replace(" ", "_")
-                .str.replace(".", "")
-                .str.replace("(", "")
-                .str.replace(")", "")
-                .str.replace("%", "pct")
-                .str.replace("₹", "rs")
-            )
             
-            # Map variations to canonical OHLCV (Exhaustive NSE Mapping)
+            # 2. Aggressive Column Normalization
+            # Strip spaces, lowercase, and remove special chars
+            df.columns = [
+                str(c).strip().lower().replace(" ", "_").replace(".", "") 
+                for c in df.columns
+            ]
+            df.columns = [
+                c.replace("(", "").replace(")", "").replace("%", "pct").replace("₹", "rs") 
+                for c in df.columns
+            ]
+            
+            # 3. Exhaustive Mapping logic
             col_map = {
-                # Price / High / Low / Open
                 "open": "Open", "open_price": "Open",
                 "high": "High", "high_price": "High",
                 "low": "Low", "low_price": "Low",
                 "close": "Close", "close_price": "Close", "last_price": "Close",
-                
-                # Volume (Common NSE Variations)
-                "volume": "Volume", 
-                "qty": "Volume", 
-                "quantity": "Volume",
-                "tottrdqty": "Volume",
-                "total_traded_quantity": "Volume",
-                "traded_qty": "Volume",
-                
-                # Date
-                "date": "Date", 
-                "timestamp": "Date",
-                "traded_date": "Date"
+                "volume": "Volume", "qty": "Volume", "quantity": "Volume",
+                "tottrdqty": "Volume", "total_traded_quantity": "Volume",
+                "date": "Date", "timestamp": "Date"
             }
             
-            # Perform exact matching for rename
-            rename_dict = {
-                str(col): col_map[str(col)] 
-                for col in df.columns if str(col) in col_map
-            }
-            
+            rename_dict = {col: col_map[col] for col in df.columns if col in col_map}
             df = df.rename(columns=rename_dict)
             
-            # Validation & Fuzzy Fallback Logic
+            # 4. Critical Step: Deduplicate Columns (Handle 'Last Price' vs 'Close Price' mapping)
+            df = df.loc[:, ~df.columns.duplicated()].copy()
+            
+            # 5. Validation & Fuzzy Fallback
             required = ["Open", "High", "Low", "Close", "Volume"]
             missing = [col for col in required if col not in df.columns]
             
             if missing:
-                # Attempt fuzzy fallback for missing columns
                 fuzzy_map = {
-                    "Open": ["open"],
-                    "High": ["high"],
-                    "Low": ["low"],
-                    "Close": ["close"],
-                    "Volume": ["vol", "qty", "quantity", "tottrdqty"]
+                    "Open": ["open"], "High": ["high"], "Low": ["low"], "Close": ["close"],
+                    "Volume": ["vol", "qty", "quantity", "tottrqty", "traded"]
                 }
-                
-                for canon_col in missing:
-                    if canon_col in fuzzy_map:
-                        keywords = fuzzy_map[canon_col]
-                        for col in df.columns:
-                            if any(k in str(col).lower() for k in keywords):
-                                df = df.rename(columns={col: canon_col})
-                                break
-                
-                # Re-check missing after fuzzy
+                for canon in missing:
+                    keywords = fuzzy_map.get(canon, [])
+                    for col in df.columns:
+                        if any(k in col for k in keywords):
+                            df = df.rename(columns={col: canon})
+                            break
+                # Re-deduplicate after fuzzy
+                df = df.loc[:, ~df.columns.duplicated()].copy()
                 missing = [col for col in required if col not in df.columns]
 
             if missing:
                 logger.warning("MISSING_COLUMNS", extra={
-                    "file": str(path), 
-                    "missing": missing,
-                    "found_cols": list(df.columns)
+                    "file": str(path), "missing": missing, "found": list(df.columns)
                 })
                 return pd.DataFrame()
             
-            # Date Parsing
-            if "Date" in df.columns:
-                df["Date"] = pd.to_datetime(df["Date"], errors="coerce", dayfirst=True)
-                df = df.dropna(subset=["Date"])
-                df["Date_Str"] = df["Date"].dt.strftime("%Y-%m-%d")
-            
-            # Numeric cleanup (Remove commas, then to_numeric)
+            # 6. Numeric Cleanup (Vectorized comma removal and numeric coercion)
             for col in required:
                 df[col] = pd.to_numeric(
                     df[col].astype(str).str.replace(",", "").str.strip(), 
                     errors='coerce'
                 )
-                
-            return df.dropna(subset=required).reset_index(drop=True)
-        except Exception as e:
-            logger.error("LOAD_AND_CLEAN_FAILED", extra={"file": str(path), "error": str(e)})
+            
+            df = df.dropna(subset=required).reset_index(drop=True)
+            
+            # 7. Date Handling
+            if "Date" in df.columns:
+                df["Date"] = pd.to_datetime(df["Date"], errors='coerce', dayfirst=True)
+                df = df.dropna(subset=["Date"]).reset_index(drop=True)
+            
+            return df
+        except Exception:
+            logger.error("LOAD_AND_CLEAN_FAILED", extra={"file": str(path)})
             return pd.DataFrame()
 
     def _enrich_indicators(self, df: pd.DataFrame) -> pd.DataFrame:
