@@ -17,9 +17,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
-from ..constants import extraction_constants as const
-from ..utils.http_client import with_retry
-from ..utils.observability import get_tenant_logger
+from src.constants import extraction_constants as const
+from src.utils.http_client import with_retry
+from src.utils.observability import get_tenant_logger
 
 logger = get_tenant_logger("nse-client")
 

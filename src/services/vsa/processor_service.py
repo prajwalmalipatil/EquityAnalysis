@@ -18,8 +18,8 @@ from .indicators import (
 )
 from .pattern_matcher import VSAClassicMatcher, AnomalyV2Matcher
 from .formatters import ExcelFormatter
-from ...constants import vsa_constants as const
-from ...utils.observability import get_tenant_logger
+from src.constants import vsa_constants as const
+from src.utils.observability import get_tenant_logger
 
 logger = get_tenant_logger("vsa-processor-service")
 

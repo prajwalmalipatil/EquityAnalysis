@@ -8,7 +8,7 @@ from functools import wraps
 import time
 import random
 from typing import Callable, Any
-from ..utils.observability import get_tenant_logger
+from src.utils.observability import get_tenant_logger
 
 logger = get_tenant_logger("http-client")
 

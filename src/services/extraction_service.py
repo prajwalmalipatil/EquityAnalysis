@@ -14,10 +14,10 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Tuple
 
-from ..clients.nse_client import NSEClient
-from ..models.extraction_models import ExtractionRequest, ExtractionResponse
-from ..constants import extraction_constants as const
-from ..utils.observability import get_tenant_logger
+from src.clients.nse_client import NSEClient
+from src.models.extraction_models import ExtractionRequest, ExtractionResponse
+from src.constants import extraction_constants as const
+from src.utils.observability import get_tenant_logger
 
 logger = get_tenant_logger("extraction-service")
 

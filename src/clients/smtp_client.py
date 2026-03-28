@@ -9,9 +9,9 @@ import ssl
 from email.message import EmailMessage
 from typing import Optional
 
-from ..utils.observability import get_tenant_logger
-from ..utils.http_client import with_retry
-from ...constants import email_constants as const
+from src.utils.observability import get_tenant_logger
+from src.utils.http_client import with_retry
+from src.constants import email_constants as const
 
 logger = get_tenant_logger("smtp-client")
 

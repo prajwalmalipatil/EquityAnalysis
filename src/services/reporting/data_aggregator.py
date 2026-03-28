@@ -7,8 +7,8 @@ data for the final automated report.
 import pandas as pd
 from pathlib import Path
 from typing import List, Dict, Optional
-from ...constants import vsa_constants as const
-from ...utils.observability import get_tenant_logger
+from src.constants import vsa_constants as const
+from src.utils.observability import get_tenant_logger
 
 logger = get_tenant_logger("data-aggregator")
 

@@ -7,7 +7,7 @@ conditional coloring, and intelligent summaries.
 
 from datetime import datetime, timezone, timedelta
 from typing import List, Dict, Optional
-from ...constants import email_constants as const
+from src.constants import email_constants as const
 
 class HTMLRenderer:
     """
