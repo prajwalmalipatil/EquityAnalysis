@@ -42,8 +42,12 @@ jobs:
 
     - name: "Debug: List Data"
       run: |
-        ls -R equity_data
-        head -n 2 equity_data/*.csv | head -n 20
+        echo "Current Directory: $(pwd)"
+        echo "Directory Tree (Files):"
+        find . -maxdepth 4 -not -path '*/.*' -type f
+        echo "---"
+        ls -la equity_data/ || echo "equity_data not found"
+        head -n 2 equity_data/*.csv | head -n 20 || echo "No CSVs found for head"
 
     - name: "Run Stage 2: VSA Processing"
       run: |
