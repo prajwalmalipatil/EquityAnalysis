@@ -77,20 +77,37 @@ class VSAProcessorService:
                 logger.warning("EMPTY_CSV_FILE", extra={"file": str(path)})
                 return pd.DataFrame()
                 
-            # Normalize column names (Lower, Strip, Underscore)
-            df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_").str.replace(".", "")
+            # Normalize column names (Lower, Strip, Underscore, No Special Chars)
+            df.columns = (
+                df.columns.str.strip().str.lower()
+                .str.replace(" ", "_")
+                .str.replace(".", "")
+                .str.replace("(", "")
+                .str.replace(")", "")
+                .str.replace("%", "pct")
+                .str.replace("₹", "rs")
+            )
             
-            # Map variations to canonical OHLCV (Exact Normalized Match)
+            # Map variations to canonical OHLCV (Exhaustive NSE Mapping)
             col_map = {
-                "open": "Open", 
-                "high": "High", 
-                "low": "Low", 
-                "close": "Close", 
+                # Price / High / Low / Open
+                "open": "Open", "open_price": "Open",
+                "high": "High", "high_price": "High",
+                "low": "Low", "low_price": "Low",
+                "close": "Close", "close_price": "Close", "last_price": "Close",
+                
+                # Volume (Common NSE Variations)
                 "volume": "Volume", 
                 "qty": "Volume", 
                 "quantity": "Volume",
+                "tottrdqty": "Volume",
                 "total_traded_quantity": "Volume",
-                "date": "Date"
+                "traded_qty": "Volume",
+                
+                # Date
+                "date": "Date", 
+                "timestamp": "Date",
+                "traded_date": "Date"
             }
             
             # Perform exact matching for rename
@@ -103,9 +120,14 @@ class VSAProcessorService:
             
             # Validation Logic
             required = ["Open", "High", "Low", "Close", "Volume"]
-            if not all(col in df.columns for col in required):
-                missing = [c for c in required if c not in df.columns]
-                logger.warning("MISSING_COLUMNS", extra={"file": str(path), "missing": missing})
+            missing = [col for col in required if col not in df.columns]
+            
+            if missing:
+                logger.warning("MISSING_COLUMNS", extra={
+                    "file": str(path), 
+                    "missing": missing,
+                    "found_cols": list(df.columns)
+                })
                 return pd.DataFrame()
             
             # Date Parsing

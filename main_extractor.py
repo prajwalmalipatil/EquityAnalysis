@@ -59,14 +59,15 @@ def main():
     success_count = sum(1 for r in results if r.success)
     error_count = len(results) - success_count
     
-    logger.info("EXTRACTION_COMPLETE", extra={
-        "total": len(results),
-        "success": success_count,
-        "failed": error_count
+    # Final Verification of disk state
+    csv_count = len(list(Path(args.out_dir).glob("*.csv")))
+    logger.info("DISK_VERIFICATION", extra={
+        "found_files": csv_count,
+        "success_count": success_count
     })
     
-    if success_count == 0:
-        logger.error("NO_DATA_EXTRACTED_ABORTING")
+    if csv_count == 0:
+        logger.error("NO_CSV_FILES_ON_DISK_ABORTING")
         sys.exit(1)
 
 if __name__ == "__main__":
