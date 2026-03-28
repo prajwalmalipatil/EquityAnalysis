@@ -67,20 +67,58 @@ class VSAProcessorService:
             return False
 
     def _load_and_clean(self, path: Path) -> pd.DataFrame:
-        """Standardizes CSV columns and validates OHLC data."""
-        df = pd.read_csv(path)
-        df.columns = df.columns.str.strip().str.title()
-        
-        # Validation Logic (SRP: Simplified)
-        required = ["Open", "High", "Low", "Close", "Volume"]
-        if not all(col in df.columns for col in required):
-            logger.warning("MISSING_COLUMNS", extra={"file": str(path)})
-            return pd.DataFrame()
+        """
+        Standardizes CSV columns and validates OHLC data.
+        Handles commas in numeric strings and case-insensitive column variations.
+        """
+        try:
+            df = pd.read_csv(path)
+            if df.empty:
+                logger.warning("EMPTY_CSV_FILE", extra={"file": str(path)})
+                return pd.DataFrame()
+                
+            # Normalize column names (Lower, Strip, Underscore)
+            df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_").str.replace(".", "")
             
-        # Basic cleanup
-        for col in required:
-            df[col] = pd.to_numeric(df[col], errors='coerce')
-        return df.dropna(subset=required).reset_index(drop=True)
+            # Map variations to canonical OHLCV
+            col_map = {
+                "open": "Open", "high": "High", "low": "Low", "close": "Close", 
+                "volume": "Volume", "qty": "Volume", "date": "Date"
+            }
+            # Handle some NSE specific variations
+            rename_dict = {}
+            for col in df.columns:
+                for k, v in col_map.items():
+                    if k in col:
+                        rename_dict[col] = v
+                        break
+            
+            df = df.rename(columns=rename_dict)
+            
+            # Validation Logic
+            required = ["Open", "High", "Low", "Close", "Volume"]
+            if not all(col in df.columns for col in required):
+                missing = [c for c in required if c not in df.columns]
+                logger.warning("MISSING_COLUMNS", extra={"file": str(path), "missing": missing})
+                return pd.DataFrame()
+            
+            # Date Parsing
+            if "Date" in df.columns:
+                df["Date"] = pd.to_datetime(df["Date"], errors="coerce", dayfirst=True)
+                df = df.dropna(subset=["Date"])
+                df["Date_Str"] = df["Date"].dt.strftime("%Y-%m-%d")
+            
+            # Numeric cleanup (Remove commas, then to_numeric)
+            for col in required:
+                df[col] = pd.to_numeric(
+                    df[col].astype(str).str.replace(",", "").str.strip(), 
+                    errors='coerce'
+                )
+                
+            return df.dropna(subset=required).reset_index(drop=True)
+        except Exception as e:
+            logger.error("LOAD_AND_CLEAN_FAILED", extra={"file": str(path), "error": str(e)})
+            return pd.DataFrame()
 
     def _enrich_indicators(self, df: pd.DataFrame) -> pd.DataFrame:
         """Calculates VSA indicators using vectorized functions from indicators.py."""

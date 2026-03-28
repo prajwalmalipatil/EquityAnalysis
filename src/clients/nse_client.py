@@ -95,16 +95,26 @@ class NSEClient:
             "Sec-Fetch-Site": "same-origin",
         }
         
-        resp = self.session.get(url, headers=headers, timeout=(8, 40))
+        resp = self.session.get(url, headers=headers, timeout=(10, 60))
         resp.raise_for_status()
         
-        # Validate content type
+        # Validate content type and size
         content_type = resp.headers.get("Content-Type", "")
         if "text/csv" not in content_type and "application/octet-stream" not in content_type:
-            # Sometimes NSE returns an error page as HTML even with 200 OK
             if "<html" in resp.text.lower():
+                logger.error("RECEIVED_HTML_NOT_CSV", extra={"symbol": symbol})
                 raise ValueError(f"Received HTML instead of CSV for {symbol}")
                 
+        # Length check: NSE sometimes returns just the header (approx 140-150 bytes)
+        # if there's no data for that period/series.
+        if len(resp.text.strip().split('\n')) <= 1:
+            logger.warning("EMPTY_DATASET_FOR_SYMBOL", extra={
+                "symbol": symbol, 
+                "from": from_date, 
+                "to": to_date,
+                "msg": "Only headers received"
+            })
+            
         return resp
 
     def close(self):
