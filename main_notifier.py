@@ -17,7 +17,7 @@ logger = get_tenant_logger("notifier-main")
 
 def main():
     parser = argparse.ArgumentParser(description="Refactored Automated Equity Notifier")
-    parser.add_argument("--base-dir", required=True, help="Base directory for equity data")
+    parser.add_argument("--base-dir", "--base_dir", required=True, help="Base directory for equity data")
     parser.add_argument("--to", required=True, help="Recipient email address")
     
     args = parser.parse_args()
