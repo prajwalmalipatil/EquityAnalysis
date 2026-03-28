@@ -64,6 +64,10 @@ def main():
         "success": success_count,
         "failed": error_count
     })
+    
+    if success_count == 0:
+        logger.error("NO_DATA_EXTRACTED_ABORTING")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()

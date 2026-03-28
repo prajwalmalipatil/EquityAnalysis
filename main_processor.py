@@ -35,8 +35,8 @@ def main():
     # Identify files
     csv_files = list(input_folder.glob("*.csv"))
     if not csv_files:
-        logger.warning("NO_CSV_FILES_FOUND", extra={"path": str(input_folder)})
-        return
+        logger.error("NO_CSV_FILES_FOUND", extra={"path": str(input_folder)})
+        sys.exit(1)
         
     logger.info("VALIDATED_INPUTS", extra={"file_count": len(csv_files), "workers": args.workers})
     
