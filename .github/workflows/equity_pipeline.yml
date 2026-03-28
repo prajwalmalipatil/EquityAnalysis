@@ -41,7 +41,9 @@ jobs:
       continue-on-error: true
 
     - name: "Debug: List Data"
-      run: ls -R equity_data
+      run: |
+        ls -R equity_data
+        head -n 2 equity_data/*.csv | head -n 20
 
     - name: "Run Stage 2: VSA Processing"
       run: |

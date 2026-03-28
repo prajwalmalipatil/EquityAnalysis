@@ -112,16 +112,37 @@ class VSAProcessorService:
             
             # Perform exact matching for rename
             rename_dict = {
-                col: col_map[col] 
-                for col in df.columns if col in col_map
+                str(col): col_map[str(col)] 
+                for col in df.columns if str(col) in col_map
             }
             
             df = df.rename(columns=rename_dict)
             
-            # Validation Logic
+            # Validation & Fuzzy Fallback Logic
             required = ["Open", "High", "Low", "Close", "Volume"]
             missing = [col for col in required if col not in df.columns]
             
+            if missing:
+                # Attempt fuzzy fallback for missing columns
+                fuzzy_map = {
+                    "Open": ["open"],
+                    "High": ["high"],
+                    "Low": ["low"],
+                    "Close": ["close"],
+                    "Volume": ["vol", "qty", "quantity", "tottrdqty"]
+                }
+                
+                for canon_col in missing:
+                    if canon_col in fuzzy_map:
+                        keywords = fuzzy_map[canon_col]
+                        for col in df.columns:
+                            if any(k in str(col).lower() for k in keywords):
+                                df = df.rename(columns={col: canon_col})
+                                break
+                
+                # Re-check missing after fuzzy
+                missing = [col for col in required if col not in df.columns]
+
             if missing:
                 logger.warning("MISSING_COLUMNS", extra={
                     "file": str(path), 
