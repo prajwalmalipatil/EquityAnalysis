@@ -80,18 +80,24 @@ class VSAProcessorService:
             # Normalize column names (Lower, Strip, Underscore)
             df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_").str.replace(".", "")
             
-            # Map variations to canonical OHLCV
+            # Map variations to canonical OHLCV (Exact Normalized Match)
             col_map = {
-                "open": "Open", "high": "High", "low": "Low", "close": "Close", 
-                "volume": "Volume", "qty": "Volume", "date": "Date"
+                "open": "Open", 
+                "high": "High", 
+                "low": "Low", 
+                "close": "Close", 
+                "volume": "Volume", 
+                "qty": "Volume", 
+                "quantity": "Volume",
+                "total_traded_quantity": "Volume",
+                "date": "Date"
             }
-            # Handle some NSE specific variations
-            rename_dict = {}
-            for col in df.columns:
-                for k, v in col_map.items():
-                    if k in col:
-                        rename_dict[col] = v
-                        break
+            
+            # Perform exact matching for rename
+            rename_dict = {
+                col: col_map[col] 
+                for col in df.columns if col in col_map
+            }
             
             df = df.rename(columns=rename_dict)
             
