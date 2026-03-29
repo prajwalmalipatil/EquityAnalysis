@@ -7,7 +7,7 @@ and Anomaly V2 OHLC classifications.
 import numpy as np
 import pandas as pd
 from typing import Optional, List, Dict
-from src.models.vsa_models import AnomalyClassification
+from src.models.vsa_models import AnomalyClassification, VSAClassification
 from src.constants import vsa_constants as const
 
 class VSAClassicMatcher:
@@ -15,7 +15,7 @@ class VSAClassicMatcher:
     
     @staticmethod
     def match_climax(vol: float, vol_ma: float, spread: float, spread_ma: float, 
-                     close_pos: float, trend: int) -> Optional[str]:
+                     close_pos: float, trend: int) -> Optional[VSAClassification]:
         """Matches Buying/Selling Climax patterns."""
         is_ultra_vol = vol > vol_ma * const.ULTRA_HIGH_VOLUME
         is_wide_spread = spread > spread_ma * const.WIDE_SPREAD
@@ -24,28 +24,52 @@ class VSAClassicMatcher:
             return None
             
         if close_pos <= const.WEAK_CLOSE and trend <= 0:
-            return "Selling Climax (Bullish Reversal)"
+            return VSAClassification(
+                pattern_name="Selling Climax",
+                effort_vs_result="Absorption",
+                sentiment="Bullish Reversal",
+                confidence=0.85,
+                description="Smart money absorbing supply at local bottoms."
+            )
         if close_pos >= const.STRONG_CLOSE and trend >= 0:
-            return "Buying Climax (Bearish Reversal)"
+            return VSAClassification(
+                pattern_name="Buying Climax",
+                effort_vs_result="Distribution",
+                sentiment="Bearish Reversal",
+                confidence=0.85,
+                description="Smart money offloading into retail FOMO."
+            )
         return None
 
     @staticmethod
-    def match_no_demand(vol: float, vol_ma: float, is_up: bool, trend: int) -> Optional[str]:
+    def match_no_demand(vol: float, vol_ma: float, is_up: bool, trend: int) -> Optional[VSAClassification]:
         """Matches No Demand (Bearish Weakness)."""
         if vol < vol_ma * const.LOW_VOLUME and is_up and trend >= 0:
-            return "No Demand (Bearish Weakness)"
+            return VSAClassification(
+                pattern_name="No Demand",
+                effort_vs_result="No_Demand",
+                sentiment="Bearish Weakness",
+                confidence=0.70,
+                description="Asset is showing structural weakness with lack of interest from buyers."
+            )
         return None
 
     @staticmethod
     def match_stopping_volume(vol: float, vol_ma: float, spread: float, 
-                               spread_ma: float, close_pos: float) -> Optional[str]:
+                               spread_ma: float, close_pos: float) -> Optional[VSAClassification]:
         """Matches Stopping Volume (Potential Reversal)."""
         is_high_vol = vol > vol_ma * const.HIGH_VOLUME
         is_narrow_spread = spread < spread_ma * const.NARROW_SPREAD
         is_mid_close = const.MID_CLOSE_LOW <= close_pos <= const.MID_CLOSE_HIGH
         
         if is_high_vol and is_narrow_spread and is_mid_close:
-            return "Stopping Volume (Potential Reversal)"
+            return VSAClassification(
+                pattern_name="Stopping Volume",
+                effort_vs_result="Absorption",
+                sentiment="Potential Reversal",
+                confidence=0.75,
+                description="Strong effort to stop the fall; smart money buying detected."
+            )
         return None
 
 

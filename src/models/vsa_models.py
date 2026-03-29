@@ -30,6 +30,15 @@ class AnomalyClassification:
     description: str
 
 @dataclass
+class VSAClassification:
+    """Detailed VSA pattern classification with effort/result context."""
+    pattern_name: str
+    effort_vs_result: str
+    sentiment: str
+    confidence: float
+    description: str
+
+@dataclass
 class VolumePriceAnomaly:
     """Represents a detected anomaly event."""
     symbol: str

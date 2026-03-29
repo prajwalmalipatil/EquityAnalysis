@@ -46,13 +46,13 @@ class HTMLRenderer:
         <html>
         <head>
             <style>
-                body {{ font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: {const.COLOR_BACKGROUND}; color: {const.COLOR_TEXT}; margin: 0; padding: 20px; }}
-                .container {{ max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 8px; border: 1px solid {const.COLOR_BORDER}; shadow: 0 4px 6px rgba(0,0,0,0.1); }}
-                .header {{ border-bottom: 3px solid {const.COLOR_BULLISH}; margin-bottom: 25px; padding-bottom: 15px; }}
+                body {{ font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f7f6; color: #2d3748; margin: 0; padding: 20px; }}
+                .container {{ max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 8px; border: 1px solid #edf2f7; shadow: 0 4px 6px rgba(0,0,0,0.1); }}
+                .header {{ border-bottom: 3px solid #38a169; margin-bottom: 25px; padding-bottom: 15px; }}
                 .section {{ margin-top: 35px; }}
-                .section-title {{ font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #2d3748; letter-spacing: -0.5px; border-left: 5px solid {const.COLOR_BULLISH}; padding-left: 15px; }}
+                .section-title {{ font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #2d3748; letter-spacing: -0.5px; border-left: 5px solid #38a169; padding-left: 15px; }}
                 table {{ width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }}
-                th, td {{ padding: 14px; text-align: left; border-bottom: 1px solid {const.COLOR_BORDER}; }}
+                th, td {{ padding: 14px; text-align: left; border-bottom: 1px solid #edf2f7; }}
                 th {{ background-color: #f7fafc; color: #4a5568; font-size: 12px; text-transform: uppercase; font-weight: bold; }}
                 .pill {{ padding: 6px 12px; border-radius: 6px; font-weight: bold; font-size: 11px; text-transform: uppercase; }}
                 .bullish {{ background-color: #c6f6d5; color: #276749; }}
@@ -120,19 +120,23 @@ class HTMLRenderer:
 
     def _render_ticker_cards(self, tickers: List[Dict]) -> str:
         if not tickers: return ""
-        # Limit to top 2 as per expected report format
-        display = tickers[:2]
+        # High-prob candidates are those with highest confidence or specific signs
+        # For now, sorting by confidence
+        sorted_tickers = sorted(tickers, key=lambda x: x['confidence'], reverse=True)
+        display = sorted_tickers[:3] # Show top 3
+        
         cards = ""
         for t in display:
+            sent_cls = "bullish" if "Bullish" in t['sentiment'] else "bearish" if "Bearish" in t['sentiment'] else "neutral"
             cards += f"""
             <div class="ticker-card">
                 <div style="display: flex; justify-content: space-between;">
                     <strong style="font-size: 18px; color: #2d3748;">{t['symbol']}</strong>
-                    <span class="pill bullish">Test (Bullish)</span>
+                    <span class="pill {sent_cls}">{t['pattern']} ({t['sentiment']})</span>
                 </div>
                 <div style="margin-top: 10px; font-size: 13px; color: #4a5568;">
                     <table style="margin: 0; padding: 0;">
-                        <tr style="border: none;"><td style="width: 150px; padding: 2px;">Effort vs Result:</td><td style="padding: 2px;">No_Demand</td></tr>
+                        <tr style="border: none;"><td style="width: 150px; padding: 2px;">Effort vs Result:</td><td style="padding: 2px;">{t['effort']}</td></tr>
                         <tr style="border: none;"><td style="padding: 2px;">Spread Ratio:</td><td style="padding: 2px;">{t['spread_ratio']:.2f}</td></tr>
                         <tr style="border: none;"><td style="padding: 2px;">Pattern Confidence:</td><td style="padding: 2px;">{t['confidence']:.2f}</td></tr>
                     </table>
@@ -151,7 +155,7 @@ class HTMLRenderer:
     def _render_trigger_table(self, triggers: List[Dict]) -> str:
         if not triggers: return ""
         rows = ""
-        for t in triggers[:20]: # Limit as per standard
+        for t in triggers[:20]:
             rows += f"""
             <tr>
                 <td style="font-weight: bold;">{t['symbol']}</td>
@@ -182,7 +186,6 @@ class HTMLRenderer:
         if not anomalies: return ""
         rows = ""
         for a in anomalies:
-            sentiment_class = "bullish" if a['sentiment'] == "Bullish" else "bearish" if a['sentiment'] == "Bearish" else "neutral"
             rows += f"""
             <tr>
                 <td style="font-weight: bold;">{a['symbol']}</td>
@@ -228,7 +231,7 @@ class HTMLRenderer:
                 The overall market breadth remains supportive with <strong>{ticker_count}</strong> high-probability ticker alerts which warrant immediate attention.
             </p>
             <p style="margin-top: 20px; padding: 15px; background-color: #f0fff4; border-left: 5px solid #38a169; font-weight: bold; font-size: 16px;">
-                🚀 Outlook: Strong Positive Momentum. Market continues to present lucrative opportunities.
+                🚀 Outlook: Strong Positive Momentum. Market continues to present lucrative opportunities for the disciplined trader.
             </p>
         </div>
         """

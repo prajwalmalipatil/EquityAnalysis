@@ -45,12 +45,18 @@ class DataAggregator:
         if df is None: return None
         
         latest = df.iloc[-1]
+        pattern_full = str(latest.get("Signal_Type", "No Signal"))
+        pattern_name = pattern_full.split(" (")[0] if " (" in pattern_full else pattern_full
+        sentiment = pattern_full.split("(")[1].replace(")", "") if "(" in pattern_full else "Neutral"
+        
         return {
             "symbol": symbol,
-            "pattern": str(latest.get("Signal_Type", "No Signal")),
-            "description": "Asset is showing structural strength with institutional demand absorption.",
-            "spread_ratio": float(latest.get("Spread", 0) / latest.get("Spread_MA", 1)),
-            "confidence": 0.70  # Default or heuristic-based
+            "pattern": pattern_name,
+            "sentiment": sentiment,
+            "effort": str(latest.get("Effort_vs_Result", "Neutral")),
+            "description": str(latest.get("Description", "No significant pattern detected.")),
+            "spread_ratio": float(latest.get("Spread", 0) / latest.get("Spread_MA", 1)) if latest.get("Spread_MA", 0) > 0 else 1.0,
+            "confidence": float(latest.get("Confidence", 0.70))
         }
 
     def get_trigger_details(self, symbol: str) -> Optional[Dict]:
@@ -77,14 +83,13 @@ class DataAggregator:
         latest = df.iloc[-1]
         prev_vol = int(latest.get("Prev_Volume", 0))
         curr_vol = int(latest.get("Volume", 0))
-        drop_pct = ((curr_vol - prev_vol) / prev_vol * 100) if prev_vol > 0 else 0
         
         return {
             "symbol": symbol,
             "pattern": str(latest.get("Anomaly_V2", "Neutral")),
             "prev_vol": prev_vol,
             "curr_vol": curr_vol,
-            "drop_pct": drop_pct,
+            "drop_pct": float(latest.get("Vol_Pct", 0)),
             "sentiment": "Bearish" if "Dump" in str(latest.get("Anomaly_V2")) or "Fall" in str(latest.get("Anomaly_V2")) else "Neutral"
         }
 

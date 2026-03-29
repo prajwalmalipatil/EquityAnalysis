@@ -77,7 +77,6 @@ class VSAProcessorService:
                 return pd.DataFrame()
             
             # 2. Aggressive Column Normalization
-            # Strip spaces, lowercase, and remove special chars
             df.columns = [
                 str(c).strip().lower().replace(" ", "_").replace(".", "") 
                 for c in df.columns
@@ -101,7 +100,7 @@ class VSAProcessorService:
             rename_dict = {col: col_map[col] for col in df.columns if col in col_map}
             df = df.rename(columns=rename_dict)
             
-            # 4. Critical Step: Deduplicate Columns (Handle 'Last Price' vs 'Close Price' mapping)
+            # 4. Deduplicate
             df = df.loc[:, ~df.columns.duplicated()].copy()
             
             # 5. Validation & Fuzzy Fallback
@@ -119,17 +118,13 @@ class VSAProcessorService:
                         if any(k in col for k in keywords):
                             df = df.rename(columns={col: canon})
                             break
-                # Re-deduplicate after fuzzy
                 df = df.loc[:, ~df.columns.duplicated()].copy()
                 missing = [col for col in required if col not in df.columns]
 
             if missing:
-                logger.warning("MISSING_COLUMNS", extra={
-                    "file": str(path), "missing": missing, "found": list(df.columns)
-                })
                 return pd.DataFrame()
             
-            # 6. Numeric Cleanup (Vectorized comma removal and numeric coercion)
+            # 6. Numeric Cleanup
             for col in required:
                 df[col] = pd.to_numeric(
                     df[col].astype(str).str.replace(",", "").str.strip(), 
@@ -141,9 +136,7 @@ class VSAProcessorService:
                 df["Date"] = pd.to_datetime(df["Date"], errors='coerce', dayfirst=True)
                 df = df.dropna(subset=["Date"]).sort_values("Date").reset_index(drop=True)
             
-            # Drop any remaining NAs in OHLCV
             df = df.dropna(subset=required).reset_index(drop=True)
-            
             return df
         except Exception as e:
             logger.error("LOAD_AND_CLEAN_FAILED", extra={"file": str(path), "error": str(e)})
@@ -179,25 +172,36 @@ class VSAProcessorService:
     def _apply_signals(self, df: pd.DataFrame) -> pd.DataFrame:
         """Iterates and applies pattern matching logic."""
         signals = []
+        efforts = []
+        confidences = []
+        descriptions = []
         anomaly_v2 = []
         
         for i in range(len(df)):
             row = df.iloc[i]
             
             # 1. Classic VSA
-            signal = VSAClassicMatcher.match_climax(
+            vsa_res = VSAClassicMatcher.match_climax(
                 row["Volume"], row["Volume_MA"], row["Spread"], row["Spread_MA"],
                 row["Close_Position"], row["Price_Trend"]
             )
-            if not signal:
-                signal = VSAClassicMatcher.match_no_demand(
+            if not vsa_res:
+                vsa_res = VSAClassicMatcher.match_no_demand(
                     row["Volume"], row["Volume_MA"], row["IsUpBar"], row["Price_Trend"]
                 )
             
-            signals.append(signal or "No Signal")
+            if vsa_res:
+                signals.append(f"{vsa_res.pattern_name} ({vsa_res.sentiment})")
+                efforts.append(vsa_res.effort_vs_result)
+                confidences.append(vsa_res.confidence)
+                descriptions.append(vsa_res.description)
+            else:
+                signals.append("No Signal")
+                efforts.append("Neutral")
+                confidences.append(0.0)
+                descriptions.append("")
             
-            # 2. Anomaly V2 (Volume Spike/Drop)
-            # Need previous row for some matches - simplify for now
+            # 2. Anomaly V2
             prev_vol = df.iloc[i-1]["Volume"] if i > 0 else row["Volume"]
             v2 = AnomalyV2Matcher.match_volume_spike(row["Volume"], prev_vol)
             if not v2:
@@ -205,6 +209,9 @@ class VSAProcessorService:
             anomaly_v2.append(v2 or "Neutral")
             
         df["Signal_Type"] = signals
+        df["Effort_vs_Result"] = efforts
+        df["Confidence"] = confidences
+        df["Description"] = descriptions
         df["Anomaly_V2"] = anomaly_v2
         return df
 
@@ -223,25 +230,26 @@ class VSAProcessorService:
         ExcelFormatter.add_vsa_legend(wb)
         wb.save(out_path)
         
-        # Distribution based on last row signal
-        if df.empty:
-            return
-            
+        # Distribution
+        if df.empty: return
         latest = df.iloc[-1]
         
         # 1. Trending (Any Classic VSA Signal)
-        if latest["Signal_Type"] != "No Signal":
+        has_vsa = latest["Signal_Type"] != "No Signal"
+        if has_vsa:
             shutil.copy(out_path, self.output_base / const.TRENDING_DIR_NAME)
             
-        # 2. Anomaly (Volume Spike/Drop)
-        if "Spike" in str(latest["Anomaly_V2"]) or "Drop" in str(latest["Anomaly_V2"]):
+        # 2. Anomaly (Any V2 Spike/Drop)
+        has_anomaly = "Spike" in str(latest["Anomaly_V2"]) or "Drop" in str(latest["Anomaly_V2"])
+        if has_anomaly:
             shutil.copy(out_path, self.output_base / const.ANOMALY_DIR_NAME)
             
-        # 3. Ticker (All results)
-        shutil.copy(out_path, self.output_base / const.TICKER_DIR_NAME)
+        # 3. Ticker (Classic VSA or Anomaly)
+        if has_vsa or has_anomaly:
+            shutil.copy(out_path, self.output_base / const.TICKER_DIR_NAME)
         
-        # 4. Triggers (Volume decreased from previous day while Spread expanded)
-        prev_vol = df.iloc[-2]["Volume"] if len(df) > 1 else latest["Volume"]
-        prev_spr = df.iloc[-2]["Spread"] if len(df) > 1 else latest["Spread"]
-        if latest["Volume"] < prev_vol and latest["Spread"] > prev_spr:
-             shutil.copy(out_path, self.output_base / const.TRIGGERS_DIR_NAME)
+        # 4. Triggers (Vol Contraction + Spread Expansion)
+        if len(df) > 1:
+            prev_row = df.iloc[-2]
+            if latest["Volume"] < prev_row["Volume"] and latest["Spread"] > prev_row["Spread"]:
+                 shutil.copy(out_path, self.output_base / const.TRIGGERS_DIR_NAME)
