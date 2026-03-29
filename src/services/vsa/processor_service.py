@@ -229,11 +229,17 @@ class VSAProcessorService:
                             df = df.rename(columns={actual: col})
                             break
             for col in required: df[col] = pd.to_numeric(df[col].astype(str).str.replace(",", "").str.strip(), errors='coerce')
+            
+            # CRITICAL: Handle NSE Latest-First format by ensuring chronological sort
             if "Date" in df.columns: 
                 df["Date"] = pd.to_datetime(df["Date"], errors='coerce', dayfirst=True)
-                df = df.sort_values("Date")
+                df = df.dropna(subset=["Date", "Close"]) # Ensure we have valid temporal data
+                df = df.sort_values("Date").reset_index(drop=True)
+                
             return df.dropna(subset=required).reset_index(drop=True)
-        except Exception: return pd.DataFrame()
+        except Exception as e: 
+            logger.error(f"LOAD_FAILED: {path.name} - {str(e)}")
+            return pd.DataFrame()
 
     def _enrich_indicators(self, df: pd.DataFrame) -> pd.DataFrame:
         """Calculates indicators."""
@@ -244,7 +250,7 @@ class VSAProcessorService:
         df["Spread_MA"] = calculate_moving_average(df["Spread"].values, 20)
         df["Close_MA"] = calculate_moving_average(close, 20)
         df["Price_Trend"] = calculate_price_trend(close, df["Close_MA"].values)
-        df["IsUpBar"], _, _ = detect_bar_types(df["Open"].values, close, df["Spread"].values)
+        df["IsUpBar"], df["IsDownBar"], _ = detect_bar_types(df["Open"].values, close, df["Spread"].values)
         df["Prev_Volume"] = df["Volume"].shift(1).fillna(df["Volume"])
         df["Prev_Spread"] = df["Spread"].shift(1).fillna(df["Spread"])
         df["Vol_Pct"] = ((df["Volume"] - df["Prev_Volume"]) / df["Prev_Volume"]) * 100
@@ -260,24 +266,41 @@ class VSAProcessorService:
         
         for i in range(len(df)):
             row = df.iloc[i]
+            prev_up = df.iloc[i-1]["IsUpBar"] if i > 0 else False
+            
             vsa_res = VSAClassicMatcher.match_signal(
                 row["Volume"], row["Volume_MA"], row["Spread"], 
-                row["Spread_MA"], row["Close_Position"], row["Price_Trend"], row["IsUpBar"]
+                row["Spread_MA"], row["Close_Position"], row["Price_Trend"], 
+                row["IsUpBar"], row["IsDownBar"], prev_up
             )
             
             # 1. Base Signal logic
             if vsa_res:
-                signals.append(f"{vsa_res.pattern_name} ({vsa_res.sentiment})")
+                current_signal = vsa_res.pattern_name
+                signals.append(vsa_res.pattern_name) # No sentiment suffix to match legacy patterns list
                 efforts.append(vsa_res.effort_vs_result)
                 confidences.append(vsa_res.confidence)
                 descriptions.append(vsa_res.description)
                 
-                # 2. Validation Logic (Forward Testing)
+                # 2. Vectorized Forward Validation (Lookahead Window)
+                # Matches legacy logic: check for ANY confirmation bar in the next 3-5 days
+                status = "Pending ⏳"
                 if i + lookup_days < len(df):
-                    future_price = df.iloc[i + lookup_days]["Close"]
-                    is_success = (vsa_res.sentiment == "Bullish" and future_price > row["Close"]) or \
-                                 (vsa_res.sentiment == "Bearish" and future_price < row["Close"])
-                    validation_status.append("Confirmed ✅" if is_success else "Failed ❌")
+                    status = "Failed ❌" # Default if no confirmation found in window
+                    for j in range(1, lookup_days + 1):
+                        future_row = df.iloc[i + j]
+                        
+                        # Simplified Confirmation logic for all patterns (port matching legacy rules)
+                        is_success = False
+                        if vsa_res.sentiment == "Bullish":
+                            if future_row["Close"] > row["Close"] * 1.01: is_success = True
+                        else:
+                            if future_row["Close"] < row["Close"] * 0.99: is_success = True
+                            
+                        if is_success:
+                            status = "Confirmed ✅"
+                            break
+                    validation_status.append(status)
                 else:
                     validation_status.append("Pending ⏳")
             else:
