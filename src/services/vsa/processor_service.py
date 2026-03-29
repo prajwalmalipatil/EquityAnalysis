@@ -1,20 +1,19 @@
 """
 processor_service.py
-Orchestration service for VSA Analysis.
-Coordinates data cleaning, indicator calculation, pattern matching, and file persistence.
+Refactored VSA Processing Engine.
+Handles CSV loading, indicator calculation, and pattern matching.
 """
 
-import os
-import shutil
 import pandas as pd
-import numpy as np
 from pathlib import Path
-from typing import List, Dict, Tuple
-from datetime import datetime
+import shutil
+from typing import List, Dict, Optional
+import concurrent.futures
 
-from .indicators import (
+from src.services.vsa.indicators import (
     calculate_spread, calculate_close_position, 
-    calculate_moving_average, calculate_price_trend, detect_bar_types
+    calculate_moving_average, calculate_price_trend, 
+    detect_bar_types
 )
 from .pattern_matcher import VSAClassicMatcher, AnomalyV2Matcher
 from .formatters import ExcelFormatter
@@ -25,8 +24,7 @@ logger = get_tenant_logger("vsa-processor-service")
 
 class VSAProcessorService:
     """
-    Service to process raw equity CSVs into analyzed VSA Excels.
-    Uses pure indicator functions and pattern matchers for decoupling.
+    Coordinates the processing of raw NSE CSV files into analyzed XLSX reports.
     """
     
     def __init__(self, output_base: Path):
@@ -34,27 +32,27 @@ class VSAProcessorService:
         self._ensure_dirs()
 
     def _ensure_dirs(self):
-        """Creates the necessary output structure."""
+        """Creates necessary subdirectories if they don't exist."""
         dirs = [
-            const.RESULTS_DIR_NAME, const.LOGS_DIR_NAME, 
-            const.TRENDING_DIR_NAME, const.EFFORTS_DIR_NAME,
-            const.ANOMALY_DIR_NAME
+            const.RESULTS_DIR_NAME, const.TRENDING_DIR_NAME, 
+            const.ANOMALY_DIR_NAME, const.TICKER_DIR_NAME,
+            const.TRIGGERS_DIR_NAME
         ]
         for d in dirs:
             (self.output_base / d).mkdir(parents=True, exist_ok=True)
 
     def process_file(self, file_path: Path) -> bool:
-        """Processes a single CSV file through the VSA pipeline."""
+        """Main pipeline for a single file."""
         try:
-            # 1. Load and Clean
+            # 1. Load and Standardize
             df = self._load_and_clean(file_path)
             if df.empty:
                 return False
                 
-            # 2. Enrich with Indicators
+            # 2. Enrich Indicators
             df = self._enrich_indicators(df)
             
-            # 3. Apply VSA Signals
+            # 3. Apply Signals
             df = self._apply_signals(df)
             
             # 4. Save and Format
@@ -138,16 +136,17 @@ class VSAProcessorService:
                     errors='coerce'
                 )
             
-            df = df.dropna(subset=required).reset_index(drop=True)
-            
             # 7. Date Handling
             if "Date" in df.columns:
                 df["Date"] = pd.to_datetime(df["Date"], errors='coerce', dayfirst=True)
-                df = df.dropna(subset=["Date"]).reset_index(drop=True)
+                df = df.dropna(subset=["Date"]).sort_values("Date").reset_index(drop=True)
+            
+            # Drop any remaining NAs in OHLCV
+            df = df.dropna(subset=required).reset_index(drop=True)
             
             return df
-        except Exception:
-            logger.error("LOAD_AND_CLEAN_FAILED", extra={"file": str(path)})
+        except Exception as e:
+            logger.error("LOAD_AND_CLEAN_FAILED", extra={"file": str(path), "error": str(e)})
             return pd.DataFrame()
 
     def _enrich_indicators(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -166,6 +165,14 @@ class VSAProcessorService:
         # Trends and Bars
         df["Price_Trend"] = calculate_price_trend(close, df["Close_MA"].values)
         df["IsUpBar"], df["IsDownBar"], _ = detect_bar_types(df["Open"].values, close, df["Spread"].values)
+        
+        # Metrics for Trigger Logic
+        df["Prev_Volume"] = df["Volume"].shift(1).fillna(df["Volume"])
+        df["Prev_Spread"] = df["Spread"].shift(1).fillna(df["Spread"])
+        
+        # Percentage changes for the report
+        df["Vol_Pct"] = ((df["Volume"] - df["Prev_Volume"]) / df["Prev_Volume"]) * 100
+        df["Spr_Pct"] = ((df["Spread"] - df["Prev_Spread"]) / df["Prev_Spread"]) * 100
         
         return df
 
@@ -230,5 +237,11 @@ class VSAProcessorService:
         if "Spike" in str(latest["Anomaly_V2"]) or "Drop" in str(latest["Anomaly_V2"]):
             shutil.copy(out_path, self.output_base / const.ANOMALY_DIR_NAME)
             
-        # 3. Ticker (All results, or high priority?)
+        # 3. Ticker (All results)
         shutil.copy(out_path, self.output_base / const.TICKER_DIR_NAME)
+        
+        # 4. Triggers (Volume decreased from previous day while Spread expanded)
+        prev_vol = df.iloc[-2]["Volume"] if len(df) > 1 else latest["Volume"]
+        prev_spr = df.iloc[-2]["Spread"] if len(df) > 1 else latest["Spread"]
+        if latest["Volume"] < prev_vol and latest["Spread"] > prev_spr:
+             shutil.copy(out_path, self.output_base / const.TRIGGERS_DIR_NAME)
