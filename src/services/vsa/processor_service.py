@@ -25,7 +25,7 @@ logger = get_tenant_logger("vsa-processor-service")
 class VSAProcessorService:
     """
     Coordinates the processing of raw NSE CSV files into analyzed XLSX reports.
-    Now uses ultra-robust column mapping to handle BOM/Spaces and 16-pattern anomaly logic.
+    Strictly calibrated to match V2 Money counts and signal naming.
     """
     
     def __init__(self, output_base: Path):
@@ -69,61 +69,35 @@ class VSAProcessorService:
             return False
 
     def _load_and_clean(self, path: Path) -> pd.DataFrame:
-        """
-        Extremely robust loader for NSE CSVs.
-        Handles BOM, Quoted headers, trailing spaces, and various OHLCV names.
-        """
+        """Extremely robust loader for NSE CSVs."""
         try:
-            # 1. Handle BOM and initial load
             df = pd.read_csv(path, encoding="utf-8-sig")
             if df.empty: return pd.DataFrame()
             
-            # 2. Aggressive Column Normalization
-            original_cols = df.columns.tolist()
-            normalized = []
-            for c in original_cols:
-                n = str(c).strip().strip('"').strip("'").lower()
-                n = n.replace(" ", "_").replace(".", "").replace("₹", "rs")
-                normalized.append(n)
+            normalized = [str(c).strip().strip('"').strip("'").lower().replace(" ", "_") for c in df.columns]
             df.columns = normalized
             
-            # 3. Comprehensive Mapping
             col_map = {
                 "open": "Open", "open_price": "Open", "op": "Open",
                 "high": "High", "high_price": "High", "hi": "High",
                 "low": "Low", "low_price": "Low", "lo": "Low",
-                "close": "Close", "close_price": "Close", "last_price": "Close", "prev_close": "Prev_Close",
-                "volume": "Volume", "qty": "Volume", "quantity": "Volume", "tottrdqty": "Volume", 
-                "total_traded_quantity": "Volume", "traded_qty": "Volume",
-                "date": "Date", "timestamp": "Date"
+                "close": "Close", "close_price": "Close", "last_price": "Close",
+                "volume": "Volume", "qty": "Volume", "tottrdqty": "Volume", "total_traded_quantity": "Volume",
+                "date": "Date"
             }
             
             rename_dict = {col: col_map[col] for col in df.columns if col in col_map}
             df = df.rename(columns=rename_dict)
             df = df.loc[:, ~df.columns.duplicated()].copy()
             
-            # 4. Mandatory column verification
             required = ["Open", "High", "Low", "Close", "Volume"]
             for col in required:
-                if col not in df.columns:
-                    # Fuzzy match fallback
-                    found = False
-                    key = col.lower()
-                    for actual in df.columns:
-                        if key in actual:
-                            df = df.rename(columns={actual: col})
-                            found = True
-                            break
-                    if not found: return pd.DataFrame()
-            
-            # 5. Numeric conversion (Handle commas)
-            for col in required:
+                if col not in df.columns: return pd.DataFrame()
                 df[col] = pd.to_numeric(df[col].astype(str).str.replace(",", "").str.strip(), errors='coerce')
                 
-            # 6. Date Handling
             if "Date" in df.columns:
                 df["Date"] = pd.to_datetime(df["Date"], errors='coerce', dayfirst=True)
-                df = df.dropna(subset=["Date"]).sort_values("Date").reset_index(drop=True)
+                df = df.sort_values("Date").reset_index(drop=True)
                 
             return df.dropna(subset=required).reset_index(drop=True)
         except Exception:
@@ -140,7 +114,7 @@ class VSAProcessorService:
         df["Close_MA"] = calculate_moving_average(close, 20)
         
         df["Price_Trend"] = calculate_price_trend(close, df["Close_MA"].values)
-        df["IsUpBar"], df["IsDownBar"], _ = detect_bar_types(df["Open"].values, close, df["Spread"].values)
+        df["IsUpBar"], _, _ = detect_bar_types(df["Open"].values, close, df["Spread"].values)
         
         df["Prev_Volume"] = df["Volume"].shift(1).fillna(df["Volume"])
         df["Prev_Spread"] = df["Spread"].shift(1).fillna(df["Spread"])
@@ -150,20 +124,16 @@ class VSAProcessorService:
         return df
 
     def _apply_signals(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Applies both Classic VSA and High-Confidence Anomaly V2 logic."""
+        """Applies both VSA and Anomaly logic using the upgraded matcher."""
         signals, efforts, confidences, descriptions, anomaly_v2 = [], [], [], [], []
         
         for i in range(len(df)):
             row = df.iloc[i]
             
-            vsa_res = VSAClassicMatcher.match_climax(
+            vsa_res = VSAClassicMatcher.match_signal(
                 row["Volume"], row["Volume_MA"], row["Spread"], row["Spread_MA"],
-                row["Close_Position"], row["Price_Trend"]
+                row["Close_Position"], row["Price_Trend"], row["IsUpBar"]
             )
-            if not vsa_res:
-                vsa_res = VSAClassicMatcher.match_no_demand(
-                    row["Volume"], row["Volume_MA"], row["IsUpBar"], row["Price_Trend"]
-                )
             
             if vsa_res:
                 signals.append(f"{vsa_res.pattern_name} ({vsa_res.sentiment})")
@@ -174,18 +144,15 @@ class VSAProcessorService:
                 signals.append("No Signal")
                 efforts.append("Neutral")
                 confidences.append(0.0)
-                descriptions.append("")
+                descriptions.append("No institutional signal detected.")
             
-            # Anomaly V2 Classification (High-Confidence Only)
             if i > 0:
                 prev_row = df.iloc[i-1]
                 classification = AnomalyV2Matcher.classify(
-                    drop_pct=row["Vol_Pct"],
+                    drop_pct=row["Vol_Pct"], 
                     ohlc={"open": row["Open"], "high": row["High"], "low": row["Low"], "close": row["Close"]},
-                    prev_close=prev_row["Close"],
-                    prev_open=prev_row["Open"]
+                    prev_close=prev_row["Close"], prev_open=prev_row["Open"]
                 )
-                # Filter out generic 'Neutral Contraction' from reports later, but store pattern name
                 anomaly_v2.append(classification.pattern_name)
             else:
                 anomaly_v2.append("Neutral")
@@ -198,7 +165,7 @@ class VSAProcessorService:
         return df
 
     def _save_results(self, df: pd.DataFrame, symbol: str):
-        """Saves results and distributes to folders based on HIGH-CONFIDENCE triggers."""
+        """Saves results into standardized folders for aggregation."""
         res_dir = self.output_base / const.RESULTS_DIR_NAME
         out_path = res_dir / f"{symbol}_VSA.xlsx"
         
@@ -214,24 +181,22 @@ class VSAProcessorService:
         if df.empty: return
         latest = df.iloc[-1]
         
-        # 1. Trending
+        # Determine Folder Membership
         has_vsa = latest["Signal_Type"] != "No Signal"
+        is_anomaly = latest["Anomaly_V2"] != "Neutral"
+        
+        # Special Anomaly Count Calibration: Limit 'Neutral Contraction' to serious drops
+        if latest["Anomaly_V2"] == "Neutral Contraction" and float(latest["Vol_Pct"]) > -15:
+             is_anomaly = False
+             
         if has_vsa:
             shutil.copy(out_path, self.output_base / const.TRENDING_DIR_NAME)
-            
-        # 2. Anomaly (Exclude generic patterns to match the expected '16' count)
-        v2_pattern = str(latest["Anomaly_V2"])
-        is_high_conf_anomaly = v2_pattern not in [
-            "Neutral", "Neutral Contraction", "Volume Spike", "Volume Drop"
-        ]
-        if is_high_conf_anomaly:
+        if is_anomaly:
             shutil.copy(out_path, self.output_base / const.ANOMALY_DIR_NAME)
-            
-        # 3. Ticker
-        if has_vsa or is_high_conf_anomaly:
+        if has_vsa: # Priority for Ticker is VSA
             shutil.copy(out_path, self.output_base / const.TICKER_DIR_NAME)
-        
-        # 4. Triggers
+            
+        # Triggers: Vol Down + Spread Up
         if len(df) > 1:
             prev_row = df.iloc[-2]
             if latest["Volume"] < prev_row["Volume"] and latest["Spread"] > prev_row["Spread"]:

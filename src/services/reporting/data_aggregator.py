@@ -46,30 +46,30 @@ class DataAggregator:
         
         latest = df.iloc[-1]
         
-        # Priority 1: Classic VSA
         vsa_full = str(latest.get("Signal_Type", "No Signal"))
         if vsa_full != "No Signal":
             pattern_name = vsa_full.split(" (")[0] if " (" in vsa_full else vsa_full
             sentiment = vsa_full.split("(")[1].replace(")", "") if "(" in vsa_full else "Neutral"
             description = str(latest.get("Description", "Classic VSA signal detected."))
             confidence = float(latest.get("Confidence", 0.85))
+            effort = str(latest.get("Effort_vs_Result", "Neutral"))
         else:
-            # Priority 2: High Confidence Anomaly
             pattern_name = str(latest.get("Anomaly_V2", "No Signal"))
             sentiment = "Neutral"
-            if "Accumulation" in pattern_name or "Absorption" in pattern_name or "Trap" in pattern_name:
+            if any(w in pattern_name for w in ["Accumulation", "Absorption", "Trap"]):
                 sentiment = "Bullish"
-            elif "Dump" in pattern_name or "Failed" in pattern_name:
+            elif any(w in pattern_name for w in ["Dump", "Failed"]):
                 sentiment = "Bearish"
             
             description = f"Advanced Anomaly Detected: {pattern_name}. Structural shifts observed in volume/price relationship."
             confidence = 0.70
+            effort = str(latest.get("Effort_vs_Result", "Neutral"))
             
         return {
             "symbol": symbol,
             "pattern": pattern_name,
             "sentiment": sentiment,
-            "effort": str(latest.get("Effort_vs_Result", "Neural")),
+            "effort": effort,
             "description": description,
             "spread_ratio": float(latest.get("Spread", 0) / latest.get("Spread_MA", 1)) if latest.get("Spread_MA", 0) > 0 else 1.0,
             "confidence": confidence
@@ -92,18 +92,25 @@ class DataAggregator:
         }
 
     def get_anomaly_details(self, symbol: str) -> Optional[Dict]:
-        """Extraction for Anomaly V2 patterns."""
+        """Extraction for Anomaly V2 patterns with sentiment classification."""
         df = self._read_latest(const.ANOMALY_DIR_NAME, symbol)
         if df is None: return None
         
         latest = df.iloc[-1]
+        v2_pattern = str(latest.get("Anomaly_V2", "Neutral"))
+        sentiment = "Neutral"
+        if any(w in v2_pattern for w in ["Accumulation", "Absorption", "Trap"]):
+            sentiment = "Bullish"
+        elif any(w in v2_pattern for w in ["Dump", "Failed"]):
+            sentiment = "Bearish"
+            
         return {
             "symbol": symbol,
-            "pattern": str(latest.get("Anomaly_V2", "Neutral")),
+            "pattern": v2_pattern,
             "prev_vol": int(latest.get("Prev_Volume", 0)),
             "curr_vol": int(latest.get("Volume", 0)),
             "drop_pct": float(latest.get("Vol_Pct", 0)),
-            "sentiment": "Bearish" if "Dump" in str(latest.get("Anomaly_V2")) or "Failed" in str(latest.get("Anomaly_V2")) else "Neutral"
+            "sentiment": sentiment
         }
 
     def _count_files(self, folder: str) -> int:

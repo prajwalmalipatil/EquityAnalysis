@@ -1,148 +1,100 @@
 """
 pattern_matcher.py
-Specialized logic for identifying Volume Spread Analysis (VSA) patterns 
-and Anomaly V2 OHLC classifications.
+Advanced VSA and Anomaly V2 Pattern Recognition.
+Includes Classic VSA (Climax, No Demand, Test, Upthrust) 
+and Anomaly V2 (OHLC Classification).
 """
 
-import numpy as np
-import pandas as pd
-from typing import Optional, List, Dict
-from src.models.vsa_models import AnomalyClassification, VSAClassification
-from src.constants import vsa_constants as const
+from typing import Dict, Optional
+from src.models.vsa_models import VSAClassification, AnomalyClassification
 
 class VSAClassicMatcher:
     """Matches core VSA signals based on volume and spread ratios."""
     
     @staticmethod
-    def match_climax(vol: float, vol_ma: float, spread: float, spread_ma: float, 
-                     close_pos: float, trend: int) -> Optional[VSAClassification]:
-        """Matches Buying/Selling Climax patterns."""
-        is_ultra_vol = vol > vol_ma * const.ULTRA_HIGH_VOLUME
-        is_wide_spread = spread > spread_ma * const.WIDE_SPREAD
+    def match_signal(vol: float, vol_ma: float, spr: float, spr_ma: float, 
+                     close_pos: float, price_trend: str, is_up: bool) -> Optional[VSAClassification]:
         
-        if not (is_ultra_vol and is_wide_spread):
-            return None
-            
-        if close_pos <= const.WEAK_CLOSE and trend <= 0:
-            return VSAClassification(
-                pattern_name="Selling Climax",
-                effort_vs_result="Absorption",
-                sentiment="Bullish Reversal",
-                confidence=0.85,
-                description="Smart money absorbing supply at local bottoms."
-            )
-        if close_pos >= const.STRONG_CLOSE and trend >= 0:
-            return VSAClassification(
-                pattern_name="Buying Climax",
-                effort_vs_result="Distribution",
-                sentiment="Bearish Reversal",
-                confidence=0.85,
-                description="Smart money offloading into retail FOMO."
-            )
-        return None
-
-    @staticmethod
-    def match_no_demand(vol: float, vol_ma: float, is_up: bool, trend: int) -> Optional[VSAClassification]:
-        """Matches No Demand (Bearish Weakness)."""
-        if vol < vol_ma * const.LOW_VOLUME and is_up and trend >= 0:
-            return VSAClassification(
-                pattern_name="No Demand",
-                effort_vs_result="No_Demand",
-                sentiment="Bearish Weakness",
-                confidence=0.70,
-                description="Asset is showing structural weakness with lack of interest from buyers."
-            )
-        return None
-
-    @staticmethod
-    def match_stopping_volume(vol: float, vol_ma: float, spread: float, 
-                               spread_ma: float, close_pos: float) -> Optional[VSAClassification]:
-        """Matches Stopping Volume (Potential Reversal)."""
-        is_high_vol = vol > vol_ma * const.HIGH_VOLUME
-        is_narrow_spread = spread < spread_ma * const.NARROW_SPREAD
-        is_mid_close = const.MID_CLOSE_LOW <= close_pos <= const.MID_CLOSE_HIGH
+        v_ratio = vol / vol_ma if vol_ma > 0 else 1.0
+        s_ratio = spr / spr_ma if spr_ma > 0 else 1.0
         
-        if is_high_vol and is_narrow_spread and is_mid_close:
-            return VSAClassification(
-                pattern_name="Stopping Volume",
-                effort_vs_result="Absorption",
-                sentiment="Potential Reversal",
-                confidence=0.75,
-                description="Strong effort to stop the fall; smart money buying detected."
-            )
-        return None
+        # 1. Climax (High Volume, High Spread)
+        if v_ratio > 1.8 and s_ratio > 1.5:
+            if is_up and close_pos < 0.4:
+                return VSAClassification(
+                    pattern_name="Buying Climax", sentiment="Bearish",
+                    effort_vs_result="Effort without Result", confidence=0.85,
+                    description="Institutional selling hidden in high-volume rally. Price unable to close high."
+                )
+            if not is_up and close_pos > 0.6:
+                return VSAClassification(
+                    pattern_name="Selling Climax", sentiment="Bullish",
+                    effort_vs_result="Demand absorbing Supply", confidence=0.90,
+                    description="Massive institutional absorption of panic selling. High probability bottom."
+                )
 
+        # 2. Test / No Supply (Low Volume, Low Spread)
+        if v_ratio < 0.8 and s_ratio < 0.8:
+            if not is_up and close_pos > 0.6:
+                return VSAClassification(
+                    pattern_name="Test", sentiment="Bullish",
+                    effort_vs_result="No Supply", confidence=0.75,
+                    description="Successful test of supply. Low volume indicates no institutional selling pressure."
+                )
+            if is_up and close_pos < 0.4:
+                return VSAClassification(
+                    pattern_name="No Demand", sentiment="Bearish",
+                    effort_vs_result="Lack of Interest", confidence=0.70,
+                    description="Price rising on low volume with weak close. Lack of institutional participation."
+                )
+
+        # 3. Upthrust (High Volume, Weak Close)
+        if v_ratio > 1.2 and is_up and close_pos < 0.3:
+            return VSAClassification(
+                pattern_name="Upthrust", sentiment="Bearish",
+                effort_vs_result="Hidden Weakness", confidence=0.80,
+                description="Failed attempt to break higher. High volume with weak close indicates supply presence."
+            )
+
+        return None
 
 class AnomalyV2Matcher:
-    """
-    Classifies volume drops into high-confidence patterns using OHLC signatures.
-    Logic extracted from the V2 backtest results.
-    """
+    """Deep OHLC Classification for Volume Anomalies."""
     
     @staticmethod
-    def match_volume_spike(current: float, previous: float, threshold: float = 2.0) -> Optional[str]:
-        """Simple spike detection (>200% of previous)."""
-        if previous <= 0: return None
-        if current > previous * threshold:
-            return "Volume Spike"
-        return None
-
-    @staticmethod
-    def match_volume_drop(current: float, previous: float, threshold: float = 0.5) -> Optional[str]:
-        """Simple drop detection (<50% of previous)."""
-        if previous <= 0: return None
-        if current < previous * threshold:
-            return "Volume Drop"
-        return None
-
-    @staticmethod
-    def classify(drop_pct: float, ohlc: Dict[str, float], prev_close: float, prev_open: float) -> AnomalyClassification:
-        """Main entry point for Anomaly V2 classification."""
-        # Derived flags
-        is_bearish_bar = ohlc['close'] < ohlc['open']
-        close_above_prev = ohlc['close'] > prev_close
-        prev_was_up = prev_close > prev_open
+    def classify(drop_pct: float, ohlc: Dict, prev_close: float, prev_open: float) -> AnomalyClassification:
+        close = ohlc['close']
+        open_ = ohlc['open']
+        high = ohlc['high']
+        low = ohlc['low']
+        spread = high - low
+        close_pos = (close - low) / spread if spread > 0 else 0.5
         
-        total_range = ohlc['high'] - ohlc['low'] or 0.01
-        close_pos = (ohlc['close'] - ohlc['low']) / total_range
-        gap_pct = ((ohlc['open'] - prev_close) / prev_close) * 100 if prev_close > 0 else 0
+        # Bearish: Dump or Trap
+        if drop_pct < -20: # Vol dropped significantly
+            if close < open_ and close < prev_close:
+                return AnomalyClassification(
+                    pattern_name="Continuation Dump", sentiment="Bearish", confidence=0.70
+                )
+            if close > open_ and close_pos < 0.4:
+                return AnomalyClassification(
+                    pattern_name="Failed Rally", sentiment="Bearish", confidence=0.65
+                )
         
-        # Branch to specific classifiers to keep methods short
-        bullish = AnomalyV2Matcher._check_bullish(drop_pct, close_pos, close_above_prev, 
-                                                 prev_was_up, gap_pct, is_bearish_bar)
-        if bullish:
-            return bullish
-            
-        bearish = AnomalyV2Matcher._check_bearish(drop_pct, close_pos, close_above_prev, 
-                                                 prev_was_up, gap_pct, is_bearish_bar)
-        if bearish:
-            return bearish
-            
-        return AnomalyClassification(
-            pattern_name="Neutral Contraction",
-            sentiment="Neutral",
-            win_rate=50.0,
-            description="Volume dropped but price action is indecisive."
-        )
+        # Bullish: Accumulation or Absorption
+        if drop_pct > 20: # Vol spiked significantly
+            if close > open_ and close > prev_close and close_pos > 0.7:
+                 return AnomalyClassification(
+                    pattern_name="Silent Accumulation", sentiment="Bullish", confidence=0.80
+                )
+            if close < open_ and close_pos > 0.6:
+                 return AnomalyClassification(
+                    pattern_name="Bear Trap", sentiment="Bullish", confidence=0.75
+                )
 
-    @staticmethod
-    def _check_bullish(drop: float, close_pos: float, cap: bool, pwu: bool, gap: float, ibb: bool) -> Optional[AnomalyClassification]:
-        """Logic for Bullish setups."""
-        if close_pos < 0.30 and drop < -50 and cap:
-            return AnomalyClassification("Silent Accumulation", "Bullish", 70.5, "Smart money absorbing supply at lows.")
-        if close_pos < 0.30 and pwu and cap:
-            return AnomalyClassification("Pullback Absorption", "Bullish", 64.9, "Absorption after a previous up move.")
-        if close_pos > 0.70 and gap < -0.3 and drop < -50:
-            return AnomalyClassification("Gap Absorption", "Bullish", 63.6, "Institutional buying on a gap down.")
-        if ibb and cap:
-            return AnomalyClassification("Bear Trap", "Bullish", 63.0, "Big red candle failed to break prior support.")
-        return None
-
-    @staticmethod
-    def _check_bearish(drop: float, close_pos: float, cap: bool, pwu: bool, gap: float, ibb: bool) -> Optional[AnomalyClassification]:
-        """Logic for Bearish setups."""
-        if close_pos < 0.30 and gap < -0.3 and -50 <= drop < -25:
-            return AnomalyClassification("Continuation Dump", "Bearish", 32.6, "Further distribution likely.")
-        if close_pos > 0.70 and ibb and not cap:
-            return AnomalyClassification("Failed Rally", "Bearish", 37.5, "Strong start but weak finish indicates supply.")
-        return None
+        if drop_pct < -5:
+            return AnomalyClassification(
+                pattern_name="Neutral Contraction", sentiment="Neutral", confidence=0.50
+            )
+            
+        return AnomalyClassification(pattern_name="Neutral", sentiment="Neutral", confidence=0.0)
