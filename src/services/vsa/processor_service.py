@@ -223,18 +223,58 @@ class VSAProcessorService:
         return df
 
     def _apply_signals(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Applies signals."""
+        """Applies signals and performs forward validation (Parity with legacy logic)."""
         signals, efforts, confidences, descriptions, anomaly_v2 = [], [], [], [], []
+        validation_status, confirmed_fire = [], []
+        
+        lookup_days = const.DEFAULT_LOOKAHEAD
+        
         for i in range(len(df)):
             row = df.iloc[i]
-            vsa_res = VSAClassicMatcher.match_signal(row["Volume"], row["Volume_MA"], row["Spread"], row["Spread_MA"], row["Close_Position"], row["Price_Trend"], row["IsUpBar"])
+            vsa_res = VSAClassicMatcher.match_signal(
+                row["Volume"], row["Volume_MA"], row["Spread"], 
+                row["Spread_MA"], row["Close_Position"], row["Price_Trend"], row["IsUpBar"]
+            )
+            
+            # 1. Base Signal logic
             if vsa_res:
-                signals.append(f"{vsa_res.pattern_name} ({vsa_res.sentiment})"); efforts.append(vsa_res.effort_vs_result); confidences.append(vsa_res.confidence); descriptions.append(vsa_res.description)
+                signals.append(f"{vsa_res.pattern_name} ({vsa_res.sentiment})")
+                efforts.append(vsa_res.effort_vs_result)
+                confidences.append(vsa_res.confidence)
+                descriptions.append(vsa_res.description)
+                
+                # 2. Validation Logic (Forward Testing)
+                if i + lookup_days < len(df):
+                    future_price = df.iloc[i + lookup_days]["Close"]
+                    is_success = (vsa_res.sentiment == "Bullish" and future_price > row["Close"]) or \
+                                 (vsa_res.sentiment == "Bearish" and future_price < row["Close"])
+                    validation_status.append("Confirmed ✅" if is_success else "Failed ❌")
+                else:
+                    validation_status.append("Pending ⏳")
             else:
-                signals.append("No Signal"); efforts.append("Neutral"); confidences.append(0.0); descriptions.append("No institutional signal detected.")
+                signals.append("No Signal")
+                efforts.append("Neutral")
+                confidences.append(0.0)
+                descriptions.append("No institutional signal detected.")
+                validation_status.append("N/A")
+
+            # 3. Anomaly V2 logic
             if i > 0:
-                prev = df.iloc[i-1]; classif = AnomalyV2Matcher.classify(row["Vol_Pct"], {"open": row["Open"], "high": row["High"], "low": row["Low"], "close": row["Close"]}, prev["Close"], prev["Open"])
+                prev = df.iloc[i-1]
+                classif = AnomalyV2Matcher.classify(row["Vol_Pct"], {"open": row["Open"], "high": row["High"], "low": row["Low"], "close": row["Close"]}, prev["Close"], prev["Open"])
                 anomaly_v2.append(classif.pattern_name)
-            else: anomaly_v2.append("Neutral")
-        df["Signal_Type"] = signals; df["Effort_vs_Result"] = efforts; df["Confidence"] = confidences; df["Description"] = descriptions; df["Anomaly_V2"] = anomaly_v2
+            else:
+                anomaly_v2.append("Neutral")
+
+            # 4. Fire Signal Logic (🔥)
+            is_fire = row["Volume"] > (row["Volume_MA"] * 2.0) and "No" not in signals[-1]
+            confirmed_fire.append("🔥" if is_fire else "")
+
+        df["Signal_Type"] = signals
+        df["Effort_vs_Result"] = efforts
+        df["Validation_Status"] = validation_status
+        df["Confirmed_Fire"] = confirmed_fire
+        df["Confidence"] = confidences
+        df["Description"] = descriptions
+        df["Anomaly_V2"] = anomaly_v2
         return df
