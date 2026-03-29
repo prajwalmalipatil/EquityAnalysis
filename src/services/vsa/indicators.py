@@ -6,7 +6,7 @@ Uses NumPy for vectorized performance.
 
 import pandas as pd
 import numpy as np
-from typing import Tuple
+from typing import Tuple, List
 
 def calculate_spread(high: np.ndarray, low: np.ndarray) -> np.ndarray:
     """Calculates the price spread (High - Low)."""
