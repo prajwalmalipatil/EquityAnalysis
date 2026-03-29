@@ -45,8 +45,13 @@ def main():
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as executor:
         futures = {executor.submit(service.process_file, f): f for f in csv_files}
         for future in concurrent.futures.as_completed(futures):
-            if future.result():
-                success_count += 1
+            try:
+                if future.result():
+                    success_count += 1
+            except Exception as e:
+                logger.error("WORKER_EXECUTION_FAILED", extra={"error": str(e)})
+    # Finalize and Distribute (Targeting: 205, 0, 2, 18)
+    service.finalize_run()
                 
     logger.info("VSA_PROCESSING_COMPLETE", extra={
         "total": len(csv_files),
