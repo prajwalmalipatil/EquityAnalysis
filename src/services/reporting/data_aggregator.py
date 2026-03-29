@@ -40,23 +40,39 @@ class DataAggregator:
         }
 
     def get_ticker_details(self, symbol: str) -> Optional[Dict]:
-        """Deep extraction for Action Required ticker cards."""
+        """Deep extraction for Action Required ticker cards (VSA or Anomaly)."""
         df = self._read_latest(const.TICKER_DIR_NAME, symbol)
         if df is None: return None
         
         latest = df.iloc[-1]
-        pattern_full = str(latest.get("Signal_Type", "No Signal"))
-        pattern_name = pattern_full.split(" (")[0] if " (" in pattern_full else pattern_full
-        sentiment = pattern_full.split("(")[1].replace(")", "") if "(" in pattern_full else "Neutral"
         
+        # Priority 1: Classic VSA
+        vsa_full = str(latest.get("Signal_Type", "No Signal"))
+        if vsa_full != "No Signal":
+            pattern_name = vsa_full.split(" (")[0] if " (" in vsa_full else vsa_full
+            sentiment = vsa_full.split("(")[1].replace(")", "") if "(" in vsa_full else "Neutral"
+            description = str(latest.get("Description", "Classic VSA signal detected."))
+            confidence = float(latest.get("Confidence", 0.85))
+        else:
+            # Priority 2: High Confidence Anomaly
+            pattern_name = str(latest.get("Anomaly_V2", "No Signal"))
+            sentiment = "Neutral"
+            if "Accumulation" in pattern_name or "Absorption" in pattern_name or "Trap" in pattern_name:
+                sentiment = "Bullish"
+            elif "Dump" in pattern_name or "Failed" in pattern_name:
+                sentiment = "Bearish"
+            
+            description = f"Advanced Anomaly Detected: {pattern_name}. Structural shifts observed in volume/price relationship."
+            confidence = 0.70
+            
         return {
             "symbol": symbol,
             "pattern": pattern_name,
             "sentiment": sentiment,
-            "effort": str(latest.get("Effort_vs_Result", "Neutral")),
-            "description": str(latest.get("Description", "No significant pattern detected.")),
+            "effort": str(latest.get("Effort_vs_Result", "Neural")),
+            "description": description,
             "spread_ratio": float(latest.get("Spread", 0) / latest.get("Spread_MA", 1)) if latest.get("Spread_MA", 0) > 0 else 1.0,
-            "confidence": float(latest.get("Confidence", 0.70))
+            "confidence": confidence
         }
 
     def get_trigger_details(self, symbol: str) -> Optional[Dict]:
@@ -81,16 +97,13 @@ class DataAggregator:
         if df is None: return None
         
         latest = df.iloc[-1]
-        prev_vol = int(latest.get("Prev_Volume", 0))
-        curr_vol = int(latest.get("Volume", 0))
-        
         return {
             "symbol": symbol,
             "pattern": str(latest.get("Anomaly_V2", "Neutral")),
-            "prev_vol": prev_vol,
-            "curr_vol": curr_vol,
+            "prev_vol": int(latest.get("Prev_Volume", 0)),
+            "curr_vol": int(latest.get("Volume", 0)),
             "drop_pct": float(latest.get("Vol_Pct", 0)),
-            "sentiment": "Bearish" if "Dump" in str(latest.get("Anomaly_V2")) or "Fall" in str(latest.get("Anomaly_V2")) else "Neutral"
+            "sentiment": "Bearish" if "Dump" in str(latest.get("Anomaly_V2")) or "Failed" in str(latest.get("Anomaly_V2")) else "Neutral"
         }
 
     def _count_files(self, folder: str) -> int:
@@ -106,6 +119,5 @@ class DataAggregator:
         if not path.exists(): return None
         try:
             return pd.read_excel(path, sheet_name="VSA_Analysis")
-        except Exception as e:
-            logger.error("READ_EXCEL_FAILED", extra={"symbol": symbol, "error": str(e)})
+        except Exception:
             return None
