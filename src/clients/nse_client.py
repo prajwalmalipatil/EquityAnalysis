@@ -17,6 +17,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 
+from urllib.parse import quote
+
 from src.constants import extraction_constants as const
 from src.utils.http_client import with_retry
 from src.utils.observability import get_tenant_logger
@@ -81,7 +83,7 @@ class NSEClient:
         """
         url = (
             f"https://www.nseindia.com/api/historicalOR/generateSecurityWiseHistoricalData"
-            f"?from={from_date}&to={to_date}&symbol={symbol}&type=priceVolumeDeliverable&series=ALL&csv=true"
+            f"?from={from_date}&to={to_date}&symbol={quote(symbol)}&type=priceVolumeDeliverable&series=ALL&csv=true"
         )
         
         logger.info("FETCHING_HISTORICAL_DATA", extra={"symbol": symbol, "url": url})

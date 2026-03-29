@@ -18,7 +18,8 @@ logger = get_tenant_logger("notifier-main")
 def main():
     parser = argparse.ArgumentParser(description="Refactored Automated Equity Notifier")
     parser.add_argument("--base-dir", "--base_dir", required=True, help="Base directory for equity data")
-    parser.add_argument("--to", required=True, help="Recipient email address")
+    parser.add_argument("--to", required=False, help="Recipient email address")
+    parser.add_argument("--report-only", action="store_true", help="Only generate and save the report locally")
     
     args = parser.parse_args()
     
@@ -27,18 +28,10 @@ def main():
         logger.error("BASE_DIR_NOT_FOUND", extra={"path": str(base_dir)})
         sys.exit(1)
         
-    # Get credentials from environment
-    sender_email = os.getenv("SENDER_EMAIL")
-    sender_password = os.getenv("SENDER_PASSWORD")
-    
-    if not sender_email or not sender_password:
-        logger.error("MISSING_EMAIL_CREDENTIALS", 
-                    extra={"help": "Set SENDER_EMAIL and SENDER_PASSWORD environment variables."})
-        sys.exit(1)
-        
     # 1. Aggregate Data
     aggregator = DataAggregator(base_dir)
     stats = aggregator.aggregate_pipeline_stats()
+    print(f"DEBUG: PIPELINE_STATS = {stats}")
     symbol_data = aggregator.get_symbol_lists()
     
     # Enrich anomalies
@@ -52,7 +45,26 @@ def main():
     renderer = HTMLRenderer()
     html_report = renderer.render_full_report(stats, symbol_data, anomaly_details)
     
-    # 3. Send Email
+    # 3. Handle Output
+    if args.report_only:
+        report_path = Path("local_report_preview.html")
+        report_path.write_text(html_report)
+        logger.info("REPORT_SAVED_LOCALLY", extra={"path": str(report_path)})
+        return
+
+    # Standard email flow (requires credentials)
+    sender_email = os.getenv("SENDER_EMAIL")
+    sender_password = os.getenv("SENDER_PASSWORD")
+    
+    if not sender_email or not sender_password:
+        logger.error("MISSING_EMAIL_CREDENTIALS", 
+                    extra={"help": "Set SENDER_EMAIL and SENDER_PASSWORD environment variables or use --report-only"})
+        sys.exit(1)
+        
+    if not args.to:
+        logger.error("MISSING_RECIPIENT", extra={"help": "Specify --to <email> for notification mode"})
+        sys.exit(1)
+
     client = SMTPClient()
     success = client.send_email(
         sender_email=sender_email,

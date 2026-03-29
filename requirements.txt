@@ -1,11 +1,6 @@
-aiohttp
-numpy
 pandas
-colorama
-openpyxl
-psutil
-playwright
-cloudscraper
+numpy
 requests
 selenium
 webdriver-manager
+openpyxl

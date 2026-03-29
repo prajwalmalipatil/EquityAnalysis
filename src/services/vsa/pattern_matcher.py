@@ -56,6 +56,22 @@ class AnomalyV2Matcher:
     """
     
     @staticmethod
+    def match_volume_spike(current: float, previous: float, threshold: float = 2.0) -> Optional[str]:
+        """Simple spike detection (>200% of previous)."""
+        if previous <= 0: return None
+        if current > previous * threshold:
+            return "Volume Spike"
+        return None
+
+    @staticmethod
+    def match_volume_drop(current: float, previous: float, threshold: float = 0.5) -> Optional[str]:
+        """Simple drop detection (<50% of previous)."""
+        if previous <= 0: return None
+        if current < previous * threshold:
+            return "Volume Drop"
+        return None
+
+    @staticmethod
     def classify(drop_pct: float, ohlc: Dict[str, float], prev_close: float, prev_open: float) -> AnomalyClassification:
         """Main entry point for Anomaly V2 classification."""
         # Derived flags

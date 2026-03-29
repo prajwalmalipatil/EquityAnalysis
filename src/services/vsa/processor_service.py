@@ -172,10 +172,12 @@ class VSAProcessorService:
     def _apply_signals(self, df: pd.DataFrame) -> pd.DataFrame:
         """Iterates and applies pattern matching logic."""
         signals = []
+        anomaly_v2 = []
         
-        # Classic VSA - Vectorized application would be better, but loop is safer for refactor consistency
         for i in range(len(df)):
             row = df.iloc[i]
+            
+            # 1. Classic VSA
             signal = VSAClassicMatcher.match_climax(
                 row["Volume"], row["Volume_MA"], row["Spread"], row["Spread_MA"],
                 row["Close_Position"], row["Price_Trend"]
@@ -187,11 +189,20 @@ class VSAProcessorService:
             
             signals.append(signal or "No Signal")
             
+            # 2. Anomaly V2 (Volume Spike/Drop)
+            # Need previous row for some matches - simplify for now
+            prev_vol = df.iloc[i-1]["Volume"] if i > 0 else row["Volume"]
+            v2 = AnomalyV2Matcher.match_volume_spike(row["Volume"], prev_vol)
+            if not v2:
+                v2 = AnomalyV2Matcher.match_volume_drop(row["Volume"], prev_vol)
+            anomaly_v2.append(v2 or "Neutral")
+            
         df["Signal_Type"] = signals
+        df["Anomaly_V2"] = anomaly_v2
         return df
 
     def _save_results(self, df: pd.DataFrame, symbol: str):
-        """Saves as Excel and applies formatting."""
+        """Saves as Excel, applies formatting, and distributes to signal folders."""
         res_dir = self.output_base / const.RESULTS_DIR_NAME
         out_path = res_dir / f"{symbol}_VSA.xlsx"
         
@@ -204,3 +215,20 @@ class VSAProcessorService:
         ExcelFormatter.apply_standard_styling(wb, "VSA_Analysis")
         ExcelFormatter.add_vsa_legend(wb)
         wb.save(out_path)
+        
+        # Distribution based on last row signal
+        if df.empty:
+            return
+            
+        latest = df.iloc[-1]
+        
+        # 1. Trending (Any Classic VSA Signal)
+        if latest["Signal_Type"] != "No Signal":
+            shutil.copy(out_path, self.output_base / const.TRENDING_DIR_NAME)
+            
+        # 2. Anomaly (Volume Spike/Drop)
+        if "Spike" in str(latest["Anomaly_V2"]) or "Drop" in str(latest["Anomaly_V2"]):
+            shutil.copy(out_path, self.output_base / const.ANOMALY_DIR_NAME)
+            
+        # 3. Ticker (All results, or high priority?)
+        shutil.copy(out_path, self.output_base / const.TICKER_DIR_NAME)

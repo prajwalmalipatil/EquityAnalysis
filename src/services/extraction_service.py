@@ -46,7 +46,7 @@ class ExtractionService:
         
         # Clean and validate NSE symbol format (Alphanumeric, underscores, hyphens, dots)
         cleaned = []
-        pattern = re.compile(r'^[A-Z0-9_\-\.]{1,20}$')
+        pattern = re.compile(r'^[A-Z0-9_\-\.&]{1,25}$')
         
         for s in raw_list:
             s_up = s.strip().upper()
