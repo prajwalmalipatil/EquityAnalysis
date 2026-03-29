@@ -31,7 +31,12 @@ class VSAProcessorService:
     
     def __init__(self, output_base: Path):
         self.output_base = output_base
-        self._processed_metadata = [] # To store ranking info
+        self._processed_metadata = [] 
+        # Global Counters for summary reporting
+        self.stats = {
+            "total_signals": 0, "confirmed": 0, "failed": 0, 
+            "pending": 0, "fire": 0, "success_files": 0
+        }
         self._ensure_dirs(clean=True)
 
     def _ensure_dirs(self, clean: bool = False):
@@ -39,7 +44,7 @@ class VSAProcessorService:
         dirs = [
             const.RESULTS_DIR_NAME, const.TRENDING_DIR_NAME, 
             const.ANOMALY_DIR_NAME, const.TICKER_DIR_NAME,
-            const.TRIGGERS_DIR_NAME
+            const.TRIGGERS_DIR_NAME, const.EFFORTS_DIR_NAME
         ]
         for d in dirs:
             dir_path = self.output_base / d
@@ -61,44 +66,71 @@ class VSAProcessorService:
             symbol = file_path.stem.split('_')[0]
             out_path = self.output_base / const.RESULTS_DIR_NAME / f"{symbol}_VSA.xlsx"
             
+            # Sub-stats for granular logging
+            f_stats = {
+                "conf": len(df[df["Validation_Status"] == "Confirmed ✅"]),
+                "fail": len(df[df["Validation_Status"] == "Failed ❌"]),
+                "pend": len(df[df["Validation_Status"] == "Pending ⏳"]),
+                "fire": len(df[df["Confirmed_Fire"] == "🔥"]) if "Confirmed_Fire" in df.columns else 0
+            }
+            
+            # Update global stats
+            self.stats["total_signals"] += len(df[df["Signal_Type"] != "No Signal"])
+            self.stats["confirmed"] += f_stats["conf"]
+            self.stats["failed"] += f_stats["fail"]
+            self.stats["pending"] += f_stats["pend"]
+            self.stats["fire"] += f_stats["fire"]
+            self.stats["success_files"] += 1
+
             # Create rich Excel output
             with pd.ExcelWriter(out_path, engine='openpyxl') as writer:
-                # 1. Main Analysis Sheet
                 df.to_excel(writer, sheet_name="VSA_Analysis", index=False)
                 
-                # 2. Processing Log (Audit trail)
+                # Signal Summary sheet (matching legacy)
+                sig_counts = df["Signal_Type"].value_counts().reset_index()
+                sig_counts.columns = ["Signal", "Count"]
+                sig_counts.to_excel(writer, sheet_name="Signal_Summary", index=False)
+                
                 log_df = pd.DataFrame([
-                    {"Artifact": "Processing Engine", "Value": "V² Money V2.1"},
+                    {"Artifact": "Processing Engine", "Value": "V² Money V2.1 Prod"},
                     {"Artifact": "Analysis Timestamp", "Value": datetime.now().isoformat()},
                     {"Artifact": "Source File", "Value": str(file_path.name)},
-                    {"Artifact": "Rows Analyzed", "Value": len(df)}
+                    {"Artifact": "Rows Analyzed", "Value": len(df)},
+                    {"Artifact": "Confirmed Signals", "Value": f_stats["conf"]},
+                    {"Artifact": "Failed Signals", "Value": f_stats["fail"]}
                 ])
                 log_df.to_excel(writer, sheet_name="Processing_Log", index=False)
                 
-                # 3. Indicator Metadata
                 meta_df = pd.DataFrame([
-                    {"Indicator": "Volume_MA", "Description": "20-period simple moving average of volume"},
+                    {"Indicator": "Volume_MA", "Description": "20-period volume average"},
                     {"Indicator": "Spread", "Description": "High - Low"},
-                    {"Indicator": "Close_Position", "Description": "Relative position of close in high-low range (0-1)"},
-                    {"Indicator": "Price_Trend", "Description": "Trend state: 2 (Strong Up) to -2 (Strong Down)"}
+                    {"Indicator": "Fire", "Description": "Volume-spread anomaly (🔥)"}
                 ])
                 meta_df.to_excel(writer, sheet_name="Indicator_Meta", index=False)
 
-            # Apply UI Styling from formatters.py
+            # Apply UI Styling
             from openpyxl import load_workbook
             wb = load_workbook(out_path)
             ExcelFormatter.apply_standard_styling(wb, "VSA_Analysis")
             ExcelFormatter.add_vsa_legend(wb)
             wb.save(out_path)
             
+            # Progress log (legacy style)
+            status_str = f"✅{f_stats['conf']} ❌{f_stats['fail']} ⏳{f_stats['pend']}"
+            if f_stats['fire'] > 0: status_str += f" 🔥{f_stats['fire']}"
+            logger.info(f"PROCESSED: {symbol:<20} → {status_str}")
+
             latest = df.iloc[-1]
+            # Track for post-processing
             self._processed_metadata.append({
                 "symbol": symbol,
                 "path": out_path,
                 "vol_pct": float(latest.get("Vol_Pct", 0)),
                 "vsa_signal": str(latest.get("Signal_Type", "No Signal")),
                 "vsa_confidence": float(latest.get("Confidence", 0)),
-                "is_trigger": (latest["Volume"] < df.iloc[-2]["Volume"] and latest["Spread"] > df.iloc[-2]["Spread"]) if len(df) > 1 else False
+                "is_trigger": (latest["Volume"] < df.iloc[-2]["Volume"] and latest["Spread"] > df.iloc[-2]["Spread"]) if len(df) > 1 else False,
+                "is_trending": "Climax" in str(latest.get("Signal_Type", "")),
+                "is_effort": "No" in str(latest.get("Signal_Type", "")) or "Climax" in str(latest.get("Signal_Type", ""))
             })
             return True
         except Exception as e:
@@ -106,27 +138,38 @@ class VSAProcessorService:
             return False
 
     def finalize_run(self):
-        """Disributes files to folders to match EXACT target stats."""
-        # 1. Trending (Target: 0) - Only Climax signals
-        trending = [m for m in self._processed_metadata if "Climax" in m["vsa_signal"]]
-        for m in trending: shutil.copy(m["path"], self.output_base / const.TRENDING_DIR_NAME)
+        """Disributes files to folders based on ACTUAL found patterns (Parity with legacy logic)."""
+        logger.info("-" * 60)
+        logger.info("Generating Pattern Folders (Trending, Efforts, Ticker, etc.)")
+        logger.info("-" * 60)
         
-        # 2. Anomaly (Target: 18) - Top 18 by most significant Volume Drop
-        # Sorting by vol_pct (most negative first)
-        sorted_anomalies = sorted(self._processed_metadata, key=lambda x: x["vol_pct"])
-        for m in sorted_anomalies[:18]:
-            shutil.copy(m["path"], self.output_base / const.ANOMALY_DIR_NAME)
+        # 1. Trending - Symbols with recent climax activity
+        trending = [m for m in self._processed_metadata if m["is_trending"]]
+        for m in trending: 
+            shutil.copy(m["path"], self.output_base / const.TRENDING_DIR_NAME)
+            logger.info(f"TRENDING: {m['symbol']} → Copied to Trending")
+        
+        # 2. Efforts (Target: symbols with "No Demand/Supply" or "Climax" patterns)
+        efforts = [m for m in self._processed_metadata if m["is_effort"]]
+        for m in efforts:
+            shutil.copy(m["path"], self.output_base / const.EFFORTS_DIR_NAME)
             
-        # 3. High-Prob Signals (Target: 2) - Top 2 by VSA Confidence (must be Test/Upthrust)
-        ticker_candidates = [m for m in self._processed_metadata if "Test" in m["vsa_signal"] or "Upthrust" in m["vsa_signal"]]
-        sorted_tickers = sorted(ticker_candidates, key=lambda x: x["vsa_confidence"], reverse=True)
-        for m in sorted_tickers[:2]:
+        # 3. Ticker (High Prob Patterns - Test or Upthrust at extremes)
+        tickers = [m for m in self._processed_metadata if ("Test" in m["vsa_signal"] or "Upthrust" in m["vsa_signal"]) and m["vsa_confidence"] > 0.7]
+        for m in tickers:
             shutil.copy(m["path"], self.output_base / const.TICKER_DIR_NAME)
+            logger.info(f"TICKER Candidate: {m['symbol']} (Confidence: {m['vsa_confidence']})")
             
-        # 4. Triggers
-        for m in self._processed_metadata:
-            if m["is_trigger"]:
-                shutil.copy(m["path"], self.output_base / const.TRIGGERS_DIR_NAME)
+        # 4. Triggers (Volume drop + Spread increase)
+        triggers = [m for m in self._processed_metadata if m["is_trigger"]]
+        for m in triggers:
+            shutil.copy(m["path"], self.output_base / const.TRIGGERS_DIR_NAME)
+            
+        # 5. Anomaly (Significant volume changes)
+        anomalies = [m for m in self._processed_metadata if abs(m["vol_pct"]) > 200]
+        for m in anomalies:
+            shutil.copy(m["path"], self.output_base / const.ANOMALY_DIR_NAME)
+
 
     def _load_and_clean(self, path: Path) -> pd.DataFrame:
         """Robust NSE CSV loader."""

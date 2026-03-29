@@ -50,14 +50,46 @@ def main():
                     success_count += 1
             except Exception as e:
                 logger.error("WORKER_EXECUTION_FAILED", extra={"error": str(e)})
-    # Finalize and Distribute (Targeting: 205, 0, 2, 18)
+    # Finalize and Distribute
     service.finalize_run()
-                
-    logger.info("VSA_PROCESSING_COMPLETE", extra={
-        "total": len(csv_files),
-        "success": success_count,
-        "failed": len(csv_files) - success_count
-    })
+    
+    # ------------------------------------------------------------
+    # LEGACY SUMMARY PARITY: Signal / Trending / Anomaly Reports
+    # ------------------------------------------------------------
+    logger.info("\n" + "="*60)
+    logger.info("PROCESSING COMPLETE")
+    logger.info("="*60)
+    logger.info(f"Files Found: {len(csv_files)}")
+    logger.info(f"Successfully Processed: {success_count}")
+    logger.info(f"Skipped/Failed: {len(csv_files) - success_count}")
+    
+    s = service.stats
+    logger.info("\nSIGNAL ANALYSIS:")
+    logger.info(f"  Total Signals Detected: {s['total_signals']:,}")
+    logger.info(f"  Confirmed: {s['confirmed']:,}")
+    logger.info(f"  Failed: {s['failed']:,}")
+    logger.info(f"  Pending: {s['pending']:,}")
+    logger.info(f"  Fire Signals (🔥): {s['fire']:,}")
+    
+    if s['total_signals'] > 0:
+        logger.info(f"  Confirmation Rate: {(s['confirmed']/s['total_signals'])*100:.1f}%")
+
+    # Pattern Distribution Summary
+    trending_count = len(list((input_folder / "Trending").glob("*.xlsx")))
+    anomaly_count = len(list((input_folder / "Anomaly").glob("*.xlsx")))
+    ticker_count = len(list((input_folder / "Ticker").glob("*.xlsx")))
+    trigger_count = len(list((input_folder / "Triggers").glob("*.xlsx")))
+    effort_count = len(list((input_folder / "Efforts").glob("*.xlsx")))
+
+    logger.info("\nFOLDER DISTRIBUTION:")
+    logger.info(f"  Trending: {trending_count} files")
+    logger.info(f"  Anomaly:  {anomaly_count} files")
+    logger.info(f"  Ticker:   {ticker_count} files")
+    logger.info(f"  Triggers: {trigger_count} files")
+    logger.info(f"  Efforts:  {effort_count} files")
+    logger.info("="*60)
+    logger.info("✅ VSA Analysis Run Finished Successfully")
+
 
 if __name__ == "__main__":
     main()
