@@ -131,13 +131,15 @@ class VSAProcessorService:
             # Trending: Any confirmed signal in last 5 days
             is_trending = (recent_df["Validation_Status"] == "Confirmed ✅").any()
             
-            # Efforts: Any no demand/supply in last 5 days
-            has_effort = recent_df["Effort_Result"].str.contains("no demand", case=False).any() or \
-                         recent_df["Effort_Result"].str.contains("no supply", case=False).any()
+            # Efforts: Any no demand/supply in last 5 days (Underscore Neutral)
+            recent_efforts = recent_df["Effort_Result"].fillna("").str.replace("_", " ").str.lower()
+            has_effort = recent_efforts.str.contains("no demand").any() or \
+                         recent_efforts.str.contains("no supply").any()
             
             # Ticker: ANY signal + no demand/supply on LATEST date
+            latest_effort = str(latest["Effort_Result"]).replace("_", " ").lower()
             has_ticker = (latest["Signal_Type"] != "No Signal") and \
-                         ("no demand" in str(latest["Effort_Result"]).lower() or "no supply" in str(latest["Effort_Result"]).lower())
+                         ("no demand" in latest_effort or "no supply" in latest_effort)
             
             # Trigger: Vol < Prev and Spread > Prev
             has_trigger = latest["Volume"] < prev["Volume"] and latest["Spread"] > prev["Spread"]
