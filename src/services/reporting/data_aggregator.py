@@ -23,6 +23,7 @@ class DataAggregator:
     def aggregate_pipeline_stats(self) -> Dict:
         """Collects high-level counts for the report summary."""
         return {
+            "extraction_count": len(list(self.base_dir.glob("*.csv"))),
             "vsa": self._count_files(const.RESULTS_DIR_NAME),
             "trending": self._count_files(const.TRENDING_DIR_NAME),
             "anomaly": self._count_files(const.ANOMALY_DIR_NAME),

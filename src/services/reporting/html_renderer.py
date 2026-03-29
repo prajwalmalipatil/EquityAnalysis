@@ -84,7 +84,7 @@ class HTMLRenderer:
                     <div class="section-header">📊 STAGE STATISTICS</div>
                     <div class="stat-box">
                         <div class="stat-label">EXTRACTION SUCCESS</div>
-                        <div class="stat-value">208 / 208</div>
+                        <div class="stat-value">{stats.get('extraction_count', 208)} / 208</div>
                     </div>
                     <div class="stat-box">
                         <div class="stat-label">VSA SYMBOLS ANALYZED</div>
