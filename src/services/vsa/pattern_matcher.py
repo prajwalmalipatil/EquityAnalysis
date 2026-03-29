@@ -14,7 +14,8 @@ class VSAClassicMatcher:
     @staticmethod
     def match_signal(vol: float, vol_ma: float, spr: float, spr_ma: float, 
                      close_pos: float, trend: int, is_up: bool, 
-                     is_down: bool, prev_up: bool) -> Optional[VSAClassification]:
+                     is_down: bool, prev_up: bool, 
+                     support: float = 0.0, low: float = 0.0) -> Optional[VSAClassification]:
         
         v_ultra = vol_ma * const.ULTRA_HIGH_VOLUME
         v_high = vol_ma * const.HIGH_VOLUME
@@ -42,10 +43,11 @@ class VSAClassicMatcher:
         if vol > v_high and spr < s_narr and const.MID_CLOSE_LOW <= close_pos <= const.MID_CLOSE_HIGH:
             return VSAClassification(pattern_name="Stopping Volume (Potential Reversal)", sentiment="Bullish", effort_vs_result="Absorption", confidence=0.75, description="High volume absorption in narrow range.")
 
-        # 5. Test (Bullish)
+        # 5. Test (Bullish) - Requires support context for Ticker parity
         if vol < v_low and is_down:
-            # We'll rely on the caller to verify support context for full parity
-            return VSAClassification(pattern_name="Test (Bullish)", sentiment="Bullish", effort_vs_result="No Supply", confidence=0.80, description="Low volume test of supply.")
+            # Legacy requires low near 20-day support
+            if low <= support * (1 + const.SUPPORT_TOLERANCE):
+                return VSAClassification(pattern_name="Test (Bullish)", sentiment="Bullish", effort_vs_result="No Supply", confidence=0.80, description="Low volume test of supply.")
 
         return None
 

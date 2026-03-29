@@ -15,7 +15,8 @@ from datetime import datetime
 from src.services.vsa.indicators import (
     calculate_spread, calculate_close_position, 
     calculate_moving_average, calculate_price_trend, 
-    detect_bar_types, calculate_effort_vs_result
+    detect_bar_types, calculate_effort_vs_result,
+    calculate_support_resistance
 )
 from .pattern_matcher import VSAClassicMatcher, AnomalyV2Matcher
 from .formatters import ExcelFormatter
@@ -253,6 +254,10 @@ class VSAProcessorService:
         df["Close_MA"] = calculate_moving_average(close, 20)
         df["Price_Trend"] = calculate_price_trend(close, df["Close_MA"].values)
         df["IsUpBar"], df["IsDownBar"], _ = detect_bar_types(df["Open"].values, close, df["Spread"].values)
+        
+        # Support/Resistance context
+        df["Support_20"], df["Resistance_20"] = calculate_support_resistance(low, high, 20)
+        
         df["Prev_Volume"] = df["Volume"].shift(1).fillna(df["Volume"])
         df["Prev_Spread"] = df["Spread"].shift(1).fillna(df["Spread"])
         df["Vol_Pct"] = ((df["Volume"] - df["Prev_Volume"]) / df["Prev_Volume"]) * 100
@@ -273,32 +278,41 @@ class VSAProcessorService:
             vsa_res = VSAClassicMatcher.match_signal(
                 row["Volume"], row["Volume_MA"], row["Spread"], 
                 row["Spread_MA"], row["Close_Position"], row["Price_Trend"], 
-                row["IsUpBar"], row["IsDownBar"], prev_up
+                row["IsUpBar"], row["IsDownBar"], prev_up,
+                row["Support_20"], row["Low"]
             )
             
             # 1. Base Signal logic
             if vsa_res:
-                current_signal = vsa_res.pattern_name
-                signals.append(vsa_res.pattern_name) # No sentiment suffix to match legacy patterns list
+                signals.append(vsa_res.pattern_name)
                 efforts.append(vsa_res.effort_vs_result)
                 confidences.append(vsa_res.confidence)
                 descriptions.append(vsa_res.description)
                 
-                # 2. Vectorized Forward Validation (Lookahead Window)
-                # Matches legacy logic: check for ANY confirmation bar in the next 3-5 days
+                # 2. Pattern-Specific Forward Validation (EXACT Legacy Rules)
                 status = "Pending ⏳"
                 if i + lookup_days < len(df):
-                    status = "Failed ❌" # Default if no confirmation found in window
+                    status = "Failed ❌"
                     for j in range(1, lookup_days + 1):
-                        future_row = df.iloc[i + j]
+                        f = df.iloc[i + j]
                         
-                        # Simplified Confirmation logic for all patterns (port matching legacy rules)
                         is_success = False
-                        if vsa_res.sentiment == "Bullish":
-                            if future_row["Close"] > row["Close"] * 1.01: is_success = True
-                        else:
-                            if future_row["Close"] < row["Close"] * 0.99: is_success = True
-                            
+                        sig = vsa_res.pattern_name
+                        
+                        if sig == "Upthrust (Bearish)":
+                            if f["IsDownBar"] and f["Volume"] >= row["Volume"] * 0.8: is_success = True
+                        elif sig == "No Demand (Bearish Weakness)":
+                            if j <= 2 and (f["IsDownBar"] or (f["IsUpBar"] and f["Volume"] < f["Volume_MA"] * 0.8)): is_success = True
+                        elif sig == "Stopping Volume (Potential Reversal)":
+                            if j >= 2 and f["Close"] > row["Close"] and f["Low"] >= row["Low"] * 0.99: is_success = True
+                        elif "Climax" in sig:
+                            if vsa_res.sentiment == "Bullish":
+                                if f["IsUpBar"] and f["Close"] > row["Close"]: is_success = True
+                            else:
+                                if f["IsDownBar"] and f["Close"] < row["Close"]: is_success = True
+                        elif sig == "Test (Bullish)":
+                            if f["Close"] > row["Close"] * 1.02: is_success = True
+                        
                         if is_success:
                             status = "Confirmed ✅"
                             break

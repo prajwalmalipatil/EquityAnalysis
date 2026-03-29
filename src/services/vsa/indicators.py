@@ -90,3 +90,9 @@ def calculate_effort_vs_result(df: pd.DataFrame) -> List[str]:
         effort_results.append(res)
         
     return effort_results
+
+def calculate_support_resistance(low: np.ndarray, high: np.ndarray, window: int = 20) -> Tuple[np.ndarray, np.ndarray]:
+    """Calculates rolling support and resistance zones."""
+    support = pd.Series(low).rolling(window=window, min_periods=1).min().to_numpy()
+    resistance = pd.Series(high).rolling(window=window, min_periods=1).max().to_numpy()
+    return support, resistance
