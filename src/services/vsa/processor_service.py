@@ -15,7 +15,7 @@ from datetime import datetime
 from src.services.vsa.indicators import (
     calculate_spread, calculate_close_position, 
     calculate_moving_average, calculate_price_trend, 
-    detect_bar_types
+    detect_bar_types, calculate_effort_vs_result
 )
 from .pattern_matcher import VSAClassicMatcher, AnomalyV2Matcher
 from .formatters import ExcelFormatter
@@ -121,16 +121,42 @@ class VSAProcessorService:
             logger.info(f"PROCESSED: {symbol:<20} → {status_str}")
 
             latest = df.iloc[-1]
+            prev = df.iloc[-2] if len(df) > 1 else latest
+            prev2 = df.iloc[-3] if len(df) > 2 else prev
+            prev3 = df.iloc[-4] if len(df) > 3 else prev2
+            
+            # Legacy Parity Logic for Folders
+            recent_df = df.iloc[-5:] if len(df) >= 5 else df
+            
+            # Trending: Any confirmed signal in last 5 days
+            is_trending = (recent_df["Validation_Status"] == "Confirmed ✅").any()
+            
+            # Efforts: Any no demand/supply in last 5 days
+            has_effort = recent_df["Effort_Result"].str.contains("no demand", case=False).any() or \
+                         recent_df["Effort_Result"].str.contains("no supply", case=False).any()
+            
+            # Ticker: ANY signal + no demand/supply on LATEST date
+            has_ticker = (latest["Signal_Type"] != "No Signal") and \
+                         ("no demand" in str(latest["Effort_Result"]).lower() or "no supply" in str(latest["Effort_Result"]).lower())
+            
+            # Trigger: Vol < Prev and Spread > Prev
+            has_trigger = latest["Volume"] < prev["Volume"] and latest["Spread"] > prev["Spread"]
+            
+            # Anomaly: 3-day build-up then drop
+            has_anomaly = latest["Volume"] < prev["Volume"] and prev["Volume"] > prev2["Volume"] and prev2["Volume"] > prev3["Volume"]
+
             # Track for post-processing
             self._processed_metadata.append({
                 "symbol": symbol,
                 "path": out_path,
+                "is_trending": bool(is_trending),
+                "is_effort": bool(has_effort),
+                "is_ticker": bool(has_ticker),
+                "is_trigger": bool(has_trigger),
+                "is_anomaly": bool(has_anomaly),
                 "vol_pct": float(latest.get("Vol_Pct", 0)),
                 "vsa_signal": str(latest.get("Signal_Type", "No Signal")),
-                "vsa_confidence": float(latest.get("Confidence", 0)),
-                "is_trigger": (latest["Volume"] < df.iloc[-2]["Volume"] and latest["Spread"] > df.iloc[-2]["Spread"]) if len(df) > 1 else False,
-                "is_trending": "Climax" in str(latest.get("Signal_Type", "")),
-                "is_effort": "No" in str(latest.get("Signal_Type", "")) or "Climax" in str(latest.get("Signal_Type", ""))
+                "vsa_confidence": float(latest.get("Confidence", 0))
             })
             return True
         except Exception as e:
@@ -143,32 +169,35 @@ class VSAProcessorService:
         logger.info("Generating Pattern Folders (Trending, Efforts, Ticker, etc.)")
         logger.info("-" * 60)
         
-        # 1. Trending - Symbols with recent climax activity
+        # 1. Trending - Symbols with recent confirmed signals
         trending = [m for m in self._processed_metadata if m["is_trending"]]
         for m in trending: 
             shutil.copy(m["path"], self.output_base / const.TRENDING_DIR_NAME)
-            logger.info(f"TRENDING: {m['symbol']} → Copied to Trending")
+        logger.info(f"POST_PROCESS: Trending Filtered {len(trending)} symbols")
         
-        # 2. Efforts (Target: symbols with "No Demand/Supply" or "Climax" patterns)
+        # 2. Efforts (Target: symbols with "No Demand/Supply" patterns recently)
         efforts = [m for m in self._processed_metadata if m["is_effort"]]
         for m in efforts:
             shutil.copy(m["path"], self.output_base / const.EFFORTS_DIR_NAME)
+        logger.info(f"POST_PROCESS: Efforts Filtered {len(efforts)} symbols")
             
-        # 3. Ticker (High Prob Patterns - Test or Upthrust at extremes)
-        tickers = [m for m in self._processed_metadata if ("Test" in m["vsa_signal"] or "Upthrust" in m["vsa_signal"]) and m["vsa_confidence"] > 0.7]
+        # 3. Ticker (Signal + Effort on Latest date)
+        tickers = [m for m in self._processed_metadata if m["is_ticker"]]
         for m in tickers:
             shutil.copy(m["path"], self.output_base / const.TICKER_DIR_NAME)
-            logger.info(f"TICKER Candidate: {m['symbol']} (Confidence: {m['vsa_confidence']})")
+        logger.info(f"POST_PROCESS: Ticker Filtered {len(tickers)} symbols")
             
-        # 4. Triggers (Volume drop + Spread increase)
+        # 4. Triggers (Strict VSA Trigger: Vol < Prev & Spread > Prev)
         triggers = [m for m in self._processed_metadata if m["is_trigger"]]
         for m in triggers:
             shutil.copy(m["path"], self.output_base / const.TRIGGERS_DIR_NAME)
+        logger.info(f"POST_PROCESS: Triggers Filtered {len(triggers)} symbols")
             
-        # 5. Anomaly (Significant volume changes)
-        anomalies = [m for m in self._processed_metadata if abs(m["vol_pct"]) > 200]
+        # 5. Anomaly (3-day build-up then drop)
+        anomalies = [m for m in self._processed_metadata if m["is_anomaly"]]
         for m in anomalies:
             shutil.copy(m["path"], self.output_base / const.ANOMALY_DIR_NAME)
+        logger.info(f"POST_PROCESS: Anomaly Filtered {len(anomalies)} symbols")
 
 
     def _load_and_clean(self, path: Path) -> pd.DataFrame:
@@ -271,7 +300,7 @@ class VSAProcessorService:
             confirmed_fire.append("🔥" if is_fire else "")
 
         df["Signal_Type"] = signals
-        df["Effort_vs_Result"] = efforts
+        df["Effort_Result"] = calculate_effort_vs_result(df)
         df["Validation_Status"] = validation_status
         df["Confirmed_Fire"] = confirmed_fire
         df["Confidence"] = confidences

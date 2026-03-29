@@ -47,3 +47,46 @@ def detect_bar_types(open_p: np.ndarray, close_p: np.ndarray, spread: np.ndarray
     is_down = close_p < open_p
     is_doji = np.abs(close_p - open_p) <= spread * 0.1
     return is_up, is_down, is_doji
+
+def calculate_effort_vs_result(df: pd.DataFrame) -> List[str]:
+    """
+    Port of legacy Effort vs Result logic.
+    Categorizes the 'effort' (volume) vs the 'result' (price movement).
+    """
+    n = len(df)
+    if n == 0: return []
+    effort_results = ["Normal_Activity"]
+    
+    vol = df["Volume"].to_numpy()
+    close = df["Close"].to_numpy()
+    spread = df["Spread"].to_numpy()
+    close_pos = df["Close_Position"].to_numpy()
+    
+    # Vectorized calculations for speed
+    vol_ratio = vol[1:] / np.maximum(vol[:-1], 1)
+    price_change = (close[1:] - close[:-1]) / np.maximum(close[:-1], 0.001)
+    spread_ratio = spread[1:] / np.maximum(spread[:-1], 0.001)
+    cp = close_pos[1:]
+    
+    for i in range(len(vol_ratio)):
+        res = "Normal_Activity"
+        vr, pc, sr, current_cp = vol_ratio[i], price_change[i], spread_ratio[i], cp[i]
+        
+        if vr > 1.5: # HIGH_VOLUME threshold from legacy
+            if abs(pc) < 0.005:
+                if current_cp > 0.6: res = "Absorption_Bullish"
+                elif current_cp < 0.4: res = "Absorption_Bearish"
+                else: res = "Professional_Activity"
+            elif pc < -0.01: res = "Panic_Selling"
+            elif pc > 0.01:
+                if sr < 0.8: res = "Hidden_Buying"
+                else: res = "Genuine_Buying"
+        elif vr < 0.7: # LOW_VOLUME threshold
+            if abs(pc) > 0.01:
+                res = "No_Supply" if pc > 0 else "No_Demand"
+            else:
+                res = "Quiet_Market"
+        
+        effort_results.append(res)
+        
+    return effort_results

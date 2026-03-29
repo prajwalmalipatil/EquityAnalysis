@@ -53,7 +53,7 @@ class DataAggregator:
             sentiment = vsa_full.split("(")[1].replace(")", "") if "(" in vsa_full else "Neutral"
             description = str(latest.get("Description", "Classic VSA signal detected."))
             confidence = float(latest.get("Confidence", 0.85))
-            effort = str(latest.get("Effort_vs_Result", "Neutral"))
+            effort = str(latest.get("Effort_Result", "Neutral"))
         else:
             pattern_name = str(latest.get("Anomaly_V2", "No Signal"))
             sentiment = "Neutral"
@@ -64,7 +64,7 @@ class DataAggregator:
             
             description = f"Advanced Anomaly Detected: {pattern_name}. Structural shifts observed in volume/price relationship."
             confidence = 0.70
-            effort = str(latest.get("Effort_vs_Result", "Neutral"))
+            effort = str(latest.get("Effort_Result", "Neutral"))
             
         return {
             "symbol": symbol,
