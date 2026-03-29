@@ -1,3 +1,27 @@
-# Ignore all data, results, and logs
-equity_data/**
-!equity_data/.gitkeep
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Data and Results
+equity_data*/
+!equity_data*/.gitkeep
+*.xlsx
+*.csv
+!symbols.txt
+!test_symbols.txt
+!requirements.txt
+
+# Logs and Errors
+*_log.txt
+vsa_error*.txt
+*.log
+
+# Reports and Debugging
+*.html
+.DS_Store
+
+# Temporary files
+tmp*

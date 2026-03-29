@@ -34,13 +34,24 @@ import multiprocessing
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import numpy as np
 import pandas as pd
-from colorama import init, Fore, Style
+try:
+    from colorama import init, Fore, Style
+except ImportError:
+    # Minimal fallback if colorama is missing
+    class Style: RESET_ALL = ''
+    class Fore: RED = GREEN = YELLOW = BLUE = MAGENTA = CYAN = WHITE = ''
+    def init(*args, **kwargs): pass
+
 from openpyxl import load_workbook
 from openpyxl.formatting.rule import FormulaRule
 from openpyxl.styles import PatternFill, Font, Border, Side
 from openpyxl.utils import get_column_letter
 import time
-import psutil
+
+try:
+    import psutil
+except ImportError:
+    psutil = None
 import random
 import os
 import unittest
@@ -392,10 +403,33 @@ class VSAAnalyzer:
         """
         orig_len = len(df)
         
-        # Normalize column names
-        df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
-        col_map = {"open": "Open", "high": "High", "low": "Low", "close": "Close", "volume": "Volume"}
-        df = df.rename(columns=col_map)
+        import re
+        df.columns = [re.sub(r'[\s_]+', '_', str(c).strip().strip('"').strip("'")).lower() for c in df.columns]
+        # Clean leading/trailing underscores that might result from stripping then regex
+        df.columns = [c.strip('_') for c in df.columns]
+        
+        # Comprehensive mapping for various NSE/Common formats
+        col_map = {
+            "open": "Open", "open_price": "Open",
+            "high": "High", "high_price": "High",
+            "low": "Low", "low_price": "Low",
+            "close": "Close", "close_price": "Close",
+            "volume": "Volume", "total_traded_quantity": "Volume", 
+            "qty": "Volume", "tottrdqty": "Volume", "trdqty": "Volume",
+            "date": "Date"
+        }
+        
+        # Apply mapping
+        df = df.rename(columns={c: col_map[c] for c in df.columns if c in col_map})
+        
+        # Robust fallback: search for keywords if columns are still missing
+        required_cols_check = ["Open", "High", "Low", "Close", "Volume"]
+        for col in required_cols_check:
+            if col not in df.columns:
+                for actual in df.columns:
+                    if col.lower() in actual:
+                        df = df.rename(columns={actual: col})
+                        break
         
         # Enhanced date parsing
         if "date" in df.columns:
@@ -2549,6 +2583,13 @@ Examples:
     total_pending = 0
     total_fire = 0
     
+    # Initialize post-processing symbol lists early to prevent UnboundLocalError
+    trending_symbols: List[str] = []
+    efforts_symbols: List[str] = []
+    ticker_symbols: List[str] = []
+    triggers_symbols: List[str] = []
+    anomaly_symbols: List[str] = []
+    
     # Process files in parallel
     with ProcessPoolExecutor(max_workers=args.workers) as executor:
         # SECURITY FIX: Validate all file paths before submission
@@ -2747,12 +2788,7 @@ Examples:
                 skipped_count += 1
                 logger.error(f"{result.name} → Excel processing error: {type(e).__name__}: {e}")
 
-            # FUNCTIONALITY FIX: Copy trending symbols and apply formatting
-    trending_symbols: List[str] = []
-    efforts_symbols: List[str] = []
-    ticker_symbols: List[str] = []
-    triggers_symbols: List[str] = []
-    anomaly_symbols: List[str] = []
+    # Post-processing: Generate folder exports if we have successful runs
     
     if success_count > 0:
         logger.info("\n" + "="*60)
@@ -2902,9 +2938,9 @@ Examples:
     logger.info(f"  Logs:     {logs_dir}")
     logger.info(f"  Trending: {trending_dir} ({len(trending_symbols)} files)")
     logger.info(f"  Efforts:  {efforts_dir} ({len(efforts_symbols)} files)")
-    logger.info(f"  Ticker:   {ticker_dir} ({len(ticker_symbols) if 'ticker_symbols' in locals() else 0} files)")
-    logger.info(f"  Triggers: {triggers_dir} ({len(triggers_symbols) if 'triggers_symbols' in locals() else 0} files)")
-    logger.info(f"  Anomaly:  {anomaly_dir} ({len(anomaly_symbols) if 'anomaly_symbols' in locals() else 0} files)")
+    logger.info(f"  Ticker:   {ticker_dir} ({len(ticker_symbols)} files)")
+    logger.info(f"  Triggers: {triggers_dir} ({len(triggers_symbols)} files)")
+    logger.info(f"  Anomaly:  {anomaly_dir} ({len(anomaly_symbols)} files)")
     logger.info("="*60)
     
     if success_count > 0:

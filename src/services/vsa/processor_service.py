@@ -10,6 +10,7 @@ from pathlib import Path
 import shutil
 from typing import List, Dict, Optional
 import os
+from datetime import datetime
 
 from src.services.vsa.indicators import (
     calculate_spread, calculate_close_position, 
@@ -47,18 +48,48 @@ class VSAProcessorService:
             dir_path.mkdir(parents=True, exist_ok=True)
 
     def process_file(self, file_path: Path) -> bool:
-        """Analyzes a single file and buffers metadata for final sorting."""
+        """Analyzes a single file and generates a professional multi-sheet Excel report."""
         try:
             df = self._load_and_clean(file_path)
-            if df.empty: return False
+            if df.empty: 
+                logger.warning("SKIPPING_EMPTY_OR_INVALID_FILE", extra={"path": str(file_path)})
+                return False
+                
             df = self._enrich_indicators(df)
             df = self._apply_signals(df)
             
             symbol = file_path.stem.split('_')[0]
             out_path = self.output_base / const.RESULTS_DIR_NAME / f"{symbol}_VSA.xlsx"
             
+            # Create rich Excel output
             with pd.ExcelWriter(out_path, engine='openpyxl') as writer:
+                # 1. Main Analysis Sheet
                 df.to_excel(writer, sheet_name="VSA_Analysis", index=False)
+                
+                # 2. Processing Log (Audit trail)
+                log_df = pd.DataFrame([
+                    {"Artifact": "Processing Engine", "Value": "V² Money V2.1"},
+                    {"Artifact": "Analysis Timestamp", "Value": datetime.now().isoformat()},
+                    {"Artifact": "Source File", "Value": str(file_path.name)},
+                    {"Artifact": "Rows Analyzed", "Value": len(df)}
+                ])
+                log_df.to_excel(writer, sheet_name="Processing_Log", index=False)
+                
+                # 3. Indicator Metadata
+                meta_df = pd.DataFrame([
+                    {"Indicator": "Volume_MA", "Description": "20-period simple moving average of volume"},
+                    {"Indicator": "Spread", "Description": "High - Low"},
+                    {"Indicator": "Close_Position", "Description": "Relative position of close in high-low range (0-1)"},
+                    {"Indicator": "Price_Trend", "Description": "Trend state: 2 (Strong Up) to -2 (Strong Down)"}
+                ])
+                meta_df.to_excel(writer, sheet_name="Indicator_Meta", index=False)
+
+            # Apply UI Styling from formatters.py
+            from openpyxl import load_workbook
+            wb = load_workbook(out_path)
+            ExcelFormatter.apply_standard_styling(wb, "VSA_Analysis")
+            ExcelFormatter.add_vsa_legend(wb)
+            wb.save(out_path)
             
             latest = df.iloc[-1]
             self._processed_metadata.append({
@@ -71,6 +102,7 @@ class VSAProcessorService:
             })
             return True
         except Exception as e:
+            logger.error("PROCESS_FILE_FAILED", extra={"path": str(file_path), "error": str(e)})
             return False
 
     def finalize_run(self):
@@ -100,16 +132,30 @@ class VSAProcessorService:
         """Robust NSE CSV loader."""
         try:
             df = pd.read_csv(path, encoding="utf-8-sig")
-            if df.empty: return pd.DataFrame()
-            cols = [str(c).strip().strip('"').strip("'").lower().replace(" ", "_") for c in df.columns]
-            df.columns = cols
-            col_map = {"open": "Open", "high": "High", "low": "Low", "close": "Close", "volume": "Volume", "qty": "Volume", "tottrdqty": "Volume", "total_traded_quantity": "Volume", "date": "Date"}
+            import re
+            df.columns = [re.sub(r'[\s_]+', '_', str(c).strip().strip('"').strip("'")).lower().strip('_') for c in df.columns]
+            # Comprehensive mapping for various NSE/Common formats
+            col_map = {
+                "open": "Open", "open_price": "Open",
+                "high": "High", "high_price": "High",
+                "low": "Low", "low_price": "Low",
+                "close": "Close", "close_price": "Close",
+                "volume": "Volume", "total_traded_quantity": "Volume", 
+                "qty": "Volume", "tottrdqty": "Volume", "trdqty": "Volume",
+                "date": "Date"
+            }
+            
+            # Apply mapping
             df = df.rename(columns={c: col_map[c] for c in df.columns if c in col_map})
+            
+            # Robust fallback: search for keywords if columns are still missing
             required = ["Open", "High", "Low", "Close", "Volume"]
             for col in required:
                 if col not in df.columns:
                     for actual in df.columns:
-                        if col.lower() in actual: df = df.rename(columns={actual: col}); break
+                        if col.lower() in actual:
+                            df = df.rename(columns={actual: col})
+                            break
             for col in required: df[col] = pd.to_numeric(df[col].astype(str).str.replace(",", "").str.strip(), errors='coerce')
             if "Date" in df.columns: 
                 df["Date"] = pd.to_datetime(df["Date"], errors='coerce', dayfirst=True)

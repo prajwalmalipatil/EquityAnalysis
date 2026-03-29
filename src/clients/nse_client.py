@@ -114,7 +114,7 @@ class NSEClient:
                 "symbol": symbol, 
                 "from": from_date, 
                 "to": to_date,
-                "msg": "Only headers received"
+                "detail": "Only headers received"
             })
             
         return resp
