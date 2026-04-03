@@ -48,6 +48,11 @@ def main():
     for sym in symbol_data["anomaly"]:
         details = aggregator.get_anomaly_details(sym)
         if details: anomaly_details.append(details)
+
+    eigen_details = []
+    for sym in symbol_data["eigen_filter"]:
+        details = aggregator.get_eigen_details(sym)
+        if details: eigen_details.append(details)
             
     # 3. Render Premium HTML
     renderer = HTMLRenderer()
@@ -56,7 +61,8 @@ def main():
         ticker_details=ticker_details,
         trigger_details=trigger_details,
         anomaly_details=anomaly_details,
-        trending_symbols=symbol_data["trending"]
+        trending_symbols=symbol_data["trending"],
+        eigen_details=eigen_details
     )
     
     # 4. Handle Output

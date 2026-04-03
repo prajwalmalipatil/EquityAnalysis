@@ -43,6 +43,11 @@ EFFORTS_DIR_NAME = "Efforts"
 TICKER_DIR_NAME = "Ticker"
 TRIGGERS_DIR_NAME = "Triggers"
 ANOMALY_DIR_NAME = "Anomaly"
+EIGEN_FILTER_DIR_NAME = "EigenFilter"
+
+# EigenFilter thresholds
+EIGEN_CLOSE_LOWER_BAND = 0.30
+EIGEN_CLOSE_UPPER_BAND = 0.70
 
 # Standard columns
 OHLCV_COLUMNS = ["Date", "Open", "High", "Low", "Close", "Volume"]

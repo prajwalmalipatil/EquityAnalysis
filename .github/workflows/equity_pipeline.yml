@@ -28,7 +28,7 @@ jobs:
         pip install -r requirements.txt
 
     - name: Clean Data Directory
-      run: mkdir -p equity_data && rm -rf equity_data/*.csv equity_data/Results/* equity_data/Trending/* equity_data/Anomaly/* equity_data/Ticker/* equity_data/Triggers/*
+      run: mkdir -p equity_data && rm -rf equity_data/*.csv equity_data/Results/* equity_data/Trending/* equity_data/Anomaly/* equity_data/Ticker/* equity_data/Triggers/* equity_data/EigenFilter/*
 
     - name: "Run Stage 1: Extraction"
       run: |
@@ -70,4 +70,5 @@ jobs:
           equity_data/Ticker/
           equity_data/Trending/
           equity_data/Anomaly/
+          equity_data/EigenFilter/
         retention-days: 7

@@ -49,3 +49,23 @@ class ProcessingResult:
     has_confirmed_recent: bool = False
     dropped_rows: int = 0
     reason: Optional[str] = None
+
+@dataclass
+class EigenClassification:
+    """Classifies a stock's volume-amplitude OHLC divergence eigenstate."""
+    symbol: str
+    gap_direction: str       # "Gap-Up" or "Gap-Down"
+    close_band: str          # "Weak" (≤0.30) or "Strong" (≥0.70)
+    label: str               # One of the 4 convergence/divergence labels
+    sentiment: str           # "Bullish" or "Bearish"
+    volume_surge_pct: float  # (T_vol - T1_vol) / T1_vol * 100
+    t_close_position: float  # Today's close position (0-1)
+    t1_close_position: float # Yesterday's close position (0-1)
+    delta_cp: float          # t_close_position - t1_close_position
+    t_open: float = 0.0
+    t_close: float = 0.0
+    t_spread: float = 0.0
+    t_volume: int = 0
+    t1_volume: int = 0
+    t1_close: float = 0.0
+

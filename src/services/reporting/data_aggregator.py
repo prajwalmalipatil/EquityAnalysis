@@ -28,7 +28,8 @@ class DataAggregator:
             "trending": self._count_files(const.TRENDING_DIR_NAME),
             "anomaly": self._count_files(const.ANOMALY_DIR_NAME),
             "ticker": self._count_files(const.TICKER_DIR_NAME),
-            "triggers": self._count_files(const.TRIGGERS_DIR_NAME)
+            "triggers": self._count_files(const.TRIGGERS_DIR_NAME),
+            "eigen_filter": self._count_files(const.EIGEN_FILTER_DIR_NAME)
         }
 
     def get_symbol_lists(self) -> Dict[str, List[str]]:
@@ -37,7 +38,8 @@ class DataAggregator:
             "trending": self._get_symbols(const.TRENDING_DIR_NAME),
             "anomaly": self._get_symbols(const.ANOMALY_DIR_NAME),
             "ticker": self._get_symbols(const.TICKER_DIR_NAME),
-            "triggers": self._get_symbols(const.TRIGGERS_DIR_NAME)
+            "triggers": self._get_symbols(const.TRIGGERS_DIR_NAME),
+            "eigen_filter": self._get_symbols(const.EIGEN_FILTER_DIR_NAME)
         }
 
     def get_ticker_details(self, symbol: str) -> Optional[Dict]:
@@ -129,3 +131,41 @@ class DataAggregator:
             return pd.read_excel(path, sheet_name="VSA_Analysis")
         except Exception:
             return None
+
+    def get_eigen_details(self, symbol: str) -> Optional[Dict]:
+        """Extracts EigenFilter classification details from a processed Excel file."""
+        df = self._read_latest(const.EIGEN_FILTER_DIR_NAME, symbol)
+        if df is None or len(df) < 2:
+            return None
+
+        latest, prev = df.iloc[-1], df.iloc[-2]
+        t_open = float(latest.get("Open", 0))
+        t_close = float(latest.get("Close", 0))
+        t1_close_val = float(prev.get("Close", 0))
+        t_cp = float(latest.get("Close_Position", 0.5))
+        t1_cp = float(prev.get("Close_Position", 0.5))
+        t_spread = float(latest.get("Spread", 0))
+        t_vol = int(latest.get("Volume", 0))
+        t1_vol = int(prev.get("Volume", 0))
+
+        gap_dir = "Gap-Up" if t_open > t1_close_val else "Gap-Down"
+        close_band = "Strong" if t_cp >= const.EIGEN_CLOSE_UPPER_BAND else "Weak"
+        delta_cp = round(t_cp - t1_cp, 4)
+        vol_delta = round(((t_vol - t1_vol) / max(t1_vol, 1)) * 100, 1)
+
+        label_map = {
+            ("Gap-Up", "Strong"): ("Bullish Impulse Convergence", "Bullish"),
+            ("Gap-Up", "Weak"): ("Contested Bullish Divergence", "Bullish"),
+            ("Gap-Down", "Weak"): ("Bearish Impulse Convergence", "Bearish"),
+            ("Gap-Down", "Strong"): ("Contested Bearish Divergence", "Bearish"),
+        }
+        label, sentiment = label_map.get((gap_dir, close_band), ("Unknown", "Neutral"))
+
+        return {
+            "symbol": symbol, "gap_dir": gap_dir, "close_band": close_band,
+            "label": label, "sentiment": sentiment,
+            "t_open": t_open, "t_close": t_close, "t_spread": t_spread,
+            "t_cp": round(t_cp, 4), "t1_cp": round(t1_cp, 4),
+            "delta_cp": delta_cp, "vol_delta_pct": vol_delta,
+            "t_vol": t_vol, "t1_vol": t1_vol,
+        }

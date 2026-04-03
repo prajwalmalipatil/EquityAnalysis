@@ -8,6 +8,7 @@ from .clients.nse_client import NSEClient
 from .services.extraction_service import ExtractionService
 
 from .services.vsa.processor_service import VSAProcessorService
+from .services.vsa.eigen_filter_service import EigenFilterService
 from .services.reporting.data_aggregator import DataAggregator
 from .services.reporting.html_renderer import HTMLRenderer
 from .clients.smtp_client import SMTPClient
@@ -25,6 +26,10 @@ def get_extraction_service(nse_client: NSEClient = None) -> ExtractionService:
 def get_vsa_processor_service(output_base: Path) -> VSAProcessorService:
     """Provides a VSAProcessorService."""
     return VSAProcessorService(output_base=output_base)
+
+def get_eigen_filter_service(base_dir: Path) -> EigenFilterService:
+    """Provides an EigenFilterService for post-VSA divergence classification."""
+    return EigenFilterService(base_dir=base_dir)
 
 def get_reporting_service(base_dir: Path):
     """Returns a tuple of (Aggregator, Renderer, SMTPClient) for reporting."""
