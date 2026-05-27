@@ -69,3 +69,20 @@ class EigenClassification:
     t1_volume: int = 0
     t1_close: float = 0.0
 
+
+@dataclass
+class AgeAgainClassification:
+    """Classifies a stock's volume-spread structural anomaly (AgeAgain Filter)."""
+    symbol: str
+    scenario: str        # "Vol_Surge_Spread_Contraction" or "Vol_Drop_Spread_Expansion"
+    label: str           # Human-readable scenario name
+    sentiment: str       # "Bullish" or "Bearish"
+    t_volume: int
+    t1_volume: int
+    volume_pct: float    # (T_vol - T1_vol) / T1_vol * 100
+    t_spread: float
+    t1_spread: float
+    spread_pct: float    # (T_spread - T1_spread) / T1_spread * 100
+    t_close: float
+    t_open: float
+    t_close_position: float

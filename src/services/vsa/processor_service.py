@@ -46,7 +46,7 @@ class VSAProcessorService:
             const.RESULTS_DIR_NAME, const.TRENDING_DIR_NAME, 
             const.ANOMALY_DIR_NAME, const.TICKER_DIR_NAME,
             const.TRIGGERS_DIR_NAME, const.EFFORTS_DIR_NAME,
-            const.EIGEN_FILTER_DIR_NAME
+            const.EIGEN_FILTER_DIR_NAME, const.AGE_AGAIN_FILTER_DIR_NAME
         ]
         for d in dirs:
             dir_path = self.output_base / d
@@ -208,6 +208,12 @@ class VSAProcessorService:
         eigen_service = EigenFilterService(self.output_base)
         eigen_results = eigen_service.scan_and_classify()
         logger.info(f"POST_PROCESS: EigenFilter Classified {len(eigen_results)} symbols")
+
+        # 7. AgeAgain Filter — Volume-Spread Structural Anomaly
+        from .age_again_filter_service import AgeAgainFilterService
+        age_again_service = AgeAgainFilterService(self.output_base)
+        age_again_results = age_again_service.scan_and_classify()
+        logger.info(f"POST_PROCESS: AgeAgain Classified {len(age_again_results)} symbols")
 
 
     def _load_and_clean(self, path: Path) -> pd.DataFrame:

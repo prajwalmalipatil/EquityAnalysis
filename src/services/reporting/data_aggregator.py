@@ -29,7 +29,8 @@ class DataAggregator:
             "anomaly": self._count_files(const.ANOMALY_DIR_NAME),
             "ticker": self._count_files(const.TICKER_DIR_NAME),
             "triggers": self._count_files(const.TRIGGERS_DIR_NAME),
-            "eigen_filter": self._count_files(const.EIGEN_FILTER_DIR_NAME)
+            "eigen_filter": self._count_files(const.EIGEN_FILTER_DIR_NAME),
+            "age_again": self._count_files(const.AGE_AGAIN_FILTER_DIR_NAME)
         }
 
     def get_symbol_lists(self) -> Dict[str, List[str]]:
@@ -39,7 +40,8 @@ class DataAggregator:
             "anomaly": self._get_symbols(const.ANOMALY_DIR_NAME),
             "ticker": self._get_symbols(const.TICKER_DIR_NAME),
             "triggers": self._get_symbols(const.TRIGGERS_DIR_NAME),
-            "eigen_filter": self._get_symbols(const.EIGEN_FILTER_DIR_NAME)
+            "eigen_filter": self._get_symbols(const.EIGEN_FILTER_DIR_NAME),
+            "age_again": self._get_symbols(const.AGE_AGAIN_FILTER_DIR_NAME)
         }
 
     def get_ticker_details(self, symbol: str) -> Optional[Dict]:
@@ -168,4 +170,52 @@ class DataAggregator:
             "t_cp": round(t_cp, 4), "t1_cp": round(t1_cp, 4),
             "delta_cp": delta_cp, "vol_delta_pct": vol_delta,
             "t_vol": t_vol, "t1_vol": t1_vol,
+        }
+
+    def get_age_again_details(self, symbol: str) -> Optional[Dict]:
+        """Extracts AgeAgain Filter classification details from a processed Excel file."""
+        df = self._read_latest(const.AGE_AGAIN_FILTER_DIR_NAME, symbol)
+        if df is None or len(df) < 2:
+            return None
+
+        latest, prev = df.iloc[-1], df.iloc[-2]
+        t_vol = int(latest.get("Volume", 0))
+        t1_vol = int(prev.get("Volume", 0))
+        t_spread = float(latest.get("Spread", 0))
+        t1_spread = float(prev.get("Spread", 0))
+
+        if t1_vol <= 0 or t1_spread <= 0:
+            return None
+
+        is_vol_surge = t_vol > t1_vol
+        is_spread_contracted = t_spread < t1_spread
+
+        if is_vol_surge and is_spread_contracted:
+            scenario = "Vol_Surge_Spread_Contraction"
+            label = "Absorption Signal"
+            sentiment = "Bullish"
+        elif not is_vol_surge and not is_spread_contracted:
+            scenario = "Vol_Drop_Spread_Expansion"
+            label = "Effort Without Result"
+            sentiment = "Bearish"
+        else:
+            return None
+
+        volume_pct = round(((t_vol - t1_vol) / max(t1_vol, 1)) * 100, 1)
+        spread_pct = round(((t_spread - t1_spread) / max(t1_spread, 0.0001)) * 100, 1)
+
+        return {
+            "symbol": symbol,
+            "scenario": scenario,
+            "label": label,
+            "sentiment": sentiment,
+            "t_vol": t_vol,
+            "t1_vol": t1_vol,
+            "volume_pct": volume_pct,
+            "t_spread": round(t_spread, 2),
+            "t1_spread": round(t1_spread, 2),
+            "spread_pct": spread_pct,
+            "t_close": float(latest.get("Close", 0)),
+            "t_open": float(latest.get("Open", 0)),
+            "t_cp": round(float(latest.get("Close_Position", 0.5)), 4),
         }

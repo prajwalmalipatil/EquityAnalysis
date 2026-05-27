@@ -22,7 +22,8 @@ class HTMLRenderer:
     def render_full_report(self, stats: Dict, ticker_details: List[Dict], 
                            trigger_details: List[Dict], anomaly_details: List[Dict],
                            trending_symbols: List[str],
-                           eigen_details: Optional[List[Dict]] = None) -> str:
+                           eigen_details: Optional[List[Dict]] = None,
+                           age_again_details: Optional[List[Dict]] = None) -> str:
         
         # Categorize anomalies for separate tables
         bearish_anomalies = [a for a in anomaly_details if a['sentiment'] == 'Bearish']
@@ -35,6 +36,7 @@ class HTMLRenderer:
         anomaly_section = self._render_anomaly_section(stats, bullish_anomalies, bearish_anomalies, neutral_anomalies)
         trending_section = self._render_trending_section(trending_symbols)
         eigen_section = self._render_eigen_section(eigen_details or [])
+        age_again_section = self._render_age_again_section(age_again_details or [])
         
         return f"""
     <!DOCTYPE html>
@@ -108,6 +110,10 @@ class HTMLRenderer:
                         <div class="stat-label">EIGEN FILTER</div>
                         <div class="stat-value">{stats.get('eigen_filter', 0)}</div>
                     </div>
+                    <div class="stat-box">
+                        <div class="stat-label">AGE AGAIN FILTER</div>
+                        <div class="stat-value">{stats.get('age_again', 0)}</div>
+                    </div>
                 </div>
 
                 <!-- TICKER SIGNALS -->
@@ -124,6 +130,9 @@ class HTMLRenderer:
 
                 <!-- EIGEN FILTER -->
                 {eigen_section}
+
+                <!-- AGE AGAIN FILTER -->
+                {age_again_section}
 
                 <!-- TRENDING SYMBOLS -->
                 {trending_section}
@@ -437,6 +446,90 @@ class HTMLRenderer:
                 <td class="num" style="font-weight: 700; color: {delta_color};">{d['delta_cp']:+.4f}</td>
                 <td class="num" style="font-weight: 700; color: {vol_color};">{d['vol_delta_pct']:+.1f}%</td>
                 <td style="padding: 10px; font-size: 10px; font-weight: 700; color: {sentiment_color};">{d['label']}</td>
+            </tr>
+            """
+        return rows
+
+    def _render_age_again_section(self, details: List[Dict]) -> str:
+        """Renders the AgeAgain Filter section with teal-themed styling."""
+        if not details:
+            return ""
+
+        bullish = [d for d in details if d['sentiment'] == 'Bullish']
+        bearish = [d for d in details if d['sentiment'] == 'Bearish']
+        sections = ""
+
+        if bullish:
+            rows = self._render_age_again_rows(bullish, sentiment_color="#276749")
+            sections += f"""
+            <div style="margin-top: 18px;">
+                <div style="font-size: 13px; font-weight: 700; color: #276749; margin-bottom: 6px;">🟢 Absorption Signals (Vol↑ + Spread↓)</div>
+                <table class="data-table" style="background: #f0fff4; border: 1px solid #c6f6d5;">
+                    <thead style="background: #c6f6d5; color: #276749;">
+                        <tr><th>SYMBOL</th><th>LABEL</th><th class="num">OPEN</th><th class="num">CLOSE</th><th class="num">CP</th><th class="num">T VOL</th><th class="num">T-1 VOL</th><th class="num">VOL %</th><th class="num">T SPR</th><th class="num">T-1 SPR</th><th class="num">SPR %</th></tr>
+                    </thead>
+                    <tbody>{rows}</tbody>
+                </table>
+            </div>
+            """
+
+        if bearish:
+            rows = self._render_age_again_rows(bearish, sentiment_color="#742a2a")
+            sections += f"""
+            <div style="margin-top: 18px;">
+                <div style="font-size: 13px; font-weight: 700; color: #742a2a; margin-bottom: 6px;">🔴 Effort Without Result (Vol↓ + Spread↑)</div>
+                <table class="data-table" style="background: #fff5f5; border: 1px solid #fed7d7;">
+                    <thead style="background: #fed7d7; color: #742a2a;">
+                        <tr><th>SYMBOL</th><th>LABEL</th><th class="num">OPEN</th><th class="num">CLOSE</th><th class="num">CP</th><th class="num">T VOL</th><th class="num">T-1 VOL</th><th class="num">VOL %</th><th class="num">T SPR</th><th class="num">T-1 SPR</th><th class="num">SPR %</th></tr>
+                    </thead>
+                    <tbody>{rows}</tbody>
+                </table>
+            </div>
+            """
+
+        return f"""
+        <div class="section">
+            <div class="section-header" style="color: #0d7377;">🔁 AgeAgain Filter – Volume-Spread Structural Anomaly</div>
+
+            <div style="background: #fff; border: 1px solid #b2dfdb; padding: 15px; border-radius: 6px; margin-bottom: 15px; font-size: 12px; color: #004d40; line-height: 1.5;">
+                <strong>Detection Logic:</strong> Two complementary anomalies. <strong>Absorption Signal:</strong> Volume surged above prior day while spread contracted — institutional absorption of supply/demand. <strong>Effort Without Result:</strong> Volume dropped below prior day while spread expanded — price moved wide on thin participation, a structural warning.
+            </div>
+
+            <div class="stat-box" style="display: flex; justify-content: space-between; align-items: center; border-color: #80cbc4; background: #e0f2f1;">
+                <div>
+                    <div class="stat-label" style="color: #00695c;">SIGNALS DETECTED</div>
+                    <div class="stat-value" style="color: #0d7377;">{len(details)}</div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="stat-label" style="color: #00695c;">ABSORPTION / EFFORT-WITHOUT-RESULT</div>
+                    <div class="stat-value" style="color: #0d7377; font-size: 14px; margin-top: 4px;">{len(bullish)} / {len(bearish)}</div>
+                </div>
+            </div>
+
+            {sections}
+        </div>
+        """
+
+    @staticmethod
+    def _render_age_again_rows(items: List[Dict], sentiment_color: str) -> str:
+        """Renders table rows for AgeAgain sub-tables."""
+        rows = ""
+        for d in items:
+            vol_color = "#38a169" if d['volume_pct'] > 0 else "#e53e3e"
+            spr_color = "#e53e3e" if d['spread_pct'] > 0 else "#38a169"
+            rows += f"""
+            <tr style="border-bottom: 1px solid #edf2f7;">
+                <td style="padding: 10px; font-weight: 700; color: #2d3748;">{d['symbol']}</td>
+                <td style="padding: 10px; font-size: 11px; font-weight: 600; color: {sentiment_color};">{d['label']}</td>
+                <td class="num" style="color: #718096; font-size: 11px;">{d['t_open']:.2f}</td>
+                <td class="num" style="font-weight: 700; color: #2d3748;">{d['t_close']:.2f}</td>
+                <td class="num" style="font-weight: 700; color: #2d3748;">{d['t_cp']:.4f}</td>
+                <td class="num" style="font-weight: 700; color: #2d3748;">{d['t_vol']:,}</td>
+                <td class="num" style="color: #718096; font-size: 11px;">{d['t1_vol']:,}</td>
+                <td class="num" style="font-weight: 700; color: {vol_color};">{d['volume_pct']:+.1f}%</td>
+                <td class="num" style="font-weight: 700; color: #2d3748;">{d['t_spread']:.2f}</td>
+                <td class="num" style="color: #718096; font-size: 11px;">{d['t1_spread']:.2f}</td>
+                <td class="num" style="font-weight: 700; color: {spr_color};">{d['spread_pct']:+.1f}%</td>
             </tr>
             """
         return rows
