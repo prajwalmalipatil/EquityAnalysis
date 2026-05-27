@@ -19,23 +19,18 @@ class HTMLRenderer:
         self.date_str = self.now.strftime('%d-%m-%Y %H:%M')
         self.short_date = self.now.strftime('%d-%m-%Y')
 
-    def render_full_report(self, stats: Dict, ticker_details: List[Dict], 
-                           trigger_details: List[Dict], anomaly_details: List[Dict],
+    def render_full_report(self, stats: Dict, anomaly_details: List[Dict],
                            trending_symbols: List[str],
-                           eigen_details: Optional[List[Dict]] = None,
                            age_again_details: Optional[List[Dict]] = None) -> str:
-        
+
         # Categorize anomalies for separate tables
         bearish_anomalies = [a for a in anomaly_details if a['sentiment'] == 'Bearish']
         bullish_anomalies = [a for a in anomaly_details if a['sentiment'] == 'Bullish']
         neutral_anomalies = [a for a in anomaly_details if a['sentiment'] == 'Neutral']
-        
+
         # Render Sections
-        ticker_cards = self._render_ticker_cards(ticker_details)
-        trigger_section = self._render_trigger_section(trigger_details)
         anomaly_section = self._render_anomaly_section(stats, bullish_anomalies, bearish_anomalies, neutral_anomalies)
         trending_section = self._render_trending_section(trending_symbols)
-        eigen_section = self._render_eigen_section(eigen_details or [])
         age_again_section = self._render_age_again_section(age_again_details or [])
         
         return f"""
@@ -99,16 +94,8 @@ class HTMLRenderer:
                         <div class="stat-value">{len(trending_symbols)}</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-label">HIGH-PROB SIGNALS</div>
-                        <div class="stat-value">{len(ticker_details)}</div>
-                    </div>
-                    <div class="stat-box">
                         <div class="stat-label">ANOMALY DETECTIONS</div>
                         <div class="stat-value">{stats.get('anomaly', 0)}</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">EIGEN FILTER</div>
-                        <div class="stat-value">{stats.get('eigen_filter', 0)}</div>
                     </div>
                     <div class="stat-box">
                         <div class="stat-label">AGE AGAIN FILTER</div>
@@ -116,20 +103,8 @@ class HTMLRenderer:
                     </div>
                 </div>
 
-                <!-- TICKER SIGNALS -->
-                <div class="section">
-                    <div class="section-header">🎯 TICKER SIGNALS (Action Required)</div>
-                    {ticker_cards}
-                </div>
-
-                <!-- VSA TRIGGERED STOCKS -->
-                {trigger_section}
-
                 <!-- VOLUME ANOMALY STOCKS -->
                 {anomaly_section}
-
-                <!-- EIGEN FILTER -->
-                {eigen_section}
 
                 <!-- AGE AGAIN FILTER -->
                 {age_again_section}
@@ -156,91 +131,7 @@ class HTMLRenderer:
     </html>
     """
 
-    def _render_ticker_cards(self, tickers: List[Dict]) -> str:
-        if not tickers: return "<p style='font-size: 12px; color: #718096;'>No signal cards today.</p>"
-        cards = ""
-        for t in tickers[:3]: # Priority to top 3
-            cards += f"""
-            <div class="ticker-card">
-                <div style="display: flex; align-items: center; justify-content: space-between;">
-                    <span class="ticker-symbol">{t['symbol']}</span>
-                    <span class="ticker-badge">{t['pattern']} ({t['sentiment']})</span>
-                </div>
-                <div style="margin-top: 12px; font-size: 13px; color: #4a5568; border-top: 1px solid #edf2f7; padding-top: 10px;">
-                    <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
-                        <tr>
-                            <td style="color: #718096; padding: 4px 0;">Effort vs Result:</td>
-                            <td style="font-weight: 700; text-align: right; color: #2d3748;">{t['effort']}</td>
-                        </tr>
-                        <tr>
-                            <td style="color: #718096; padding: 4px 0;">Spread Ratio:</td>
-                            <td style="font-weight: 700; text-align: right; color: #2d3748;">{t['spread_ratio']:.2f}</td>
-                        </tr>
-                        <tr>
-                            <td style="color: #718096; padding: 4px 0;">Pattern Confidence:</td>
-                            <td style="font-weight: 700; text-align: right; color: #2d3748;">{t['confidence']:.2f}</td>
-                        </tr>
-                    </table>
-                </div>
-                <div style="font-size: 12px; color: #718096; margin-top: 10px; font-style: italic;">
-                    {t['description']}
-                </div>
-                <div class="ticker-status">Requires Immediate Review</div>
-            </div>
-            """
-        return cards
 
-    def _render_trigger_section(self, triggers: List[Dict]) -> str:
-        if not triggers: return ""
-        rows = ""
-        for t in triggers:
-            rows += f"""
-            <tr style="border-bottom: 1px solid #f7fafc;">
-                <td style="padding: 10px; font-weight: 700; color: #2d3748;">{t['symbol']}</td>
-                <td class="num" style="color: #718096; font-size: 11px;">{t['prev_vol']:,}</td>
-                <td class="num" style="font-weight: 700; color: #2d3748;">{t['curr_vol']:,}</td>
-                <td class="num" style="color: #718096; font-size: 11px;">{t['prev_spr']:.2f}</td>
-                <td class="num" style="font-weight: 700; color: #2d3748;">{t['curr_spr']:.2f}</td>
-                <td class="num" style="font-weight: 700; color: #e53e3e;">{t['vol_pct']:.1f}%</td>
-                <td class="num" style="font-weight: 700; color: #38a169;">{t['spr_pct']:.1f}%</td>
-            </tr>
-            """
-            
-        return f"""
-        <div class="section">
-            <div class="section-header" style="color: #c53030;">📊 VSA Triggered Stocks – Vol Contraction + Spread Expansion</div>
-            
-            <div style="background: #fff; border: 1px solid #fed7d7; padding: 15px; border-radius: 6px; margin-bottom: 15px; font-size: 12px; color: #742a2a; line-height: 1.5;">
-                <strong>Trigger Logic:</strong> Volume decreased from previous day while Spread expanded. This anomaly suggests potential supply removal facilitating easier price movement.
-            </div>
-
-            <div class="stat-box" style="display: flex; justify-content: space-between; align-items: center; border-color: #feb2b2; background: #fff5f5;">
-                <div>
-                    <div class="stat-label" style="color: #9b2c2c;">TRIGGERS IDENTIFIED</div>
-                    <div class="stat-value" style="color: #c53030;">{len(triggers)}</div>
-                </div>
-                <div style="text-align: right;">
-                    <div class="stat-label" style="color: #9b2c2c;">ANALYSIS DATE</div>
-                    <div class="stat-value" style="color: #c53030; font-size: 14px; margin-top: 4px;">{self.short_date}</div>
-                </div>
-            </div>
-
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>SYMBOL</th>
-                        <th class="num">PREV VOL</th>
-                        <th class="num">CURR VOL</th>
-                        <th class="num">PREV SPR</th>
-                        <th class="num">CURR SPR</th>
-                        <th class="num">VOL %</th>
-                        <th class="num">SPR %</th>
-                    </tr>
-                </thead>
-                <tbody>{rows}</tbody>
-            </table>
-        </div>
-        """
 
     def _render_anomaly_section(self, stats: Dict, bullish: List, bearish: List, neutral: List) -> str:
         if not (bullish or bearish or neutral): return ""
@@ -366,89 +257,7 @@ class HTMLRenderer:
         </div>
         """
 
-    def _render_eigen_section(self, details: List[Dict]) -> str:
-        """Renders the EigenFilter premium section with purple-themed styling."""
-        if not details:
-            return ""
 
-        bullish = [d for d in details if d['sentiment'] == 'Bullish']
-        bearish = [d for d in details if d['sentiment'] == 'Bearish']
-        sections = ""
-
-        # Bullish sub-table
-        if bullish:
-            rows = self._render_eigen_rows(bullish, sentiment_color="#276749")
-            sections += f"""
-            <div style="margin-top: 18px;">
-                <div style="font-size: 13px; font-weight: 700; color: #276749; margin-bottom: 6px;">🟢 Bullish Eigenstates (Volume-Confirmed Demand)</div>
-                <table class="data-table" style="background: #f0fff4; border: 1px solid #c6f6d5;">
-                    <thead style="background: #c6f6d5; color: #276749;">
-                        <tr><th>SYMBOL</th><th>GAP</th><th>OPEN</th><th>CLOSE</th><th class="num">CP (T)</th><th class="num">CP (T-1)</th><th class="num">ΔCP</th><th class="num">VOL Δ%</th><th>LABEL</th></tr>
-                    </thead>
-                    <tbody>{rows}</tbody>
-                </table>
-            </div>
-            """
-
-        # Bearish sub-table
-        if bearish:
-            rows = self._render_eigen_rows(bearish, sentiment_color="#742a2a")
-            sections += f"""
-            <div style="margin-top: 18px;">
-                <div style="font-size: 13px; font-weight: 700; color: #742a2a; margin-bottom: 6px;">🔴 Bearish Eigenstates (Volume-Confirmed Supply)</div>
-                <table class="data-table" style="background: #fff5f5; border: 1px solid #fed7d7;">
-                    <thead style="background: #fed7d7; color: #742a2a;">
-                        <tr><th>SYMBOL</th><th>GAP</th><th>OPEN</th><th>CLOSE</th><th class="num">CP (T)</th><th class="num">CP (T-1)</th><th class="num">ΔCP</th><th class="num">VOL Δ%</th><th>LABEL</th></tr>
-                    </thead>
-                    <tbody>{rows}</tbody>
-                </table>
-            </div>
-            """
-
-        return f"""
-        <div class="section">
-            <div class="section-header" style="color: #553c9a;">🔬 Eigen Filter – Volume-Amplitude OHLC Divergence</div>
-
-            <div style="background: #fff; border: 1px solid #e9d8fd; padding: 15px; border-radius: 6px; margin-bottom: 15px; font-size: 12px; color: #44337a; line-height: 1.5;">
-                <strong>Advanced Logic:</strong> Stocks where today's volume surged above yesterday's, price gapped in a defined direction, close position landed in the extreme 30% band of the day's spread, and close-position drift confirmed directional conviction.
-            </div>
-
-            <div class="stat-box" style="display: flex; justify-content: space-between; align-items: center; border-color: #d6bcfa; background: #faf5ff;">
-                <div>
-                    <div class="stat-label" style="color: #6b46c1;">EIGENSTATES DETECTED</div>
-                    <div class="stat-value" style="color: #553c9a;">{len(details)}</div>
-                </div>
-                <div style="text-align: right;">
-                    <div class="stat-label" style="color: #6b46c1;">BULLISH / BEARISH</div>
-                    <div class="stat-value" style="color: #553c9a; font-size: 14px; margin-top: 4px;">{len(bullish)} / {len(bearish)}</div>
-                </div>
-            </div>
-
-            {sections}
-        </div>
-        """
-
-    @staticmethod
-    def _render_eigen_rows(items: List[Dict], sentiment_color: str) -> str:
-        """Renders table rows for eigenstate sub-tables."""
-        rows = ""
-        for d in items:
-            delta_color = "#38a169" if d['delta_cp'] >= 0 else "#e53e3e"
-            vol_color = "#38a169" if d['vol_delta_pct'] > 0 else "#e53e3e"
-            rows += f"""
-            <tr style="border-bottom: 1px solid #edf2f7;">
-                <td style="padding: 10px; font-weight: 700; color: #2d3748;">{d['symbol']}</td>
-                <td style="padding: 10px; font-size: 11px; font-weight: 600; color: {sentiment_color};">{d['gap_dir']}</td>
-                <td class="num" style="color: #718096; font-size: 11px;">{d['t_open']:.2f}</td>
-                <td class="num" style="font-weight: 700; color: #2d3748;">{d['t_close']:.2f}</td>
-                <td class="num" style="font-weight: 700; color: #2d3748;">{d['t_cp']:.4f}</td>
-                <td class="num" style="color: #718096; font-size: 11px;">{d['t1_cp']:.4f}</td>
-                <td class="num" style="font-weight: 700; color: {delta_color};">{d['delta_cp']:+.4f}</td>
-                <td class="num" style="font-weight: 700; color: {vol_color};">{d['vol_delta_pct']:+.1f}%</td>
-                <td style="padding: 10px; font-size: 10px; font-weight: 700; color: {sentiment_color};">{d['label']}</td>
-            </tr>
-            """
-        return rows
 
     def _render_age_again_section(self, details: List[Dict]) -> str:
         """Renders the AgeAgain Filter section with teal-themed styling."""

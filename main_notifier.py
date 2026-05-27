@@ -34,40 +34,22 @@ def main():
     symbol_data = aggregator.get_symbol_lists()
     
     # 2. Enrich for Deep Tables
-    ticker_details = []
-    for sym in symbol_data["ticker"]:
-        details = aggregator.get_ticker_details(sym)
-        if details: ticker_details.append(details)
-        
-    trigger_details = []
-    for sym in symbol_data["triggers"]:
-        details = aggregator.get_trigger_details(sym)
-        if details: trigger_details.append(details)
-            
     anomaly_details = []
     for sym in symbol_data["anomaly"]:
         details = aggregator.get_anomaly_details(sym)
         if details: anomaly_details.append(details)
 
-    eigen_details = []
-    for sym in symbol_data["eigen_filter"]:
-        details = aggregator.get_eigen_details(sym)
-        if details: eigen_details.append(details)
-
     age_again_details = []
     for sym in symbol_data["age_again"]:
         details = aggregator.get_age_again_details(sym)
         if details: age_again_details.append(details)
-            
+
     # 3. Render Premium HTML
     renderer = HTMLRenderer()
     html_report = renderer.render_full_report(
         stats=stats,
-        ticker_details=ticker_details,
-        trigger_details=trigger_details,
         anomaly_details=anomaly_details,
         trending_symbols=symbol_data["trending"],
-        eigen_details=eigen_details,
         age_again_details=age_again_details
     )
     
