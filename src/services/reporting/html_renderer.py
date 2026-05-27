@@ -117,7 +117,7 @@ class HTMLRenderer:
                     <div class="section-header">📒 Results: Analysis Summary</div>
                     <div class="summary-box">
                         <p>The latest market analysis reveals a dynamic landscape with significant momentum across key sectors. Our pipeline has successfully processed {stats.get('vsa', 0)} symbols, identifying robust trends and high-probability entry points.</p>
-                        <p>The data suggests a healthy market participation with localized strength in trending assets. We remain highly optimistic about the identified signals, particularly the {len(ticker_details)} high-probability ticker alerts which warrant immediate attention for potential breakouts.</p>
+                        <p>The data suggests a healthy market participation with localized strength in trending assets. We remain highly optimistic about the identified signals and the structural anomalies detected across today's universe.</p>
                         <p style="font-weight: 800; color: #2d3748; margin-top: 15px;">🚀 Outlook: Strong Positive Momentum. Market continues to present lucrative opportunities for the disciplined trader.</p>
                     </div>
                 </div>
