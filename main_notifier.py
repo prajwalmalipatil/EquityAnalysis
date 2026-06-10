@@ -1,7 +1,7 @@
 """
 main_notifier.py
 Fully Wired Entrypoint for V² Money Publications.
-Passes detailed ticker, trigger, and anomaly data to the premium renderer.
+Passes EigenFilter, AgeAgain, and trending data to the premium renderer.
 """
 
 import argparse
@@ -34,10 +34,10 @@ def main():
     symbol_data = aggregator.get_symbol_lists()
     
     # 2. Enrich for Deep Tables
-    anomaly_details = []
-    for sym in symbol_data["anomaly"]:
-        details = aggregator.get_anomaly_details(sym)
-        if details: anomaly_details.append(details)
+    eigen_details = []
+    for sym in symbol_data["eigen_filter"]:
+        details = aggregator.get_eigen_details(sym)
+        if details: eigen_details.append(details)
 
     age_again_details = []
     for sym in symbol_data["age_again"]:
@@ -48,7 +48,7 @@ def main():
     renderer = HTMLRenderer()
     html_report = renderer.render_full_report(
         stats=stats,
-        anomaly_details=anomaly_details,
+        eigen_details=eigen_details,
         trending_symbols=symbol_data["trending"],
         age_again_details=age_again_details
     )
