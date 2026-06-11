@@ -47,7 +47,7 @@ class VSAProcessorService:
             const.ANOMALY_DIR_NAME, const.TICKER_DIR_NAME,
             const.TRIGGERS_DIR_NAME, const.EFFORTS_DIR_NAME,
             const.EIGEN_FILTER_DIR_NAME, const.AGE_AGAIN_FILTER_DIR_NAME,
-            const.MONTHLY_EIGEN_FILTER_DIR_NAME
+            const.MONTHLY_EIGEN_FILTER_DIR_NAME, const.WEEKLY_EIGEN_FILTER_DIR_NAME
         ]
         for d in dirs:
             dir_path = self.output_base / d
@@ -221,6 +221,12 @@ class VSAProcessorService:
         monthly_eigen_service = MonthlyEigenFilterService(self.output_base)
         monthly_eigen_results = monthly_eigen_service.consolidate_and_classify()
         logger.info(f"POST_PROCESS: MonthlyEigenFilter Classified {len(monthly_eigen_results)} symbols")
+
+        # 9. Weekly EigenFilter — Weekly consolidation + EigenFilter analysis
+        from .weekly_eigen_filter_service import WeeklyEigenFilterService
+        weekly_eigen_service = WeeklyEigenFilterService(self.output_base)
+        weekly_eigen_results = weekly_eigen_service.consolidate_and_classify()
+        logger.info(f"POST_PROCESS: WeeklyEigenFilter Classified {len(weekly_eigen_results)} symbols")
 
 
     def _load_and_clean(self, path: Path) -> pd.DataFrame:

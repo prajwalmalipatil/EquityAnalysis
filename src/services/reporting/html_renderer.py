@@ -20,14 +20,12 @@ class HTMLRenderer:
         self.short_date = self.now.strftime('%d-%m-%Y')
 
     def render_full_report(self, stats: Dict, eigen_details: List[Dict],
-                           trending_symbols: List[str],
-                           age_again_details: Optional[List[Dict]] = None,
+                           weekly_eigen_details: Optional[List[Dict]] = None,
                            monthly_eigen_details: Optional[List[Dict]] = None) -> str:
 
         # Render Sections
         eigen_section = self._render_eigen_section(eigen_details)
-        trending_section = self._render_trending_section(trending_symbols)
-        age_again_section = self._render_age_again_section(age_again_details or [])
+        weekly_eigen_section = self._render_weekly_eigen_section(weekly_eigen_details or [])
         monthly_eigen_section = self._render_monthly_eigen_section(monthly_eigen_details or [])
         
         return f"""
@@ -81,16 +79,12 @@ class HTMLRenderer:
                         <div class="stat-value">{stats.get('vsa', 0)}</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-label">TRENDING IDENTIFIED</div>
-                        <div class="stat-value">{len(trending_symbols)}</div>
-                    </div>
-                    <div class="stat-box">
                         <div class="stat-label">EIGEN FILTER</div>
                         <div class="stat-value">{stats.get('eigen_filter', 0)}</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-label">AGE AGAIN FILTER</div>
-                        <div class="stat-value">{stats.get('age_again', 0)}</div>
+                        <div class="stat-label">WEEKLY EIGEN FILTER</div>
+                        <div class="stat-value">{stats.get('weekly_eigen', 0)}</div>
                     </div>
                     <div class="stat-box">
                         <div class="stat-label">MONTHLY EIGEN FILTER</div>
@@ -101,24 +95,12 @@ class HTMLRenderer:
                 <!-- EIGEN FILTER -->
                 {eigen_section}
 
-                <!-- AGE AGAIN FILTER -->
-                {age_again_section}
+                <!-- WEEKLY EIGEN FILTER -->
+                {weekly_eigen_section}
 
                 <!-- MONTHLY EIGEN FILTER -->
                 {monthly_eigen_section}
 
-                <!-- TRENDING SYMBOLS -->
-                {trending_section}
-
-                <!-- RESULTS SUMMARY -->
-                <div class="section">
-                    <div class="section-header">📒 Results: Analysis Summary</div>
-                    <div class="summary-box">
-                        <p>The latest market analysis reveals a dynamic landscape with significant momentum across key sectors. Our pipeline has successfully processed {stats.get('vsa', 0)} symbols, identifying robust trends and high-probability entry points.</p>
-                        <p>The data suggests a healthy market participation with localized strength in trending assets. We remain highly optimistic about the identified signals and the structural anomalies detected across today's universe.</p>
-                        <p style="font-weight: 800; color: #2d3748; margin-top: 15px;">🚀 Outlook: Strong Positive Momentum. Market continues to present lucrative opportunities for the disciplined trader.</p>
-                    </div>
-                </div>
             </div>
 
             <div class="footer">
@@ -213,30 +195,8 @@ class HTMLRenderer:
             """
         return rows
 
-    def _render_trending_section(self, symbols: List[str]) -> str:
-        if not symbols: return ""
-        
-        # 3-column table logic
-        rows = ""
-        symbols = sorted(symbols)
-        for i in range(0, len(symbols), 3):
-            col1 = symbols[i]
-            col2 = symbols[i+1] if i+1 < len(symbols) else ""
-            col3 = symbols[i+2] if i+2 < len(symbols) else ""
-            rows += f"<tr><td>{col1}</td><td>{col2}</td><td>{col3}</td></tr>"
-            
-        return f"""
-        <div class="section">
-            <div class="section-header">📈 TRENDING SYMBOLS</div>
-            <p style="font-size: 11px; color: #718096; margin-bottom: 10px;">TRENDING STOCKS LIST ▼</p>
-            <table class="symbol-table">
-                {rows}
-            </table>
-        </div>
-        """
-
-    def _render_age_again_section(self, details: List[Dict]) -> str:
-        """Renders the AgeAgain Filter section with teal-themed styling."""
+    def _render_weekly_eigen_section(self, details: List[Dict]) -> str:
+        """Renders the Weekly EigenFilter section with sky-blue-themed styling."""
         if not details:
             return ""
 
@@ -245,76 +205,78 @@ class HTMLRenderer:
         sections = ""
 
         if bullish:
-            rows = self._render_age_again_rows(bullish, sentiment_color="#276749")
+            rows = self._render_weekly_eigen_rows(bullish, sentiment_color="#276749")
             sections += f"""
             <div style="margin-top: 18px;">
-                <div style="font-size: 13px; font-weight: 700; color: #276749; margin-bottom: 6px;">🟢 Absorption Signals (Vol↑ + Spread↓)</div>
+                <div style="font-size: 13px; font-weight: 700; color: #276749; margin-bottom: 6px;">🟢 Bullish Weekly Classifications</div>
                 <table class="data-table" style="background: #f0fff4; border: 1px solid #c6f6d5;">
                     <thead style="background: #c6f6d5; color: #276749;">
-                        <tr><th>SYMBOL</th><th>LABEL</th><th class="num">OPEN</th><th class="num">CLOSE</th><th class="num">CP</th><th class="num">T VOL</th><th class="num">T-1 VOL</th><th class="num">VOL %</th><th class="num">T SPR</th><th class="num">T-1 SPR</th><th class="num">SPR %</th></tr>
+                        <tr><th>SYMBOL</th><th>LABEL</th><th class="num">WEEK</th><th class="num">OPEN</th><th class="num">CLOSE</th><th class="num">GAP</th><th class="num">CP</th><th class="num">PREV CP</th><th class="num">ΔCP</th><th class="num">W VOL</th><th class="num">PREV W VOL</th><th class="num">VOL Δ%</th></tr>
                     </thead>
-                    <tbody>{rows}</tbody>
+                    <tbody>{{rows}}</tbody>
                 </table>
             </div>
             """
 
         if bearish:
-            rows = self._render_age_again_rows(bearish, sentiment_color="#742a2a")
+            rows = self._render_weekly_eigen_rows(bearish, sentiment_color="#742a2a")
             sections += f"""
             <div style="margin-top: 18px;">
-                <div style="font-size: 13px; font-weight: 700; color: #742a2a; margin-bottom: 6px;">🔴 Effort Without Result (Vol↓ + Spread↑)</div>
+                <div style="font-size: 13px; font-weight: 700; color: #742a2a; margin-bottom: 6px;">🔴 Bearish Weekly Classifications</div>
                 <table class="data-table" style="background: #fff5f5; border: 1px solid #fed7d7;">
                     <thead style="background: #fed7d7; color: #742a2a;">
-                        <tr><th>SYMBOL</th><th>LABEL</th><th class="num">OPEN</th><th class="num">CLOSE</th><th class="num">CP</th><th class="num">T VOL</th><th class="num">T-1 VOL</th><th class="num">VOL %</th><th class="num">T SPR</th><th class="num">T-1 SPR</th><th class="num">SPR %</th></tr>
+                        <tr><th>SYMBOL</th><th>LABEL</th><th class="num">WEEK</th><th class="num">OPEN</th><th class="num">CLOSE</th><th class="num">GAP</th><th class="num">CP</th><th class="num">PREV CP</th><th class="num">ΔCP</th><th class="num">W VOL</th><th class="num">PREV W VOL</th><th class="num">VOL Δ%</th></tr>
                     </thead>
-                    <tbody>{rows}</tbody>
+                    <tbody>{{rows}}</tbody>
                 </table>
             </div>
             """
 
         return f"""
         <div class="section">
-            <div class="section-header" style="color: #0d7377;">🔁 AgeAgain Filter – Volume-Spread Structural Anomaly</div>
+            <div class="section-header" style="color: #0369a1;">🗓️ Weekly EigenFilter – Consolidated Volume-Amplitude Divergence</div>
 
-            <div style="background: #fff; border: 1px solid #b2dfdb; padding: 15px; border-radius: 6px; margin-bottom: 15px; font-size: 12px; color: #004d40; line-height: 1.5;">
-                <strong>Detection Logic:</strong> Two complementary anomalies. <strong>Absorption Signal:</strong> Volume surged above prior day while spread contracted — institutional absorption of supply/demand. <strong>Effort Without Result:</strong> Volume dropped below prior day while spread expanded — price moved wide on thin participation, a structural warning.
+            <div style="background: #fff; border: 1px solid #bae6fd; padding: 15px; border-radius: 6px; margin-bottom: 15px; font-size: 12px; color: #0c4a6e; line-height: 1.5;">
+                <strong>Weekly Consolidation:</strong> Daily OHLCV data is aggregated into weekly candles (Open=first, High=max, Low=min, Close=last, Volume=sum). The same EigenFilter detection logic — volume surge, gap-direction, and close-position drift — is then applied to identify structural shifts on the weekly timeframe.
             </div>
 
-            <div class="stat-box" style="display: flex; justify-content: space-between; align-items: center; border-color: #80cbc4; background: #e0f2f1;">
+            <div class="stat-box" style="display: flex; justify-content: space-between; align-items: center; border-color: #7dd3fc; background: #f0f9ff;">
                 <div>
-                    <div class="stat-label" style="color: #00695c;">SIGNALS DETECTED</div>
-                    <div class="stat-value" style="color: #0d7377;">{len(details)}</div>
+                    <div class="stat-label" style="color: #0284c7;">WEEKLY SIGNALS</div>
+                    <div class="stat-value" style="color: #0369a1;">{{len(details)}}</div>
                 </div>
                 <div style="text-align: right;">
-                    <div class="stat-label" style="color: #00695c;">ABSORPTION / EFFORT-WITHOUT-RESULT</div>
-                    <div class="stat-value" style="color: #0d7377; font-size: 14px; margin-top: 4px;">{len(bullish)} / {len(bearish)}</div>
+                    <div class="stat-label" style="color: #0284c7;">BULLISH / BEARISH</div>
+                    <div class="stat-value" style="color: #0369a1; font-size: 14px; margin-top: 4px;">{{len(bullish)}} / {{len(bearish)}}</div>
                 </div>
             </div>
 
-            {sections}
+            {{sections}}
         </div>
         """
 
     @staticmethod
-    def _render_age_again_rows(items: List[Dict], sentiment_color: str) -> str:
-        """Renders table rows for AgeAgain sub-tables."""
+    def _render_weekly_eigen_rows(items: List[Dict], sentiment_color: str) -> str:
+        """Renders table rows for Weekly EigenFilter sub-tables."""
         rows = ""
         for d in items:
-            vol_color = "#38a169" if d['volume_pct'] > 0 else "#e53e3e"
-            spr_color = "#e53e3e" if d['spread_pct'] > 0 else "#38a169"
+            vol_color = "#38a169" if d['vol_delta_pct'] > 0 else "#e53e3e"
+            delta_cp_color = "#38a169" if d['delta_cp'] > 0 else "#e53e3e"
+            week_label = d.get('latest_week', 'N/A')
             rows += f"""
             <tr style="border-bottom: 1px solid #edf2f7;">
-                <td style="padding: 10px; font-weight: 700; color: #2d3748;">{d['symbol']}</td>
-                <td style="padding: 10px; font-size: 11px; font-weight: 600; color: {sentiment_color};">{d['label']}</td>
-                <td class="num" style="color: #718096; font-size: 11px;">{d['t_open']:.2f}</td>
-                <td class="num" style="font-weight: 700; color: #2d3748;">{d['t_close']:.2f}</td>
-                <td class="num" style="font-weight: 700; color: #2d3748;">{d['t_cp']:.4f}</td>
-                <td class="num" style="font-weight: 700; color: #2d3748;">{d['t_vol']:,}</td>
-                <td class="num" style="color: #718096; font-size: 11px;">{d['t1_vol']:,}</td>
-                <td class="num" style="font-weight: 700; color: {vol_color};">{d['volume_pct']:+.1f}%</td>
-                <td class="num" style="font-weight: 700; color: #2d3748;">{d['t_spread']:.2f}</td>
-                <td class="num" style="color: #718096; font-size: 11px;">{d['t1_spread']:.2f}</td>
-                <td class="num" style="font-weight: 700; color: {spr_color};">{d['spread_pct']:+.1f}%</td>
+                <td style="padding: 10px; font-weight: 700; color: #2d3748;">{{d['symbol']}}</td>
+                <td style="padding: 10px; font-size: 11px; font-weight: 600; color: {{sentiment_color}};">{{d['label']}}</td>
+                <td class="num" style="font-weight: 600; color: #0369a1; font-size: 11px;">{{week_label}}</td>
+                <td class="num" style="color: #718096; font-size: 11px;">{{d['t_open']:.2f}}</td>
+                <td class="num" style="font-weight: 700; color: #2d3748;">{{d['t_close']:.2f}}</td>
+                <td class="num" style="font-weight: 600; color: #0369a1; font-size: 11px;">{{d['gap_dir']}}</td>
+                <td class="num" style="font-weight: 700; color: #2d3748;">{{d['t_cp']:.4f}}</td>
+                <td class="num" style="color: #718096; font-size: 11px;">{{d['t1_cp']:.4f}}</td>
+                <td class="num" style="font-weight: 700; color: {{delta_cp_color}};">{{d['delta_cp']:+.4f}}</td>
+                <td class="num" style="font-weight: 700; color: #2d3748;">{{d['t_vol']:,}}</td>
+                <td class="num" style="color: #718096; font-size: 11px;">{{d['t1_vol']:,}}</td>
+                <td class="num" style="font-weight: 700; color: {{vol_color}};">{{d['vol_delta_pct']:+.1f}}%</td>
             </tr>
             """
         return rows

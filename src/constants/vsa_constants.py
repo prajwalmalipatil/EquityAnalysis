@@ -46,6 +46,7 @@ ANOMALY_DIR_NAME = "Anomaly"
 EIGEN_FILTER_DIR_NAME = "EigenFilter"
 AGE_AGAIN_FILTER_DIR_NAME = "AgeAgain"
 MONTHLY_EIGEN_FILTER_DIR_NAME = "MonthlyEigenFilter"
+WEEKLY_EIGEN_FILTER_DIR_NAME = "WeeklyEigenFilter"
 
 # EigenFilter thresholds
 EIGEN_CLOSE_LOWER_BAND = 0.30

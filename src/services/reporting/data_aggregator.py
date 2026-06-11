@@ -31,8 +31,8 @@ class DataAggregator:
             "ticker": self._count_files(const.TICKER_DIR_NAME),
             "triggers": self._count_files(const.TRIGGERS_DIR_NAME),
             "eigen_filter": self._count_files(const.EIGEN_FILTER_DIR_NAME),
-            "age_again": self._count_files(const.AGE_AGAIN_FILTER_DIR_NAME),
-            "monthly_eigen": self._count_files(const.MONTHLY_EIGEN_FILTER_DIR_NAME)
+            "monthly_eigen": self._count_files(const.MONTHLY_EIGEN_FILTER_DIR_NAME),
+            "weekly_eigen": self._count_files(const.WEEKLY_EIGEN_FILTER_DIR_NAME)
         }
 
     def get_symbol_lists(self) -> Dict[str, List[str]]:
@@ -43,8 +43,8 @@ class DataAggregator:
             "ticker": self._get_symbols(const.TICKER_DIR_NAME),
             "triggers": self._get_symbols(const.TRIGGERS_DIR_NAME),
             "eigen_filter": self._get_symbols(const.EIGEN_FILTER_DIR_NAME),
-            "age_again": self._get_symbols(const.AGE_AGAIN_FILTER_DIR_NAME),
-            "monthly_eigen": self._get_symbols(const.MONTHLY_EIGEN_FILTER_DIR_NAME)
+            "monthly_eigen": self._get_symbols(const.MONTHLY_EIGEN_FILTER_DIR_NAME),
+            "weekly_eigen": self._get_symbols(const.WEEKLY_EIGEN_FILTER_DIR_NAME)
         }
 
     def get_ticker_details(self, symbol: str) -> Optional[Dict]:
@@ -175,52 +175,94 @@ class DataAggregator:
             "t_vol": t_vol, "t1_vol": t1_vol,
         }
 
-    def get_age_again_details(self, symbol: str) -> Optional[Dict]:
-        """Extracts AgeAgain Filter classification details from a processed Excel file."""
-        df = self._read_latest(const.AGE_AGAIN_FILTER_DIR_NAME, symbol)
-        if df is None or len(df) < 2:
+    def get_weekly_eigen_details(self, symbol: str) -> Optional[Dict]:
+        """Extracts Weekly EigenFilter classification details from a processed Excel file.
+        
+        Consolidates daily data into completed weekly candles (the current
+        in-progress week is excluded) and extracts the latest two completed
+        weeks for comparison metrics.
+        """
+        df = self._read_latest(const.WEEKLY_EIGEN_FILTER_DIR_NAME, symbol)
+        if df is None or "Date" not in df.columns:
             return None
 
-        latest, prev = df.iloc[-1], df.iloc[-2]
-        t_vol = int(latest.get("Volume", 0))
-        t1_vol = int(prev.get("Volume", 0))
-        t_spread = float(latest.get("Spread", 0))
-        t1_spread = float(prev.get("Spread", 0))
+        df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+        df = df.dropna(subset=["Date"]).sort_values("Date").reset_index(drop=True)
+        df["YearWeek"] = df["Date"].dt.strftime("%G-W%V")
 
-        if t1_vol <= 0 or t1_spread <= 0:
+        # Exclude the current in-progress week — only completed weeks are valid
+        now_ist = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
+        current_period = now_ist.strftime("%G-W%V")
+        df = df[df["YearWeek"] < current_period]
+        if df.empty:
             return None
 
-        is_vol_surge = t_vol > t1_vol
-        is_spread_contracted = t_spread < t1_spread
+        weekly = df.groupby("YearWeek").agg(
+            Open=("Open", "first"),
+            High=("High", "max"),
+            Low=("Low", "min"),
+            Close=("Close", "last"),
+            Volume=("Volume", "sum"),
+        ).reset_index().sort_values("YearWeek").reset_index(drop=True)
 
-        if is_vol_surge and is_spread_contracted:
-            scenario = "Vol_Surge_Spread_Contraction"
-            label = "Absorption Signal"
-            sentiment = "Bullish"
-        elif not is_vol_surge and not is_spread_contracted:
-            scenario = "Vol_Drop_Spread_Expansion"
-            label = "Effort Without Result"
-            sentiment = "Bearish"
-        else:
+        if len(weekly) < 2:
             return None
 
-        volume_pct = round(((t_vol - t1_vol) / max(t1_vol, 1)) * 100, 1)
-        spread_pct = round(((t_spread - t1_spread) / max(t1_spread, 0.0001)) * 100, 1)
+        weekly["Spread"] = weekly["High"] - weekly["Low"]
+        weekly["Close_Position"] = weekly.apply(
+            lambda r: (r["Close"] - r["Low"]) / r["Spread"]
+            if r["Spread"] > 0 else 0.5,
+            axis=1,
+        )
+
+        latest, prev = weekly.iloc[-1], weekly.iloc[-2]
+        t_open = float(latest["Open"])
+        t_close = float(latest["Close"])
+        t1_close_val = float(prev["Close"])
+        t_cp = float(latest["Close_Position"])
+        t1_cp = float(prev["Close_Position"])
+        t_spread = float(latest["Spread"])
+        t_vol = int(latest["Volume"])
+        t1_vol = int(prev["Volume"])
+
+        if t1_vol <= 0 or t_vol <= t1_vol:
+            return None
+
+        is_extreme = t_cp <= const.EIGEN_CLOSE_LOWER_BAND or t_cp >= const.EIGEN_CLOSE_UPPER_BAND
+        if not is_extreme:
+            return None
+
+        gap_dir = None
+        if t_open > t1_close_val and t_cp >= t1_cp:
+            gap_dir = "Gap-Up"
+        elif t_open < t1_close_val and t_cp <= t1_cp:
+            gap_dir = "Gap-Down"
+        if gap_dir is None:
+            return None
+
+        close_band = "Strong" if t_cp >= const.EIGEN_CLOSE_UPPER_BAND else "Weak"
+        delta_cp = round(t_cp - t1_cp, 4)
+        vol_delta = round(((t_vol - t1_vol) / max(t1_vol, 1)) * 100, 1)
+
+        label_map = {
+            ("Gap-Up", "Strong"): ("Bullish Impulse Convergence", "Bullish"),
+            ("Gap-Up", "Weak"): ("Contested Bullish Divergence", "Bullish"),
+            ("Gap-Down", "Weak"): ("Bearish Impulse Convergence", "Bearish"),
+            ("Gap-Down", "Strong"): ("Contested Bearish Divergence", "Bearish"),
+        }
+        label, sentiment = label_map.get((gap_dir, close_band), ("Unknown", "Neutral"))
+
+        latest_week = str(latest["YearWeek"])
+        prev_week = str(prev["YearWeek"])
 
         return {
-            "symbol": symbol,
-            "scenario": scenario,
-            "label": label,
-            "sentiment": sentiment,
-            "t_vol": t_vol,
-            "t1_vol": t1_vol,
-            "volume_pct": volume_pct,
-            "t_spread": round(t_spread, 2),
-            "t1_spread": round(t1_spread, 2),
-            "spread_pct": spread_pct,
-            "t_close": float(latest.get("Close", 0)),
-            "t_open": float(latest.get("Open", 0)),
-            "t_cp": round(float(latest.get("Close_Position", 0.5)), 4),
+            "symbol": symbol, "gap_dir": gap_dir, "close_band": close_band,
+            "label": label, "sentiment": sentiment,
+            "t_open": t_open, "t_close": t_close, "t_spread": t_spread,
+            "t_cp": round(t_cp, 4), "t1_cp": round(t1_cp, 4),
+            "delta_cp": delta_cp, "vol_delta_pct": vol_delta,
+            "t_vol": t_vol, "t1_vol": t1_vol,
+            "latest_week": latest_week, "prev_week": prev_week,
         }
 
     def get_monthly_eigen_details(self, symbol: str) -> Optional[Dict]:
