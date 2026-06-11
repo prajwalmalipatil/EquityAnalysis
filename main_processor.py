@@ -40,14 +40,27 @@ def main():
         
     logger.info("VALIDATED_INPUTS", extra={"file_count": len(csv_files), "workers": args.workers})
     
-    # Execute batch
+    # Execute batch in parallel processes (bypass GIL)
     success_count = 0
-    with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=args.workers) as executor:
         futures = {executor.submit(service.process_file, f): f for f in csv_files}
         for future in concurrent.futures.as_completed(futures):
             try:
-                if future.result():
+                res = future.result()
+                if res.get("success"):
                     success_count += 1
+                    
+                    # Accumulate stats
+                    f_stats = res["stats"]
+                    service.stats["total_signals"] += f_stats["total_signals"]
+                    service.stats["confirmed"] += f_stats["conf"]
+                    service.stats["failed"] += f_stats["fail"]
+                    service.stats["pending"] += f_stats["pend"]
+                    service.stats["fire"] += f_stats["fire"]
+                    service.stats["success_files"] += 1
+                    
+                    # Accumulate metadata
+                    service._processed_metadata.append(res["metadata"])
             except Exception as e:
                 logger.error("WORKER_EXECUTION_FAILED", extra={"error": str(e)})
     # Finalize and Distribute

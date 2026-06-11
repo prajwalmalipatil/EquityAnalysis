@@ -70,21 +70,14 @@ class VSAProcessorService:
             symbol = file_path.stem.split('_')[0]
             out_path = self.output_base / const.RESULTS_DIR_NAME / f"{symbol}_VSA.xlsx"
             
-            # Sub-stats for granular logging
+            # Return sub-stats for aggregation in main process instead of mutating self
             f_stats = {
                 "conf": len(df[df["Validation_Status"] == "Confirmed ✅"]),
                 "fail": len(df[df["Validation_Status"] == "Failed ❌"]),
                 "pend": len(df[df["Validation_Status"] == "Pending ⏳"]),
-                "fire": len(df[df["Confirmed_Fire"] == "🔥"]) if "Confirmed_Fire" in df.columns else 0
+                "fire": len(df[df["Confirmed_Fire"] == "🔥"]) if "Confirmed_Fire" in df.columns else 0,
+                "total_signals": len(df[df["Signal_Type"] != "No Signal"])
             }
-            
-            # Update global stats
-            self.stats["total_signals"] += len(df[df["Signal_Type"] != "No Signal"])
-            self.stats["confirmed"] += f_stats["conf"]
-            self.stats["failed"] += f_stats["fail"]
-            self.stats["pending"] += f_stats["pend"]
-            self.stats["fire"] += f_stats["fire"]
-            self.stats["success_files"] += 1
 
             # Create rich Excel output
             with pd.ExcelWriter(out_path, engine='openpyxl') as writer:
@@ -152,7 +145,7 @@ class VSAProcessorService:
             has_anomaly = latest["Volume"] < prev["Volume"] and prev["Volume"] > prev2["Volume"] and prev2["Volume"] > prev3["Volume"]
 
             # Track for post-processing
-            self._processed_metadata.append({
+            metadata = {
                 "symbol": symbol,
                 "path": out_path,
                 "is_trending": bool(is_trending),
@@ -163,11 +156,15 @@ class VSAProcessorService:
                 "vol_pct": float(latest.get("Vol_Pct", 0)),
                 "vsa_signal": str(latest.get("Signal_Type", "No Signal")),
                 "vsa_confidence": float(latest.get("Confidence", 0))
-            })
-            return True
+            }
+            return {
+                "success": True,
+                "metadata": metadata,
+                "stats": f_stats
+            }
         except Exception as e:
             logger.error("PROCESS_FILE_FAILED", extra={"path": str(file_path), "error": str(e)})
-            return False
+            return {"success": False}
 
     def finalize_run(self):
         """Disributes files to folders based on ACTUAL found patterns (Parity with legacy logic)."""
