@@ -12,6 +12,7 @@ from typing import List, Dict
 
 from src.constants import vsa_constants as const
 from src.models.consensus_models import ConsensusRating
+from src.models.vsa_models import EigenClassification
 from src.utils.observability import get_tenant_logger
 
 logger = get_tenant_logger("consensus-engine-service")
@@ -37,14 +38,14 @@ class ConsensusEngineService:
         self.consensus_dir = base_dir / const.CONSENSUS_RESULTS_DIR_NAME
         self.consensus_dir.mkdir(parents=True, exist_ok=True)
 
-    def compute_consensus(self) -> List[ConsensusRating]:
-        """Scans all three directories, calculates ratings, and exports results."""
+    def compute_consensus(self, daily_results: List[EigenClassification], weekly_results: List[EigenClassification], monthly_results: List[EigenClassification]) -> List[ConsensusRating]:
+        """Calculates ratings based on provided classification results and exports them."""
         # 1. Gather all available signals
         symbols_data: Dict[str, Dict[str, str]] = {}
         
-        self._load_signals(self.daily_dir, "daily", symbols_data)
-        self._load_signals(self.weekly_dir, "weekly", symbols_data)
-        self._load_signals(self.monthly_dir, "monthly", symbols_data)
+        self._populate_signals(daily_results, "daily", symbols_data)
+        self._populate_signals(weekly_results, "weekly", symbols_data)
+        self._populate_signals(monthly_results, "monthly", symbols_data)
         
         if not symbols_data:
             logger.info("No signals found across any timeframe to generate consensus.")
@@ -63,50 +64,16 @@ class ConsensusEngineService:
         self._log_summary(ratings)
         return ratings
 
-    def _load_signals(self, dir_path: Path, timeframe: str, symbols_data: Dict[str, Dict[str, str]]):
-        """Reads the Excel files in the given directory to determine sentiment."""
-        if not dir_path.exists():
-            return
-            
-        for xlsx_path in dir_path.glob("*.xlsx"):
-            symbol = xlsx_path.stem.replace("_VSA", "")
-            if symbol not in symbols_data:
-                symbols_data[symbol] = {
+    def _populate_signals(self, results: List[EigenClassification], timeframe: str, symbols_data: Dict[str, Dict[str, str]]):
+        """Populates the symbols_data dictionary with sentiments from the provided results."""
+        for r in results:
+            if r.symbol not in symbols_data:
+                symbols_data[r.symbol] = {
                     "daily": "None",
                     "weekly": "None",
                     "monthly": "None"
                 }
-                
-            try:
-                # We can deduce sentiment by looking at the specific label/column, 
-                # but since EigenFilter services only copy files into these dirs if they qualify,
-                # we must read the sentiment from the dataframe or infer it from the close position.
-                # All these dataframes have a 'Close_Position' and 'Gap_Direction' somewhere, but
-                # we didn't inject 'Sentiment' directly into the Excel. 
-                # Wait, the simplest way to know sentiment is to check if T_CP > T1_CP and Gap-Up vs Gap-Down
-                # Actually, the quickest way is checking gap direction since Bullish = Gap-Up, Bearish = Gap-Down in EigenFilter.
-                df = pd.read_excel(xlsx_path, sheet_name="VSA_Analysis")
-                if len(df) < 2:
-                    continue
-                
-                latest = df.iloc[-1]
-                prev = df.iloc[-2]
-                t_open = float(latest.get("Open", 0))
-                t1_close = float(prev.get("Close", 0))
-                t_cp = float(latest.get("Close_Position", 0.5))
-                t1_cp = float(prev.get("Close_Position", 0.5))
-                
-                sentiment = "None"
-                if t_open > t1_close and t_cp >= t1_cp:
-                    sentiment = "Bullish"
-                elif t_open < t1_close and t_cp <= t1_cp:
-                    sentiment = "Bearish"
-                
-                if sentiment != "None":
-                    symbols_data[symbol][timeframe] = sentiment
-                
-            except Exception:
-                continue
+            symbols_data[r.symbol][timeframe] = r.sentiment
 
     def _evaluate_symbol(self, symbol: str, signals: Dict[str, str]) -> Optional[ConsensusRating]:
         """Calculates the weighted score and assigns the star rating/label."""

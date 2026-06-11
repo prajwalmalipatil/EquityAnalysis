@@ -232,7 +232,7 @@ class VSAProcessorService:
         # 10. Multi-Timeframe Consensus Engine
         from .consensus_engine_service import ConsensusEngineService
         consensus_service = ConsensusEngineService(self.output_base)
-        consensus_results = consensus_service.compute_consensus()
+        consensus_results = consensus_service.compute_consensus(eigen_results, weekly_eigen_results, monthly_eigen_results)
         logger.info(f"POST_PROCESS: ConsensusEngine Computed {len(consensus_results)} consensus ratings")
 
 
