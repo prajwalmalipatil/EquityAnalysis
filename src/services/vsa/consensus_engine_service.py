@@ -87,24 +87,24 @@ class ConsensusEngineService:
         m_score, w_score, d_score = 0.0, 0.0, 0.0
         
         if m_sent != "None":
-            total_weight_available += WEIGHT_MONTHLY
             m_score = WEIGHT_MONTHLY if m_sent == "Bullish" else -WEIGHT_MONTHLY
             score += m_score
             
         if w_sent != "None":
-            total_weight_available += WEIGHT_WEEKLY
             w_score = WEIGHT_WEEKLY if w_sent == "Bullish" else -WEIGHT_WEEKLY
             score += w_score
             
         if d_sent != "None":
-            total_weight_available += WEIGHT_DAILY
             d_score = WEIGHT_DAILY if d_sent == "Bullish" else -WEIGHT_DAILY
             score += d_score
             
-        if total_weight_available == 0:
+        if m_sent == "None" and w_sent == "None" and d_sent == "None":
             return None
             
-        score_percentage = (score / total_weight_available) * 100
+        # Divide by the absolute total possible weight (100) to ensure only 
+        # full alignment across all timeframes results in 100%.
+        total_weight_absolute = WEIGHT_MONTHLY + WEIGHT_WEEKLY + WEIGHT_DAILY
+        score_percentage = (score / total_weight_absolute) * 100
         
         # Classification Matrix
         if score_percentage == 100.0:
