@@ -47,7 +47,8 @@ class VSAProcessorService:
             const.ANOMALY_DIR_NAME, const.TICKER_DIR_NAME,
             const.TRIGGERS_DIR_NAME, const.EFFORTS_DIR_NAME,
             const.EIGEN_FILTER_DIR_NAME, const.AGE_AGAIN_FILTER_DIR_NAME,
-            const.MONTHLY_EIGEN_FILTER_DIR_NAME, const.WEEKLY_EIGEN_FILTER_DIR_NAME
+            const.MONTHLY_EIGEN_FILTER_DIR_NAME, const.WEEKLY_EIGEN_FILTER_DIR_NAME,
+            const.CONSENSUS_RESULTS_DIR_NAME
         ]
         for d in dirs:
             dir_path = self.output_base / d
@@ -227,6 +228,13 @@ class VSAProcessorService:
         weekly_eigen_service = WeeklyEigenFilterService(self.output_base)
         weekly_eigen_results = weekly_eigen_service.consolidate_and_classify()
         logger.info(f"POST_PROCESS: WeeklyEigenFilter Classified {len(weekly_eigen_results)} symbols")
+
+        # 10. Multi-Timeframe Consensus Engine
+        from .consensus_engine_service import ConsensusEngineService
+        consensus_service = ConsensusEngineService(self.output_base)
+        consensus_results = consensus_service.compute_consensus()
+        logger.info(f"POST_PROCESS: ConsensusEngine Computed {len(consensus_results)} consensus ratings")
+
 
 
     def _load_and_clean(self, path: Path) -> pd.DataFrame:
