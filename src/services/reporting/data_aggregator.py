@@ -30,7 +30,8 @@ class DataAggregator:
             "ticker": self._count_files(const.TICKER_DIR_NAME),
             "triggers": self._count_files(const.TRIGGERS_DIR_NAME),
             "eigen_filter": self._count_files(const.EIGEN_FILTER_DIR_NAME),
-            "age_again": self._count_files(const.AGE_AGAIN_FILTER_DIR_NAME)
+            "age_again": self._count_files(const.AGE_AGAIN_FILTER_DIR_NAME),
+            "monthly_eigen": self._count_files(const.MONTHLY_EIGEN_FILTER_DIR_NAME)
         }
 
     def get_symbol_lists(self) -> Dict[str, List[str]]:
@@ -41,7 +42,8 @@ class DataAggregator:
             "ticker": self._get_symbols(const.TICKER_DIR_NAME),
             "triggers": self._get_symbols(const.TRIGGERS_DIR_NAME),
             "eigen_filter": self._get_symbols(const.EIGEN_FILTER_DIR_NAME),
-            "age_again": self._get_symbols(const.AGE_AGAIN_FILTER_DIR_NAME)
+            "age_again": self._get_symbols(const.AGE_AGAIN_FILTER_DIR_NAME),
+            "monthly_eigen": self._get_symbols(const.MONTHLY_EIGEN_FILTER_DIR_NAME)
         }
 
     def get_ticker_details(self, symbol: str) -> Optional[Dict]:
@@ -218,4 +220,86 @@ class DataAggregator:
             "t_close": float(latest.get("Close", 0)),
             "t_open": float(latest.get("Open", 0)),
             "t_cp": round(float(latest.get("Close_Position", 0.5)), 4),
+        }
+
+    def get_monthly_eigen_details(self, symbol: str) -> Optional[Dict]:
+        """Extracts Monthly EigenFilter classification details from a processed Excel file.
+        
+        Consolidates daily data into monthly candles and extracts the
+        latest two months for comparison metrics.
+        """
+        df = self._read_latest(const.MONTHLY_EIGEN_FILTER_DIR_NAME, symbol)
+        if df is None or "Date" not in df.columns:
+            return None
+
+        df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+        df = df.dropna(subset=["Date"]).sort_values("Date").reset_index(drop=True)
+        df["YearMonth"] = df["Date"].dt.to_period("M")
+
+        monthly = df.groupby("YearMonth").agg(
+            Open=("Open", "first"),
+            High=("High", "max"),
+            Low=("Low", "min"),
+            Close=("Close", "last"),
+            Volume=("Volume", "sum"),
+        ).reset_index().sort_values("YearMonth").reset_index(drop=True)
+
+        if len(monthly) < 2:
+            return None
+
+        monthly["Spread"] = monthly["High"] - monthly["Low"]
+        monthly["Close_Position"] = monthly.apply(
+            lambda r: (r["Close"] - r["Low"]) / r["Spread"]
+            if r["Spread"] > 0 else 0.5,
+            axis=1,
+        )
+
+        latest, prev = monthly.iloc[-1], monthly.iloc[-2]
+        t_open = float(latest["Open"])
+        t_close = float(latest["Close"])
+        t1_close_val = float(prev["Close"])
+        t_cp = float(latest["Close_Position"])
+        t1_cp = float(prev["Close_Position"])
+        t_spread = float(latest["Spread"])
+        t_vol = int(latest["Volume"])
+        t1_vol = int(prev["Volume"])
+
+        if t1_vol <= 0 or t_vol <= t1_vol:
+            return None
+
+        is_extreme = t_cp <= const.EIGEN_CLOSE_LOWER_BAND or t_cp >= const.EIGEN_CLOSE_UPPER_BAND
+        if not is_extreme:
+            return None
+
+        gap_dir = None
+        if t_open > t1_close_val and t_cp >= t1_cp:
+            gap_dir = "Gap-Up"
+        elif t_open < t1_close_val and t_cp <= t1_cp:
+            gap_dir = "Gap-Down"
+        if gap_dir is None:
+            return None
+
+        close_band = "Strong" if t_cp >= const.EIGEN_CLOSE_UPPER_BAND else "Weak"
+        delta_cp = round(t_cp - t1_cp, 4)
+        vol_delta = round(((t_vol - t1_vol) / max(t1_vol, 1)) * 100, 1)
+
+        label_map = {
+            ("Gap-Up", "Strong"): ("Bullish Impulse Convergence", "Bullish"),
+            ("Gap-Up", "Weak"): ("Contested Bullish Divergence", "Bullish"),
+            ("Gap-Down", "Weak"): ("Bearish Impulse Convergence", "Bearish"),
+            ("Gap-Down", "Strong"): ("Contested Bearish Divergence", "Bearish"),
+        }
+        label, sentiment = label_map.get((gap_dir, close_band), ("Unknown", "Neutral"))
+
+        latest_month = str(latest["YearMonth"])
+        prev_month = str(prev["YearMonth"])
+
+        return {
+            "symbol": symbol, "gap_dir": gap_dir, "close_band": close_band,
+            "label": label, "sentiment": sentiment,
+            "t_open": t_open, "t_close": t_close, "t_spread": t_spread,
+            "t_cp": round(t_cp, 4), "t1_cp": round(t1_cp, 4),
+            "delta_cp": delta_cp, "vol_delta_pct": vol_delta,
+            "t_vol": t_vol, "t1_vol": t1_vol,
+            "latest_month": latest_month, "prev_month": prev_month,
         }

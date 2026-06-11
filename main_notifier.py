@@ -44,13 +44,19 @@ def main():
         details = aggregator.get_age_again_details(sym)
         if details: age_again_details.append(details)
 
+    monthly_eigen_details = []
+    for sym in symbol_data["monthly_eigen"]:
+        details = aggregator.get_monthly_eigen_details(sym)
+        if details: monthly_eigen_details.append(details)
+
     # 3. Render Premium HTML
     renderer = HTMLRenderer()
     html_report = renderer.render_full_report(
         stats=stats,
         eigen_details=eigen_details,
         trending_symbols=symbol_data["trending"],
-        age_again_details=age_again_details
+        age_again_details=age_again_details,
+        monthly_eigen_details=monthly_eigen_details
     )
     
     # 4. Handle Output

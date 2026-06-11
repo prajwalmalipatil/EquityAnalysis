@@ -82,6 +82,7 @@ def main():
     effort_count = len(list((input_folder / "Efforts").glob("*.xlsx")))
     eigen_count = len(list((input_folder / "EigenFilter").glob("*.xlsx")))
     age_again_count = len(list((input_folder / "AgeAgain").glob("*.xlsx")))
+    monthly_eigen_count = len(list((input_folder / "MonthlyEigenFilter").glob("*.xlsx")))
 
     logger.info("\nFOLDER DISTRIBUTION:")
     logger.info(f"  Trending:    {trending_count} files")
@@ -91,6 +92,7 @@ def main():
     logger.info(f"  Efforts:     {effort_count} files")
     logger.info(f"  EigenFilter: {eigen_count} files")
     logger.info(f"  AgeAgain:    {age_again_count} files")
+    logger.info(f"  MonthlyEigen: {monthly_eigen_count} files")
     logger.info("="*60)
     logger.info("✅ VSA Analysis Run Finished Successfully")
 
