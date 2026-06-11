@@ -51,8 +51,11 @@ def main():
 
     # 3. Render Premium HTML
     renderer = HTMLRenderer()
+    consensus_details = aggregator.get_consensus_details()
+    
     html_report = renderer.render_full_report(
         stats=stats,
+        consensus_details=consensus_details,
         eigen_details=eigen_details,
         weekly_eigen_details=weekly_eigen_details,
         monthly_eigen_details=monthly_eigen_details

@@ -19,11 +19,14 @@ class HTMLRenderer:
         self.date_str = self.now.strftime('%d-%m-%Y %H:%M')
         self.short_date = self.now.strftime('%d-%m-%Y')
 
-    def render_full_report(self, stats: Dict, eigen_details: List[Dict],
+    def render_full_report(self, stats: Dict, 
+                           consensus_details: List[Dict],
+                           eigen_details: List[Dict],
                            weekly_eigen_details: Optional[List[Dict]] = None,
                            monthly_eigen_details: Optional[List[Dict]] = None) -> str:
 
         # Render Sections
+        consensus_section = self._render_consensus_section(consensus_details)
         eigen_section = self._render_eigen_section(eigen_details)
         weekly_eigen_section = self._render_weekly_eigen_section(weekly_eigen_details or [])
         monthly_eigen_section = self._render_monthly_eigen_section(monthly_eigen_details or [])
@@ -92,6 +95,9 @@ class HTMLRenderer:
                     </div>
                 </div>
 
+                <!-- MULTI-TIMEFRAME CONSENSUS -->
+                {consensus_section}
+
                 <!-- EIGEN FILTER -->
                 {eigen_section}
 
@@ -110,6 +116,66 @@ class HTMLRenderer:
     </body>
     </html>
     """
+
+    def _render_consensus_section(self, details: List[Dict]) -> str:
+        """Renders the Multi-Timeframe Consensus Engine section."""
+        if not details:
+            return ""
+
+        rows = ""
+        for d in details:
+            # Color coding the left border and sentiment text
+            stars = d['Stars']
+            label = d['Label']
+            
+            if stars >= 4:
+                accent_color = "#38a169" # Green
+                text_color = "#276749"
+            elif stars <= 2:
+                accent_color = "#e53e3e" # Red
+                text_color = "#742a2a"
+            else:
+                accent_color = "#a0aec0" # Gray
+                text_color = "#4a5568"
+                
+            stars_str = ("★" * stars) + ("☆" * (5 - stars))
+            
+            rows += f"""
+            <tr style="border-bottom: 1px solid #edf2f7; border-left: 4px solid {accent_color};">
+                <td style="padding: 10px; font-weight: 800; color: #2d3748;">{d['Symbol']}</td>
+                <td style="padding: 10px; font-weight: 700; color: {text_color};">{label}</td>
+                <td style="padding: 10px; font-size: 14px; color: #d69e2e;">{stars_str}</td>
+                <td style="padding: 10px; font-size: 11px; font-weight: 600; color: {'#276749' if d['Monthly_Sentiment'] == 'Bullish' else '#742a2a' if d['Monthly_Sentiment'] == 'Bearish' else '#718096'};">{d['Monthly_Sentiment']}</td>
+                <td style="padding: 10px; font-size: 11px; font-weight: 600; color: {'#276749' if d['Weekly_Sentiment'] == 'Bullish' else '#742a2a' if d['Weekly_Sentiment'] == 'Bearish' else '#718096'};">{d['Weekly_Sentiment']}</td>
+                <td style="padding: 10px; font-size: 11px; font-weight: 600; color: {'#276749' if d['Daily_Sentiment'] == 'Bullish' else '#742a2a' if d['Daily_Sentiment'] == 'Bearish' else '#718096'};">{d['Daily_Sentiment']}</td>
+                <td class="num" style="padding: 10px; font-weight: 700; color: {text_color};">{d['Score_Pct']:+.1f}%</td>
+            </tr>
+            """
+
+        return f"""
+        <div class="section">
+            <div class="section-header" style="color: #1a202c; font-size: 18px;">🏆 Multi-Timeframe Consensus Engine</div>
+            
+            <div style="background: #fff; border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; margin-bottom: 15px; font-size: 12px; color: #4a5568; line-height: 1.5;">
+                <strong>Consensus Logic:</strong> Synthesizes Daily, Weekly, and Monthly EigenFilter signals to evaluate trend alignment. Weights: Monthly (40%), Weekly (35%), Daily (25%). Higher timeframe wins conflicts.
+            </div>
+
+            <table class="data-table" style="background: #fff; border: 1px solid #edf2f7; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <thead style="background: #f7fafc; color: #4a5568;">
+                    <tr>
+                        <th style="padding-left: 14px;">SYMBOL</th>
+                        <th>CONSENSUS</th>
+                        <th>RATING</th>
+                        <th>MONTHLY</th>
+                        <th>WEEKLY</th>
+                        <th>DAILY</th>
+                        <th class="num">SCORE</th>
+                    </tr>
+                </thead>
+                <tbody>{rows}</tbody>
+            </table>
+        </div>
+        """
 
     def _render_eigen_section(self, details: List[Dict]) -> str:
         """Renders the EigenFilter section with purple-themed styling."""

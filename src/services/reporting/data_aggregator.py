@@ -354,3 +354,15 @@ class DataAggregator:
             "t_vol": t_vol, "t1_vol": t1_vol,
             "latest_month": latest_month, "prev_month": prev_month,
         }
+
+    def get_consensus_details(self) -> List[Dict]:
+        """Extracts the sorted Consensus Ratings for the UI."""
+        path = self.base_dir / const.CONSENSUS_RESULTS_DIR_NAME / "consensus_ratings.xlsx"
+        if not path.exists(): return []
+        
+        try:
+            df = pd.read_excel(path)
+            df = df.fillna("None")
+            return df.to_dict('records')
+        except Exception:
+            return []
