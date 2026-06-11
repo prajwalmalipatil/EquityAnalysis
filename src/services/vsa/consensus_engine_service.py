@@ -8,7 +8,7 @@ institutional-grade consensus rating using a 40/35/25 weighting model.
 import shutil
 import pandas as pd
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from src.constants import vsa_constants as const
 from src.models.consensus_models import ConsensusRating
