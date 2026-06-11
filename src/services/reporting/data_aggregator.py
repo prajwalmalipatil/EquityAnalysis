@@ -4,6 +4,7 @@ Scans processed VSA folders and aggregates full detail for professional reports.
 """
 
 import pandas as pd
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import List, Dict, Optional
 from src.constants import vsa_constants as const
@@ -225,8 +226,9 @@ class DataAggregator:
     def get_monthly_eigen_details(self, symbol: str) -> Optional[Dict]:
         """Extracts Monthly EigenFilter classification details from a processed Excel file.
         
-        Consolidates daily data into monthly candles and extracts the
-        latest two months for comparison metrics.
+        Consolidates daily data into completed monthly candles (the current
+        in-progress month is excluded) and extracts the latest two completed
+        months for comparison metrics.
         """
         df = self._read_latest(const.MONTHLY_EIGEN_FILTER_DIR_NAME, symbol)
         if df is None or "Date" not in df.columns:
@@ -235,6 +237,13 @@ class DataAggregator:
         df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
         df = df.dropna(subset=["Date"]).sort_values("Date").reset_index(drop=True)
         df["YearMonth"] = df["Date"].dt.to_period("M")
+
+        # Exclude the current in-progress month — only completed months are valid
+        now_ist = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
+        current_period = pd.Period(now_ist.strftime("%Y-%m"), freq="M")
+        df = df[df["YearMonth"] < current_period]
+        if df.empty:
+            return None
 
         monthly = df.groupby("YearMonth").agg(
             Open=("Open", "first"),

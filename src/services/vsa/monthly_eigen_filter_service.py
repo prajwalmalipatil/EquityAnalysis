@@ -7,6 +7,7 @@ monthly timeframe. Runs independently of the Daily EigenFilter.
 
 import shutil
 import pandas as pd
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import List, Optional
 
@@ -74,7 +75,11 @@ class MonthlyEigenFilterService:
 
     @staticmethod
     def _consolidate_to_monthly(df: pd.DataFrame) -> Optional[pd.DataFrame]:
-        """Aggregates daily OHLCV rows into monthly candles.
+        """Aggregates daily OHLCV rows into completed monthly candles.
+
+        The current in-progress month is always excluded to prevent
+        partial-period bias. Only fully completed calendar months are
+        included in the consolidation.
 
         Monthly candle rules:
           Open   = first daily open of the month
@@ -96,6 +101,13 @@ class MonthlyEigenFilterService:
 
         df = df.sort_values("Date").reset_index(drop=True)
         df["YearMonth"] = df["Date"].dt.to_period("M")
+
+        # Exclude the current in-progress month — only completed months are valid
+        now_ist = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
+        current_period = pd.Period(now_ist.strftime("%Y-%m"), freq="M")
+        df = df[df["YearMonth"] < current_period]
+        if df.empty:
+            return None
 
         monthly = df.groupby("YearMonth").agg(
             Open=("Open", "first"),
