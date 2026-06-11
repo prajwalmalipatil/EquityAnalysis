@@ -213,7 +213,7 @@ class HTMLRenderer:
                     <thead style="background: #c6f6d5; color: #276749;">
                         <tr><th>SYMBOL</th><th>LABEL</th><th class="num">WEEK</th><th class="num">OPEN</th><th class="num">CLOSE</th><th class="num">GAP</th><th class="num">CP</th><th class="num">PREV CP</th><th class="num">ΔCP</th><th class="num">W VOL</th><th class="num">PREV W VOL</th><th class="num">VOL Δ%</th></tr>
                     </thead>
-                    <tbody>{{rows}}</tbody>
+                    <tbody>{rows}</tbody>
                 </table>
             </div>
             """
@@ -227,7 +227,7 @@ class HTMLRenderer:
                     <thead style="background: #fed7d7; color: #742a2a;">
                         <tr><th>SYMBOL</th><th>LABEL</th><th class="num">WEEK</th><th class="num">OPEN</th><th class="num">CLOSE</th><th class="num">GAP</th><th class="num">CP</th><th class="num">PREV CP</th><th class="num">ΔCP</th><th class="num">W VOL</th><th class="num">PREV W VOL</th><th class="num">VOL Δ%</th></tr>
                     </thead>
-                    <tbody>{{rows}}</tbody>
+                    <tbody>{rows}</tbody>
                 </table>
             </div>
             """
@@ -243,15 +243,15 @@ class HTMLRenderer:
             <div class="stat-box" style="display: flex; justify-content: space-between; align-items: center; border-color: #7dd3fc; background: #f0f9ff;">
                 <div>
                     <div class="stat-label" style="color: #0284c7;">WEEKLY SIGNALS</div>
-                    <div class="stat-value" style="color: #0369a1;">{{len(details)}}</div>
+                    <div class="stat-value" style="color: #0369a1;">{len(details)}</div>
                 </div>
                 <div style="text-align: right;">
                     <div class="stat-label" style="color: #0284c7;">BULLISH / BEARISH</div>
-                    <div class="stat-value" style="color: #0369a1; font-size: 14px; margin-top: 4px;">{{len(bullish)}} / {{len(bearish)}}</div>
+                    <div class="stat-value" style="color: #0369a1; font-size: 14px; margin-top: 4px;">{len(bullish)} / {len(bearish)}</div>
                 </div>
             </div>
 
-            {{sections}}
+            {sections}
         </div>
         """
 
@@ -265,18 +265,18 @@ class HTMLRenderer:
             week_label = d.get('latest_week', 'N/A')
             rows += f"""
             <tr style="border-bottom: 1px solid #edf2f7;">
-                <td style="padding: 10px; font-weight: 700; color: #2d3748;">{{d['symbol']}}</td>
-                <td style="padding: 10px; font-size: 11px; font-weight: 600; color: {{sentiment_color}};">{{d['label']}}</td>
-                <td class="num" style="font-weight: 600; color: #0369a1; font-size: 11px;">{{week_label}}</td>
-                <td class="num" style="color: #718096; font-size: 11px;">{{d['t_open']:.2f}}</td>
-                <td class="num" style="font-weight: 700; color: #2d3748;">{{d['t_close']:.2f}}</td>
-                <td class="num" style="font-weight: 600; color: #0369a1; font-size: 11px;">{{d['gap_dir']}}</td>
-                <td class="num" style="font-weight: 700; color: #2d3748;">{{d['t_cp']:.4f}}</td>
-                <td class="num" style="color: #718096; font-size: 11px;">{{d['t1_cp']:.4f}}</td>
-                <td class="num" style="font-weight: 700; color: {{delta_cp_color}};">{{d['delta_cp']:+.4f}}</td>
-                <td class="num" style="font-weight: 700; color: #2d3748;">{{d['t_vol']:,}}</td>
-                <td class="num" style="color: #718096; font-size: 11px;">{{d['t1_vol']:,}}</td>
-                <td class="num" style="font-weight: 700; color: {{vol_color}};">{{d['vol_delta_pct']:+.1f}}%</td>
+                <td style="padding: 10px; font-weight: 700; color: #2d3748;">{d['symbol']}</td>
+                <td style="padding: 10px; font-size: 11px; font-weight: 600; color: {sentiment_color};">{d['label']}</td>
+                <td class="num" style="font-weight: 600; color: #0369a1; font-size: 11px;">{week_label}</td>
+                <td class="num" style="color: #718096; font-size: 11px;">{d['t_open']:.2f}</td>
+                <td class="num" style="font-weight: 700; color: #2d3748;">{d['t_close']:.2f}</td>
+                <td class="num" style="font-weight: 600; color: #0369a1; font-size: 11px;">{d['gap_dir']}</td>
+                <td class="num" style="font-weight: 700; color: #2d3748;">{d['t_cp']:.4f}</td>
+                <td class="num" style="color: #718096; font-size: 11px;">{d['t1_cp']:.4f}</td>
+                <td class="num" style="font-weight: 700; color: {delta_cp_color};">{d['delta_cp']:+.4f}</td>
+                <td class="num" style="font-weight: 700; color: #2d3748;">{d['t_vol']:,}</td>
+                <td class="num" style="color: #718096; font-size: 11px;">{d['t1_vol']:,}</td>
+                <td class="num" style="font-weight: 700; color: {vol_color};">{d['vol_delta_pct']:+.1f}%</td>
             </tr>
             """
         return rows
