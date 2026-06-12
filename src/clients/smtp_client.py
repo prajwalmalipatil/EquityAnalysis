@@ -28,13 +28,14 @@ class SMTPClient:
 
     @with_retry(max_attempts=3, base_delay=2.0)
     def send_email(self, sender_email: str, sender_password: str, 
-                   recipient_email: str, subject: str, html_body: str) -> bool:
+                   recipient_email: str, subject: str, html_body: str,
+                   text_body: str = "Please view this email in an HTML-compatible client.") -> bool:
         """Sends an HTML email message using SSL."""
         msg = EmailMessage()
         msg['Subject'] = subject
         msg['From'] = sender_email
         msg['To'] = recipient_email
-        msg.set_content("Please view this email in an HTML-compatible client.")
+        msg.set_content(text_body)
         msg.add_alternative(html_body, subtype='html')
 
         try:

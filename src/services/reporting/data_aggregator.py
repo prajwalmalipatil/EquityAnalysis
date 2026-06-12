@@ -363,6 +363,7 @@ class DataAggregator:
         try:
             df = pd.read_excel(path)
             df = df.fillna("None")
+            df.columns = [c.lower() for c in df.columns]
             return df.to_dict('records')
         except Exception:
             return []

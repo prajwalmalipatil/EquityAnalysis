@@ -54,6 +54,11 @@ jobs:
         export PYTHONPATH=$PYTHONPATH:.
         python main_processor.py --folder equity_data
 
+    - name: "Run JSON Publisher"
+      run: |
+        export PYTHONPATH=$PYTHONPATH:.
+        python main_publisher.py --base-dir equity_data --output dashboard/data.json
+
     - name: "Run Notification & Summary"
       env:
         SENDER_EMAIL: ${{ secrets.SENDER_EMAIL }}
@@ -76,3 +81,9 @@ jobs:
           equity_data/WeeklyEigenFilter/
           equity_data/ConsensusResults/
         retention-days: 7
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dashboard
