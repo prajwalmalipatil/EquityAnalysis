@@ -1,6 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
     fetchData();
+    setupNavigation();
 });
+
+function setupNavigation() {
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            // Remove active from all
+            navItems.forEach(nav => nav.classList.remove('active'));
+            // Add active to clicked
+            item.classList.add('active');
+        });
+    });
+}
 
 async function fetchData() {
     try {
