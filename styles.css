@@ -342,6 +342,7 @@ nav {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border-bottom: 1px solid var(--glass-border);
+    background: var(--glass-highlight);
 }
 
 .data-table td {
@@ -350,8 +351,46 @@ nav {
     color: var(--text-main);
 }
 
+.data-table tbody tr:nth-child(even) td {
+    background: rgba(0, 0, 0, 0.01);
+}
+
 .data-table tr:hover td {
     background: rgba(0, 0, 0, 0.02);
+}
+
+/* Premium Badges */
+.premium-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-gap-up {
+    background: rgba(20, 184, 166, 0.15);
+    color: #0d9488;
+}
+
+.badge-gap-down {
+    background: rgba(239, 68, 68, 0.15);
+    color: #dc2626;
+}
+
+.badge-strong {
+    background: rgba(99, 102, 241, 0.15);
+    color: #4f46e5;
+}
+
+.badge-weak {
+    background: rgba(245, 158, 11, 0.15);
+    color: #d97706;
+}
+
+.badge-label {
+    background: rgba(100, 116, 139, 0.15);
+    color: #475569;
 }
 
 .symbol-cell {
@@ -461,15 +500,43 @@ nav {
     }
     
     .sidebar {
-        width: auto;
-        margin: 16px;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
+        width: 100%;
+        margin: 0;
+        flex-direction: column;
+        align-items: stretch;
+        position: sticky;
+        top: 0;
+        background: var(--glass-bg);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        z-index: 100;
+        border-bottom: 1px solid var(--glass-border);
+        padding-bottom: 8px;
     }
     
-    nav, .sidebar-footer {
+    .logo {
+        padding: 16px;
+    }
+    
+    nav {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 0 16px;
+        gap: 8px;
+    }
+    
+    .nav-item {
+        white-space: nowrap;
+        padding: 8px 16px;
+    }
+    
+    .sidebar-footer {
         display: none;
+    }
+    
+    .stats-cards {
+        grid-template-columns: 1fr 1fr;
     }
     
     .main-content {
