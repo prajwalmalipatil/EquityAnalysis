@@ -181,6 +181,23 @@ function getSentimentClass(sentiment) {
     return 'neutral';
 }
 
+function formatBadgeCell(text, category) {
+    if (text === undefined || text === null || text === '' || text === '--') return text || '--';
+    
+    const lower = String(text).toLowerCase();
+    let badgeClass = 'badge-label';
+    
+    if (category === 'gap') {
+        if (lower.includes('up')) badgeClass = 'badge-gap-up';
+        else if (lower.includes('down')) badgeClass = 'badge-gap-down';
+    } else if (category === 'label' || category === 'band') {
+        if (lower.includes('strong')) badgeClass = 'badge-strong';
+        else if (lower.includes('weak')) badgeClass = 'badge-weak';
+    }
+    
+    return `<span class="premium-badge ${badgeClass}">${text}</span>`;
+}
+
 function renderEigenTables(data) {
     const timeframes = ['daily', 'weekly', 'monthly'];
     
@@ -197,9 +214,9 @@ function renderEigenTables(data) {
                 tr.innerHTML = `
                     <td class="symbol-cell">${item.symbol}</td>
                     <td class="sentiment ${getSentimentClass(item.sentiment || '')}">${item.sentiment || 'None'}</td>
-                    <td>${item.label}</td>
-                    <td>${item.gap_dir}</td>
-                    <td>${item.close_band}</td>
+                    <td>${formatBadgeCell(item.label, 'label')}</td>
+                    <td>${formatBadgeCell(item.gap_dir, 'gap')}</td>
+                    <td>${formatBadgeCell(item.close_band, 'band')}</td>
                     <td>${item.vol_delta_pct !== undefined ? item.vol_delta_pct + '%' : '--'}</td>
                     <td>${item.delta_cp !== undefined ? item.delta_cp.toFixed(4) : '--'}</td>
                 `;
