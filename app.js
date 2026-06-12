@@ -7,12 +7,53 @@ function setupNavigation() {
     const navItems = document.querySelectorAll('.nav-item');
     navItems.forEach(item => {
         item.addEventListener('click', (e) => {
+            e.preventDefault(); // prevent default anchor scroll
             // Remove active from all
             navItems.forEach(nav => nav.classList.remove('active'));
             // Add active to clicked
             item.classList.add('active');
+            
+            // Switch tabs
+            const targetId = item.getAttribute('href').replace('#', '');
+            switchTab(targetId);
+            
+            // Update URL hash without jumping
+            history.pushState(null, null, item.getAttribute('href'));
         });
     });
+    
+    // Check initial hash
+    if (window.location.hash) {
+        const hash = window.location.hash.replace('#', '');
+        const activeNav = document.querySelector(`.nav-item[href="#${hash}"]`);
+        if (activeNav) {
+            activeNav.click();
+        }
+    }
+}
+
+function switchTab(tabId) {
+    const overview = document.getElementById('overview');
+    const consensus = document.getElementById('consensus');
+    const eigen = document.getElementById('eigen');
+    const alerts = document.getElementById('alerts-container'); // Need to wrap alerts
+
+    if (tabId === 'overview') {
+        overview.style.display = 'grid';
+        consensus.style.display = 'flex';
+        eigen.style.display = 'flex';
+        if (alerts) alerts.style.display = 'flex';
+    } else if (tabId === 'consensus') {
+        overview.style.display = 'none';
+        consensus.style.display = 'flex';
+        eigen.style.display = 'none';
+        if (alerts) alerts.style.display = 'none';
+    } else if (tabId === 'eigen') {
+        overview.style.display = 'none';
+        consensus.style.display = 'none';
+        eigen.style.display = 'flex';
+        if (alerts) alerts.style.display = 'none';
+    }
 }
 
 async function fetchData() {
@@ -85,7 +126,7 @@ function renderDashboard(data) {
     if (data.ticker_alerts && data.ticker_alerts.length > 0) {
         data.ticker_alerts.forEach(alert => {
             const li = document.createElement('li');
-            li.textContent = alert;
+            li.innerHTML = `<strong>${alert.symbol}</strong>: ${alert.pattern} <br><small style="color:var(--text-muted); margin-top:4px; display:block;">${alert.description}</small>`;
             alertsList.appendChild(li);
         });
     } else {
