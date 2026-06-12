@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equity Analysis Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Sidebar -->
+        <aside class="sidebar glass-panel">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <h2>Equity<span class="highlight">Analytics</span></h2>
+            </div>
+            <nav>
+                <a href="#overview" class="nav-item active">
+                    <span class="icon">📊</span> Overview
+                </a>
+                <a href="#consensus" class="nav-item">
+                    <span class="icon">🎯</span> Consensus
+                </a>
+                <a href="#eigen" class="nav-item">
+                    <span class="icon">⚡</span> Eigen Filters
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div id="stale-warning" class="stale-warning hidden">
+                    ⚠️ STALE DATA
+                </div>
+                <div class="last-updated">
+                    <small>Last Updated</small>
+                    <div id="last-updated-time">--</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar glass-panel">
+                <h1>Dashboard Overview</h1>
+                <div class="status-badge" id="system-status">
+                    <span class="status-dot"></span> System Operational
+                </div>
+            </header>
+
+            <div id="error-boundary" class="error-boundary hidden glass-panel">
+                <h2>Something went wrong</h2>
+                <p id="error-message">Unable to load data.</p>
+                <button onclick="window.location.reload()">Retry</button>
+            </div>
+
+            <div id="dashboard-content" class="dashboard-grid" style="display: none;">
+                
+                <!-- Stats Section -->
+                <section class="stats-cards">
+                    <div class="stat-card glass-panel">
+                        <h3>Extraction</h3>
+                        <div class="stat-value" id="stat-extraction">--</div>
+                    </div>
+                    <div class="stat-card glass-panel">
+                        <h3>VSA Processed</h3>
+                        <div class="stat-value" id="stat-vsa">--</div>
+                    </div>
+                    <div class="stat-card glass-panel">
+                        <h3>Trending</h3>
+                        <div class="stat-value" id="stat-trending">--</div>
+                    </div>
+                    <div class="stat-card glass-panel">
+                        <h3>Eigen Filter</h3>
+                        <div class="stat-value highlight-text" id="stat-eigen">--</div>
+                    </div>
+                </section>
+
+                <div class="main-panels">
+                    <!-- Consensus Table -->
+                    <section class="panel glass-panel consensus-section">
+                        <div class="panel-header">
+                            <h2>Top Consensus Picks</h2>
+                        </div>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Symbol</th>
+                                        <th>Score</th>
+                                        <th>Rating</th>
+                                        <th>Daily</th>
+                                        <th>Weekly</th>
+                                        <th>Monthly</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="consensus-body">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- Sidebar alerts / Eigen -->
+                    <aside class="side-panels">
+                        <div class="panel glass-panel">
+                            <div class="panel-header">
+                                <h2>Ticker Alerts</h2>
+                            </div>
+                            <ul id="alerts-list" class="alerts-list">
+                                <!-- Populated by JS -->
+                            </ul>
+                        </div>
+                        
+                        <div class="panel glass-panel">
+                            <div class="panel-header">
+                                <h2>Eigen Insights</h2>
+                            </div>
+                            <div class="eigen-stats">
+                                <div class="eigen-row">
+                                    <span>Daily Matches</span>
+                                    <span class="badge" id="eigen-daily-count">--</span>
+                                </div>
+                                <div class="eigen-row">
+                                    <span>Weekly Matches</span>
+                                    <span class="badge" id="eigen-weekly-count">--</span>
+                                </div>
+                                <div class="eigen-row">
+                                    <span>Monthly Matches</span>
+                                    <span class="badge" id="eigen-monthly-count">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

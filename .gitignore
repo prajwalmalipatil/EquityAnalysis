@@ -21,6 +21,7 @@ vsa_error*.txt
 
 # Reports and Debugging
 *.html
+!dashboard/index.html
 .DS_Store
 
 # Temporary files
