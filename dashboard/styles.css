@@ -416,6 +416,27 @@ nav {
     justify-content: space-between;
     align-items: center;
     color: var(--text-muted);
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.eigen-row:hover {
+    background: var(--glass-highlight);
+    color: var(--text-main);
+    transform: translateX(4px);
+}
+
+.eigen-table-container {
+    overflow-x: auto;
+    margin-bottom: 8px;
+}
+
+.eigen-table-container .data-table th,
+.eigen-table-container .data-table td {
+    padding: 8px;
+    font-size: 0.8rem;
 }
 
 .badge {
