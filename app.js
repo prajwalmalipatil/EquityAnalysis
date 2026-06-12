@@ -49,7 +49,7 @@ function renderDashboard(data) {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="symbol-cell">${item.symbol}</td>
-                <td>${item.score_percentage.toFixed(1)}% <br><small style="color:var(--text-muted)">${'⭐'.repeat(item.stars)}</small></td>
+                <td>${item.score_pct.toFixed(1)}% <br><small style="color:var(--text-muted)">${'⭐'.repeat(item.stars)}</small></td>
                 <td><span class="rating-badge ${getRatingClass(item.label)}">${item.label}</span></td>
                 <td class="sentiment ${getSentimentClass(item.daily_sentiment)}">${item.daily_sentiment}</td>
                 <td class="sentiment ${getSentimentClass(item.weekly_sentiment)}">${item.weekly_sentiment}</td>
