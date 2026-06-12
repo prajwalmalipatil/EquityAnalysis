@@ -119,6 +119,8 @@ function renderDashboard(data) {
     document.getElementById('eigen-daily-count').textContent = data.eigen_filters?.daily?.length || 0;
     document.getElementById('eigen-weekly-count').textContent = data.eigen_filters?.weekly?.length || 0;
     document.getElementById('eigen-monthly-count').textContent = data.eigen_filters?.monthly?.length || 0;
+    
+    renderEigenTables(data);
 
     // Render Alerts
     const alertsList = document.getElementById('alerts-list');
@@ -177,4 +179,45 @@ function getSentimentClass(sentiment) {
     if (lower === 'bullish') return 'bullish';
     if (lower === 'bearish') return 'bearish';
     return 'neutral';
+}
+
+function renderEigenTables(data) {
+    const timeframes = ['daily', 'weekly', 'monthly'];
+    
+    timeframes.forEach(timeframe => {
+        const tbody = document.getElementById(`eigen-body-${timeframe}`);
+        if (!tbody) return;
+        
+        tbody.innerHTML = '';
+        const items = data.eigen_filters?.[timeframe] || [];
+        
+        if (items.length > 0) {
+            items.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="symbol-cell">${item.symbol}</td>
+                    <td class="sentiment ${getSentimentClass(item.sentiment || '')}">${item.sentiment || 'None'}</td>
+                    <td>${item.label}</td>
+                    <td>${item.gap_dir}</td>
+                    <td>${item.close_band}</td>
+                    <td>${item.vol_delta_pct !== undefined ? item.vol_delta_pct + '%' : '--'}</td>
+                    <td>${item.delta_cp !== undefined ? item.delta_cp.toFixed(4) : '--'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } else {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted)">No matches found.</td></tr>`;
+        }
+    });
+}
+
+function toggleEigenTable(timeframe) {
+    const tableContainer = document.getElementById(`eigen-table-${timeframe}`);
+    if (tableContainer) {
+        if (tableContainer.style.display === 'none') {
+            tableContainer.style.display = 'block';
+        } else {
+            tableContainer.style.display = 'none';
+        }
+    }
 }

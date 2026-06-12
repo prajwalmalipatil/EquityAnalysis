@@ -115,17 +115,73 @@
                                 <h2>Eigen Insights</h2>
                             </div>
                             <div class="eigen-stats">
-                                <div class="eigen-row">
+                                <div class="eigen-row" onclick="toggleEigenTable('daily')">
                                     <span>Daily Matches</span>
                                     <span class="badge" id="eigen-daily-count">--</span>
                                 </div>
-                                <div class="eigen-row">
+                                <div class="eigen-table-container" id="eigen-table-daily" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Sentiment</th>
+                                                <th>Label</th>
+                                                <th>Gap Dir</th>
+                                                <th>Close Band</th>
+                                                <th>Vol Δ%</th>
+                                                <th>Δ CP</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="eigen-body-daily">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="eigen-row" onclick="toggleEigenTable('weekly')">
                                     <span>Weekly Matches</span>
                                     <span class="badge" id="eigen-weekly-count">--</span>
                                 </div>
-                                <div class="eigen-row">
+                                <div class="eigen-table-container" id="eigen-table-weekly" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Sentiment</th>
+                                                <th>Label</th>
+                                                <th>Gap Dir</th>
+                                                <th>Close Band</th>
+                                                <th>Vol Δ%</th>
+                                                <th>Δ CP</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="eigen-body-weekly">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="eigen-row" onclick="toggleEigenTable('monthly')">
                                     <span>Monthly Matches</span>
                                     <span class="badge" id="eigen-monthly-count">--</span>
+                                </div>
+                                <div class="eigen-table-container" id="eigen-table-monthly" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Sentiment</th>
+                                                <th>Label</th>
+                                                <th>Gap Dir</th>
+                                                <th>Close Band</th>
+                                                <th>Vol Δ%</th>
+                                                <th>Δ CP</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="eigen-body-monthly">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
