@@ -50,6 +50,13 @@ class ViewBuilderService:
         self.dashboard_next.mkdir(parents=True, exist_ok=True)
         (self.dashboard_next / "history").mkdir(parents=True, exist_ok=True)
 
+        # Copy static UI assets from dashboard_live if they exist, to prevent destroying the UI
+        if self.dashboard_live.exists():
+            for asset in ["index.html", "app.js", "styles.css", "data.json"]:
+                asset_path = self.dashboard_live / asset
+                if asset_path.exists():
+                    shutil.copy(asset_path, self.dashboard_next / asset)
+
         # 3. Build data structures
         summary_data = {
             "active": [],
