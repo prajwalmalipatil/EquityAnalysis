@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-13T05:39:41.141276Z",
+  "generated_at": "2026-06-13T07:44:16.058718Z",
   "extraction_list": [
     "ABB_1Y_20260613",
     "COLPAL_1Y_20260613",
@@ -3754,5 +3754,10 @@
       "spread_ratio": 1.108328115216033,
       "confidence": 0.7
     }
-  ]
+  ],
+  "macro_intelligence": {
+    "last_event_at": null,
+    "total_events": 0,
+    "recent_events": []
+  }
 }

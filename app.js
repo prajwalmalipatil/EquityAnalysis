@@ -67,22 +67,32 @@ function switchTab(tabId) {
     const overview = document.getElementById('overview');
     const consensus = document.getElementById('consensus');
     const eigen = document.getElementById('eigen');
+    const macro = document.getElementById('macro');
     const alerts = document.getElementById('alerts-container'); // Need to wrap alerts
 
     if (tabId === 'overview') {
         overview.style.display = 'grid';
         consensus.style.display = 'flex';
         eigen.style.display = 'flex';
+        if (macro) macro.style.display = 'none';
         if (alerts) alerts.style.display = 'flex';
     } else if (tabId === 'consensus') {
         overview.style.display = 'none';
         consensus.style.display = 'flex';
         eigen.style.display = 'none';
+        if (macro) macro.style.display = 'none';
         if (alerts) alerts.style.display = 'none';
     } else if (tabId === 'eigen') {
         overview.style.display = 'none';
         consensus.style.display = 'none';
         eigen.style.display = 'flex';
+        if (macro) macro.style.display = 'none';
+        if (alerts) alerts.style.display = 'none';
+    } else if (tabId === 'macro') {
+        overview.style.display = 'none';
+        consensus.style.display = 'none';
+        eigen.style.display = 'none';
+        if (macro) macro.style.display = 'flex';
         if (alerts) alerts.style.display = 'none';
     }
 }
@@ -205,6 +215,68 @@ function renderDashboard(data) {
             </h2>
         `;
     }
+
+    // Render Macro Intelligence
+    const macroCount = document.getElementById('macro-count');
+    const macroTimeline = document.getElementById('macro-timeline');
+    
+    if (macroCount && macroTimeline) {
+        if (data.macro_intelligence) {
+            macroCount.textContent = data.macro_intelligence.total_events || 0;
+            macroTimeline.innerHTML = '';
+            
+            const recentEvents = data.macro_intelligence.recent_events || [];
+            if (recentEvents.length > 0) {
+                recentEvents.forEach(event => {
+                    const eventCard = document.createElement('div');
+                    eventCard.className = 'macro-event-card glass-panel clickable-card';
+                    
+                    const pubDate = new Date(event.published_at).toLocaleDateString();
+                    const impact = event.impact || {};
+                    
+                    let badgeClass = 'badge-label';
+                    if (impact.direction === 'Positive') badgeClass = 'badge-gap-up';
+                    else if (impact.direction === 'Negative') badgeClass = 'badge-gap-down';
+                    
+                    eventCard.innerHTML = `
+                        <div class="macro-event-header">
+                            <span class="macro-date">${pubDate}</span>
+                            <span class="premium-badge ${badgeClass}">${impact.direction || 'Unknown'}</span>
+                        </div>
+                        <h3>${event.title}</h3>
+                        <p>${event.summary ? event.summary.substring(0, 150) + '...' : ''}</p>
+                    `;
+                    
+                    eventCard.addEventListener('click', () => {
+                        const impactHtml = `
+                            <div style="grid-column: 1/-1; text-align: left;">
+                                <p><strong>Published:</strong> ${pubDate}</p>
+                                <p><strong>Source:</strong> <a href="${event.url}" target="_blank">${event.source}</a></p>
+                                <div style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                                    <h4 style="margin-top: 0;">Event-to-Market Impact</h4>
+                                    <p><strong>Assets:</strong> ${(impact.asset_classes || []).join(', ')}</p>
+                                    <p><strong>Sectors:</strong> ${(impact.sectors || []).join(', ')}</p>
+                                    <p><strong>Horizon:</strong> ${impact.horizon || '--'}</p>
+                                </div>
+                                <div style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                                    <h4 style="margin-top: 0;">Detailed Summary</h4>
+                                    <p>${event.summary || 'No summary available.'}</p>
+                                </div>
+                            </div>
+                        `;
+                        openModal(event.title, [], impactHtml);
+                    });
+                    
+                    macroTimeline.appendChild(eventCard);
+                });
+            } else {
+                macroTimeline.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding: 20px;">No macro events found.</p>`;
+            }
+        } else {
+            macroCount.textContent = '0';
+            macroTimeline.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding: 20px;">No macro intelligence data.</p>`;
+        }
+    }
 }
 
 function setupClickableCards() {
@@ -241,7 +313,7 @@ function setupModal() {
     }
 }
 
-function openModal(title, list) {
+function openModal(title, list, customHtml = '') {
     const modal = document.getElementById('premium-modal');
     const modalTitle = document.getElementById('modal-title');
     const modalGrid = document.getElementById('modal-grid');
@@ -249,7 +321,7 @@ function openModal(title, list) {
     if (!modal || !modalTitle || !modalGrid) return;
     
     modalTitle.textContent = title;
-    modalGrid.innerHTML = '';
+    modalGrid.innerHTML = customHtml;
     
     if (list && list.length > 0) {
         list.forEach(symbol => {
@@ -258,7 +330,7 @@ function openModal(title, list) {
             symEl.textContent = symbol;
             modalGrid.appendChild(symEl);
         });
-    } else {
+    } else if (!customHtml) {
         modalGrid.innerHTML = `<p style="color:var(--text-muted); grid-column: 1/-1;">No data available.</p>`;
     }
     
