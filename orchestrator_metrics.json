@@ -1,0 +1,1 @@
+{"stages": {"data_quality_sec": 1.0, "vsa_ete_sec": 10.52, "macro_sec": 1.29, "publisher_sec": 1.1}, "data_quality": {"total_files": 621, "passed": 74, "quarantined": 547, "reasons": {"INSUFFICIENT_DATA": 547}}, "vsa_processor": {"total_signals": 0, "confirmed": 0, "failed": 0, "pending": 0, "fire": 0, "success_files": 74}, "repository_size_mb": 0.0, "total_duration_sec": 14.21}

@@ -45,21 +45,39 @@ class DataQualityService:
             self._record_quarantine(file_path, f"CSV_PARSE_ERROR: {str(e)}")
             return False
 
+        # Standardize Columns
+        # Strip whitespace from column names and map to standard OHLCV
+        df.rename(columns=lambda x: str(x).strip(), inplace=True)
+        rename_map = {
+            'Open Price': 'Open',
+            'High Price': 'High',
+            'Low Price': 'Low',
+            'Close Price': 'Close',
+            'Total Traded Quantity': 'Volume',
+            'Shares Traded': 'Volume'
+        }
+        df.rename(columns=rename_map, inplace=True)
+
+        # Ensure OHLCV are numeric (handles commas and missing '-' values)
+        for col in self.REQUIRED_COLUMNS:
+            if col != 'Date' and col in df.columns:
+                if not pd.api.types.is_numeric_dtype(df[col]):
+                    df[col] = df[col].astype(str).str.replace(',', '')
+                df[col] = pd.to_numeric(df[col], errors='coerce')
+
         # 1. Column Check
         missing_cols = [c for c in self.REQUIRED_COLUMNS if c not in df.columns]
         if missing_cols:
             self._record_quarantine(file_path, f"MISSING_COLUMNS: {missing_cols}")
             return False
 
-        # 2. NaN Check
+        # 2. NaN Check & Cleanup
         if df[self.REQUIRED_COLUMNS].isnull().values.any():
-            self._record_quarantine(file_path, "CONTAINS_NANS_IN_OHLCV")
-            return False
+            df.dropna(subset=self.REQUIRED_COLUMNS, inplace=True)
 
-        # 3. Duplicate Dates
+        # 3. Duplicate Dates & Cleanup
         if df['Date'].duplicated().any():
-            self._record_quarantine(file_path, "DUPLICATE_DATES")
-            return False
+            df.drop_duplicates(subset=['Date'], keep='first', inplace=True)
 
         # 4. OHLC Logic
         invalid_ohlc = df[
@@ -82,6 +100,9 @@ class DataQualityService:
         if len(df) < 5:
             self._record_quarantine(file_path, "INSUFFICIENT_DATA")
             return False
+
+        # Save the standardized and cleaned file back to disk
+        df.to_csv(file_path, index=False)
 
         return True
 
