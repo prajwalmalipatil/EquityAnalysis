@@ -248,10 +248,20 @@ class VSAProcessorService:
         from .eigen_transition_engine_service import EigenTransitionEngineService
         logger.info("POST_PROCESS: Running Eigen Transition Engine (ETE)")
         
-        # Load N and N-1 OHLCV directly for currently tracking symbols 
-        # (For this MVP integration, we assume processor is scanning symbols anyway, 
-        # but in a real prod run we would fetch df for all symbols. We'll leave the call as a placeholder 
-        # or implement it safely here if we have symbols. We just trigger the publisher for now as requested.)
+        ete_daily = EigenTransitionEngineService(timeframe="daily")
+        eigen_symbols = {r.symbol for r in eigen_results}
+        
+        # Process ETE for all analyzed symbols
+        for m in self._processed_metadata:
+            symbol = m["symbol"]
+            path = m["path"]
+            try:
+                df = pd.read_excel(path, sheet_name="VSA_Analysis")
+                if not df.empty:
+                    ete_daily.update_active_sequences(symbol, df)
+                    ete_daily.detect_triggers(symbol, df, symbol in eigen_symbols)
+            except Exception as e:
+                logger.error(f"ETE_PROCESS_FAILED for {symbol}: {e}")
         
         # 12. ETE View Builder (Publishing Layer)
         from src.services.reporting.view_builder_service import ViewBuilderService
