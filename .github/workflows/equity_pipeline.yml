@@ -57,6 +57,8 @@ jobs:
         python main_processor.py --folder equity_data
 
     - name: "Run Macro Intelligence Service"
+      env:
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
       run: |
         export PYTHONPATH=$PYTHONPATH:.
         python main_macro.py

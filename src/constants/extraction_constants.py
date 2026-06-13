@@ -26,3 +26,6 @@ MAX_DELAY = 3.0
 
 # File Paths
 DEFAULT_OUTPUT_DIR = Path("equity_data")
+
+# Default Indices
+DEFAULT_INDICES = ["NIFTY 50", "NIFTY BANK", "NIFTY FIN SERVICE", "NIFTY MIDCAP 50", "NIFTY SMALLCAP 50"]

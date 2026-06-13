@@ -1,23 +1,33 @@
+import os
 import sys
 from pathlib import Path
 from src.utils.observability import get_tenant_logger
 from src.services.macro_intelligence.rbi_collector import RBICollector
 from src.services.macro_intelligence.event_repository import EventRepository
 from src.services.macro_intelligence.impact_engine import RuleBasedImpactEngine
-from src.services.macro_intelligence.enrichment_service import EventEnrichmentService
+from src.services.macro_intelligence.enrichment_service import EnrichmentService, GeminiProvider, DummyProvider
+from src.services.macro_intelligence.event_study import EventStudyEngine
 
 logger = get_tenant_logger("main-macro")
 
 def main():
     base_dir = Path(__file__).parent
     history_file = base_dir / "dashboard" / "history" / "rbi_events.jsonl"
+    equity_dir = base_dir / "equity_data"
     
     logger.info("STARTING_MACRO_INTELLIGENCE_PIPELINE")
     
     repo = EventRepository(history_file)
     collector = RBICollector()
     impact_engine = RuleBasedImpactEngine(base_dir)
-    enricher = EventEnrichmentService()
+    study_engine = EventStudyEngine(equity_dir)
+    
+    api_key = os.environ.get("GOOGLE_API_KEY")
+    if api_key:
+        provider = GeminiProvider(api_key)
+    else:
+        provider = DummyProvider()
+    enricher = EnrichmentService(provider)
     
     # 1. Continuity Engine: Get last timestamp
     events = repo.get_all_events()
@@ -40,16 +50,21 @@ def main():
         return
 
     saved_count = 0
-    # 3. Process each event
+    # 3. Process each event sequentially through the layers
     for event in new_raw_events:
         try:
-            # Impact Engine
+            # Layer 2: Rule-based Impact Engine
             event.impact = impact_engine.process(event)
+            event.lifecycle = "Processed"
             
-            # LLM Enrichment (Stub)
-            event = enricher.enrich(event)
+            # Layer 3: Quant Correlation / Event Study
+            event.event_study = study_engine.process(event)
+            event.lifecycle = "Correlated"
             
-            # Save
+            # Layer 4: AI Enrichment
+            event = enricher.process(event)
+            
+            # Persist to append-only Event Store
             if repo.save_event(event):
                 saved_count += 1
         except Exception as e:

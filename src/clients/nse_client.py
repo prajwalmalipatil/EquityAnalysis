@@ -119,6 +119,28 @@ class NSEClient:
             
         return resp
 
+    @with_retry(max_attempts=const.MAX_RETRIES, base_delay=const.BACKOFF_FACTOR)
+    def fetch_historical_index_data(self, index_name: str, from_date: str, to_date: str) -> requests.Response:
+        """
+        Fetches historical data for an index (e.g. 'NIFTY 50', 'NIFTY BANK') in JSON format.
+        """
+        url = f"https://www.nseindia.com/api/historical/indicesHistory?indexType={quote(index_name)}&from={from_date}&to={to_date}"
+        
+        logger.info("FETCHING_HISTORICAL_INDEX_DATA", extra={"index": index_name, "url": url})
+        
+        headers = {
+            "Accept": "application/json, text/javascript, */*; q=0.01",
+            "Referer": "https://www.nseindia.com/reports/indices-historical-index-data",
+            "X-Requested-With": "XMLHttpRequest",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-origin",
+        }
+        
+        resp = self.session.get(url, headers=headers, timeout=(10, 60))
+        resp.raise_for_status()
+        return resp
+
     def close(self):
         """Cleanup resources."""
         if self.session:

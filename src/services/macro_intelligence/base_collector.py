@@ -14,3 +14,9 @@ class BaseMacroCollector(ABC):
     def normalize(self, raw_item: dict) -> MacroEvent:
         """Convert a provider-specific raw item into a canonical MacroEvent."""
         pass
+
+    @property
+    @abstractmethod
+    def provider_name(self) -> str:
+        """Name of the data provider (e.g. 'RBI')."""
+        pass

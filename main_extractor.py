@@ -21,6 +21,7 @@ def main():
     parser.add_argument("--overwrite", action="store_true", help="Overwrite existing files")
     parser.add_argument("--no-selenium", action="store_true", help="Disable selenium cookie warmup")
     parser.add_argument("--headless", action="store_true", default=True, help="Run browser in headless mode")
+    parser.add_argument("--indices", help="Comma-separated NSE indices", default="NIFTY 50,NIFTY BANK,NIFTY FIN SERVICE,NIFTY MIDCAP 50,NIFTY SMALLCAP 50")
     
     args = parser.parse_args()
     
@@ -39,21 +40,40 @@ def main():
     # Injection: ExtractionService <- NSEClient
     service = get_extraction_service()
     
-    # Process symbols
-    symbols = service.validate_symbols(symbols_raw)
-    if not symbols:
+    # Process stocks
+    stock_symbols = service.validate_symbols(symbols_raw, is_index=False)
+    if not stock_symbols:
         logger.error("NO_VALID_SYMBOLS_PROVIDED")
         sys.exit(1)
         
-    logger.info("VALIDATED_SYMBOLS", extra={"count": len(symbols)})
+    logger.info("VALIDATED_SYMBOLS", extra={"count": len(stock_symbols)})
     
-    # Execute batch
-    results = service.run_batch_extraction(
-        symbols=symbols,
+    # Process indices
+    index_symbols = service.validate_symbols(args.indices, is_index=True) if args.indices else []
+    if index_symbols:
+        logger.info("VALIDATED_INDICES", extra={"count": len(index_symbols)})
+    
+    # Execute batch for stocks
+    stock_results = service.run_batch_extraction(
+        symbols=stock_symbols,
         output_dir=Path(args.out_dir),
         workers=args.workers,
-        overwrite=args.overwrite
+        overwrite=args.overwrite,
+        is_index=False
     )
+    
+    # Execute batch for indices
+    index_results = []
+    if index_symbols:
+        index_results = service.run_batch_extraction(
+            symbols=index_symbols,
+            output_dir=Path(args.out_dir),
+            workers=args.workers,
+            overwrite=args.overwrite,
+            is_index=True
+        )
+        
+    results = stock_results + index_results
     
     # Summary
     success_count = sum(1 for r in results if r.success)

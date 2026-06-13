@@ -59,7 +59,19 @@ class JSONPublisher:
             "recent_events": []
         }
         
-        history_file = self.output_file.parent / "history" / "rbi_events.jsonl"
+        history_dir = self.output_file.parent / "history"
+        index_file = history_dir / "index.json"
+        last_session_date_str = None
+        if index_file.exists():
+            with open(index_file, 'r', encoding='utf-8') as f:
+                try:
+                    history_index = json.load(f)
+                    if history_index:
+                        last_session_date_str = history_index[-1]
+                except json.JSONDecodeError:
+                    pass
+
+        history_file = history_dir / "rbi_events.jsonl"
         if history_file.exists():
             events = []
             with open(history_file, 'r', encoding='utf-8') as f:
@@ -73,6 +85,20 @@ class JSONPublisher:
                 macro_intelligence["total_events"] = len(events)
                 macro_intelligence["last_event_at"] = max(e.get("published_at", "") for e in events)
                 events.sort(key=lambda x: x.get("published_at", ""), reverse=True)
+                
+                # Assign Trading Day Queue status
+                for e in events:
+                    # If published after the last session date, it's new
+                    is_new = False
+                    if last_session_date_str:
+                        # last_session_date_str is "YYYY-MM-DD"
+                        if e.get("published_at", "")[:10] > last_session_date_str:
+                            is_new = True
+                    else:
+                        is_new = True # First run
+                        
+                    e["is_new_since_last_session"] = is_new
+                
                 macro_intelligence["recent_events"] = events[:20]
 
         # Build schema payload
@@ -103,7 +129,6 @@ class JSONPublisher:
         with open(history_file, 'w', encoding='utf-8') as f:
             json.dump(payload, f, indent=2)
             
-        index_file = history_dir / "index.json"
         if index_file.exists():
             with open(index_file, 'r', encoding='utf-8') as f:
                 try:
