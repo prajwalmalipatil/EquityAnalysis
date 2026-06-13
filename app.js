@@ -1,7 +1,38 @@
+let currentData = null;
+
 document.addEventListener('DOMContentLoaded', () => {
+    fetchHistoryIndex();
     fetchData();
     setupNavigation();
+    setupModal();
+    setupClickableCards();
 });
+
+async function fetchHistoryIndex() {
+    try {
+        const response = await fetch('./history/index.json');
+        if (response.ok) {
+            const historyDates = await response.json();
+            const selector = document.getElementById('history-selector');
+            if (historyDates && historyDates.length > 0) {
+                historyDates.forEach(date => {
+                    const opt = document.createElement('option');
+                    opt.value = date;
+                    opt.textContent = date;
+                    selector.appendChild(opt);
+                });
+                selector.classList.remove('hidden');
+                
+                selector.addEventListener('change', (e) => {
+                    const selectedDate = e.target.value;
+                    fetchData(selectedDate);
+                });
+            }
+        }
+    } catch (e) {
+        console.log("No history index found.");
+    }
+}
 
 function setupNavigation() {
     const navItems = document.querySelectorAll('.nav-item');
@@ -56,9 +87,10 @@ function switchTab(tabId) {
     }
 }
 
-async function fetchData() {
+async function fetchData(date = '') {
     try {
-        const response = await fetch('./data.json');
+        const url = date ? `./history/data_${date}.json` : './data.json';
+        const response = await fetch(url);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -71,6 +103,7 @@ async function fetchData() {
             throw new Error('Invalid data schema: Missing schema_version');
         }
 
+        currentData = data;
         renderDashboard(data);
         checkStaleData(data.generated_at);
         document.getElementById('error-boundary').classList.add('hidden');
@@ -98,8 +131,18 @@ function renderDashboard(data) {
     const tbody = document.getElementById('consensus-body');
     tbody.innerHTML = '';
     
+    let totalConsensus = 0;
+    let bullishConsensus = 0;
+    let bearishConsensus = 0;
+    let neutralConsensus = 0;
+
     if (data.consensus && data.consensus.length > 0) {
+        totalConsensus = data.consensus.length;
         data.consensus.forEach(item => {
+            const lower = (item.daily_sentiment || '').toLowerCase();
+            if (lower === 'bullish') bullishConsensus++;
+            else if (lower === 'bearish') bearishConsensus++;
+            else neutralConsensus++;
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="symbol-cell">${item.symbol}</td>
@@ -115,6 +158,18 @@ function renderDashboard(data) {
         tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted)">No consensus picks found.</td></tr>`;
     }
 
+    const consensusHeader = document.querySelector('#consensus .panel-header');
+    if (consensusHeader) {
+        consensusHeader.innerHTML = `
+            <h2>Top Consensus Picks 
+                <span class="premium-badge badge-label">Total: ${totalConsensus}</span> 
+                ${bullishConsensus > 0 ? `<span class="premium-badge badge-gap-up">Bullish: ${bullishConsensus}</span>` : ''}
+                ${bearishConsensus > 0 ? `<span class="premium-badge badge-gap-down">Bearish: ${bearishConsensus}</span>` : ''}
+                ${neutralConsensus > 0 ? `<span class="premium-badge badge-label">Neutral: ${neutralConsensus}</span>` : ''}
+            </h2>
+        `;
+    }
+
     // Render Eigen Stats
     document.getElementById('eigen-daily-count').textContent = data.eigen_filters?.daily?.length || 0;
     document.getElementById('eigen-weekly-count').textContent = data.eigen_filters?.weekly?.length || 0;
@@ -125,7 +180,9 @@ function renderDashboard(data) {
     // Render Alerts
     const alertsList = document.getElementById('alerts-list');
     alertsList.innerHTML = '';
+    let totalAlerts = 0;
     if (data.ticker_alerts && data.ticker_alerts.length > 0) {
+        totalAlerts = data.ticker_alerts.length;
         data.ticker_alerts.forEach(alert => {
             const li = document.createElement('li');
             li.innerHTML = `<strong>${alert.symbol}</strong>: ${alert.pattern} <br><small style="color:var(--text-muted); margin-top:4px; display:block;">${alert.description}</small>`;
@@ -139,6 +196,73 @@ function renderDashboard(data) {
         li.style.color = 'var(--text-muted)';
         alertsList.appendChild(li);
     }
+    
+    const alertsHeader = document.querySelector('#alerts-container .panel-header');
+    if (alertsHeader) {
+        alertsHeader.innerHTML = `
+            <h2>Ticker Alerts 
+                <span class="premium-badge badge-strong">Total: ${totalAlerts}</span>
+            </h2>
+        `;
+    }
+}
+
+function setupClickableCards() {
+    const cardExtraction = document.getElementById('card-extraction');
+    const cardVsa = document.getElementById('card-vsa');
+    const cardTrending = document.getElementById('card-trending');
+    const cardEigen = document.getElementById('card-eigen');
+
+    if (cardExtraction) cardExtraction.addEventListener('click', () => openModal('Extraction Details', currentData?.extraction_list || []));
+    if (cardVsa) cardVsa.addEventListener('click', () => openModal('VSA Processed Details', currentData?.vsa_list || []));
+    if (cardTrending) cardTrending.addEventListener('click', () => openModal('Trending Details', currentData?.trending_list || []));
+    
+    if (cardEigen) cardEigen.addEventListener('click', () => {
+        const eigenNav = document.querySelector('.nav-item[href="#eigen"]');
+        if (eigenNav) eigenNav.click();
+        else switchTab('eigen');
+    });
+}
+
+function setupModal() {
+    const modal = document.getElementById('premium-modal');
+    const closeBtn = document.getElementById('modal-close');
+    
+    if (closeBtn && modal) {
+        closeBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+        
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.add('hidden');
+            }
+        });
+    }
+}
+
+function openModal(title, list) {
+    const modal = document.getElementById('premium-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalGrid = document.getElementById('modal-grid');
+    
+    if (!modal || !modalTitle || !modalGrid) return;
+    
+    modalTitle.textContent = title;
+    modalGrid.innerHTML = '';
+    
+    if (list && list.length > 0) {
+        list.forEach(symbol => {
+            const symEl = document.createElement('div');
+            symEl.className = 'modal-symbol-item';
+            symEl.textContent = symbol;
+            modalGrid.appendChild(symEl);
+        });
+    } else {
+        modalGrid.innerHTML = `<p style="color:var(--text-muted); grid-column: 1/-1;">No data available.</p>`;
+    }
+    
+    modal.classList.remove('hidden');
 }
 
 function checkStaleData(generatedAtString) {

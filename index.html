@@ -41,8 +41,13 @@
         <main class="main-content">
             <header class="topbar glass-panel">
                 <h1>Dashboard Overview</h1>
-                <div class="status-badge" id="system-status">
-                    <span class="status-dot"></span> System Operational
+                <div style="display: flex; gap: 16px; align-items: center;">
+                    <select id="history-selector" class="history-select hidden">
+                        <option value="">Latest Data</option>
+                    </select>
+                    <div class="status-badge" id="system-status">
+                        <span class="status-dot"></span> System Operational
+                    </div>
                 </div>
             </header>
 
@@ -56,19 +61,19 @@
                 
                 <!-- Stats Section -->
                 <section id="overview" class="stats-cards">
-                    <div class="stat-card glass-panel">
+                    <div class="stat-card glass-panel clickable-card" id="card-extraction">
                         <h3>Extraction</h3>
                         <div class="stat-value" id="stat-extraction">--</div>
                     </div>
-                    <div class="stat-card glass-panel">
+                    <div class="stat-card glass-panel clickable-card" id="card-vsa">
                         <h3>VSA Processed</h3>
                         <div class="stat-value" id="stat-vsa">--</div>
                     </div>
-                    <div class="stat-card glass-panel">
+                    <div class="stat-card glass-panel clickable-card" id="card-trending">
                         <h3>Trending</h3>
                         <div class="stat-value" id="stat-trending">--</div>
                     </div>
-                    <div class="stat-card glass-panel">
+                    <div class="stat-card glass-panel clickable-card" id="card-eigen">
                         <h3>Eigen Filter</h3>
                         <div class="stat-value highlight-text" id="stat-eigen">--</div>
                     </div>
@@ -190,6 +195,22 @@
             </div>
         </main>
     </div>
+
+    <!-- Premium Modal -->
+    <div id="premium-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h2 id="modal-title">Details</h2>
+                <button id="modal-close" class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-grid" class="modal-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="app.js"></script>
 </body>
 </html>
