@@ -38,6 +38,8 @@ class DataAggregator:
     def get_symbol_lists(self) -> Dict[str, List[str]]:
         """Returns simple lists of symbols for categorization."""
         return {
+            "extraction": [f.stem for f in self.base_dir.glob("*.csv")],
+            "vsa": self._get_symbols(const.RESULTS_DIR_NAME),
             "trending": self._get_symbols(const.TRENDING_DIR_NAME),
             "anomaly": self._get_symbols(const.ANOMALY_DIR_NAME),
             "ticker": self._get_symbols(const.TICKER_DIR_NAME),
