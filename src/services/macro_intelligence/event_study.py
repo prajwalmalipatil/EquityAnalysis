@@ -39,12 +39,16 @@ class EventStudyEngine:
         latest_file = sorted(files)[-1]
         try:
             df = pd.read_csv(latest_file)
+            df.columns = df.columns.str.strip()
             df['Date'] = pd.to_datetime(df['Date'])
             df.set_index('Date', inplace=True)
             df.sort_index(inplace=True)
             
+            # Use 'Close Price' if 'Close' is not found
+            close_col = 'Close Price' if 'Close Price' in df.columns else 'Close'
+            
             # Ensure Close is numeric
-            df['Close'] = pd.to_numeric(df['Close'].astype(str).str.replace(',', ''), errors='coerce')
+            df['Close'] = pd.to_numeric(df[close_col].astype(str).str.replace(',', ''), errors='coerce')
             
             self._price_cache[symbol] = df
             return df
