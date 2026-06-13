@@ -265,7 +265,7 @@ class VSAProcessorService:
         
         # 12. ETE View Builder (Publishing Layer)
         from src.services.reporting.view_builder_service import ViewBuilderService
-        view_builder = ViewBuilderService(self.output_base)
+        view_builder = ViewBuilderService(self.output_base.parent)
         view_builder.publish(pipeline_seconds=12.5) # Example pipeline seconds
         logger.info("POST_PROCESS: View Builder Published ETE UI artifacts")
 
