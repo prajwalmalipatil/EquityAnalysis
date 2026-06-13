@@ -249,7 +249,12 @@ class VSAProcessorService:
         logger.info("POST_PROCESS: Running Eigen Transition Engine (ETE)")
         
         ete_daily = EigenTransitionEngineService(timeframe="daily")
-        eigen_symbols = {r.symbol for r in eigen_results}
+        ete_weekly = EigenTransitionEngineService(timeframe="weekly")
+        ete_monthly = EigenTransitionEngineService(timeframe="monthly")
+        
+        eigen_symbols_daily = {r.symbol for r in eigen_results}
+        eigen_symbols_weekly = {r.symbol for r in weekly_eigen_results}
+        eigen_symbols_monthly = {r.symbol for r in monthly_eigen_results}
         
         # Process ETE for all analyzed symbols
         for m in self._processed_metadata:
@@ -257,9 +262,25 @@ class VSAProcessorService:
             path = m["path"]
             try:
                 df = pd.read_excel(path, sheet_name="VSA_Analysis")
-                if not df.empty:
-                    ete_daily.update_active_sequences(symbol, df)
-                    ete_daily.detect_triggers(symbol, df, symbol in eigen_symbols)
+                if df.empty:
+                    continue
+                
+                # Daily ETE
+                ete_daily.update_active_sequences(symbol, df)
+                ete_daily.detect_triggers(symbol, df, symbol in eigen_symbols_daily)
+                
+                # Weekly ETE
+                weekly_df = WeeklyEigenFilterService._consolidate_to_weekly(df)
+                if weekly_df is not None and not weekly_df.empty:
+                    ete_weekly.update_active_sequences(symbol, weekly_df)
+                    ete_weekly.detect_triggers(symbol, weekly_df, symbol in eigen_symbols_weekly)
+                
+                # Monthly ETE
+                monthly_df = MonthlyEigenFilterService._consolidate_to_monthly(df)
+                if monthly_df is not None and not monthly_df.empty:
+                    ete_monthly.update_active_sequences(symbol, monthly_df)
+                    ete_monthly.detect_triggers(symbol, monthly_df, symbol in eigen_symbols_monthly)
+                    
             except Exception as e:
                 logger.error(f"ETE_PROCESS_FAILED for {symbol}: {e}")
         
