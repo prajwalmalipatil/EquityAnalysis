@@ -28,6 +28,9 @@
                 <a href="#macro" class="nav-item">
                     <span class="icon">🌍</span> Macro Intelligence
                 </a>
+                <a href="#ete" class="nav-item">
+                    <span class="icon">🔄</span> Transition Engine
+                </a>
             </nav>
             <div class="sidebar-footer">
                 <div id="stale-warning" class="stale-warning hidden">
@@ -115,6 +118,35 @@
                         </div>
                         <div class="macro-timeline" id="macro-timeline">
                             <!-- Populated by JS -->
+                        </div>
+                    </section>
+
+                    <!-- Eigen Transition Engine -->
+                    <section id="ete" class="panel glass-panel ete-section" style="display: none;">
+                        <div class="panel-header">
+                            <h2>Eigen Transition Engine (ETE)</h2>
+                        </div>
+                        <div style="padding: 15px; text-align: center;" id="ete-loading">
+                            Loading ETE data...
+                        </div>
+                        <div id="ete-content" style="display: none;">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Symbol</th>
+                                            <th>Timeframe</th>
+                                            <th>State</th>
+                                            <th>Stage</th>
+                                            <th>Confidence</th>
+                                            <th>Details</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="ete-body">
+                                        <!-- Populated by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </section>
 

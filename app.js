@@ -68,31 +68,49 @@ function switchTab(tabId) {
     const consensus = document.getElementById('consensus');
     const eigen = document.getElementById('eigen');
     const macro = document.getElementById('macro');
-    const alerts = document.getElementById('alerts-container'); // Need to wrap alerts
+    const ete = document.getElementById('ete');
+    const alerts = document.getElementById('alerts-container'); 
 
     if (tabId === 'overview') {
         overview.style.display = 'grid';
         consensus.style.display = 'flex';
         eigen.style.display = 'flex';
         if (macro) macro.style.display = 'none';
+        if (ete) ete.style.display = 'none';
         if (alerts) alerts.style.display = 'flex';
     } else if (tabId === 'consensus') {
         overview.style.display = 'none';
         consensus.style.display = 'flex';
         eigen.style.display = 'none';
         if (macro) macro.style.display = 'none';
+        if (ete) ete.style.display = 'none';
         if (alerts) alerts.style.display = 'none';
     } else if (tabId === 'eigen') {
         overview.style.display = 'none';
         consensus.style.display = 'none';
         eigen.style.display = 'flex';
         if (macro) macro.style.display = 'none';
+        if (ete) ete.style.display = 'none';
         if (alerts) alerts.style.display = 'none';
     } else if (tabId === 'macro') {
         overview.style.display = 'none';
         consensus.style.display = 'none';
         eigen.style.display = 'none';
         if (macro) macro.style.display = 'flex';
+        if (ete) ete.style.display = 'none';
+        if (alerts) alerts.style.display = 'none';
+    } else if (tabId === 'ete') {
+        overview.style.display = 'none';
+        consensus.style.display = 'none';
+        eigen.style.display = 'none';
+        if (macro) macro.style.display = 'none';
+        if (ete) {
+            ete.style.display = 'flex';
+            if (!window.eteLoaded) {
+                fetchETEManifest();
+                window.eteLoaded = true;
+            }
+        }
         if (alerts) alerts.style.display = 'none';
     }
 }
@@ -437,3 +455,76 @@ function toggleEigenTable(timeframe) {
         }
     }
 }
+
+// ==========================================
+// Eigen Transition Engine (ETE) Integration
+// ==========================================
+
+async function fetchETEManifest() {
+    try {
+        const response = await fetch('./manifest.json');
+        if (!response.ok) {
+            document.getElementById('ete-loading').textContent = 'No ETE data generated yet.';
+            return;
+        }
+        const manifest = await response.json();
+        
+        if (manifest.files && manifest.files.summary) {
+            fetchETESummary(manifest.files.summary);
+        } else {
+            document.getElementById('ete-loading').textContent = 'No ETE summary found in manifest.';
+        }
+    } catch (e) {
+        console.error('Failed to load ETE manifest', e);
+        document.getElementById('ete-loading').textContent = 'Failed to load ETE data.';
+    }
+}
+
+async function fetchETESummary(summaryFile) {
+    try {
+        const response = await fetch(`./${summaryFile}`);
+        if (!response.ok) throw new Error("Summary fetch failed");
+        const summaryData = await response.json();
+        
+        document.getElementById('ete-loading').style.display = 'none';
+        document.getElementById('ete-content').style.display = 'block';
+        
+        renderETE(summaryData);
+    } catch (e) {
+        console.error('Failed to load ETE summary', e);
+        document.getElementById('ete-loading').textContent = 'Failed to load ETE summary.';
+    }
+}
+
+function renderETE(summaryData) {
+    const tbody = document.getElementById('ete-body');
+    tbody.innerHTML = '';
+    
+    // Combine active and completed for the view
+    const allItems = [...(summaryData.active || []), ...(summaryData.completed || [])];
+    
+    if (allItems.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted)">No active or completed ETE sequences found.</td></tr>`;
+        return;
+    }
+    
+    allItems.forEach(item => {
+        const tr = document.createElement('tr');
+        
+        let stateClass = 'badge-label';
+        if (item.state === 'Completed') stateClass = 'badge-gap-up';
+        else if (item.state === 'Waiting') stateClass = 'badge-strong'; // amber equivalent
+        else if (item.state === 'Failed') stateClass = 'badge-gap-down';
+
+        tr.innerHTML = `
+            <td class="symbol-cell">${item.symbol}</td>
+            <td>${item.timeframe}</td>
+            <td><span class="premium-badge ${stateClass}">${item.state}</span></td>
+            <td>${item.current_stage}</td>
+            <td>${item.confidence ? item.confidence.toFixed(1) + '%' : '--'}</td>
+            <td><button class="btn-small" onclick="alert('Drill-down coming soon! sequence_id: ${item.sequence_id}')">View</button></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+

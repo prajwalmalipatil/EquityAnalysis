@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-13T09:10:31.552879Z",
+  "generated_at": "2026-06-13T12:03:00.941584Z",
   "extraction_list": [
     "ABB_1Y_20260613",
     "COLPAL_1Y_20260613",
@@ -87,7 +87,6 @@
     "UNITDSPR_1Y_20260613",
     "ETERNAL_1Y_20260613",
     "RECLTD_1Y_20260613",
-    "MAZAGON_1Y_20260613",
     "INDUSTOWER_1Y_20260613",
     "HINDZINC_1Y_20260613",
     "PATANJALI_1Y_20260613",
@@ -129,11 +128,9 @@
     "SAIL_1Y_20260613",
     "IRFC_1Y_20260613",
     "PETRONET_1Y_20260613",
-    "PIRAMALPHA_1Y_20260613",
     "ABCAPITAL_1Y_20260613",
     "ULTRACEMCO_1Y_20260613",
     "NESTLEIND_1Y_20260613",
-    "LTFH_1Y_20260613",
     "APLAPOLLO_1Y_20260613",
     "INDIANB_1Y_20260613",
     "GLENMARK_1Y_20260613",
@@ -461,7 +458,7 @@
     "IIFL"
   ],
   "stage_statistics": {
-    "extraction_count": 208,
+    "extraction_count": 205,
     "vsa": 205,
     "trending": 40,
     "anomaly": 22,
@@ -469,20 +466,11 @@
     "triggers": 39,
     "eigen_filter": 74,
     "monthly_eigen": 21,
-    "weekly_eigen": 36
+    "weekly_eigen": 33
   },
   "consensus": [
     {
       "symbol": "IDEA",
-      "monthly_sentiment": "Bullish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "Bullish",
-      "score_pct": 100,
-      "stars": 5,
-      "label": "Strong Buy"
-    },
-    {
-      "symbol": "NBCC",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "Bullish",
@@ -500,13 +488,13 @@
       "label": "Strong Buy"
     },
     {
-      "symbol": "ADANIENSOL",
+      "symbol": "NBCC",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "Bullish",
-      "daily_sentiment": "None",
-      "score_pct": 75,
-      "stars": 4,
-      "label": "Cautious Bullish"
+      "daily_sentiment": "Bullish",
+      "score_pct": 100,
+      "stars": 5,
+      "label": "Strong Buy"
     },
     {
       "symbol": "LAURUSLABS",
@@ -528,6 +516,15 @@
     },
     {
       "symbol": "CGPOWER",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "Bullish",
+      "score_pct": 60,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "GLENMARK",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "Bullish",
@@ -572,15 +569,6 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "GLENMARK",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "Bullish",
-      "score_pct": 60,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
       "symbol": "BSE",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bullish",
@@ -608,6 +596,15 @@
       "label": "Cautious Bullish"
     },
     {
+      "symbol": "PIDILITIND",
+      "monthly_sentiment": "Bullish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": 40,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
       "symbol": "NUVAMA",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "None",
@@ -617,25 +614,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "SAMMAANCAP",
-      "monthly_sentiment": "Bullish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": 40,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "MOTHERSON",
-      "monthly_sentiment": "Bullish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": 40,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "COFORGE",
+      "symbol": "JSWENERGY",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "None",
       "daily_sentiment": "None",
@@ -645,6 +624,15 @@
     },
     {
       "symbol": "VEDL",
+      "monthly_sentiment": "Bullish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": 40,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "SAMMAANCAP",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "None",
       "daily_sentiment": "None",
@@ -671,6 +659,15 @@
       "label": "Cautious Bullish"
     },
     {
+      "symbol": "ADANIENSOL",
+      "monthly_sentiment": "Bullish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": 40,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
       "symbol": "INDUSTOWER",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "None",
@@ -680,16 +677,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "PIDILITIND",
-      "monthly_sentiment": "Bullish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": 40,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "JSWENERGY",
+      "symbol": "MOTHERSON",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "None",
       "daily_sentiment": "None",
@@ -707,20 +695,11 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "FORTIS",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bullish",
+      "symbol": "COFORGE",
+      "monthly_sentiment": "Bullish",
+      "weekly_sentiment": "None",
       "daily_sentiment": "None",
-      "score_pct": 35,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "APOLLOHOSP",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "None",
-      "score_pct": 35,
+      "score_pct": 40,
       "stars": 4,
       "label": "Cautious Bullish"
     },
@@ -734,7 +713,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "BANKBARODA",
+      "symbol": "FORTIS",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "None",
@@ -752,7 +731,34 @@
       "label": "Cautious Bullish"
     },
     {
+      "symbol": "INFY",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "None",
+      "score_pct": 35,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "ICICIPRULI",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "None",
+      "score_pct": 35,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
       "symbol": "RECLTD",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "None",
+      "score_pct": 35,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "SBILIFE",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "None",
@@ -797,7 +803,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "INFY",
+      "symbol": "ADANIGREEN",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "None",
@@ -806,7 +812,16 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "ICICIPRULI",
+      "symbol": "BANKBARODA",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "None",
+      "score_pct": 35,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "APOLLOHOSP",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "None",
@@ -824,7 +839,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "ADANIGREEN",
+      "symbol": "GMRAIRPORT",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "None",
@@ -842,34 +857,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "GMRAIRPORT",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "None",
-      "score_pct": 35,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "SBILIFE",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "None",
-      "score_pct": 35,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "ANGELONE",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "ASIANPAINT",
+      "symbol": "AMBUJACEM",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -888,15 +876,6 @@
     },
     {
       "symbol": "360ONE",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "ITC",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -968,7 +947,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "IDFCFIRSTB",
+      "symbol": "HDFCBANK",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -977,7 +956,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "HINDALCO",
+      "symbol": "IDFCFIRSTB",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -995,25 +974,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "HEROMOTOCO",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "HDFCBANK",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "GODREJPROP",
+      "symbol": "HINDALCO",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -1031,16 +992,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "BHARTIARTL",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "COALINDIA",
+      "symbol": "HEROMOTOCO",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -1058,7 +1010,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "DLF",
+      "symbol": "GODREJPROP",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -1067,7 +1019,25 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "DALBHARAT",
+      "symbol": "BANDHANBNK",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "CHOLAFIN",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "DLF",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -1094,7 +1064,34 @@
       "label": "Cautious Bullish"
     },
     {
+      "symbol": "DALBHARAT",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
       "symbol": "CONCOR",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "COALINDIA",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "BHARTIARTL",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -1121,7 +1118,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "CHOLAFIN",
+      "symbol": "ASIANPAINT",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -1166,25 +1163,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "BANDHANBNK",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "KALYANKJIL",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "AMBUJACEM",
+      "symbol": "JIOFIN",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -1202,7 +1181,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "JUBLFOOD",
+      "symbol": "ANGELONE",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -1211,7 +1190,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "TITAGARH",
+      "symbol": "RBLBANK",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -1229,7 +1208,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "TATAPOWER",
+      "symbol": "SUZLON",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -1247,7 +1226,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "RVNL",
+      "symbol": "TATAPOWER",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -1256,7 +1235,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "LT",
+      "symbol": "UPL",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -1274,7 +1253,25 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "UPL",
+      "symbol": "TITAGARH",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "NATIONALUM",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "NHPC",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -1319,24 +1316,6 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "SUZLON",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "RBLBANK",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
       "symbol": "LODHA",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
@@ -1355,7 +1334,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "JIOFIN",
+      "symbol": "KALYANKJIL",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -1364,7 +1343,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "NATIONALUM",
+      "symbol": "ITC",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -1373,7 +1352,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "MCX",
+      "symbol": "JUBLFOOD",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -1391,7 +1370,25 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "NHPC",
+      "symbol": "LT",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "MCX",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "RVNL",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -1409,15 +1406,6 @@
       "label": "Mixed Trend"
     },
     {
-      "symbol": "ADANIENT",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "None",
-      "score_pct": -5,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
       "symbol": "IREDA",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bearish",
@@ -1427,7 +1415,7 @@
       "label": "Mixed Trend"
     },
     {
-      "symbol": "ALKEM",
+      "symbol": "MUTHOOTFIN",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bearish",
       "daily_sentiment": "None",
@@ -1436,11 +1424,11 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "MUTHOOTFIN",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bearish",
+      "symbol": "ADANIENT",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
       "daily_sentiment": "None",
-      "score_pct": -35,
+      "score_pct": -40,
       "stars": 2,
       "label": "Cautious Bearish"
     },
@@ -2706,24 +2694,6 @@
         "prev_week": "2026-W22"
       },
       {
-        "symbol": "ALKEM",
-        "gap_dir": "Gap-Down",
-        "close_band": "Weak",
-        "label": "Bearish Impulse Convergence",
-        "sentiment": "Bearish",
-        "t_open": 5443.5,
-        "t_close": 5251.5,
-        "t_spread": 311.5,
-        "t_cp": 0.2857,
-        "t1_cp": 0.3674,
-        "delta_cp": -0.0817,
-        "vol_delta_pct": 58.1,
-        "t_vol": 2682364,
-        "t1_vol": 1696449,
-        "latest_week": "2026-W23",
-        "prev_week": "2026-W22"
-      },
-      {
         "symbol": "PETRONET",
         "gap_dir": "Gap-Up",
         "close_band": "Weak",
@@ -2738,42 +2708,6 @@
         "vol_delta_pct": 28.9,
         "t_vol": 17066769,
         "t1_vol": 13236243,
-        "latest_week": "2026-W23",
-        "prev_week": "2026-W22"
-      },
-      {
-        "symbol": "ADANIENT",
-        "gap_dir": "Gap-Up",
-        "close_band": "Strong",
-        "label": "Bullish Impulse Convergence",
-        "sentiment": "Bullish",
-        "t_open": 2949.9,
-        "t_close": 3048.2,
-        "t_spread": 194.60000000000036,
-        "t_cp": 0.9404,
-        "t1_cp": 0.6874,
-        "delta_cp": 0.253,
-        "vol_delta_pct": 79.6,
-        "t_vol": 28822646,
-        "t1_vol": 16045199,
-        "latest_week": "2026-W23",
-        "prev_week": "2026-W22"
-      },
-      {
-        "symbol": "ADANIENSOL",
-        "gap_dir": "Gap-Up",
-        "close_band": "Strong",
-        "label": "Bullish Impulse Convergence",
-        "sentiment": "Bullish",
-        "t_open": 1521.8,
-        "t_close": 1579.0,
-        "t_spread": 146.4000000000001,
-        "t_cp": 0.9153,
-        "t1_cp": 0.7048,
-        "delta_cp": 0.2105,
-        "vol_delta_pct": 20.3,
-        "t_vol": 24553289,
-        "t1_vol": 20413345,
         "latest_week": "2026-W23",
         "prev_week": "2026-W22"
       },
@@ -3077,8 +3011,8 @@
         "t_cp": 0.7691,
         "t1_cp": 0.549,
         "delta_cp": 0.22,
-        "vol_delta_pct": 95.5,
-        "t_vol": 309333374,
+        "vol_delta_pct": 83.1,
+        "t_vol": 289643551,
         "t1_vol": 158198453,
         "latest_week": "2026-W23",
         "prev_week": "2026-W22"
@@ -3311,11 +3245,11 @@
         "t_close": 23.15,
         "t_spread": 3.789999999999999,
         "t_cp": 0.8945,
-        "t1_cp": 0.7739,
-        "delta_cp": 0.1205,
+        "t1_cp": 0.7713,
+        "delta_cp": 0.1232,
         "vol_delta_pct": 29.5,
         "t_vol": 2758010490,
-        "t1_vol": 2130101804,
+        "t1_vol": 2130101803,
         "latest_month": "2026-05",
         "prev_month": "2026-04"
       },
@@ -3331,8 +3265,8 @@
         "t_cp": 0.8619,
         "t1_cp": 0.9475,
         "delta_cp": -0.0855,
-        "vol_delta_pct": 23.7,
-        "t_vol": 66549644,
+        "vol_delta_pct": 12.8,
+        "t_vol": 60657221,
         "t1_vol": 53786755,
         "latest_month": "2026-05",
         "prev_month": "2026-04"
@@ -3697,7 +3631,7 @@
       "sentiment": "Bullish",
       "effort": "No_Supply",
       "description": "Low volume test of supply.",
-      "spread_ratio": 0.833844267320665,
+      "spread_ratio": 0.8405438813349841,
       "confidence": 0.8
     },
     {
@@ -3756,19 +3690,19 @@
     }
   ],
   "macro_intelligence": {
-    "last_event_at": "2026-06-13T09:10:17.664770+00:00",
-    "total_events": 6,
+    "last_event_at": "2026-06-13T12:02:47.455186+00:00",
+    "total_events": 10,
     "recent_events": [
       {
         "event_id": "mock-rbi-1",
         "url": "https://www.rbi.org.in/mock-1",
-        "published_at": "2026-06-13T09:10:17.664770+00:00",
+        "published_at": "2026-06-13T12:02:47.455186+00:00",
         "title": "RBI Announces Special Liquidity Facility for Mutual Funds",
         "summary": "The Reserve Bank of India has decided to open a special liquidity facility for mutual funds of \u20b950,000 crore to ease liquidity pressures.",
         "category": "Press Releases",
         "source": "RBI",
-        "collected_at": "2026-06-13T09:10:17.664803+00:00",
-        "version": 3,
+        "collected_at": "2026-06-13T12:02:47.455218+00:00",
+        "version": 5,
         "status": "Active",
         "lifecycle": "Enriched",
         "impact": {
@@ -3780,11 +3714,11 @@
             "Banking"
           ],
           "securities": [
+            "AXISBANK",
             "HDFCBANK",
             "KOTAKBANK",
             "ICICIBANK",
-            "SBIN",
-            "AXISBANK"
+            "SBIN"
           ],
           "horizon": "1-5 days",
           "direction": "Neutral",
@@ -3812,6 +3746,16 @@
           "index_returns": {},
           "sector_returns": {},
           "stock_returns": {
+            "AXISBANK": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
             "HDFCBANK": {
               "t_minus_5": null,
               "t_minus_3": null,
@@ -3851,23 +3795,13 @@
               "t_plus_5": null,
               "t_plus_10": null,
               "t_plus_20": null
-            },
-            "AXISBANK": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
             }
           }
         },
         "ai_snapshots": [
           {
             "version": 1,
-            "timestamp": "2026-06-13T09:10:17.692222+00:00",
+            "timestamp": "2026-06-13T12:02:47.480999+00:00",
             "prompt_version": "v1.0.0",
             "summary": "AI summary not available. Please configure an API key.",
             "key_points": [
@@ -3880,13 +3814,13 @@
       {
         "event_id": "mock-rbi-2",
         "url": "https://www.rbi.org.in/mock-2",
-        "published_at": "2026-06-13T09:10:17.664770+00:00",
+        "published_at": "2026-06-13T12:02:47.455186+00:00",
         "title": "Monetary Policy Statement: Repo Rate unchanged at 6.5%",
         "summary": "The MPC met today and unanimously decided to keep the policy repo rate unchanged at 6.50 per cent with readiness to act should the situation so warrant.",
         "category": "Monetary Policy",
         "source": "RBI",
-        "collected_at": "2026-06-13T09:10:17.664815+00:00",
-        "version": 3,
+        "collected_at": "2026-06-13T12:02:47.455231+00:00",
+        "version": 5,
         "status": "Active",
         "lifecycle": "Enriched",
         "impact": {
@@ -3902,24 +3836,347 @@
             "Auto"
           ],
           "securities": [
-            "TATAMOTORS",
-            "HDFCBANK",
-            "SHRIRAMFIN",
+            "AXISBANK",
+            "BAJFINANCE",
             "CHOLAFIN",
+            "DLF",
+            "M&MFIN",
+            "HDFCBANK",
+            "GODREJPROP",
+            "OBEROIRLTY",
+            "MARUTI",
+            "HEROMOTOCO",
+            "KOTAKBANK",
+            "MACROTECH",
+            "TATAMOTORS",
+            "M&M",
+            "SHRIRAMFIN",
+            "ICICIBANK",
+            "BAJAJ-AUTO",
+            "SBIN"
+          ],
+          "horizon": "1-5 days",
+          "direction": "Neutral",
+          "severity": "Critical",
+          "importance": 100,
+          "confidence": 95,
+          "historical_analogs": [],
+          "eigen_correlation": null
+        },
+        "event_study": {
+          "pre_event_regime": {
+            "daily_eigen": "Neutral",
+            "weekly_eigen": "Neutral",
+            "monthly_eigen": "Neutral",
+            "vix": null,
+            "breadth_pct": null
+          },
+          "post_event_outcome": {
+            "daily_eigen": "Neutral",
+            "weekly_eigen": "Neutral",
+            "monthly_eigen": "Neutral",
+            "vix": null,
+            "breadth_pct": null
+          },
+          "index_returns": {},
+          "sector_returns": {},
+          "stock_returns": {
+            "AXISBANK": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "BAJFINANCE": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "CHOLAFIN": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "DLF": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "HDFCBANK": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "GODREJPROP": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "OBEROIRLTY": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "MARUTI": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "HEROMOTOCO": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "KOTAKBANK": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "TATAMOTORS": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "M&M": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "SHRIRAMFIN": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "ICICIBANK": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "BAJAJ-AUTO": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "SBIN": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            }
+          }
+        },
+        "ai_snapshots": [
+          {
+            "version": 1,
+            "timestamp": "2026-06-13T12:02:47.533856+00:00",
+            "prompt_version": "v1.0.0",
+            "summary": "AI summary not available. Please configure an API key.",
+            "key_points": [
+              "No key points available."
+            ]
+          }
+        ],
+        "is_new_since_last_session": false
+      },
+      {
+        "event_id": "mock-rbi-1",
+        "url": "https://www.rbi.org.in/mock-1",
+        "published_at": "2026-06-13T11:52:35.289117+00:00",
+        "title": "RBI Announces Special Liquidity Facility for Mutual Funds",
+        "summary": "The Reserve Bank of India has decided to open a special liquidity facility for mutual funds of \u20b950,000 crore to ease liquidity pressures.",
+        "category": "Press Releases",
+        "source": "RBI",
+        "collected_at": "2026-06-13T11:52:35.289162+00:00",
+        "version": 4,
+        "status": "Superseded",
+        "lifecycle": "Enriched",
+        "impact": {
+          "asset_classes": [
+            "Bonds",
+            "Equity"
+          ],
+          "sectors": [
+            "Banking"
+          ],
+          "securities": [
+            "SBIN",
+            "ICICIBANK",
+            "AXISBANK",
+            "HDFCBANK",
+            "KOTAKBANK"
+          ],
+          "horizon": "1-5 days",
+          "direction": "Neutral",
+          "severity": "Medium",
+          "importance": 65,
+          "confidence": 85,
+          "historical_analogs": [],
+          "eigen_correlation": null
+        },
+        "event_study": {
+          "pre_event_regime": {
+            "daily_eigen": "Neutral",
+            "weekly_eigen": "Neutral",
+            "monthly_eigen": "Neutral",
+            "vix": null,
+            "breadth_pct": null
+          },
+          "post_event_outcome": {
+            "daily_eigen": "Neutral",
+            "weekly_eigen": "Neutral",
+            "monthly_eigen": "Neutral",
+            "vix": null,
+            "breadth_pct": null
+          },
+          "index_returns": {},
+          "sector_returns": {},
+          "stock_returns": {
+            "SBIN": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            }
+          }
+        },
+        "ai_snapshots": [
+          {
+            "version": 1,
+            "timestamp": "2026-06-13T11:52:35.294422+00:00",
+            "prompt_version": "v1.0.0",
+            "summary": "AI summary not available. Please configure an API key.",
+            "key_points": [
+              "No key points available."
+            ]
+          }
+        ],
+        "is_new_since_last_session": false
+      },
+      {
+        "event_id": "mock-rbi-2",
+        "url": "https://www.rbi.org.in/mock-2",
+        "published_at": "2026-06-13T11:52:35.289117+00:00",
+        "title": "Monetary Policy Statement: Repo Rate unchanged at 6.5%",
+        "summary": "The MPC met today and unanimously decided to keep the policy repo rate unchanged at 6.50 per cent with readiness to act should the situation so warrant.",
+        "category": "Monetary Policy",
+        "source": "RBI",
+        "collected_at": "2026-06-13T11:52:35.289176+00:00",
+        "version": 4,
+        "status": "Superseded",
+        "lifecycle": "Enriched",
+        "impact": {
+          "asset_classes": [
+            "Equity",
+            "Bonds",
+            "Currency"
+          ],
+          "sectors": [
+            "Banking",
+            "NBFC",
+            "Realty",
+            "Auto"
+          ],
+          "securities": [
+            "TATAMOTORS",
+            "HEROMOTOCO",
+            "CHOLAFIN",
+            "DLF",
+            "OBEROIRLTY",
+            "M&M",
+            "SBIN",
+            "ICICIBANK",
+            "MACROTECH",
+            "AXISBANK",
+            "MARUTI",
+            "HDFCBANK",
+            "BAJAJ-AUTO",
             "KOTAKBANK",
             "M&MFIN",
-            "M&M",
-            "MARUTI",
-            "BAJFINANCE",
+            "SHRIRAMFIN",
             "GODREJPROP",
-            "DLF",
-            "HEROMOTOCO",
-            "ICICIBANK",
-            "SBIN",
-            "OBEROIRLTY",
-            "AXISBANK",
-            "MACROTECH",
-            "BAJAJ-AUTO"
+            "BAJFINANCE"
           ],
           "horizon": "1-5 days",
           "direction": "Neutral",
@@ -3957,7 +4214,7 @@
               "t_plus_10": null,
               "t_plus_20": null
             },
-            "HDFCBANK": {
+            "SBIN": {
               "t_minus_5": null,
               "t_minus_3": null,
               "t_minus_1": null,
@@ -3976,128 +4233,76 @@
               "t_plus_5": null,
               "t_plus_10": null,
               "t_plus_20": null
-            },
-            "CHOLAFIN": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "KOTAKBANK": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "M&M": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "MARUTI": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "BAJFINANCE": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "GODREJPROP": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "DLF": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "HEROMOTOCO": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "ICICIBANK": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
+            }
+          }
+        },
+        "ai_snapshots": [
+          {
+            "version": 1,
+            "timestamp": "2026-06-13T11:52:35.303308+00:00",
+            "prompt_version": "v1.0.0",
+            "summary": "AI summary not available. Please configure an API key.",
+            "key_points": [
+              "No key points available."
+            ]
+          }
+        ],
+        "is_new_since_last_session": false
+      },
+      {
+        "event_id": "mock-rbi-1",
+        "url": "https://www.rbi.org.in/mock-1",
+        "published_at": "2026-06-13T11:48:44.320998+00:00",
+        "title": "RBI Announces Special Liquidity Facility for Mutual Funds",
+        "summary": "The Reserve Bank of India has decided to open a special liquidity facility for mutual funds of \u20b950,000 crore to ease liquidity pressures.",
+        "category": "Press Releases",
+        "source": "RBI",
+        "collected_at": "2026-06-13T11:48:44.321096+00:00",
+        "version": 3,
+        "status": "Superseded",
+        "lifecycle": "Enriched",
+        "impact": {
+          "asset_classes": [
+            "Bonds",
+            "Equity"
+          ],
+          "sectors": [
+            "Banking"
+          ],
+          "securities": [
+            "ICICIBANK",
+            "KOTAKBANK",
+            "HDFCBANK",
+            "AXISBANK",
+            "SBIN"
+          ],
+          "horizon": "1-5 days",
+          "direction": "Neutral",
+          "severity": "Medium",
+          "importance": 65,
+          "confidence": 85,
+          "historical_analogs": [],
+          "eigen_correlation": null
+        },
+        "event_study": {
+          "pre_event_regime": {
+            "daily_eigen": "Neutral",
+            "weekly_eigen": "Neutral",
+            "monthly_eigen": "Neutral",
+            "vix": null,
+            "breadth_pct": null
+          },
+          "post_event_outcome": {
+            "daily_eigen": "Neutral",
+            "weekly_eigen": "Neutral",
+            "monthly_eigen": "Neutral",
+            "vix": null,
+            "breadth_pct": null
+          },
+          "index_returns": {},
+          "sector_returns": {},
+          "stock_returns": {
             "SBIN": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "OBEROIRLTY": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "AXISBANK": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "BAJAJ-AUTO": {
               "t_minus_5": null,
               "t_minus_3": null,
               "t_minus_1": null,
@@ -4112,7 +4317,102 @@
         "ai_snapshots": [
           {
             "version": 1,
-            "timestamp": "2026-06-13T09:10:17.745559+00:00",
+            "timestamp": "2026-06-13T11:48:44.331853+00:00",
+            "prompt_version": "v1.0.0",
+            "summary": "AI summary not available. Please configure an API key.",
+            "key_points": [
+              "No key points available."
+            ]
+          }
+        ],
+        "is_new_since_last_session": false
+      },
+      {
+        "event_id": "mock-rbi-2",
+        "url": "https://www.rbi.org.in/mock-2",
+        "published_at": "2026-06-13T11:48:44.320998+00:00",
+        "title": "Monetary Policy Statement: Repo Rate unchanged at 6.5%",
+        "summary": "The MPC met today and unanimously decided to keep the policy repo rate unchanged at 6.50 per cent with readiness to act should the situation so warrant.",
+        "category": "Monetary Policy",
+        "source": "RBI",
+        "collected_at": "2026-06-13T11:48:44.321127+00:00",
+        "version": 3,
+        "status": "Superseded",
+        "lifecycle": "Enriched",
+        "impact": {
+          "asset_classes": [
+            "Equity",
+            "Bonds",
+            "Currency"
+          ],
+          "sectors": [
+            "Banking",
+            "NBFC",
+            "Realty",
+            "Auto"
+          ],
+          "securities": [
+            "BAJFINANCE",
+            "GODREJPROP",
+            "M&M",
+            "ICICIBANK",
+            "SHRIRAMFIN",
+            "DLF",
+            "TATAMOTORS",
+            "HEROMOTOCO",
+            "MACROTECH",
+            "OBEROIRLTY",
+            "BAJAJ-AUTO",
+            "CHOLAFIN",
+            "MARUTI",
+            "M&MFIN",
+            "KOTAKBANK",
+            "HDFCBANK",
+            "AXISBANK",
+            "SBIN"
+          ],
+          "horizon": "1-5 days",
+          "direction": "Neutral",
+          "severity": "Critical",
+          "importance": 100,
+          "confidence": 95,
+          "historical_analogs": [],
+          "eigen_correlation": null
+        },
+        "event_study": {
+          "pre_event_regime": {
+            "daily_eigen": "Neutral",
+            "weekly_eigen": "Neutral",
+            "monthly_eigen": "Neutral",
+            "vix": null,
+            "breadth_pct": null
+          },
+          "post_event_outcome": {
+            "daily_eigen": "Neutral",
+            "weekly_eigen": "Neutral",
+            "monthly_eigen": "Neutral",
+            "vix": null,
+            "breadth_pct": null
+          },
+          "index_returns": {},
+          "sector_returns": {},
+          "stock_returns": {
+            "SBIN": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            }
+          }
+        },
+        "ai_snapshots": [
+          {
+            "version": 1,
+            "timestamp": "2026-06-13T11:48:44.339253+00:00",
             "prompt_version": "v1.0.0",
             "summary": "AI summary not available. Please configure an API key.",
             "key_points": [
