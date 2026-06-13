@@ -238,10 +238,13 @@ function renderDashboard(data) {
                     if (impact.direction === 'Positive') badgeClass = 'badge-gap-up';
                     else if (impact.direction === 'Negative') badgeClass = 'badge-gap-down';
                     
+                    const isNewHtml = event.is_new_since_last_session ? `<span class="premium-badge badge-strong" style="background:var(--accent-color);color:#000;font-weight:bold;animation: pulse 2s infinite;">NEW SINCE LAST TRADING SESSION</span>` : '';
+
                     eventCard.innerHTML = `
-                        <div class="macro-event-header">
+                        <div class="macro-event-header" style="display:flex; flex-wrap:wrap; gap:8px;">
                             <span class="macro-date">${pubDate}</span>
                             <span class="premium-badge ${badgeClass}">${impact.direction || 'Unknown'}</span>
+                            ${isNewHtml}
                         </div>
                         <h3>${event.title}</h3>
                         <p>${event.summary ? event.summary.substring(0, 150) + '...' : ''}</p>

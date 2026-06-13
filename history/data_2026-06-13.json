@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-13T07:44:16.058718Z",
+  "generated_at": "2026-06-13T08:57:31.470572Z",
   "extraction_list": [
     "ABB_1Y_20260613",
     "COLPAL_1Y_20260613",
@@ -3756,8 +3756,311 @@
     }
   ],
   "macro_intelligence": {
-    "last_event_at": null,
-    "total_events": 0,
-    "recent_events": []
+    "last_event_at": "2026-06-13T08:57:16.670311+00:00",
+    "total_events": 4,
+    "recent_events": [
+      {
+        "event_id": "mock-rbi-1",
+        "url": "https://www.rbi.org.in/mock-1",
+        "published_at": "2026-06-13T08:57:16.670311+00:00",
+        "title": "RBI Announces Special Liquidity Facility for Mutual Funds",
+        "summary": "The Reserve Bank of India has decided to open a special liquidity facility for mutual funds of \u20b950,000 crore to ease liquidity pressures.",
+        "category": "Press Releases",
+        "source": "RBI",
+        "collected_at": "2026-06-13T08:57:16.670344+00:00",
+        "version": 2,
+        "status": "Active",
+        "lifecycle": "Enriched",
+        "impact": {
+          "asset_classes": [
+            "Bonds",
+            "Equity"
+          ],
+          "sectors": [
+            "Banking"
+          ],
+          "securities": [
+            "HDFCBANK",
+            "AXISBANK",
+            "ICICIBANK",
+            "SBIN",
+            "KOTAKBANK"
+          ],
+          "horizon": "1-5 days",
+          "direction": "Neutral",
+          "severity": "Medium",
+          "importance": 65,
+          "confidence": 85,
+          "historical_analogs": [],
+          "eigen_correlation": null
+        },
+        "event_study": {
+          "pre_event_regime": {
+            "daily_eigen": "Neutral",
+            "weekly_eigen": "Neutral",
+            "monthly_eigen": "Neutral",
+            "vix": null,
+            "breadth_pct": null
+          },
+          "post_event_outcome": {
+            "daily_eigen": "Neutral",
+            "weekly_eigen": "Neutral",
+            "monthly_eigen": "Neutral",
+            "vix": null,
+            "breadth_pct": null
+          },
+          "index_returns": {},
+          "sector_returns": {},
+          "stock_returns": {}
+        },
+        "ai_snapshots": [
+          {
+            "version": 1,
+            "timestamp": "2026-06-13T08:57:16.684833+00:00",
+            "prompt_version": "v1.0.0",
+            "summary": "AI summary not available. Please configure an API key.",
+            "key_points": [
+              "No key points available."
+            ]
+          }
+        ],
+        "is_new_since_last_session": false
+      },
+      {
+        "event_id": "mock-rbi-2",
+        "url": "https://www.rbi.org.in/mock-2",
+        "published_at": "2026-06-13T08:57:16.670311+00:00",
+        "title": "Monetary Policy Statement: Repo Rate unchanged at 6.5%",
+        "summary": "The MPC met today and unanimously decided to keep the policy repo rate unchanged at 6.50 per cent with readiness to act should the situation so warrant.",
+        "category": "Monetary Policy",
+        "source": "RBI",
+        "collected_at": "2026-06-13T08:57:16.670356+00:00",
+        "version": 2,
+        "status": "Active",
+        "lifecycle": "Enriched",
+        "impact": {
+          "asset_classes": [
+            "Equity",
+            "Bonds",
+            "Currency"
+          ],
+          "sectors": [
+            "Banking",
+            "NBFC",
+            "Realty",
+            "Auto"
+          ],
+          "securities": [
+            "CHOLAFIN",
+            "HDFCBANK",
+            "TATAMOTORS",
+            "MACROTECH",
+            "BAJAJ-AUTO",
+            "HEROMOTOCO",
+            "M&M",
+            "MARUTI",
+            "AXISBANK",
+            "GODREJPROP",
+            "ICICIBANK",
+            "SHRIRAMFIN",
+            "OBEROIRLTY",
+            "SBIN",
+            "M&MFIN",
+            "DLF",
+            "KOTAKBANK",
+            "BAJFINANCE"
+          ],
+          "horizon": "1-5 days",
+          "direction": "Neutral",
+          "severity": "Critical",
+          "importance": 100,
+          "confidence": 95,
+          "historical_analogs": [],
+          "eigen_correlation": null
+        },
+        "event_study": {
+          "pre_event_regime": {
+            "daily_eigen": "Neutral",
+            "weekly_eigen": "Neutral",
+            "monthly_eigen": "Neutral",
+            "vix": null,
+            "breadth_pct": null
+          },
+          "post_event_outcome": {
+            "daily_eigen": "Neutral",
+            "weekly_eigen": "Neutral",
+            "monthly_eigen": "Neutral",
+            "vix": null,
+            "breadth_pct": null
+          },
+          "index_returns": {},
+          "sector_returns": {},
+          "stock_returns": {}
+        },
+        "ai_snapshots": [
+          {
+            "version": 1,
+            "timestamp": "2026-06-13T08:57:16.723604+00:00",
+            "prompt_version": "v1.0.0",
+            "summary": "AI summary not available. Please configure an API key.",
+            "key_points": [
+              "No key points available."
+            ]
+          }
+        ],
+        "is_new_since_last_session": false
+      },
+      {
+        "event_id": "mock-rbi-1",
+        "url": "https://www.rbi.org.in/mock-1",
+        "published_at": "2026-06-13T08:50:59.443697+00:00",
+        "title": "RBI Announces Special Liquidity Facility for Mutual Funds",
+        "summary": "The Reserve Bank of India has decided to open a special liquidity facility for mutual funds of \u20b950,000 crore to ease liquidity pressures.",
+        "category": "Press Releases",
+        "source": "RBI",
+        "collected_at": "2026-06-13T08:50:59.443735+00:00",
+        "version": 1,
+        "status": "Superseded",
+        "lifecycle": "Enriched",
+        "impact": {
+          "asset_classes": [
+            "Bonds",
+            "Equity"
+          ],
+          "sectors": [
+            "Banking"
+          ],
+          "securities": [
+            "SBIN",
+            "ICICIBANK",
+            "AXISBANK",
+            "HDFCBANK",
+            "KOTAKBANK"
+          ],
+          "horizon": "1-5 days",
+          "direction": "Neutral",
+          "severity": "Medium",
+          "importance": 65,
+          "confidence": 85,
+          "historical_analogs": [],
+          "eigen_correlation": null
+        },
+        "event_study": {
+          "pre_event_regime": {
+            "daily_eigen": "Neutral",
+            "weekly_eigen": "Neutral",
+            "monthly_eigen": "Neutral",
+            "vix": null,
+            "breadth_pct": null
+          },
+          "post_event_outcome": {
+            "daily_eigen": "Neutral",
+            "weekly_eigen": "Neutral",
+            "monthly_eigen": "Neutral",
+            "vix": null,
+            "breadth_pct": null
+          },
+          "index_returns": {},
+          "sector_returns": {},
+          "stock_returns": {}
+        },
+        "ai_snapshots": [
+          {
+            "version": 1,
+            "timestamp": "2026-06-13T08:50:59.464206+00:00",
+            "prompt_version": "v1.0.0",
+            "summary": "AI summary not available. Please configure an API key.",
+            "key_points": [
+              "No key points available."
+            ]
+          }
+        ],
+        "is_new_since_last_session": false
+      },
+      {
+        "event_id": "mock-rbi-2",
+        "url": "https://www.rbi.org.in/mock-2",
+        "published_at": "2026-06-13T08:50:59.443697+00:00",
+        "title": "Monetary Policy Statement: Repo Rate unchanged at 6.5%",
+        "summary": "The MPC met today and unanimously decided to keep the policy repo rate unchanged at 6.50 per cent with readiness to act should the situation so warrant.",
+        "category": "Monetary Policy",
+        "source": "RBI",
+        "collected_at": "2026-06-13T08:50:59.443750+00:00",
+        "version": 1,
+        "status": "Superseded",
+        "lifecycle": "Enriched",
+        "impact": {
+          "asset_classes": [
+            "Equity",
+            "Bonds",
+            "Currency"
+          ],
+          "sectors": [
+            "Banking",
+            "NBFC",
+            "Realty",
+            "Auto"
+          ],
+          "securities": [
+            "SHRIRAMFIN",
+            "M&MFIN",
+            "SBIN",
+            "DLF",
+            "ICICIBANK",
+            "MACROTECH",
+            "HEROMOTOCO",
+            "AXISBANK",
+            "HDFCBANK",
+            "CHOLAFIN",
+            "MARUTI",
+            "M&M",
+            "TATAMOTORS",
+            "KOTAKBANK",
+            "BAJAJ-AUTO",
+            "OBEROIRLTY",
+            "BAJFINANCE",
+            "GODREJPROP"
+          ],
+          "horizon": "1-5 days",
+          "direction": "Neutral",
+          "severity": "Critical",
+          "importance": 100,
+          "confidence": 95,
+          "historical_analogs": [],
+          "eigen_correlation": null
+        },
+        "event_study": {
+          "pre_event_regime": {
+            "daily_eigen": "Neutral",
+            "weekly_eigen": "Neutral",
+            "monthly_eigen": "Neutral",
+            "vix": null,
+            "breadth_pct": null
+          },
+          "post_event_outcome": {
+            "daily_eigen": "Neutral",
+            "weekly_eigen": "Neutral",
+            "monthly_eigen": "Neutral",
+            "vix": null,
+            "breadth_pct": null
+          },
+          "index_returns": {},
+          "sector_returns": {},
+          "stock_returns": {}
+        },
+        "ai_snapshots": [
+          {
+            "version": 1,
+            "timestamp": "2026-06-13T08:50:59.488122+00:00",
+            "prompt_version": "v1.0.0",
+            "summary": "AI summary not available. Please configure an API key.",
+            "key_points": [
+              "No key points available."
+            ]
+          }
+        ],
+        "is_new_since_last_session": false
+      }
+    ]
   }
 }
