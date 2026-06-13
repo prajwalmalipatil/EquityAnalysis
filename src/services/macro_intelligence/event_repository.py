@@ -1,7 +1,7 @@
 import json
 import hashlib
 from pathlib import Path
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Union
 from src.services.macro_intelligence.models import MacroEvent
 
 def make_dedup_key(event_id: str, url: str, published_at: str) -> str:
@@ -12,7 +12,7 @@ def make_dedup_key(event_id: str, url: str, published_at: str) -> str:
 class EventRepository:
     """JSON Lines repository for Macro Events with Versioning support."""
 
-    def __init__(self, filepath: str | Path):
+    def __init__(self, filepath: Union[str, Path]):
         self.filepath = Path(filepath)
         self.filepath.parent.mkdir(parents=True, exist_ok=True)
         self._cache = {}

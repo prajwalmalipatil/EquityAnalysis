@@ -55,3 +55,16 @@ EIGEN_CLOSE_UPPER_BAND = 0.70
 
 # Standard columns
 OHLCV_COLUMNS = ["Date", "Open", "High", "Low", "Close", "Volume"]
+
+# Eigen Transition Engine (ETE)
+ETE_EVENTS_DIR = "data/events"
+ETE_SNAPSHOTS_DIR = "data/snapshots"
+CHECKPOINT_INTERVAL = 500
+ENGINE_VERSION = "1.0"
+
+# Transition Rules
+RULE_HVHS = "HVHS"
+RULE_LVLS = "LVLS"
+RULE_HVLS = "HVLS"
+RULE_LVHS = "LVHS"
+

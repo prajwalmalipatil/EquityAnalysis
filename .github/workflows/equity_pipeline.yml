@@ -51,22 +51,12 @@ jobs:
         ls -la equity_data/ || echo "equity_data not found"
         head -n 2 equity_data/*.csv | head -n 20 || echo "No CSVs found for head"
 
-    - name: "Run Stage 2: VSA Processing"
-      run: |
-        export PYTHONPATH=$PYTHONPATH:.
-        python main_processor.py --folder equity_data
-
-    - name: "Run Macro Intelligence Service"
+    - name: "Run Stage 2: Pipeline Orchestrator (DAG)"
       env:
         GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
       run: |
         export PYTHONPATH=$PYTHONPATH:.
-        python main_macro.py
-
-    - name: "Run JSON Publisher"
-      run: |
-        export PYTHONPATH=$PYTHONPATH:.
-        python main_publisher.py --base-dir equity_data --output dashboard/data.json
+        python main_orchestrator.py --folder equity_data
 
     - name: "Run Notification & Summary"
       env:

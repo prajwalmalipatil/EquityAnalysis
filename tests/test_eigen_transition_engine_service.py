@@ -1,0 +1,96 @@
+import pytest
+import os
+import json
+import pandas as pd
+from datetime import datetime, timedelta
+from src.services.vsa.eigen_transition_engine_service import EigenTransitionEngineService
+from src.models.ete_models import ETEState
+
+@pytest.fixture
+def clean_engine():
+    # Remove files
+    if os.path.exists("data/events/daily_events.jsonl"):
+        os.remove("data/events/daily_events.jsonl")
+    if os.path.exists("data/snapshots/daily_snapshots.json"):
+        os.remove("data/snapshots/daily_snapshots.json")
+    
+    # Mock sequence config
+    if not os.path.exists("src/constants"):
+        os.makedirs("src/constants")
+    with open("src/constants/ete_sequences.json", "w") as f:
+        json.dump({
+            "AVE_1": {
+                "sequence": ["HVHS", "LVLS"]
+            }
+        }, f)
+        
+    engine = EigenTransitionEngineService("daily")
+    yield engine
+
+def test_detect_triggers_idempotency(clean_engine):
+    df = pd.DataFrame({
+        "Date": [datetime.now()],
+        "Open": [100], "High": [105], "Low": [95], "Close": [102], "Volume": [1000]
+    })
+    
+    # First trigger
+    clean_engine.detect_triggers("TEST", df, True)
+    state, _ = clean_engine.reconstruct_state()
+    assert len(state) == 1
+    seq_id = list(state.keys())[0]
+    assert state[seq_id].state == ETEState.TRIGGERED
+    
+    # Second trigger should not duplicate
+    clean_engine.detect_triggers("TEST", df, True)
+    state2, _ = clean_engine.reconstruct_state()
+    assert len(state2) == 1
+
+def test_advance_and_fail(clean_engine):
+    df_trigger = pd.DataFrame({"Date": [datetime.now()], "Open": [10], "High": [15], "Low": [9], "Close": [12], "Volume": [100]})
+    clean_engine.detect_triggers("TEST", df_trigger, True)
+    
+    # T+1: HVHS (Volume up, Spread up)
+    df_t1 = pd.DataFrame({
+        "Date": [datetime.now(), datetime.now()+timedelta(days=1)],
+        "Open": [10, 10], "High": [15, 20], "Low": [9, 8], "Close": [12, 18], "Volume": [100, 200] # Spread 6 to 12, Vol 100 to 200
+    })
+    
+    clean_engine.update_active_sequences("TEST", df_t1)
+    state, _ = clean_engine.reconstruct_state()
+    seq_id = list(state.keys())[0]
+    assert state[seq_id].current_stage_index == 1
+    assert state[seq_id].state == ETEState.WAITING
+    
+    # T+2: Expecting LVLS, but giving HVHS again -> should FAIL
+    df_t2 = pd.DataFrame({
+        "Date": [datetime.now()+timedelta(days=1), datetime.now()+timedelta(days=2)],
+        "Open": [10, 10], "High": [20, 30], "Low": [8, 5], "Close": [18, 25], "Volume": [200, 300]
+    })
+    clean_engine.update_active_sequences("TEST", df_t2)
+    state2, _ = clean_engine.reconstruct_state()
+    assert state2[seq_id].state == ETEState.FAILED
+
+def test_integrity_failure(clean_engine):
+    df = pd.DataFrame({"Date": [datetime.now()], "Open": [10], "High": [15], "Low": [9], "Close": [12], "Volume": [100]})
+    clean_engine.detect_triggers("TEST", df, True)
+    
+    # T+1
+    df_t1 = pd.DataFrame({
+        "Date": [datetime.now(), datetime.now()+timedelta(days=1)],
+        "Open": [10, 10], "High": [15, 20], "Low": [9, 8], "Close": [12, 18], "Volume": [100, 200]
+    })
+    clean_engine.update_active_sequences("TEST", df_t1)
+    
+    # Manually corrupt the log (second event)
+    with open("data/events/daily_events.jsonl", "r") as f:
+        lines = f.readlines()
+    
+    event = json.loads(lines[1])
+    event['matched'] = False # Tamper
+    lines[1] = json.dumps(event) + "\n"
+    with open("data/events/daily_events.jsonl", "w") as f:
+        f.writelines(lines)
+        
+    state, _ = clean_engine.reconstruct_state()
+    seq_id = list(state.keys())[0]
+    assert state[seq_id].state == ETEState.INTEGRITY_FAILED

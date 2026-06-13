@@ -74,3 +74,13 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+from src.services.orchestration.registry import platform_registry, ResearchModule
+platform_registry.register(ResearchModule(
+    name="MacroIntelligence",
+    version="1.0.0",
+    description="Rule-based Impact and Event Study Engine",
+    inputs=["RBI Data"],
+    outputs=["MacroEvents"],
+    dependencies=[]
+))
