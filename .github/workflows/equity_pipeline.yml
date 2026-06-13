@@ -56,6 +56,11 @@ jobs:
         export PYTHONPATH=$PYTHONPATH:.
         python main_processor.py --folder equity_data
 
+    - name: "Run Macro Intelligence Service"
+      run: |
+        export PYTHONPATH=$PYTHONPATH:.
+        python main_macro.py
+
     - name: "Run JSON Publisher"
       run: |
         export PYTHONPATH=$PYTHONPATH:.
