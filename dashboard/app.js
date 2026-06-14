@@ -451,8 +451,8 @@ function renderMacroTimeline() {
     });
     
     filtered.sort((a, b) => {
-        const dateA = new Date(a.official_data?.publication_date || a.published_at || 0).getTime();
-        const dateB = new Date(b.official_data?.publication_date || b.published_at || 0).getTime();
+        const dateA = new Date(a.official_data?.publication_date || a.published_at || a.published || 0).getTime();
+        const dateB = new Date(b.official_data?.publication_date || b.published_at || b.published || 0).getTime();
         return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
     });
     
@@ -486,12 +486,12 @@ function renderMacroTimeline() {
         card.dataset.eventId = event.event_id;
         
         const title = event.official_data?.title || event.title || 'Untitled Event';
-        const pubDateStr = event.official_data?.publication_date || event.published_at;
+        const pubDateStr = event.official_data?.publication_date || event.published_at || event.published;
         const pubDate = pubDateStr ? new Date(pubDateStr).toLocaleDateString() : 'Unknown Date';
         const summary = event.derived_data?.ai_summary || event.official_data?.content || event.summary || '';
         const category = event.official_data?.category || event.category || 'Uncategorized';
         
-        const isNewHtml = (event.metadata?.lifecycle_status === 'NEW' || event.is_new_since_last_session) 
+        const isNewHtml = (event.metadata?.lifecycle_status === 'NEW' || event.processing_state === 'NEW' || event.is_new_since_last_session) 
             ? `<span class="premium-badge badge-strong" style="background:var(--accent-color);color:#000;font-weight:bold;animation: pulse 2s infinite;">NEW</span>` 
             : '';
 
@@ -570,7 +570,7 @@ function renderMacroWorkspace() {
 
 function renderHeaderWidget(event) {
     const title = event.official_data?.title || event.title || 'Untitled Event';
-    const pubDateStr = event.official_data?.publication_date || event.published_at;
+    const pubDateStr = event.official_data?.publication_date || event.published_at || event.published;
     const pubDate = pubDateStr ? new Date(pubDateStr).toLocaleDateString() : 'Unknown Date';
     const url = event.official_data?.official_url || event.url || '#';
     const source = event.official_data?.source || event.source || 'Unknown';
