@@ -24,17 +24,25 @@ class ValidatorInterface(ABC):
         """Returns True if the event is valid and safe to store."""
         pass
 
-class EventRepositoryInterface(ABC):
-    """Interface for the immutable event repository."""
+class EventWriteRepository(ABC):
+    """Interface for writing immutable events to the repository."""
     
     @abstractmethod
     def save_event(self, event: MacroEvent) -> bool:
         """Persist the event. Returns True if saved successfully, False if duplicate."""
         pass
-        
+
+class EventReadRepository(ABC):
+    """Interface for reading historical events from the repository."""
+    
     @abstractmethod
     def get_all_events(self) -> List[MacroEvent]:
         """Retrieve all events across history."""
+        pass
+        
+    @abstractmethod
+    def get_active_events(self) -> List[MacroEvent]:
+        """Returns only Active events."""
         pass
 
 class EnrichmentServiceInterface(ABC):

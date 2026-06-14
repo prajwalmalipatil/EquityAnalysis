@@ -1,15 +1,16 @@
 from typing import List, Optional
-from src.utils.observability import get_tenant_logger
+from src.utils.observability import get_tenant_logger, get_metrics_tracker
 from src.services.macro_intelligence.config import MacroConfig
 from src.services.macro_intelligence.interfaces import (
     OfficialSourceCollector,
     ValidatorInterface,
-    EventRepositoryInterface,
+    EventWriteRepository,
     EnrichmentServiceInterface
 )
 from src.services.macro_intelligence.attachment_processor import AttachmentProcessor
 
 logger = get_tenant_logger("macro-pipeline")
+metrics = get_metrics_tracker()
 
 class MacroPipeline:
     """
@@ -21,7 +22,7 @@ class MacroPipeline:
         config: MacroConfig,
         collectors: List[OfficialSourceCollector],
         validator: ValidatorInterface,
-        repository: EventRepositoryInterface,
+        repository: EventWriteRepository,
         attachment_processor: Optional[AttachmentProcessor] = None,
         enrichment: Optional[EnrichmentServiceInterface] = None
     ):
@@ -39,32 +40,47 @@ class MacroPipeline:
         try:
             total_collected = 0
             total_saved = 0
+            total_duplicates = 0
             
-            # 1. Collect & Normalize
-            # TODO: read last_ts from state file
-            for collector in self.collectors:
-                events = collector.fetch_since("")
-                total_collected += len(events)
-                
-                for event in events:
-                    # 2. Validate
-                    if not self.validator.validate(event):
-                        continue
+            with metrics.time_block("runtime_pipeline_total_duration_ms"):
+                # 1. Collect & Normalize
+                # TODO: read last_ts from state file
+                for collector in self.collectors:
+                    with metrics.time_block("collector_fetch_duration_ms", tags={"collector": type(collector).__name__}):
+                        events = collector.fetch_since("")
+                    total_collected += len(events)
+                    metrics.increment("events_collected", len(events), tags={"collector": type(collector).__name__})
+                    
+                    for event in events:
+                        # 2. Validate
+                        if not self.validator.validate(event):
+                            metrics.increment("events_validation_failed")
+                            continue
+                            
+                        # 3. Process Attachments
+                        if self.attachment_processor:
+                            with metrics.time_block("attachment_processing_duration_ms"):
+                                event = self.attachment_processor.process(event)
+                            
+                        # 4. Enrich
+                        if self.enrichment:
+                            with metrics.time_block("ai_enrichment_duration_ms"):
+                                event = self.enrichment.process(event)
+                            
+                        # 5. Deduplicate & Persist
+                        saved = self.repository.save_event(event)
+                        if saved:
+                            total_saved += 1
+                            metrics.increment("events_persisted")
+                        else:
+                            total_duplicates += 1
+                            metrics.increment("events_duplicate_rejected")
+                            
+            metrics.gauge("pipeline_run_collected", total_collected)
+            metrics.gauge("pipeline_run_saved", total_saved)
+            metrics.gauge("pipeline_run_duplicates", total_duplicates)
                         
-                    # 3. Process Attachments
-                    if self.attachment_processor:
-                        event = self.attachment_processor.process(event)
-                        
-                    # 4. Enrich
-                    if self.enrichment:
-                        event = self.enrichment.process(event)
-                        
-                    # 5. Deduplicate & Persist
-                    saved = self.repository.save_event(event)
-                    if saved:
-                        total_saved += 1
-                        
-            logger.info("PIPELINE_EXECUTION_SUCCESSFUL", extra={"collected": total_collected, "saved": total_saved})
+            logger.info("PIPELINE_EXECUTION_SUCCESSFUL", extra={"collected": total_collected, "saved": total_saved, "duplicates": total_duplicates})
         except Exception as e:
             logger.error("PIPELINE_EXECUTION_FAILED", extra={"error": str(e)})
             raise
@@ -74,7 +90,7 @@ def run_macro_pipeline():
     from pathlib import Path
     from src.services.macro_intelligence.config import load_config
     from src.services.macro_intelligence.validator import DefaultValidator
-    from src.services.macro_intelligence.event_repository import EventRepository
+    from src.services.macro_intelligence.event_repository import JSONEventWriteRepository
     from src.services.macro_intelligence.rbi_collector import RBICollector
     from src.services.macro_intelligence.attachment_processor import AttachmentProcessor
     
@@ -86,7 +102,7 @@ def run_macro_pipeline():
             config=config,
             collectors=[RBICollector()],
             validator=DefaultValidator(),
-            repository=EventRepository(config=config.storage),
+            repository=JSONEventWriteRepository(config=config),
             attachment_processor=AttachmentProcessor(config=config.storage)
         )
         pipeline.execute()

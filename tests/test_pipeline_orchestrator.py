@@ -24,6 +24,10 @@ def test_pipeline_halts_on_dq_failure(test_dir, monkeypatch):
     class ExitException(Exception): pass
     monkeypatch.setattr("sys.exit", lambda code: (_ for _ in ()).throw(ExitException("sys.exit called")))
     
+    # Mock registry validation
+    from src.services.orchestration.registry import platform_registry
+    monkeypatch.setattr(platform_registry, "validate_dependencies", lambda: True)
+    
     with pytest.raises(ExitException):
         orchestrator.execute_dag()
         
@@ -40,6 +44,10 @@ def test_pipeline_vsa_failure_halts(test_dir, monkeypatch):
     
     class ExitException(Exception): pass
     monkeypatch.setattr("sys.exit", lambda code: (_ for _ in ()).throw(ExitException("sys.exit called")))
+    
+    # Mock registry validation
+    from src.services.orchestration.registry import platform_registry
+    monkeypatch.setattr(platform_registry, "validate_dependencies", lambda: True)
     
     with pytest.raises(ExitException):
         orchestrator.execute_dag()

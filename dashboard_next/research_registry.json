@@ -1,0 +1,41 @@
+{
+  "registry_version": "1.0",
+  "modules": [
+    {
+      "name": "DataQualityGate",
+      "version": "1.0.0",
+      "owner": "CoreQuant",
+      "maturity": "Production",
+      "description": "Validates raw OHLCV CSV files before they enter the analytical pipeline.",
+      "capabilities": [],
+      "inputs": [
+        "CSV"
+      ],
+      "outputs": [
+        "CleanCSV"
+      ],
+      "dependencies": [],
+      "health_checks": [],
+      "contracts": []
+    },
+    {
+      "name": "EigenTransitionEngine",
+      "version": "1.0.0",
+      "owner": "CoreQuant",
+      "maturity": "Production",
+      "description": "Event-sourced state machine for quantitative transitions.",
+      "capabilities": [],
+      "inputs": [
+        "Signals"
+      ],
+      "outputs": [
+        "ResearchEvents"
+      ],
+      "dependencies": [
+        "VSAProcessorService"
+      ],
+      "health_checks": [],
+      "contracts": []
+    }
+  ]
+}

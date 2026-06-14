@@ -28,6 +28,9 @@
                 <a href="#macro" class="nav-item">
                     <span class="icon">🌍</span> Macro Intelligence
                 </a>
+                <a href="#analytics" class="nav-item">
+                    <span class="icon">📈</span> Macro Analytics
+                </a>
                 <a href="#ete" class="nav-item">
                     <span class="icon">🔄</span> Transition Engine
                 </a>
@@ -121,27 +124,53 @@
                         </div>
                     </section>
 
-                    <!-- Macro Intelligence Table -->
-                    <section id="macro" class="panel glass-panel macro-section" style="display: none;">
+                    <!-- Macro Intelligence Workspace -->
+                    <section id="macro" class="panel macro-workspace" style="display: none;">
+                        <!-- Left Pane: Timeline -->
+                        <div class="macro-pane-left glass-panel">
+                            <div class="panel-header">
+                                <h2>Macro Intelligence</h2>
+                                <span class="badge" id="macro-count">--</span>
+                            </div>
+                            <div class="macro-controls" style="display:flex; flex-direction:column; gap:10px; margin-bottom: 15px; padding: 15px 20px 0;">
+                                <input type="text" id="macro-search" placeholder="Search events (title, summary)..." class="search-input" style="padding: 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;">
+                                <div style="display:flex; gap:10px;">
+                                    <select id="macro-category-filter" class="filter-select" style="flex:1; padding: 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;">
+                                        <option value="">All Categories</option>
+                                        <option value="Press Releases">Press Releases</option>
+                                        <option value="Monetary Policy">Monetary Policy</option>
+                                        <option value="Notifications">Notifications</option>
+                                    </select>
+                                    <select id="macro-sort" class="filter-select" style="flex:1; padding: 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;">
+                                        <option value="desc">Newest First</option>
+                                        <option value="asc">Oldest First</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="macro-timeline" id="macro-timeline" role="list">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Right Pane: Detail View -->
+                        <div class="macro-pane-right glass-panel">
+                            <div id="macro-detail-empty" style="display: flex; height: 100%; align-items: center; justify-content: center; color: var(--text-muted);">
+                                <h3>Select an event from the timeline to view details</h3>
+                            </div>
+                            <div id="macro-detail-content" style="display: none; flex-direction: column;">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Macro Analytics Workspace -->
+                    <section id="analytics" class="panel glass-panel analytics-workspace" style="display: none;">
                         <div class="panel-header">
-                            <h2>Macro Intelligence (RBI)</h2>
-                            <span class="badge" id="macro-count">--</span>
+                            <h2>Macro Analytics</h2>
                         </div>
-                        <div class="macro-controls" style="display:flex; gap:10px; margin-bottom: 15px; padding: 0 20px;">
-                            <input type="text" id="macro-search" placeholder="Search events (title, summary, event_id)..." class="search-input" style="flex:1; padding: 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;">
-                            <select id="macro-category-filter" class="filter-select" style="padding: 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;">
-                                <option value="">All Categories</option>
-                                <option value="Press Releases">Press Releases</option>
-                                <option value="Monetary Policy">Monetary Policy</option>
-                                <option value="Notifications">Notifications</option>
-                            </select>
-                            <select id="macro-sort" class="filter-select" style="padding: 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;">
-                                <option value="desc">Newest First</option>
-                                <option value="asc">Oldest First</option>
-                            </select>
-                        </div>
-                        <div class="macro-timeline" id="macro-timeline">
+                        <div id="analytics-content" style="padding: 20px; display: grid; gap: 20px;">
                             <!-- Populated by JS -->
+                            <p style="color:var(--text-muted); text-align:center;">Loading analytics...</p>
                         </div>
                     </section>
 

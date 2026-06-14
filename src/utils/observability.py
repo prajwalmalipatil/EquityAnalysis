@@ -17,7 +17,7 @@ def get_tenant_logger(name: str, tenant_id: str = "SYSTEM"):
     logger = logging.getLogger(name)
     
     # If it already has handlers, it might be cached. Return it.
-    if logger.hasHandlers():
+    if logger.handlers:
         return logger
         
     logger.setLevel(logging.INFO)
@@ -62,3 +62,55 @@ def get_tenant_logger(name: str, tenant_id: str = "SYSTEM"):
     logger.propagate = False
     
     return logger
+
+class MetricsTracker:
+    """
+    Standardized metrics tracking that emits machine-readable logs.
+    Supports counters, gauges, and timing.
+    """
+    def __init__(self, tenant_id: str = "SYSTEM"):
+        self.logger = get_tenant_logger("metrics", tenant_id)
+        
+    def increment(self, metric_name: str, value: int = 1, tags: dict = None):
+        """Increment a counter metric."""
+        self._emit_metric("counter", metric_name, value, tags)
+        
+    def gauge(self, metric_name: str, value: float, tags: dict = None):
+        """Record an absolute value metric."""
+        self._emit_metric("gauge", metric_name, value, tags)
+        
+    def timing(self, metric_name: str, duration_ms: float, tags: dict = None):
+        """Record a duration metric."""
+        self._emit_metric("timing", metric_name, duration_ms, tags)
+        
+    def _emit_metric(self, metric_type: str, name: str, value: float, tags: dict):
+        extra = {
+            "is_metric": True,
+            "metric_type": metric_type,
+            "metric_name": name,
+            "metric_value": value,
+            "tags": tags or {}
+        }
+        self.logger.info(f"METRIC [{metric_type.upper()}] {name}: {value}", extra=extra)
+
+    from contextlib import contextmanager
+    @contextmanager
+    def time_block(self, metric_name: str, tags: dict = None):
+        """Context manager to easily time code blocks."""
+        import time
+        start_time = time.perf_counter()
+        try:
+            yield
+        finally:
+            end_time = time.perf_counter()
+            duration_ms = (end_time - start_time) * 1000.0
+            self.timing(metric_name, duration_ms, tags)
+
+_METRICS_TRACKER = None
+
+def get_metrics_tracker(tenant_id: str = "SYSTEM") -> MetricsTracker:
+    global _METRICS_TRACKER
+    if _METRICS_TRACKER is None:
+        _METRICS_TRACKER = MetricsTracker(tenant_id)
+    return _METRICS_TRACKER
+

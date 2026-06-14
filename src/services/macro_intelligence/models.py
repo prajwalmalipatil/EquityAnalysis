@@ -203,6 +203,7 @@ class EventMetadata:
     updated_at: str
     schema_version: str = "1.0"
     supersedes_event_id: Optional[str] = None
+    related_event_ids: List[str] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, d: dict) -> 'EventMetadata':
@@ -212,7 +213,8 @@ class EventMetadata:
             created_at=d.get("created_at", d.get("collected_at", "")),
             updated_at=d.get("updated_at", d.get("collected_at", "")),
             schema_version=d.get("schema_version", "1.0"),
-            supersedes_event_id=d.get("supersedes_event_id")
+            supersedes_event_id=d.get("supersedes_event_id"),
+            related_event_ids=d.get("related_event_ids", [])
         )
 
 @dataclass

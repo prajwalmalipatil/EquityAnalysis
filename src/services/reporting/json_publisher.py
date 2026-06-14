@@ -3,6 +3,10 @@ from pathlib import Path
 from datetime import datetime, timezone
 from src.services.reporting.data_aggregator import DataAggregator
 from src.utils.observability import get_tenant_logger
+from src.services.macro_intelligence.config import load_config
+from src.services.macro_intelligence.event_repository import JSONEventReadRepository
+from src.services.macro_intelligence.query_service import MacroQueryService
+from src.services.macro_intelligence.dashboard_mapper import DashboardMapper
 
 logger = get_tenant_logger("json-publisher")
 
@@ -71,43 +75,76 @@ class JSONPublisher:
                 except json.JSONDecodeError:
                     pass
 
-        history_file = history_dir / "rbi_events.jsonl"
-        if history_file.exists():
-            events = []
-            with open(history_file, 'r', encoding='utf-8') as f:
-                for line in f:
-                    if line.strip():
-                        try:
-                            events.append(json.loads(line))
-                        except Exception:
-                            pass
-            if events:
-                macro_intelligence["total_events"] = len(events)
+        # Load Macro events via Query Service
+        macro_config = load_config()
+        macro_config.storage.base_path = history_dir
+        macro_config.storage.history_file = history_dir / "rbi_events.jsonl"
+        
+        repo = JSONEventReadRepository(macro_config.storage)
+        query_service = MacroQueryService(repo)
+        
+        all_macro_events = query_service.get_all_events()
+        
+        # --- Release Blocker Validations ---
+        event_ids = set()
+        title_dates = set()
+        urls = set()
+        
+        for e in all_macro_events:
+            # 1. No mock IDs
+            if "mock-" in e.event_id.lower():
+                raise ValueError(f"Release Blocker: Mock ID found: {e.event_id}")
                 
-                def get_pub_date(evt):
-                    return evt.get("official_data", {}).get("publication_date", evt.get("published_at", ""))
+            # 2. Unique event_ids
+            if e.event_id in event_ids:
+                raise ValueError(f"Release Blocker: Duplicate event_id found: {e.event_id}")
+            event_ids.add(e.event_id)
+            
+            # 3. No duplicate titles with identical dates
+            title_date_key = f"{e.official_data.title}_{e.official_data.publication_date[:10]}"
+            if title_date_key in title_dates:
+                raise ValueError(f"Release Blocker: Duplicate title+date found: {title_date_key}")
+            title_dates.add(title_date_key)
+            
+            # 4. No duplicate URLs (if valid URL provided)
+            url = e.official_data.official_url
+            if url and url != "Unknown" and not url.startswith("http://mock"):
+                if url in urls:
+                    raise ValueError(f"Release Blocker: Duplicate URL found: {url}")
+                urls.add(url)
                 
-                macro_intelligence["last_event_at"] = max(get_pub_date(e) for e in events)
-                events.sort(key=lambda x: get_pub_date(x), reverse=True)
+            # 5. Required Fields
+            if not e.official_data.title:
+                raise ValueError(f"Release Blocker: Missing title for event: {e.event_id}")
                 
-                # Assign Trading Day Queue status
-                for e in events:
-                    # If published after the last session date, it's new
-                    is_new = False
-                    if last_session_date_str:
-                        # last_session_date_str is "YYYY-MM-DD"
-                        if get_pub_date(e)[:10] > last_session_date_str:
-                            is_new = True
-                    else:
-                        is_new = True # First run
-                        
-                    e["is_new_since_last_session"] = is_new
+            # 6. AI Validations
+            if e.derived_data and e.derived_data.impact:
+                conf = e.derived_data.impact.confidence
+                if not (0 <= conf <= 100):
+                    raise ValueError(f"Release Blocker: Confidence out of bounds (0-100) for {e.event_id}: {conf}")
+                    
+        # --- Mapping via DashboardMapper ---
+        mapped_events = DashboardMapper.map_events(all_macro_events)
+        
+        macro_intelligence["total_events"] = len(mapped_events)
+        if mapped_events:
+            macro_intelligence["last_event_at"] = max(e["published"] for e in mapped_events)
+            
+            # Assign Trading Day Queue status
+            for e in mapped_events:
+                is_new = False
+                if last_session_date_str:
+                    if e["published"][:10] > last_session_date_str:
+                        is_new = True
+                else:
+                    is_new = True
+                e["is_new_since_last_session"] = is_new
                 
-                macro_intelligence["recent_events"] = events[:20]
+            macro_intelligence["recent_events"] = mapped_events[:20]
 
         # Build schema payload
         payload = {
-            "schema_version": "1.0",
+            "schema_version": "2",
             "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "extraction_list": symbol_data.get("extraction", []),
             "vsa_list": symbol_data.get("vsa", []),
