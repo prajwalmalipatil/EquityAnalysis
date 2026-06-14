@@ -19,9 +19,9 @@ class RBICollector(OfficialSourceCollector):
     """
     
     FEEDS = {
-        "Press Releases": "https://www.rbi.org.in/rss/PR.xml",
-        "Monetary Policy": "https://www.rbi.org.in/rss/MP.xml",
-        "Notifications": "https://www.rbi.org.in/rss/Noti.xml",
+        "Press Releases": "https://rbi.org.in/pressreleases_rss.xml",
+        "Notifications": "https://rbi.org.in/notifications_rss.xml",
+        "Publications": "https://rbi.org.in/Publication_rss.xml",
     }
     
     @property
