@@ -6,6 +6,9 @@ from difflib import SequenceMatcher
 from src.services.macro_intelligence.models import MacroEvent
 from src.services.macro_intelligence.interfaces import EventReadRepository, EventWriteRepository
 from src.services.macro_intelligence.config import StorageConfig, MacroConfig
+from src.utils.observability import get_tenant_logger
+
+logger = get_tenant_logger("event-repository")
 
 class JSONEventReadRepository(EventReadRepository):
     """Read-optimized JSONL repository for queries and projections."""

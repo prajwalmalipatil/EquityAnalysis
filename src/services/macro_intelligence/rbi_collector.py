@@ -9,6 +9,8 @@ from src.services.macro_intelligence.models import MacroEvent, OfficialData, Der
 from src.services.macro_intelligence.interfaces import OfficialSourceCollector
 from src.utils.observability import get_tenant_logger
 import hashlib
+import re
+import html
 
 logger = get_tenant_logger("rbi-collector")
 
@@ -121,7 +123,11 @@ class RBICollector(OfficialSourceCollector):
         
         # Clean title and summary (remove CDATA if present)
         title = entry.title.replace("<![CDATA[", "").replace("]]>", "").strip()
-        summary = entry.get("summary", title).replace("<![CDATA[", "").replace("]]>", "").strip()
+        raw_summary = entry.get("summary", title).replace("<![CDATA[", "").replace("]]>", "")
+        # Strip HTML tags and decode HTML entities
+        clean_summary = html.unescape(re.sub(r'<[^>]+>', ' ', raw_summary)).strip()
+        # Collapse multiple spaces
+        summary = re.sub(r'\s+', ' ', clean_summary)
         
         return MacroEvent(
             event_id=event_id,
