@@ -1,0 +1,31 @@
+version: "1.0"
+
+collection:
+  retry_limit: 3
+  base_backoff_seconds: 5
+  max_backoff_seconds: 60
+  timeout_seconds: 30
+
+deduplication:
+  similarity_threshold: 0.85
+  weights:
+    title: 0.40
+    publication_date: 0.20
+    document_hash: 0.20
+    official_url: 0.10
+    attachment_hash: 0.10
+
+ai_enrichment:
+  provider: "gemini"
+  model_name: "gemini-1.5-flash"
+  confidence_threshold: 70
+  prompt_version: "v1.0"
+
+storage:
+  base_path: "dashboard/history"
+  attachments_dir: "attachments"
+  metadata_dir: "metadata"
+  logs_dir: "logs"
+  cache_dir: "cache"
+  history_file: "rbi_events.jsonl"
+  state_file: "metadata/collector_state.json"
