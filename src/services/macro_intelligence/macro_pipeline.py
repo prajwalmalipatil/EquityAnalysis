@@ -69,14 +69,14 @@ class MacroPipeline:
             logger.error("PIPELINE_EXECUTION_FAILED", extra={"error": str(e)})
             raise
 
-if __name__ == "__main__":
-    # Test empty execution to satisfy Milestone 1 exit criteria
+def run_macro_pipeline():
     import sys
     from pathlib import Path
     from src.services.macro_intelligence.config import load_config
     from src.services.macro_intelligence.validator import DefaultValidator
     from src.services.macro_intelligence.event_repository import EventRepository
     from src.services.macro_intelligence.rbi_collector import RBICollector
+    from src.services.macro_intelligence.attachment_processor import AttachmentProcessor
     
     try:
         config_path = Path(__file__).parent / "config.yaml"
@@ -90,8 +90,11 @@ if __name__ == "__main__":
             attachment_processor=AttachmentProcessor(config=config.storage)
         )
         pipeline.execute()
-        print("Milestone 1 Pipeline execution successful!")
-        sys.exit(0)
+        return True
     except Exception as e:
-        print(f"Pipeline execution failed: {e}")
-        sys.exit(1)
+        logger.error("Macro Intelligence execution failed", extra={"error": str(e)})
+        return False
+
+if __name__ == "__main__":
+    success = run_macro_pipeline()
+    sys.exit(0 if success else 1)

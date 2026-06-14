@@ -15,9 +15,11 @@ class PipelineOrchestrator:
     Explicit DAG Orchestrator for the Quantitative Research Platform.
     Ensures sequential reliability and fail-fast dependencies.
     """
-    def __init__(self, data_dir: Path, workers: int = 4):
+    def __init__(self, data_dir: Path, workers: int = 4, skip_macro: bool = False, force_macro: bool = False):
         self.data_dir = data_dir
         self.workers = workers
+        self.skip_macro = skip_macro
+        self.force_macro = force_macro
         self.stats = {}
 
     def run_stage_data_quality(self) -> bool:
@@ -59,11 +61,15 @@ class PipelineOrchestrator:
 
     def run_stage_macro(self) -> bool:
         logger.info("DAG_STAGE: Macro Intelligence")
-        try:
-            import main_macro
-            # We call the main method directly. It uses Path(__file__).parent.
-            main_macro.main()
+        
+        if self.skip_macro and not self.force_macro:
+            logger.info("SKIPPING_MACRO_STAGE_AS_REQUESTED")
             return True
+            
+        try:
+            from src.services.macro_intelligence.macro_pipeline import run_macro_pipeline
+            success = run_macro_pipeline()
+            return success
         except Exception as e:
             logger.error(f"DAG_STAGE_FAILED: Macro Intelligence: {e}")
             return False
