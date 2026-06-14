@@ -742,41 +742,77 @@ function renderCompletionTable(items) {
         return `<p style="color:var(--text-muted); text-align:center; padding: 20px;">No completions found for this timeframe.</p>`;
     }
     
-    let html = `
-    <div class="table-container" style="max-height: 60vh; overflow-y: auto;">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Symbol</th>
-                    <th>Trigger Date</th>
-                    <th>Completion Date</th>
-                    <th>Pattern</th>
-                    <th>Sentiment</th>
-                    <th>Vol Surge</th>
-                    <th>Max Fwd Rtn (5b)</th>
-                </tr>
-            </thead>
-            <tbody>
-    `;
-    
+    // Group items by symbol
+    const groups = {};
     items.forEach(item => {
-        const sentimentClass = item.sentiment === 'Bullish' ? 'badge-gap-up' : 'badge-gap-down';
-        const returnColor = item.fwd_return_5b > 0 ? '#4cff4c' : '#ff4c4c';
-        
-        html += `
-            <tr>
-                <td class="symbol-cell">${item.symbol}</td>
-                <td>${item.start_date || '--'}</td>
-                <td>${item.completion_date || '--'}</td>
-                <td><span class="premium-badge badge-label">${item.trigger_pattern}</span></td>
-                <td><span class="premium-badge ${sentimentClass}">${item.sentiment}</span></td>
-                <td>${item.vol_surge_pct !== undefined ? item.vol_surge_pct.toFixed(1) + '%' : '--'}</td>
-                <td style="color: ${returnColor}; font-weight: bold;">${item.fwd_return_5b !== null ? item.fwd_return_5b.toFixed(2) + '%' : '--'}</td>
-            </tr>
-        `;
+        if (!groups[item.symbol]) groups[item.symbol] = [];
+        groups[item.symbol].push(item);
     });
     
-    html += `</tbody></table></div>`;
+    // Sort symbols by the latest completion date descending
+    const sortedSymbols = Object.keys(groups).sort((a, b) => {
+        const latestA = Math.max(...groups[a].map(i => new Date(i.completion_date).getTime() || 0));
+        const latestB = Math.max(...groups[b].map(i => new Date(i.completion_date).getTime() || 0));
+        return latestB - latestA;
+    });
+    
+    let html = `<div class="table-container" style="max-height: 60vh; overflow-y: auto;">`;
+    
+    sortedSymbols.forEach((symbol, index) => {
+        const groupItems = groups[symbol];
+        
+        // Sort items within the group descending by completion date
+        groupItems.sort((a, b) => new Date(b.completion_date).getTime() - new Date(a.completion_date).getTime());
+        
+        const latestDate = groupItems[0].completion_date || '--';
+        const toggleId = `comp-group-${Math.random().toString(36).substring(2, 9)}`;
+        const displayState = index === 0 ? 'block' : 'none'; // Auto-expand the very first symbol
+        
+        // Accordion Row Header
+        html += `
+            <div class="eigen-row" onclick="const el = document.getElementById('${toggleId}'); el.style.display = el.style.display === 'none' ? 'block' : 'none';" style="cursor:pointer; margin-bottom: 5px; background: rgba(255,255,255,0.03);">
+                <span>
+                    <strong style="color: var(--text-color); font-size: 1.1em;">${symbol}</strong> 
+                    <span style="color:var(--text-muted); font-size: 0.9em; margin-left: 10px;">Latest: ${latestDate}</span>
+                </span>
+                <span class="badge" style="background: rgba(255,255,255,0.1); color: var(--text-color);">${groupItems.length}</span>
+            </div>
+            
+            <div class="eigen-table-container" id="${toggleId}" style="display: ${displayState}; margin-bottom: 15px; border-left: 2px solid rgba(255,255,255,0.1); padding-left: 10px;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Trigger Date</th>
+                            <th>Completion Date</th>
+                            <th>Pattern</th>
+                            <th>Sentiment</th>
+                            <th>Vol Surge</th>
+                            <th>Max Fwd Rtn (5b)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        
+        groupItems.forEach(item => {
+            const sentimentClass = item.sentiment === 'Bullish' ? 'badge-gap-up' : 'badge-gap-down';
+            const returnColor = item.fwd_return_5b > 0 ? '#4cff4c' : '#ff4c4c';
+            
+            html += `
+                <tr>
+                    <td>${item.start_date || '--'}</td>
+                    <td>${item.completion_date || '--'}</td>
+                    <td><span class="premium-badge badge-label">${item.trigger_pattern}</span></td>
+                    <td><span class="premium-badge ${sentimentClass}">${item.sentiment}</span></td>
+                    <td>${item.vol_surge_pct !== undefined ? item.vol_surge_pct.toFixed(1) + '%' : '--'}</td>
+                    <td style="color: ${returnColor}; font-weight: bold;">${item.fwd_return_5b !== null ? item.fwd_return_5b.toFixed(2) + '%' : '--'}</td>
+                </tr>
+            `;
+        });
+        
+        html += `</tbody></table></div>`;
+    });
+    
+    html += `</div>`;
     return html;
 }
 
