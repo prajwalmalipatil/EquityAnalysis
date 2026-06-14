@@ -126,12 +126,15 @@ class JSONPublisher:
         # --- Mapping via DashboardMapper ---
         mapped_events = DashboardMapper.map_events(all_macro_events)
         
-        macro_intelligence["total_events"] = len(mapped_events)
-        if mapped_events:
-            macro_intelligence["last_event_at"] = max(e["published"] for e in mapped_events)
+        import dataclasses
+        mapped_events_dicts = [dataclasses.asdict(e) for e in mapped_events]
+        
+        macro_intelligence["total_events"] = len(mapped_events_dicts)
+        if mapped_events_dicts:
+            macro_intelligence["last_event_at"] = max(e["published"] for e in mapped_events_dicts)
             
             # Assign Trading Day Queue status
-            for e in mapped_events:
+            for e in mapped_events_dicts:
                 is_new = False
                 if last_session_date_str:
                     if e["published"][:10] > last_session_date_str:
@@ -140,7 +143,7 @@ class JSONPublisher:
                     is_new = True
                 e["is_new_since_last_session"] = is_new
                 
-            macro_intelligence["recent_events"] = mapped_events[:20]
+            macro_intelligence["recent_events"] = mapped_events_dicts[:20]
 
         # Build schema payload
         payload = {

@@ -116,6 +116,7 @@ Generated automatically by V² Money Automation
         logger.info("NOTIFICATION_JOB_COMPLETE")
     else:
         logger.error("NOTIFICATION_JOB_FAILED")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
