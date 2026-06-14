@@ -742,7 +742,7 @@ function renderCompletionTable(items) {
         return `<p style="color:var(--text-muted); text-align:center; padding: 20px;">No completions found for this timeframe.</p>`;
     }
     
-    let html = \`
+    let html = `
     <div class="table-container" style="max-height: 60vh; overflow-y: auto;">
         <table class="data-table">
             <thead>
@@ -757,26 +757,26 @@ function renderCompletionTable(items) {
                 </tr>
             </thead>
             <tbody>
-    \`;
+    `;
     
     items.forEach(item => {
         const sentimentClass = item.sentiment === 'Bullish' ? 'badge-gap-up' : 'badge-gap-down';
         const returnColor = item.fwd_return_5b > 0 ? '#4cff4c' : '#ff4c4c';
         
-        html += \`
+        html += `
             <tr>
-                <td class="symbol-cell">\${item.symbol}</td>
-                <td>\${item.start_date || '--'}</td>
-                <td>\${item.completion_date || '--'}</td>
-                <td><span class="premium-badge badge-label">\${item.trigger_pattern}</span></td>
-                <td><span class="premium-badge \${sentimentClass}">\${item.sentiment}</span></td>
-                <td>\${item.vol_surge_pct !== undefined ? item.vol_surge_pct.toFixed(1) + '%' : '--'}</td>
-                <td style="color: \${returnColor}; font-weight: bold;">\${item.fwd_return_5b !== null ? item.fwd_return_5b.toFixed(2) + '%' : '--'}</td>
+                <td class="symbol-cell">${item.symbol}</td>
+                <td>${item.start_date || '--'}</td>
+                <td>${item.completion_date || '--'}</td>
+                <td><span class="premium-badge badge-label">${item.trigger_pattern}</span></td>
+                <td><span class="premium-badge ${sentimentClass}">${item.sentiment}</span></td>
+                <td>${item.vol_surge_pct !== undefined ? item.vol_surge_pct.toFixed(1) + '%' : '--'}</td>
+                <td style="color: ${returnColor}; font-weight: bold;">${item.fwd_return_5b !== null ? item.fwd_return_5b.toFixed(2) + '%' : '--'}</td>
             </tr>
-        \`;
+        `;
     });
     
-    html += \`</tbody></table></div>\`;
+    html += `</tbody></table></div>`;
     return html;
 }
 
