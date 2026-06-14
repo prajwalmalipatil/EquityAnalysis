@@ -223,6 +223,10 @@ def run_backtest():
     failures = len([t for t in completed_sequences if not t.win])
     win_rate = (wins / len(completed_sequences) * 100) if completed_sequences else 0
     
+    # Sort completions by date descending
+    def sort_completions(completions):
+        return sorted([t.__dict__ for t in completions if t.gauntlet_passed and t.win], key=lambda x: x['completion_date'], reverse=True)
+
     results_payload = {
         "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "overall_metrics": {
@@ -231,9 +235,9 @@ def run_backtest():
             "total_completed": wins,
             "total_failed": failures
         },
-        "completions_daily": [t.__dict__ for t in trades_daily if t.gauntlet_passed and t.win],
-        "completions_weekly": [t.__dict__ for t in trades_weekly if t.gauntlet_passed and t.win],
-        "completions_monthly": [t.__dict__ for t in trades_monthly if t.gauntlet_passed and t.win]
+        "completions_daily": sort_completions(trades_daily),
+        "completions_weekly": sort_completions(trades_weekly),
+        "completions_monthly": sort_completions(trades_monthly)
     }
     
     out_dir = Path("dashboard")
