@@ -7,6 +7,7 @@ from src.services.macro_intelligence.interfaces import (
     EventRepositoryInterface,
     EnrichmentServiceInterface
 )
+from src.services.macro_intelligence.attachment_processor import AttachmentProcessor
 
 logger = get_tenant_logger("macro-pipeline")
 
@@ -21,12 +22,14 @@ class MacroPipeline:
         collectors: List[OfficialSourceCollector],
         validator: ValidatorInterface,
         repository: EventRepositoryInterface,
+        attachment_processor: Optional[AttachmentProcessor] = None,
         enrichment: Optional[EnrichmentServiceInterface] = None
     ):
         self.config = config
         self.collectors = collectors
         self.validator = validator
         self.repository = repository
+        self.attachment_processor = attachment_processor
         self.enrichment = enrichment
 
     def execute(self) -> None:
@@ -34,13 +37,34 @@ class MacroPipeline:
         logger.info("PIPELINE_STARTED", extra={"version": self.config.version})
         
         try:
-            # 1. Collect
-            # 2. Normalize & canonicalize
-            # 3. Validate
-            # 4. Process Attachments
-            # 5. Deduplicate & Persist
-            # 6. Enrich
-            logger.info("EMPTY_PIPELINE_EXECUTION_SUCCESSFUL")
+            total_collected = 0
+            total_saved = 0
+            
+            # 1. Collect & Normalize
+            # TODO: read last_ts from state file
+            for collector in self.collectors:
+                events = collector.fetch_since("")
+                total_collected += len(events)
+                
+                for event in events:
+                    # 2. Validate
+                    if not self.validator.validate(event):
+                        continue
+                        
+                    # 3. Process Attachments
+                    if self.attachment_processor:
+                        event = self.attachment_processor.process(event)
+                        
+                    # 4. Enrich
+                    if self.enrichment:
+                        event = self.enrichment.process(event)
+                        
+                    # 5. Deduplicate & Persist
+                    saved = self.repository.save_event(event)
+                    if saved:
+                        total_saved += 1
+                        
+            logger.info("PIPELINE_EXECUTION_SUCCESSFUL", extra={"collected": total_collected, "saved": total_saved})
         except Exception as e:
             logger.error("PIPELINE_EXECUTION_FAILED", extra={"error": str(e)})
             raise
@@ -62,7 +86,8 @@ if __name__ == "__main__":
             config=config,
             collectors=[RBICollector()],
             validator=DefaultValidator(),
-            repository=EventRepository(config=config.storage)
+            repository=EventRepository(config=config.storage),
+            attachment_processor=AttachmentProcessor(config=config.storage)
         )
         pipeline.execute()
         print("Milestone 1 Pipeline execution successful!")
