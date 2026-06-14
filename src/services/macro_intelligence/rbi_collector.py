@@ -2,13 +2,14 @@ import feedparser
 from email.utils import parsedate_to_datetime
 from datetime import datetime, timezone
 from typing import List
-from src.services.macro_intelligence.models import MacroEvent
-from src.services.macro_intelligence.base_collector import BaseMacroCollector
+from src.services.macro_intelligence.models import MacroEvent, OfficialData, DerivedData, EventMetadata
+from src.services.macro_intelligence.interfaces import OfficialSourceCollector
 from src.utils.observability import get_tenant_logger
+import hashlib
 
 logger = get_tenant_logger("rbi-collector")
 
-class RBICollector(BaseMacroCollector):
+class RBICollector(OfficialSourceCollector):
     """
     Collects macroeconomic events specifically from the Reserve Bank of India (RBI).
     Parses RBI's unstable RSS feeds and guarantees robust extraction.
@@ -61,39 +62,10 @@ class RBICollector(BaseMacroCollector):
                     logger.error("FAILED_TO_PARSE_ENTRY", extra={"entry_title": entry.get("title", ""), "error": str(e)})
                     continue
         if not events:
-            logger.warning("RBI_RSS_EMPTY_USING_MOCK_FALLBACK")
-            now = datetime.now(timezone.utc)
-            class MockEntry:
-                def __init__(self, d):
-                    self.__dict__.update(d)
-                def get(self, k, default=None):
-                    return self.__dict__.get(k, default)
-            mock_events = [
-                {
-                    "entry": MockEntry({
-                        "id": "mock-rbi-1",
-                        "title": "RBI Announces Special Liquidity Facility for Mutual Funds",
-                        "summary": "The Reserve Bank of India has decided to open a special liquidity facility for mutual funds of ₹50,000 crore to ease liquidity pressures.",
-                        "link": "https://www.rbi.org.in/mock-1"
-                    }),
-                    "category": "Press Releases",
-                    "pub_dt": now
-                },
-                {
-                    "entry": MockEntry({
-                        "id": "mock-rbi-2",
-                        "title": "Monetary Policy Statement: Repo Rate unchanged at 6.5%",
-                        "summary": "The MPC met today and unanimously decided to keep the policy repo rate unchanged at 6.50 per cent with readiness to act should the situation so warrant.",
-                        "link": "https://www.rbi.org.in/mock-2"
-                    }),
-                    "category": "Monetary Policy",
-                    "pub_dt": now
-                }
-            ]
-            for m in mock_events:
-                events.append(self.normalize(m))
-        
-        logger.info("RBI_FETCH_COMPLETE", extra={"new_events_found": len(events)})
+            logger.info("NO_NEW_RBI_EVENTS_FOUND_VIA_RSS")
+        else:
+            logger.info("RBI_FETCH_COMPLETE", extra={"new_events_found": len(events)})
+            
         return events
 
     def normalize(self, raw_item: dict) -> MacroEvent:
@@ -101,9 +73,12 @@ class RBICollector(BaseMacroCollector):
         entry = raw_item["entry"]
         category = raw_item["category"]
         pub_dt = raw_item["pub_dt"]
+        pub_date_iso = pub_dt.isoformat()
+        official_url = entry.link
         
-        # RBI RSS doesn't always have a stable GUID, fallback to link
-        event_id = entry.get("id", entry.get("guid", entry.link))
+        # Canonical event_id: sha256(pub_date + category + official_url)
+        raw_key = f"{pub_date_iso}|{category}|{official_url}"
+        event_id = hashlib.sha256(raw_key.encode()).hexdigest()[:16]
         
         # Clean title and summary (remove CDATA if present)
         title = entry.title.replace("<![CDATA[", "").replace("]]>", "").strip()
@@ -111,11 +86,19 @@ class RBICollector(BaseMacroCollector):
         
         return MacroEvent(
             event_id=event_id,
-            url=entry.link,
-            published_at=pub_dt.isoformat(),
-            title=title,
-            summary=summary,
-            category=category,
-            source="RBI",
-            collected_at=datetime.now(timezone.utc).isoformat()
+            official_data=OfficialData(
+                title=title,
+                publication_date=pub_date_iso,
+                category=category,
+                source="RBI",
+                official_url=official_url,
+                content=summary
+            ),
+            derived_data=DerivedData(),
+            metadata=EventMetadata(
+                processing_state="NEW",
+                lifecycle_status="ACTIVE",
+                created_at=datetime.now(timezone.utc).isoformat(),
+                updated_at=datetime.now(timezone.utc).isoformat()
+            )
         )
