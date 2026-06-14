@@ -50,29 +50,19 @@ if __name__ == "__main__":
     import sys
     from pathlib import Path
     from src.services.macro_intelligence.config import load_config
+    from src.services.macro_intelligence.validator import DefaultValidator
+    from src.services.macro_intelligence.event_repository import EventRepository
+    from src.services.macro_intelligence.rbi_collector import RBICollector
     
-    # Mock implementations for empty run
-    class MockValidator(ValidatorInterface):
-        def validate(self, event): return True
-        
-    class MockRepo(EventRepositoryInterface):
-        def save_event(self, event): return True
-        def get_all_events(self): return []
-        
-    class MockCollector(OfficialSourceCollector):
-        @property
-        def provider_name(self): return "Mock"
-        def fetch_since(self, last_ts): return []
-        
     try:
         config_path = Path(__file__).parent / "config.yaml"
         config = load_config(config_path)
         
         pipeline = MacroPipeline(
             config=config,
-            collectors=[MockCollector()],
-            validator=MockValidator(),
-            repository=MockRepo()
+            collectors=[RBICollector()],
+            validator=DefaultValidator(),
+            repository=EventRepository(config=config.storage)
         )
         pipeline.execute()
         print("Milestone 1 Pipeline execution successful!")

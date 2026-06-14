@@ -6,6 +6,7 @@ import json
 from datetime import datetime, timezone
 
 from src.services.macro_intelligence.models import MacroEvent, AISummarySnapshot
+from src.services.macro_intelligence.interfaces import EnrichmentServiceInterface
 from src.utils.observability import get_tenant_logger
 
 logger = get_tenant_logger("enrichment-service")
@@ -51,7 +52,7 @@ class DummyProvider(AIProvider):
             "key_points": ["No key points available."]
         }
 
-class EnrichmentService:
+class EnrichmentService(EnrichmentServiceInterface):
     """
     Layer 4: AI Enrichment.
     Uses an injected AIProvider to generate semantic summaries of raw events.
@@ -62,23 +63,30 @@ class EnrichmentService:
         self.prompt_version = "v1.0.0"
         
     def process(self, event: MacroEvent) -> MacroEvent:
-        if not event.summary:
+        if not event.official_data.content:
             return event
             
-        result = self.provider.summarize(event.title + "\n\n" + event.summary)
+        result = self.provider.summarize(event.official_data.title + "\n\n" + event.official_data.content)
         if result:
             new_version = 1
-            if event.ai_snapshots:
-                new_version = event.ai_snapshots[-1].version + 1
+            if event.derived_data.ai_snapshots:
+                new_version = event.derived_data.ai_snapshots[-1].version + 1
                 
             snapshot = AISummarySnapshot(
                 version=new_version,
-                timestamp=datetime.now(timezone.utc).isoformat(),
+                provider="gemini",
+                model="gemini-1.5-flash",
+                generated_time=datetime.now(timezone.utc).isoformat(),
+                confidence=result.get("confidence", 90),
                 prompt_version=self.prompt_version,
+                response_version="v1",
                 summary=result.get("summary", "Summary unavailable"),
-                key_points=result.get("key_points", [])
+                key_points=result.get("key_points", []),
+                raw_ai_response=json.dumps(result)
             )
-            event.ai_snapshots.append(snapshot)
-            event.lifecycle = "Enriched"
+            event.derived_data.ai_snapshots.append(snapshot)
+            event.derived_data.ai_summary = snapshot.summary
+            event.metadata.lifecycle_status = "ENRICHED"
+            event.metadata.processing_state = "ENRICHED"
             
         return event
