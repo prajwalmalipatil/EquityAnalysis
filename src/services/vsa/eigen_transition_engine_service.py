@@ -97,8 +97,17 @@ class EigenTransitionEngineService:
         if not eigen_filter_matched or df.empty:
             return
             
-        date_col = df.index.name if df.index.name else 'Date'
-        trigger_date = str(df.iloc[-1].name).split()[0] if df.index.name else str(df[date_col].iloc[-1]).split()[0]
+        # Determine the date column flexibly
+        if df.index.name:
+            trigger_date = str(df.iloc[-1].name).split()[0]
+        elif 'Date' in df.columns:
+            trigger_date = str(df['Date'].iloc[-1]).split()[0]
+        elif 'YearWeek' in df.columns:
+            trigger_date = str(df['YearWeek'].iloc[-1]).split()[0]
+        elif 'YearMonth' in df.columns:
+            trigger_date = str(df['YearMonth'].iloc[-1]).split()[0]
+        else:
+            trigger_date = "UNKNOWN_DATE"
         
         state_map, _ = self.reconstruct_state()
         
@@ -251,8 +260,17 @@ class EigenTransitionEngineService:
         current = df.iloc[-1]
         previous = df.iloc[-2]
         
-        date_col = df.index.name if df.index.name else 'Date'
-        current_date = str(current.name).split()[0] if df.index.name else str(current[date_col]).split()[0]
+        # Determine the date column flexibly
+        if df.index.name:
+            current_date = str(current.name).split()[0]
+        elif 'Date' in current:
+            current_date = str(current['Date']).split()[0]
+        elif 'YearWeek' in current:
+            current_date = str(current['YearWeek']).split()[0]
+        elif 'YearMonth' in current:
+            current_date = str(current['YearMonth']).split()[0]
+        else:
+            current_date = "UNKNOWN_DATE"
         
         for seq in active_seqs:
             self._evaluate_sequence(seq, current, previous, current_date)
