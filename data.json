@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-14T09:51:06.536977Z",
+  "generated_at": "2026-06-14T10:15:23.229014Z",
   "extraction_list": [
     "AMBUJACEM_1Y_20260614",
     "HINDALCO_1Y_20260614",
@@ -3755,18 +3755,18 @@
     }
   ],
   "macro_intelligence": {
-    "last_event_at": "2026-06-14T09:50:45.501313+00:00",
+    "last_event_at": "2026-06-14T10:15:10.229223+00:00",
     "total_events": 6,
     "recent_events": [
       {
         "event_id": "mock-rbi-1",
         "url": "https://www.rbi.org.in/mock-1",
-        "published_at": "2026-06-14T09:50:45.501313+00:00",
+        "published_at": "2026-06-14T10:15:10.229223+00:00",
         "title": "RBI Announces Special Liquidity Facility for Mutual Funds",
         "summary": "The Reserve Bank of India has decided to open a special liquidity facility for mutual funds of \u20b950,000 crore to ease liquidity pressures.",
         "category": "Press Releases",
         "source": "RBI",
-        "collected_at": "2026-06-14T09:50:45.501354+00:00",
+        "collected_at": "2026-06-14T10:15:10.229253+00:00",
         "version": 3,
         "status": "Active",
         "lifecycle": "Enriched",
@@ -3779,10 +3779,10 @@
             "Banking"
           ],
           "securities": [
-            "HDFCBANK",
-            "ICICIBANK",
-            "AXISBANK",
             "SBIN",
+            "AXISBANK",
+            "ICICIBANK",
+            "HDFCBANK",
             "KOTAKBANK"
           ],
           "horizon": "1-5 days",
@@ -3811,17 +3811,7 @@
           "index_returns": {},
           "sector_returns": {},
           "stock_returns": {
-            "HDFCBANK": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "ICICIBANK": {
+            "SBIN": {
               "t_minus_5": null,
               "t_minus_3": null,
               "t_minus_1": null,
@@ -3841,7 +3831,17 @@
               "t_plus_10": null,
               "t_plus_20": null
             },
-            "SBIN": {
+            "ICICIBANK": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "HDFCBANK": {
               "t_minus_5": null,
               "t_minus_3": null,
               "t_minus_1": null,
@@ -3866,7 +3866,7 @@
         "ai_snapshots": [
           {
             "version": 1,
-            "timestamp": "2026-06-14T09:50:45.526722+00:00",
+            "timestamp": "2026-06-14T10:15:10.245848+00:00",
             "prompt_version": "v1.0.0",
             "summary": "AI summary not available. Please configure an API key.",
             "key_points": [
@@ -3879,12 +3879,12 @@
       {
         "event_id": "mock-rbi-2",
         "url": "https://www.rbi.org.in/mock-2",
-        "published_at": "2026-06-14T09:50:45.501313+00:00",
+        "published_at": "2026-06-14T10:15:10.229223+00:00",
         "title": "Monetary Policy Statement: Repo Rate unchanged at 6.5%",
         "summary": "The MPC met today and unanimously decided to keep the policy repo rate unchanged at 6.50 per cent with readiness to act should the situation so warrant.",
         "category": "Monetary Policy",
         "source": "RBI",
-        "collected_at": "2026-06-14T09:50:45.501372+00:00",
+        "collected_at": "2026-06-14T10:15:10.229262+00:00",
         "version": 3,
         "status": "Active",
         "lifecycle": "Enriched",
@@ -3901,24 +3901,24 @@
             "Auto"
           ],
           "securities": [
-            "HDFCBANK",
-            "SHRIRAMFIN",
-            "DLF",
-            "ICICIBANK",
-            "M&MFIN",
-            "TATAMOTORS",
-            "HEROMOTOCO",
-            "OBEROIRLTY",
-            "M&M",
+            "SBIN",
             "AXISBANK",
+            "M&M",
+            "OBEROIRLTY",
+            "M&MFIN",
             "MARUTI",
             "MACROTECH",
-            "SBIN",
+            "TATAMOTORS",
             "BAJAJ-AUTO",
+            "DLF",
+            "SHRIRAMFIN",
+            "ICICIBANK",
+            "GODREJPROP",
+            "HEROMOTOCO",
+            "HDFCBANK",
             "BAJFINANCE",
-            "CHOLAFIN",
             "KOTAKBANK",
-            "GODREJPROP"
+            "CHOLAFIN"
           ],
           "horizon": "1-5 days",
           "direction": "Neutral",
@@ -3946,77 +3946,7 @@
           "index_returns": {},
           "sector_returns": {},
           "stock_returns": {
-            "HDFCBANK": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "SHRIRAMFIN": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "DLF": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "ICICIBANK": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "TATAMOTORS": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "HEROMOTOCO": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "OBEROIRLTY": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "M&M": {
+            "SBIN": {
               "t_minus_5": null,
               "t_minus_3": null,
               "t_minus_1": null,
@@ -4036,6 +3966,26 @@
               "t_plus_10": null,
               "t_plus_20": null
             },
+            "M&M": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "OBEROIRLTY": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
             "MARUTI": {
               "t_minus_5": null,
               "t_minus_3": null,
@@ -4046,7 +3996,7 @@
               "t_plus_10": null,
               "t_plus_20": null
             },
-            "SBIN": {
+            "TATAMOTORS": {
               "t_minus_5": null,
               "t_minus_3": null,
               "t_minus_1": null,
@@ -4066,7 +4016,7 @@
               "t_plus_10": null,
               "t_plus_20": null
             },
-            "BAJFINANCE": {
+            "DLF": {
               "t_minus_5": null,
               "t_minus_3": null,
               "t_minus_1": null,
@@ -4076,7 +4026,57 @@
               "t_plus_10": null,
               "t_plus_20": null
             },
-            "CHOLAFIN": {
+            "SHRIRAMFIN": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "ICICIBANK": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "GODREJPROP": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "HEROMOTOCO": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "HDFCBANK": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "BAJFINANCE": {
               "t_minus_5": null,
               "t_minus_3": null,
               "t_minus_1": null,
@@ -4096,7 +4096,7 @@
               "t_plus_10": null,
               "t_plus_20": null
             },
-            "GODREJPROP": {
+            "CHOLAFIN": {
               "t_minus_5": null,
               "t_minus_3": null,
               "t_minus_1": null,
@@ -4111,7 +4111,7 @@
         "ai_snapshots": [
           {
             "version": 1,
-            "timestamp": "2026-06-14T09:50:45.578745+00:00",
+            "timestamp": "2026-06-14T10:15:10.277530+00:00",
             "prompt_version": "v1.0.0",
             "summary": "AI summary not available. Please configure an API key.",
             "key_points": [
