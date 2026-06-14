@@ -116,69 +116,130 @@ class ImpactAnalysis:
 @dataclass
 class AISummarySnapshot:
     version: int
-    timestamp: str
+    provider: str
+    model: str
+    generated_time: str
+    confidence: int
     prompt_version: str
+    response_version: str
     summary: str
     key_points: List[str]
+    raw_ai_response: str
 
     @classmethod
     def from_dict(cls, d: dict) -> 'AISummarySnapshot':
         return cls(
             version=d.get("version", 1),
-            timestamp=d.get("timestamp", ""),
+            provider=d.get("provider", "Unknown"),
+            model=d.get("model", "Unknown"),
+            generated_time=d.get("generated_time", d.get("timestamp", "")),
+            confidence=d.get("confidence", 0),
             prompt_version=d.get("prompt_version", ""),
+            response_version=d.get("response_version", ""),
             summary=d.get("summary", ""),
-            key_points=d.get("key_points", [])
+            key_points=d.get("key_points", []),
+            raw_ai_response=d.get("raw_ai_response", "")
+        )
+
+@dataclass
+class OfficialData:
+    title: str
+    publication_date: str
+    category: str
+    source: str
+    official_url: str
+    publication_time: Optional[str] = None
+    effective_date: Optional[str] = None
+    content: Optional[str] = None
+    attachments: List[str] = field(default_factory=list)
+    pdf_url: Optional[str] = None
+
+    @classmethod
+    def from_dict(cls, d: dict) -> 'OfficialData':
+        return cls(
+            title=d.get("title", ""),
+            publication_date=d.get("publication_date", d.get("published_at", "")),
+            category=d.get("category", ""),
+            source=d.get("source", "Unknown"),
+            official_url=d.get("official_url", d.get("url", "")),
+            publication_time=d.get("publication_time"),
+            effective_date=d.get("effective_date"),
+            content=d.get("content", d.get("summary", "")),
+            attachments=d.get("attachments", []),
+            pdf_url=d.get("pdf_url")
+        )
+
+@dataclass
+class DerivedData:
+    ai_summary: Optional[str] = None
+    ai_theme: Optional[str] = None
+    keywords: List[str] = field(default_factory=list)
+    market_relevance: Optional[str] = None
+    quality_score: int = 0
+    impact: Optional[ImpactAnalysis] = None
+    event_study: Optional[EventStudy] = None
+    ai_snapshots: List[AISummarySnapshot] = field(default_factory=list)
+
+    @classmethod
+    def from_dict(cls, d: dict) -> 'DerivedData':
+        impact_dict = d.get("impact")
+        study_dict = d.get("event_study")
+        return cls(
+            ai_summary=d.get("ai_summary"),
+            ai_theme=d.get("ai_theme"),
+            keywords=d.get("keywords", []),
+            market_relevance=d.get("market_relevance"),
+            quality_score=d.get("quality_score", 0),
+            impact=ImpactAnalysis.from_dict(impact_dict) if impact_dict else None,
+            event_study=EventStudy.from_dict(study_dict) if study_dict else None,
+            ai_snapshots=[AISummarySnapshot.from_dict(s) for s in d.get("ai_snapshots", [])]
+        )
+
+@dataclass
+class EventMetadata:
+    processing_state: str
+    lifecycle_status: str
+    created_at: str
+    updated_at: str
+    schema_version: str = "1.0"
+    supersedes_event_id: Optional[str] = None
+
+    @classmethod
+    def from_dict(cls, d: dict) -> 'EventMetadata':
+        return cls(
+            processing_state=d.get("processing_state", d.get("lifecycle", "NEW")),
+            lifecycle_status=d.get("lifecycle_status", d.get("status", "ACTIVE")),
+            created_at=d.get("created_at", d.get("collected_at", "")),
+            updated_at=d.get("updated_at", d.get("collected_at", "")),
+            schema_version=d.get("schema_version", "1.0"),
+            supersedes_event_id=d.get("supersedes_event_id")
         )
 
 @dataclass
 class MacroEvent:
-    event_id: str        # dedup key component 1
-    url: str             # dedup key component 2
-    published_at: str    # dedup key component 3 — ISO 8601
-    title: str
-    summary: str         # raw text from RSS or scraped excerpt
-    category: str
-    source: str          # e.g., "RBI"
-    collected_at: str
-    
-    # Versioning & Lifecycle
-    version: int = 1
-    status: str = "Active"       # "Active", "Superseded", "Withdrawn", "Corrected"
-    lifecycle: str = "Collected" # "Published", "Collected", "Processed", "Enriched", "Correlated", "Reported", "Archived"
-    
-    impact: Optional[ImpactAnalysis] = None
-    event_study: Optional[EventStudy] = None
-    
-    # AI Snapshots (Never overwriting history)
-    ai_snapshots: List[AISummarySnapshot] = field(default_factory=list)
+    event_id: str
+    official_data: OfficialData
+    derived_data: DerivedData
+    metadata: EventMetadata
 
     def to_dict(self) -> dict:
         return asdict(self)
 
     @classmethod
     def from_dict(cls, d: dict) -> 'MacroEvent':
-        impact_dict = d.get("impact")
-        impact = ImpactAnalysis.from_dict(impact_dict) if impact_dict else None
-        
-        study_dict = d.get("event_study")
-        study = EventStudy.from_dict(study_dict) if study_dict else None
-        
-        ai_snaps = [AISummarySnapshot.from_dict(s) for s in d.get("ai_snapshots", [])]
-        
+        # Backward compatibility for old flat schema
+        if "official_data" in d:
+            official_data = OfficialData.from_dict(d.get("official_data", {}))
+            derived_data = DerivedData.from_dict(d.get("derived_data", {}))
+            metadata = EventMetadata.from_dict(d.get("metadata", {}))
+        else:
+            official_data = OfficialData.from_dict(d)
+            derived_data = DerivedData.from_dict(d)
+            metadata = EventMetadata.from_dict(d)
+            
         return cls(
             event_id=d.get("event_id", ""),
-            url=d.get("url", ""),
-            published_at=d.get("published_at", ""),
-            title=d.get("title", ""),
-            summary=d.get("summary", ""),
-            category=d.get("category", ""),
-            source=d.get("source", ""),
-            collected_at=d.get("collected_at", ""),
-            version=d.get("version", 1),
-            status=d.get("status", "Active"),
-            lifecycle=d.get("lifecycle", "Collected"),
-            impact=impact,
-            event_study=study,
-            ai_snapshots=ai_snaps
+            official_data=official_data,
+            derived_data=derived_data,
+            metadata=metadata
         )
