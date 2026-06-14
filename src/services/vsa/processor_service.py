@@ -252,9 +252,9 @@ class VSAProcessorService:
         ete_weekly = EigenTransitionEngineService(timeframe="weekly")
         ete_monthly = EigenTransitionEngineService(timeframe="monthly")
         
-        eigen_symbols_daily = {r.symbol for r in eigen_results}
-        eigen_symbols_weekly = {r.symbol for r in weekly_eigen_results}
-        eigen_symbols_monthly = {r.symbol for r in monthly_eigen_results}
+        eigen_symbols_daily = {r.symbol: r.sentiment for r in eigen_results}
+        eigen_symbols_weekly = {r.symbol: r.sentiment for r in weekly_eigen_results}
+        eigen_symbols_monthly = {r.symbol: r.sentiment for r in monthly_eigen_results}
         
         # Process ETE for all analyzed symbols
         for m in self._processed_metadata:
@@ -267,19 +267,19 @@ class VSAProcessorService:
                 
                 # Daily ETE
                 ete_daily.update_active_sequences(symbol, df)
-                ete_daily.detect_triggers(symbol, df, symbol in eigen_symbols_daily)
+                ete_daily.detect_triggers(symbol, df, symbol in eigen_symbols_daily, eigen_symbols_daily.get(symbol, "Neutral"))
                 
                 # Weekly ETE
                 weekly_df = WeeklyEigenFilterService._consolidate_to_weekly(df)
                 if weekly_df is not None and not weekly_df.empty:
                     ete_weekly.update_active_sequences(symbol, weekly_df)
-                    ete_weekly.detect_triggers(symbol, weekly_df, symbol in eigen_symbols_weekly)
+                    ete_weekly.detect_triggers(symbol, weekly_df, symbol in eigen_symbols_weekly, eigen_symbols_weekly.get(symbol, "Neutral"))
                 
                 # Monthly ETE
                 monthly_df = MonthlyEigenFilterService._consolidate_to_monthly(df)
                 if monthly_df is not None and not monthly_df.empty:
                     ete_monthly.update_active_sequences(symbol, monthly_df)
-                    ete_monthly.detect_triggers(symbol, monthly_df, symbol in eigen_symbols_monthly)
+                    ete_monthly.detect_triggers(symbol, monthly_df, symbol in eigen_symbols_monthly, eigen_symbols_monthly.get(symbol, "Neutral"))
                     
             except Exception as e:
                 logger.error(f"ETE_PROCESS_FAILED for {symbol}: {e}")

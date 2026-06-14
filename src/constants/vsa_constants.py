@@ -53,6 +53,13 @@ CONSENSUS_RESULTS_DIR_NAME = "ConsensusResults"
 EIGEN_CLOSE_LOWER_BAND = 0.30
 EIGEN_CLOSE_UPPER_BAND = 0.70
 
+# Eigen Score Proxy Map
+EIGEN_SCORE_MAP = {
+    "Bullish": 0.8,
+    "Neutral": 0.5,
+    "Bearish": 0.2
+}
+
 # Standard columns
 OHLCV_COLUMNS = ["Date", "Open", "High", "Low", "Close", "Volume"]
 

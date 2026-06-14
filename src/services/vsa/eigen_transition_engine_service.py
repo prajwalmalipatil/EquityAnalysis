@@ -8,7 +8,7 @@ import pandas as pd
 
 from src.constants.vsa_constants import (
     ETE_EVENTS_DIR, ETE_SNAPSHOTS_DIR, CHECKPOINT_INTERVAL, ENGINE_VERSION,
-    RULE_HVHS, RULE_LVLS, RULE_HVLS, RULE_LVHS
+    RULE_HVHS, RULE_LVLS, RULE_HVLS, RULE_LVHS, EIGEN_SCORE_MAP
 )
 from src.models.ete_models import (
     ETEState, FailureReason, ResearchEvent, ETESequence, StageMetrics
@@ -93,7 +93,7 @@ class EigenTransitionEngineService:
         )
         return event
 
-    def detect_triggers(self, symbol: str, df: pd.DataFrame, eigen_filter_matched: bool):
+    def detect_triggers(self, symbol: str, df: pd.DataFrame, eigen_filter_matched: bool, eigen_sentiment: str = "Neutral"):
         """Idempotent trigger generation."""
         if not eigen_filter_matched or df.empty:
             return
@@ -134,7 +134,7 @@ class EigenTransitionEngineService:
                 symbol=symbol,
                 action="INIT",
                 stage="T",
-                rule_evaluated="EIGEN_TRIGGER",
+                rule_evaluated=f"EIGEN_TRIGGER_{eigen_sentiment}",
                 matched=True,
                 failure_reason=FailureReason.NONE,
                 metrics=metrics,
@@ -235,6 +235,17 @@ class EigenTransitionEngineService:
             if action == "ADVANCE":
                 seq.current_stage_index += 1
                 seq.state = ETEState.WAITING
+                
+                # Confidence Calculation (v2/v3 formula)
+                vol_delta = ev_dict.get('metrics', {}).get('vol_delta_pct', 0.0)
+                spread_delta = ev_dict.get('metrics', {}).get('spread_delta_pct', 0.0)
+                vol_surge = min(abs(vol_delta), 10.0) / 10.0
+                spread_surge = min(abs(spread_delta), 10.0) / 10.0
+                
+                label = seq.events[0].get('rule_evaluated', '').split('_')[-1] if seq.events else "Neutral"
+                eigen_score = EIGEN_SCORE_MAP.get(label, 0.5)
+                conf = (vol_surge * 0.40) + (spread_surge * 0.40) + (eigen_score * 0.20)
+                seq.confidence_score = round(conf * 100.0, 1)
             elif action == "FAIL":
                 seq.state = ETEState.FAILED
                 seq.num_failures += 1
@@ -262,6 +273,9 @@ class EigenTransitionEngineService:
             
         # Determine the date column flexibly
         date_col = None
+        if isinstance(df.index, pd.PeriodIndex):
+            df.index = df.index.to_timestamp()
+            
         if df.index.name:
             date_col = df.index.name
             df = df.reset_index()
@@ -278,21 +292,30 @@ class EigenTransitionEngineService:
         df['str_date'] = df[date_col].astype(str).str.split().str[0]
         
         for seq in active_seqs:
-            # Extract historical data exactly from the trigger_date forward
-            eval_df = df[df['str_date'] >= seq.trigger_date].reset_index(drop=True)
+            # Extract historical data strictly AFTER the trigger_date
+            eval_df = df[df['str_date'] > seq.trigger_date].reset_index(drop=True)
             
             # A walk-forward state machine. Stage T matches index 0 (trigger date). 
-            # Stage T+1 evaluates index 1 vs index 0.
+            # We explicitly include WAITING to ensure sequences don't silently accumulate
             while seq.state in (ETEState.TRIGGERED, ETEState.WAITING, ETEState.PAUSED):
                 stage_idx = seq.current_stage_index
                 
                 # We need stage_idx + 1 rows to compare current vs previous.
-                if len(eval_df) <= stage_idx + 1:
+                # Since eval_df starts AFTER trigger, stage_idx 0 (T+1) needs 1 row
+                if len(eval_df) <= stage_idx:
                     break # Wait for next candle
                     
-                previous = eval_df.iloc[stage_idx]
-                current = eval_df.iloc[stage_idx + 1]
+                current = eval_df.iloc[stage_idx]
                 current_date = current['str_date']
+                
+                if stage_idx == 0:
+                    # When evaluating T+1, previous bar must be the unsliced original df at trigger row
+                    trigger_rows = df[df['str_date'] == seq.trigger_date]
+                    if trigger_rows.empty:
+                        break # Inconsistent data, trigger missing
+                    previous = trigger_rows.iloc[0]
+                else:
+                    previous = eval_df.iloc[stage_idx - 1]
                 
                 self._evaluate_sequence(seq, current, previous, current_date)
 

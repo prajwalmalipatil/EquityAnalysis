@@ -2,24 +2,21 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 from dataclasses import dataclass
-from typing import List, Dict
+from typing import List, Dict, Optional
+import json
+import datetime
 
 @dataclass
 class TradeRecord:
     symbol: str
-    date: str
-    sentiment: str
-    label: str
+    start_date: str
+    completion_date: str
+    trigger_pattern: str
     t_vol: float
     vol_surge_pct: float
-    gap_pct: float
-    delta_cp: float
-    t_cp: float
-    close_price: float
-    win_1d: bool = False
-    win_3d: bool = False
-    win_5d: bool = False
-    max_fwd_move_5d_pct: float = 0.0
+    fwd_return_5b: Optional[float]
+    win: Optional[bool]
+    sentiment: str
 
 EIGEN_LOWER = 0.30
 EIGEN_UPPER = 0.70
@@ -33,6 +30,100 @@ def _get_label(gap_dir, close_band):
     }
     return matrix.get((gap_dir, close_band))
 
+def resample_ohlcv(df: pd.DataFrame, timeframe: str) -> pd.DataFrame:
+    if timeframe == "daily":
+        return df.copy()
+        
+    df_temp = df.copy()
+    if not isinstance(df_temp.index, pd.DatetimeIndex):
+        df_temp.set_index("Date", inplace=True)
+        
+    rule = "W" if timeframe == "weekly" else "ME"
+    agg_dict = {"Open": "first", "High": "max", "Low": "min", "Close": "last", "Volume": "sum"}
+    resampled = df_temp.resample(rule).agg(agg_dict).dropna()
+    resampled = resampled.reset_index()
+    if 'Date' not in resampled.columns and resampled.index.name == 'Date':
+        resampled = resampled.reset_index()
+    elif 'index' in resampled.columns:
+        resampled.rename(columns={'index': 'Date'}, inplace=True)
+    return resampled
+
+def evaluate_timeframe(df: pd.DataFrame, symbol: str) -> List[TradeRecord]:
+    trades = []
+    if len(df) < 5:
+        return trades
+        
+    df = df.copy()
+    df["Spread"] = df["High"] - df["Low"]
+    df["Close_Position"] = np.where(df["Spread"] > 0, (df["Close"] - df["Low"]) / df["Spread"], 0.5)
+    
+    df["Prev_Close"] = df["Close"].shift(1)
+    df["Prev_Vol"] = df["Volume"].shift(1)
+    df["Prev_CP"] = df["Close_Position"].shift(1)
+    
+    for i in range(1, len(df)):
+        t = df.iloc[i]
+        
+        t_vol = t["Volume"]
+        t1_vol = t["Prev_Vol"]
+        
+        if pd.isna(t_vol) or pd.isna(t1_vol) or t1_vol <= 0 or t_vol <= t1_vol:
+            continue
+            
+        t_open = t["Open"]
+        t_close = t["Close"]
+        t1_close = t["Prev_Close"]
+        t_cp = t["Close_Position"]
+        t1_cp = t["Prev_CP"]
+        
+        if pd.isna(t_cp) or pd.isna(t1_cp): continue
+        
+        is_extreme_close = (t_cp <= EIGEN_LOWER) or (t_cp >= EIGEN_UPPER)
+        if not is_extreme_close:
+            continue
+            
+        gap_dir = None
+        if t_open > t1_close and t_cp >= t1_cp: gap_dir = "Gap-Up"
+        elif t_open < t1_close and t_cp <= t1_cp: gap_dir = "Gap-Down"
+        
+        if not gap_dir: continue
+        
+        close_band = "Strong" if t_cp >= EIGEN_UPPER else "Weak"
+        label_tuple = _get_label(gap_dir, close_band)
+        if not label_tuple: continue
+        
+        label, sentiment = label_tuple
+        
+        start_date = str(df.iloc[i-1]["Date"]).split()[0]
+        completion_date = str(t["Date"]).split()[0]
+        
+        # Check forward 5 bars
+        if i + 5 < len(df):
+            fwd_5 = df.iloc[i+1 : i+6]
+            if sentiment == "Bullish":
+                fwd_return_5b = (fwd_5["Close"].max() - t_close) / t_close
+                win = fwd_return_5b > 0
+            else:
+                fwd_return_5b = (fwd_5["Close"].min() - t_close) / t_close
+                win = fwd_return_5b < 0
+        else:
+            fwd_return_5b = None
+            win = None
+            
+        trades.append(TradeRecord(
+            symbol=symbol,
+            start_date=start_date,
+            completion_date=completion_date,
+            trigger_pattern=label,
+            t_vol=float(t_vol),
+            vol_surge_pct=float((t_vol/t1_vol - 1) * 100),
+            fwd_return_5b=float(fwd_return_5b * 100) if fwd_return_5b is not None else None,
+            win=bool(win) if win is not None else None,
+            sentiment=sentiment
+        ))
+        
+    return trades
+
 def run_backtest():
     data_dir = Path("equity_data")
     if not data_dir.exists():
@@ -42,23 +133,20 @@ def run_backtest():
     all_csvs = list(data_dir.glob("*.csv"))
     print(f"Running historical backtest on {len(all_csvs)} tickers...")
     
-    trades: List[TradeRecord] = []
+    trades_daily = []
+    trades_weekly = []
+    trades_monthly = []
     
     for csv_file in all_csvs:
         symbol = csv_file.stem.split('_')[0]
         try:
             df = pd.read_csv(csv_file)
-            if len(df) < 10:
-                continue
-                
-            # Clean column names
-            df.columns = [c.strip() for c in df.columns]
+            if len(df) < 10: continue
             
-            # Filter only Equity series if Series column exists
+            df.columns = [c.strip() for c in df.columns]
             if "Series" in df.columns:
                 df = df[df["Series"] == "EQ"].copy()
                 
-            # Map columns
             date_col = next((c for c in df.columns if c.upper() == "DATE"), None)
             open_col = next((c for c in df.columns if "OPEN" in c.upper()), None)
             high_col = next((c for c in df.columns if "HIGH" in c.upper()), None)
@@ -66,10 +154,8 @@ def run_backtest():
             close_col = next((c for c in df.columns if "CLOSE" in c.upper() and "%" not in c.upper() and "PREV" not in c.upper()), None)
             vol_col = next((c for c in df.columns if "QTY" in c.upper() or "TOTAL TRADED QUANTITY" in c.upper() or "VOLUME" in c.upper()), None)
             
-            if not all([date_col, open_col, high_col, low_col, close_col, vol_col]):
-                continue
-                
-            # Clean numeric columns strictly
+            if not all([date_col, open_col, high_col, low_col, close_col, vol_col]): continue
+            
             for c in [open_col, high_col, low_col, close_col, vol_col]:
                 df[c] = pd.to_numeric(df[c].astype(str).str.replace(',', '').str.replace('-', ''), errors='coerce')
                 
@@ -77,166 +163,52 @@ def run_backtest():
             df.sort_values(by="Date", inplace=True)
             df.reset_index(drop=True, inplace=True)
             
-            df["Open"] = df[open_col].astype(float)
-            df["High"] = df[high_col].astype(float)
-            df["Low"] = df[low_col].astype(float)
-            df["Close"] = df[close_col].astype(float)
-            df["Volume"] = df[vol_col].astype(float)
+            df = df.rename(columns={
+                open_col: "Open", high_col: "High", low_col: "Low", close_col: "Close", vol_col: "Volume"
+            })
             
-            df["Spread"] = df["High"] - df["Low"]
-            df["Close_Position"] = np.where(df["Spread"] > 0, (df["Close"] - df["Low"]) / df["Spread"], 0.5)
+            df_daily = resample_ohlcv(df, "daily")
+            df_weekly = resample_ohlcv(df, "weekly")
+            df_monthly = resample_ohlcv(df, "monthly")
             
-            df["Prev_Close"] = df["Close"].shift(1)
-            df["Prev_Vol"] = df["Volume"].shift(1)
-            df["Prev_CP"] = df["Close_Position"].shift(1)
+            trades_daily.extend(evaluate_timeframe(df_daily, symbol))
+            trades_weekly.extend(evaluate_timeframe(df_weekly, symbol))
+            trades_monthly.extend(evaluate_timeframe(df_monthly, symbol))
             
-            # Iterate through historical to simulate live detection
-            for i in range(1, len(df) - 5): # Ensure we have at least 5 days forward
-                t = df.iloc[i]
-                
-                t_vol = t["Volume"]
-                t1_vol = t["Prev_Vol"]
-                
-                # Condition 1
-                if pd.isna(t_vol) or pd.isna(t1_vol) or t1_vol <= 0 or t_vol <= t1_vol:
-                    continue
-                    
-                t_open = t["Open"]
-                t_close = t["Close"]
-                t1_close = t["Prev_Close"]
-                t_cp = t["Close_Position"]
-                t1_cp = t["Prev_CP"]
-                
-                if pd.isna(t_cp) or pd.isna(t1_cp): continue
-                
-                is_extreme_close = (t_cp <= EIGEN_LOWER) or (t_cp >= EIGEN_UPPER)
-                if not is_extreme_close:
-                    continue
-                    
-                gap_dir = None
-                if t_open > t1_close and t_cp >= t1_cp: gap_dir = "Gap-Up"
-                elif t_open < t1_close and t_cp <= t1_cp: gap_dir = "Gap-Down"
-                
-                if not gap_dir: continue
-                
-                close_band = "Strong" if t_cp >= EIGEN_UPPER else "Weak"
-                label_tuple = _get_label(gap_dir, close_band)
-                if not label_tuple: continue
-                
-                label, sentiment = label_tuple
-                
-                fwd_5 = df.iloc[i+1 : i+6]
-                ret_1d = (fwd_5.iloc[0]["Close"] - t_close) / t_close
-                ret_3d = (fwd_5.iloc[2]["Close"] - t_close) / t_close
-                ret_5d = (fwd_5.iloc[4]["Close"] - t_close) / t_close
-                
-                win_1d = ret_1d > 0 if sentiment == "Bullish" else ret_1d < 0
-                win_3d = ret_3d > 0 if sentiment == "Bullish" else ret_3d < 0
-                win_5d = ret_5d > 0 if sentiment == "Bullish" else ret_5d < 0
-                
-                max_move_5d = fwd_5["High"].max() if sentiment == "Bullish" else fwd_5["Low"].min()
-                max_pct_move = (max_move_5d - t_close) / t_close
-                
-                gap_pct = (t_open - t1_close) / t1_close
-                
-                trades.append(TradeRecord(
-                    symbol=symbol,
-                    date=str(t["Date"].date()),
-                    sentiment=sentiment,
-                    label=label,
-                    t_vol=t_vol,
-                    vol_surge_pct=(t_vol/t1_vol - 1),
-                    gap_pct=gap_pct,
-                    delta_cp=t_cp - t1_cp,
-                    t_cp=t_cp,
-                    close_price=t_close,
-                    win_1d=win_1d,
-                    win_3d=win_3d,
-                    win_5d=win_5d,
-                    max_fwd_move_5d_pct=max_pct_move
-                ))
-                
         except Exception as e:
             print(f"Error parsing {symbol}: {e}")
-            pass
             
-    # Analytics
-    if not trades:
-        print("No historical trades found.")
+    # Calculate overall metrics
+    all_trades = trades_daily + trades_weekly + trades_monthly
+    if not all_trades:
+        print("No trades found.")
         return
         
-    df_trades = pd.DataFrame([t.__dict__ for t in trades])
-    bulls = df_trades[df_trades["sentiment"] == "Bullish"]
-    bears = df_trades[df_trades["sentiment"] == "Bearish"]
-
+    resolved_trades = [t for t in all_trades if t.win is not None]
+    total_eval = len(all_trades)
+    wins = len([t for t in resolved_trades if t.win])
+    win_rate = (wins / len(resolved_trades) * 100) if resolved_trades else 0
+    failures = len([t for t in resolved_trades if not t.win])
     
-    print("\n" + "="*50)
-    print("BACKTEST RESULTS: EIGEN FILTER")
-    print(f"Total historical occurrences: {len(df_trades)}")
-    print(f"  Bullish Signals: {len(bulls)}")
-    print(f"  Bearish Signals: {len(bears)}")
-    
-    def print_stats(df_chunk, name):
-        if len(df_chunk) == 0: return
-        w1 = df_chunk["win_1d"].mean() * 100
-        w3 = df_chunk["win_3d"].mean() * 100
-        w5 = df_chunk["win_5d"].mean() * 100
-        avg_move = df_chunk["max_fwd_move_5d_pct"].mean() * 100 if name=="Bullish" else df_chunk["max_fwd_move_5d_pct"].mean() * -100
-        print(f"\n{name} PERFORMANCE:")
-        print(f"  1-Day Win Rate: {w1:.1f}%")
-        print(f"  3-Day Win Rate: {w3:.1f}%")
-        print(f"  5-Day Win Rate: {w5:.1f}%")
-        print(f"  Avg Max Favorable Excursion (5D): {avg_move:.2f}%")
-        
-    print_stats(bulls, "Bullish")
-    print_stats(bears, "Bearish")
-    
-    # Context Analysis (Avoidable Observations)
-    print("\nCONTEXT ANALYSIS (Finding Optimal Zones):")
-    
-    # Analyze by Volume Surge
-    print("\nBy Volume Surge:")
-    for quintile in [1, 2]:    
-        high_vol = df_trades[df_trades["vol_surge_pct"] > df_trades["vol_surge_pct"].median()]
-        w5_high = high_vol["win_5d"].mean() * 100
-        low_vol = df_trades[df_trades["vol_surge_pct"] <= df_trades["vol_surge_pct"].median()]
-        w5_low = low_vol["win_5d"].mean() * 100
-        
-    print(f"  Surge > Median ({df_trades['vol_surge_pct'].median()*100:.1f}%): Win Rate {w5_high:.1f}%")
-    print(f"  Surge < Median ({df_trades['vol_surge_pct'].median()*100:.1f}%): Win Rate {w5_low:.1f}%")
-    
-    # Analyze by Close Position Absolute
-    print("\nBy Close Position Extremity (Bullish CP > 0.85 or Bearish CP < 0.15):")
-    extreme_cp = df_trades[
-        ((df_trades["sentiment"] == "Bullish") & (df_trades["t_cp"] > 0.85)) | 
-        ((df_trades["sentiment"] == "Bearish") & (df_trades["t_cp"] < 0.15))
-    ]
-    weak_cp = df_trades[~df_trades.index.isin(extreme_cp.index)]
-    print(f"  Ultra-Extreme CP: Win Rate {extreme_cp['win_5d'].mean()*100:.1f}% (Count: {len(extreme_cp)})")
-    print(f"  Borderline CP: Win Rate {weak_cp['win_5d'].mean()*100:.1f}% (Count: {len(weak_cp)})")
-    
-    # Divergence Analysis
-    print("\nConvergence vs Divergence:")
-    conv = df_trades[df_trades["label"].str.contains("Convergence")]
-    div = df_trades[df_trades["label"].str.contains("Divergence")]
-    print(f"  Pure Impulse Convergence: Win Rate {conv['win_3d'].mean()*100:.1f}% (Count: {len(conv)})")
-    print(f"  Contested Divergence: Win Rate {div['win_3d'].mean()*100:.1f}% (Count: {len(div)})")
-    
-    # Export to JSON for UI
-    import json
     results_payload = {
+        "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "overall_metrics": {
-            "total_sequences": len(df_trades),
-            "win_rate": df_trades["win_5d"].mean() * 100 if len(df_trades) > 0 else 0,
-            "total_completed": len(df_trades[df_trades["win_5d"] == True]),
-            "total_failed": len(df_trades[df_trades["win_5d"] == False])
-        }
+            "total_sequences": total_eval,
+            "win_rate": win_rate,
+            "total_completed": wins,
+            "total_failed": failures
+        },
+        "completions_daily": [t.__dict__ for t in trades_daily if t.win],
+        "completions_weekly": [t.__dict__ for t in trades_weekly if t.win],
+        "completions_monthly": [t.__dict__ for t in trades_monthly if t.win]
     }
     
     out_dir = Path("dashboard")
     out_dir.mkdir(parents=True, exist_ok=True)
     with open(out_dir / "backtest_results.json", "w") as f:
         json.dump(results_payload, f, indent=2)
-    
+        
+    print(f"Backtest completed! Generated completions for UI. Win Rate: {win_rate:.1f}%, Total: {total_eval}")
+
 if __name__ == "__main__":
     run_backtest()
