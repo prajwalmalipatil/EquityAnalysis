@@ -108,6 +108,8 @@ class JSONPublisher:
             "extraction_list": symbol_data.get("extraction", []),
             "vsa_list": symbol_data.get("vsa", []),
             "trending_list": symbol_data.get("trending", []),
+            "anomaly_list": symbol_data.get("anomaly", []),
+            "triggers_list": symbol_data.get("triggers", []),
             "stage_statistics": stats,
             "consensus": consensus,
             "eigen_filters": eigen_filters,

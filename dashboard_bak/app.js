@@ -78,6 +78,8 @@ function switchTab(tabId) {
         if (macro) macro.style.display = 'none';
         if (ete) ete.style.display = 'none';
         if (alerts) alerts.style.display = 'flex';
+        const backtest = document.getElementById('backtest');
+        if (backtest) backtest.style.display = 'none';
     } else if (tabId === 'consensus') {
         overview.style.display = 'none';
         consensus.style.display = 'flex';
@@ -85,6 +87,8 @@ function switchTab(tabId) {
         if (macro) macro.style.display = 'none';
         if (ete) ete.style.display = 'none';
         if (alerts) alerts.style.display = 'none';
+        const backtest = document.getElementById('backtest');
+        if (backtest) backtest.style.display = 'none';
     } else if (tabId === 'eigen') {
         overview.style.display = 'none';
         consensus.style.display = 'none';
@@ -92,6 +96,8 @@ function switchTab(tabId) {
         if (macro) macro.style.display = 'none';
         if (ete) ete.style.display = 'none';
         if (alerts) alerts.style.display = 'none';
+        const backtest = document.getElementById('backtest');
+        if (backtest) backtest.style.display = 'none';
     } else if (tabId === 'macro') {
         overview.style.display = 'none';
         consensus.style.display = 'none';
@@ -99,6 +105,8 @@ function switchTab(tabId) {
         if (macro) macro.style.display = 'flex';
         if (ete) ete.style.display = 'none';
         if (alerts) alerts.style.display = 'none';
+        const backtest = document.getElementById('backtest');
+        if (backtest) backtest.style.display = 'none';
     } else if (tabId === 'ete') {
         overview.style.display = 'none';
         consensus.style.display = 'none';
@@ -112,6 +120,23 @@ function switchTab(tabId) {
             }
         }
         if (alerts) alerts.style.display = 'none';
+        const backtest = document.getElementById('backtest');
+        if (backtest) backtest.style.display = 'none';
+    } else if (tabId === 'backtest') {
+        overview.style.display = 'none';
+        consensus.style.display = 'none';
+        eigen.style.display = 'none';
+        if (macro) macro.style.display = 'none';
+        if (ete) ete.style.display = 'none';
+        if (alerts) alerts.style.display = 'none';
+        const backtest = document.getElementById('backtest');
+        if (backtest) {
+            backtest.style.display = 'flex';
+            if (!window.backtestLoaded) {
+                fetchBacktestMetrics();
+                window.backtestLoaded = true;
+            }
+        }
     }
 }
 
@@ -154,6 +179,13 @@ function renderDashboard(data) {
     document.getElementById('stat-vsa').textContent = data.stage_statistics.vsa || 0;
     document.getElementById('stat-trending').textContent = data.stage_statistics.trending || 0;
     document.getElementById('stat-eigen').textContent = data.stage_statistics.eigen_filter || 0;
+    
+    if (document.getElementById('stat-anomaly')) {
+        document.getElementById('stat-anomaly').textContent = data.anomaly_list?.length || 0;
+    }
+    if (document.getElementById('stat-triggers')) {
+        document.getElementById('stat-triggers').textContent = data.triggers_list?.length || 0;
+    }
 
     // Render Consensus
     const tbody = document.getElementById('consensus-body');
@@ -305,10 +337,14 @@ function setupClickableCards() {
     const cardVsa = document.getElementById('card-vsa');
     const cardTrending = document.getElementById('card-trending');
     const cardEigen = document.getElementById('card-eigen');
+    const cardAnomaly = document.getElementById('card-anomaly');
+    const cardTriggers = document.getElementById('card-triggers');
 
     if (cardExtraction) cardExtraction.addEventListener('click', () => openModal('Extraction Details', currentData?.extraction_list || []));
     if (cardVsa) cardVsa.addEventListener('click', () => openModal('VSA Processed Details', currentData?.vsa_list || []));
     if (cardTrending) cardTrending.addEventListener('click', () => openModal('Trending Details', currentData?.trending_list || []));
+    if (cardAnomaly) cardAnomaly.addEventListener('click', () => openModal('Anomaly Details', currentData?.anomaly_list || []));
+    if (cardTriggers) cardTriggers.addEventListener('click', () => openModal('Triggers Details', currentData?.triggers_list || []));
     
     if (cardEigen) cardEigen.addEventListener('click', () => {
         const eigenNav = document.querySelector('.nav-item[href="#eigen"]');
@@ -469,6 +505,15 @@ async function fetchETEManifest() {
         }
         const manifest = await response.json();
         
+        const headerStats = document.getElementById('ete-manifest-stats');
+        if (headerStats) {
+            headerStats.innerHTML = `
+                <span class="premium-badge badge-strong">Active: ${manifest.active_sequences || 0}</span>
+                <span class="premium-badge badge-gap-up">Completed: ${manifest.completed_sequences || 0}</span>
+                <span class="premium-badge badge-label">Events: ${manifest.research_events || 0}</span>
+            `;
+        }
+        
         if (manifest.files && manifest.files.summary) {
             fetchETESummary(manifest.files.summary);
         } else {
@@ -497,34 +542,142 @@ async function fetchETESummary(summaryFile) {
 }
 
 function renderETE(summaryData) {
-    const tbody = document.getElementById('ete-body');
-    tbody.innerHTML = '';
-    
-    // Combine active and completed for the view
     const allItems = [...(summaryData.active || []), ...(summaryData.completed || [])];
     
-    if (allItems.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted)">No active or completed ETE sequences found.</td></tr>`;
-        return;
+    // Reset counts
+    document.getElementById('ete-daily-count').textContent = '0';
+    document.getElementById('ete-weekly-count').textContent = '0';
+    document.getElementById('ete-monthly-count').textContent = '0';
+    
+    ['daily', 'weekly', 'monthly'].forEach(timeframe => {
+        const tbody = document.getElementById(`ete-body-${timeframe}`);
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        
+        const items = allItems.filter(i => i.timeframe === timeframe);
+        document.getElementById(`ete-${timeframe}-count`).textContent = items.length;
+        
+        if (items.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted)">No sequences found.</td></tr>`;
+            return;
+        }
+        
+        items.forEach(item => {
+            const tr = document.createElement('tr');
+            
+            let stateClass = 'badge-label';
+            if (item.state === 'Completed') stateClass = 'badge-gap-up';
+            else if (item.state === 'Waiting') stateClass = 'badge-strong';
+            else if (item.state === 'Failed') stateClass = 'badge-gap-down';
+            else if (item.state === 'Triggered') stateClass = 'badge-label';
+
+            tr.innerHTML = `
+                <td class="symbol-cell">${item.symbol}</td>
+                <td><span class="premium-badge ${stateClass}">${item.state}</span></td>
+                <td>${item.current_stage}</td>
+                <td>${item.confidence ? item.confidence.toFixed(1) + '%' : '--'}</td>
+                <td><button class="btn-small" onclick="openSequenceDrilldown('${encodeURIComponent(JSON.stringify(item))}')">View</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    });
+}
+
+function toggleEteTable(timeframe) {
+    const tableContainer = document.getElementById(`ete-table-${timeframe}`);
+    if (tableContainer) {
+        if (tableContainer.style.display === 'none') {
+            tableContainer.style.display = 'block';
+        } else {
+            tableContainer.style.display = 'none';
+        }
+    }
+}
+
+// ==========================================
+// Backtest & Replay Integration
+// ==========================================
+
+async function fetchBacktestMetrics() {
+    try {
+        const response = await fetch('./backtest_results.json');
+        if (!response.ok) {
+            document.getElementById('backtest-loading').textContent = 'No backtest metrics found. The backtest engine may not have run yet.';
+            return;
+        }
+        const data = await response.json();
+        renderBacktest(data);
+    } catch (e) {
+        console.error('Failed to load backtest metrics', e);
+        document.getElementById('backtest-loading').textContent = 'Failed to load backtest metrics.';
+    }
+}
+
+function openSequenceDrilldown(sequenceDataStr) {
+    const item = JSON.parse(decodeURIComponent(sequenceDataStr));
+    let html = \`<div style="grid-column: 1/-1;">\`;
+    
+    html += \`<div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+        <span class="premium-badge badge-strong">Symbol: ${item.symbol}</span>
+        <span class="premium-badge badge-label">Timeframe: ${item.timeframe}</span>
+        <span class="premium-badge badge-gap-up">Confidence: ${item.confidence ? item.confidence.toFixed(1) + '%' : '--'}</span>
+    </div>\`;
+
+    html += \`<div class="sequence-timeline" style="border-left: 2px solid var(--accent-color); padding-left: 20px; margin-left: 10px;">\`;
+    
+    if (item.progress && item.progress.length > 0) {
+        item.progress.forEach((evt, idx) => {
+            let color = "var(--text-color)";
+            if (evt.action === "FAIL" || evt.action === "PAUSE") color = "#ff4c4c";
+            if (evt.action === "ADVANCE" || evt.action === "COMPLETED") color = "#4cff4c";
+            
+            html += \`
+                <div style="position: relative; margin-bottom: 25px;">
+                    <div style="position: absolute; left: -27px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: \${color};"></div>
+                    <div style="font-weight: bold; color: \${color};">\${evt.action} <span style="color: var(--text-muted); font-size: 0.9em; font-weight: normal;">(Stage: \${evt.stage})</span></div>
+                    <div style="color: var(--text-muted); font-size: 0.85em; margin-top: 4px;">Date: \${evt.timestamp}</div>
+                    \${evt.failure_reason && evt.failure_reason !== "None" ? \`<div style="color: #ff4c4c; font-size: 0.85em; margin-top: 4px;">Reason: \${evt.failure_reason}</div>\` : ''}
+                    <div style="font-size: 0.85em; margin-top: 4px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 4px;">
+                        Rule Evaluated: \${evt.rule_evaluated} <br>
+                        Metrics: Vol &Delta; \${evt.metrics?.vol_delta_pct?.toFixed(1) || 0}% | Spread &Delta; \${evt.metrics?.spread_delta_pct?.toFixed(1) || 0}%
+                    </div>
+                </div>
+            \`;
+        });
+    } else {
+        html += \`<p style="color:var(--text-muted);">No transition events found.</p>\`;
     }
     
-    allItems.forEach(item => {
-        const tr = document.createElement('tr');
-        
-        let stateClass = 'badge-label';
-        if (item.state === 'Completed') stateClass = 'badge-gap-up';
-        else if (item.state === 'Waiting') stateClass = 'badge-strong'; // amber equivalent
-        else if (item.state === 'Failed') stateClass = 'badge-gap-down';
+    html += \`</div></div>\`;
+    openModal(\`Sequence Timeline\`, [], html);
+}
 
-        tr.innerHTML = `
-            <td class="symbol-cell">${item.symbol}</td>
-            <td>${item.timeframe}</td>
-            <td><span class="premium-badge ${stateClass}">${item.state}</span></td>
-            <td>${item.current_stage}</td>
-            <td>${item.confidence ? item.confidence.toFixed(1) + '%' : '--'}</td>
-            <td><button class="btn-small" onclick="alert('Drill-down coming soon! sequence_id: ${item.sequence_id}')">View</button></td>
-        `;
-        tbody.appendChild(tr);
-    });
+function renderBacktest(data) {
+    const container = document.getElementById('backtest-metrics-container');
+    container.innerHTML = '';
+    
+    if (data.overall_metrics) {
+        const o = data.overall_metrics;
+        container.innerHTML = \`
+            <div class="stat-card glass-panel" style="text-align: center; padding: 20px;">
+                <h3 style="color:var(--text-muted); margin-bottom: 15px; font-size:1em; text-transform:uppercase; letter-spacing:1px;">Total Evaluated</h3>
+                <div style="font-size: 2.5em; font-weight: bold;">\${o.total_sequences || 0}</div>
+            </div>
+            <div class="stat-card glass-panel" style="text-align: center; padding: 20px;">
+                <h3 style="color:var(--text-muted); margin-bottom: 15px; font-size:1em; text-transform:uppercase; letter-spacing:1px;">Win Rate</h3>
+                <div style="font-size: 2.5em; font-weight: bold; color: #4cff4c;">\${o.win_rate ? o.win_rate.toFixed(1) + '%' : '0%'}</div>
+            </div>
+            <div class="stat-card glass-panel" style="text-align: center; padding: 20px;">
+                <h3 style="color:var(--text-muted); margin-bottom: 15px; font-size:1em; text-transform:uppercase; letter-spacing:1px;">Completions</h3>
+                <div style="font-size: 2.5em; font-weight: bold; color: var(--accent-color);">\${o.total_completed || 0}</div>
+            </div>
+            <div class="stat-card glass-panel" style="text-align: center; padding: 20px;">
+                <h3 style="color:var(--text-muted); margin-bottom: 15px; font-size:1em; text-transform:uppercase; letter-spacing:1px;">Failures</h3>
+                <div style="font-size: 2.5em; font-weight: bold; color: #ff4c4c;">\${o.total_failed || 0}</div>
+            </div>
+        \`;
+    } else {
+        container.innerHTML = '<p>No metrics available.</p>';
+    }
 }
 

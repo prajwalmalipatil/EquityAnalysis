@@ -37,6 +37,7 @@ class ResearchEvent(BaseModel):
     sequence_id: str
     symbol: str
     timeframe: str
+    config_id: str
     timestamp: str
     action: str
     stage: str
@@ -54,6 +55,7 @@ class ETESequence(BaseModel):
     sequence_id: str
     symbol: str
     timeframe: str
+    config_id: str
     trigger_date: str
     config_version: str
     state: ETEState

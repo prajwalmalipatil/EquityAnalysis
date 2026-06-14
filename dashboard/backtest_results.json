@@ -1,0 +1,8 @@
+{
+  "overall_metrics": {
+    "total_sequences": 6804,
+    "win_rate": 48.92710170487948,
+    "total_completed": 3329,
+    "total_failed": 3475
+  }
+}

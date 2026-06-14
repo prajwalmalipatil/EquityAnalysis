@@ -63,7 +63,7 @@ class EigenTransitionEngineService:
                       stage: str, rule_evaluated: str, matched: bool, 
                       failure_reason: FailureReason, metrics: StageMetrics, 
                       research_id: str, experiment_id: str,
-                      timestamp: str, dataset_checksum: str = "NA") -> ResearchEvent:
+                      timestamp: str, config_id: str, dataset_checksum: str = "NA") -> ResearchEvent:
         
         event_id_seed = f"{sequence_id}_{timestamp}_{action}_{stage}"
         deterministic_event_id = hashlib.sha256(event_id_seed.encode('utf-8')).hexdigest()
@@ -77,6 +77,7 @@ class EigenTransitionEngineService:
             sequence_id=sequence_id,
             symbol=symbol,
             timeframe=self.timeframe,
+            config_id=config_id,
             timestamp=timestamp,
             action=action,
             stage=stage,
@@ -139,7 +140,8 @@ class EigenTransitionEngineService:
                 metrics=metrics,
                 research_id=research_id,
                 experiment_id=experiment_id,
-                timestamp=f"{trigger_date}T00:00:00Z" # Deterministic trigger timestamp
+                timestamp=f"{trigger_date}T00:00:00Z", # Deterministic trigger timestamp
+                config_id=config_id
             )
             self._append_event(event)
 
@@ -210,6 +212,7 @@ class EigenTransitionEngineService:
                 sequence_id=seq_id,
                 symbol=ev_dict['symbol'],
                 timeframe=ev_dict['timeframe'],
+                config_id=ev_dict.get('config_id', 'AVE_1'),
                 trigger_date=ev_dict['timestamp'].split('T')[0],
                 config_version="1.0",
                 state=ETEState.TRIGGERED,
@@ -257,23 +260,40 @@ class EigenTransitionEngineService:
                 self._handle_pause(seq, FailureReason.DATA_UNAVAILABLE)
             return
             
-        current = df.iloc[-1]
-        previous = df.iloc[-2]
-        
         # Determine the date column flexibly
+        date_col = None
         if df.index.name:
-            current_date = str(current.name).split()[0]
-        elif 'Date' in current:
-            current_date = str(current['Date']).split()[0]
-        elif 'YearWeek' in current:
-            current_date = str(current['YearWeek']).split()[0]
-        elif 'YearMonth' in current:
-            current_date = str(current['YearMonth']).split()[0]
-        else:
-            current_date = "UNKNOWN_DATE"
+            date_col = df.index.name
+            df = df.reset_index()
+        elif 'Date' in df.columns:
+            date_col = 'Date'
+        elif 'YearWeek' in df.columns:
+            date_col = 'YearWeek'
+        elif 'YearMonth' in df.columns:
+            date_col = 'YearMonth'
+            
+        if not date_col:
+            return # Cannot evaluate without dates
+            
+        df['str_date'] = df[date_col].astype(str).str.split().str[0]
         
         for seq in active_seqs:
-            if current_date > seq.trigger_date:
+            # Extract historical data exactly from the trigger_date forward
+            eval_df = df[df['str_date'] >= seq.trigger_date].reset_index(drop=True)
+            
+            # A walk-forward state machine. Stage T matches index 0 (trigger date). 
+            # Stage T+1 evaluates index 1 vs index 0.
+            while seq.state in (ETEState.TRIGGERED, ETEState.WAITING, ETEState.PAUSED):
+                stage_idx = seq.current_stage_index
+                
+                # We need stage_idx + 1 rows to compare current vs previous.
+                if len(eval_df) <= stage_idx + 1:
+                    break # Wait for next candle
+                    
+                previous = eval_df.iloc[stage_idx]
+                current = eval_df.iloc[stage_idx + 1]
+                current_date = current['str_date']
+                
                 self._evaluate_sequence(seq, current, previous, current_date)
 
     def _handle_pause(self, seq: ETESequence, reason: FailureReason):
@@ -289,12 +309,13 @@ class EigenTransitionEngineService:
             metrics=metrics,
             research_id=seq.research_id,
             experiment_id=seq.experiment_id,
-            timestamp=f"UNKNOWN_T00:00:00Z" # Pauses happen when data is unavailable, hard to determine time, but typically we want deterministic
+            timestamp=f"UNKNOWN_T00:00:00Z", # Pauses happen when data is unavailable, hard to determine time, but typically we want deterministic
+            config_id=seq.config_id
         )
         self._append_event(event)
 
     def _evaluate_sequence(self, seq: ETESequence, current: pd.Series, previous: pd.Series, current_date: str):
-        config = self.sequences_config.get("AVE_1", {}) # Currently hardcoded to single test config
+        config = self.sequences_config.get(seq.config_id, {})
         target_rules = config.get("sequence", ["HVHS", "LVLS", "HVHS", "LVLS"])
         
         if seq.current_stage_index >= len(target_rules):
@@ -350,7 +371,8 @@ class EigenTransitionEngineService:
             metrics=metrics,
             research_id=seq.research_id,
             experiment_id=seq.experiment_id,
-            timestamp=f"{current_date}T00:00:00Z"
+            timestamp=f"{current_date}T00:00:00Z",
+            config_id=seq.config_id
         )
         self._append_event(event)
 
