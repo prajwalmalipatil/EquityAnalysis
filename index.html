@@ -31,6 +31,9 @@
                 <a href="#ete" class="nav-item">
                     <span class="icon">🔄</span> Transition Engine
                 </a>
+                <a href="#backtest" class="nav-item">
+                    <span class="icon">⏮️</span> Backtest & Replay
+                </a>
             </nav>
             <div class="sidebar-footer">
                 <div id="stale-warning" class="stale-warning hidden">
@@ -130,22 +133,89 @@
                             Loading ETE data...
                         </div>
                         <div id="ete-content" style="display: none;">
-                            <div class="table-container">
-                                <table class="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Symbol</th>
-                                            <th>Timeframe</th>
-                                            <th>State</th>
-                                            <th>Stage</th>
-                                            <th>Confidence</th>
-                                            <th>Details</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="ete-body">
-                                        <!-- Populated by JS -->
-                                    </tbody>
-                                </table>
+                            <div class="eigen-stats">
+                                <!-- Daily ETE -->
+                                <div class="eigen-row" onclick="toggleEteTable('daily')">
+                                    <span>Daily Sequences</span>
+                                    <span class="badge" id="ete-daily-count">--</span>
+                                </div>
+                                <div class="eigen-table-container" id="ete-table-daily" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>State</th>
+                                                <th>Stage</th>
+                                                <th>Confidence</th>
+                                                <th>Details</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ete-body-daily">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <!-- Weekly ETE -->
+                                <div class="eigen-row" onclick="toggleEteTable('weekly')">
+                                    <span>Weekly Sequences</span>
+                                    <span class="badge" id="ete-weekly-count">--</span>
+                                </div>
+                                <div class="eigen-table-container" id="ete-table-weekly" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>State</th>
+                                                <th>Stage</th>
+                                                <th>Confidence</th>
+                                                <th>Details</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ete-body-weekly">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <!-- Monthly ETE -->
+                                <div class="eigen-row" onclick="toggleEteTable('monthly')">
+                                    <span>Monthly Sequences</span>
+                                    <span class="badge" id="ete-monthly-count">--</span>
+                                </div>
+                                <div class="eigen-table-container" id="ete-table-monthly" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>State</th>
+                                                <th>Stage</th>
+                                                <th>Confidence</th>
+                                                <th>Details</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ete-body-monthly">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Backtest & Replay -->
+                    <section id="backtest" class="panel glass-panel backtest-section" style="display: none;">
+                        <div class="panel-header">
+                            <h2>Backtesting & Replay</h2>
+                        </div>
+                        <div class="table-container" style="padding: 20px;">
+                            <h3>Replay Engine</h3>
+                            <p style="color:var(--text-muted); margin-bottom: 20px;">To launch the Replay Dashboard for any historical date, run the following command in your terminal:</p>
+                            <code style="background: rgba(255,255,255,0.1); padding: 10px; border-radius: 4px; display:block; margin-bottom:30px;">python main_replay.py --date YYYY-MM-DD</code>
+                            
+                            <h3>Backtesting Metrics</h3>
+                            <div id="backtest-metrics-container">
+                                <div style="text-align: center; color: var(--text-muted);" id="backtest-loading">Loading backtest metrics...</div>
                             </div>
                         </div>
                     </section>
