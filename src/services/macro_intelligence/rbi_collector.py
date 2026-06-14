@@ -1,4 +1,7 @@
 import feedparser
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 from email.utils import parsedate_to_datetime
 from datetime import datetime, timezone
 from typing import List
@@ -25,6 +28,21 @@ class RBICollector(OfficialSourceCollector):
     def provider_name(self) -> str:
         return "RBI"
 
+    def _get_retry_session(self) -> requests.Session:
+        """Configures a requests session with exponential backoff."""
+        session = requests.Session()
+        retry = Retry(
+            total=3,
+            read=3,
+            connect=3,
+            backoff_factor=2,
+            status_forcelist=(500, 502, 503, 504),
+        )
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount("http://", adapter)
+        session.mount("https://", adapter)
+        return session
+
     def fetch_since(self, last_ts: str) -> List[MacroEvent]:
         """
         Continuity Engine: Fetches all events published after last_ts.
@@ -41,10 +59,31 @@ class RBICollector(OfficialSourceCollector):
             except ValueError:
                 last_dt = datetime(2000, 1, 1, tzinfo=timezone.utc)
 
-        logger.info("FETCHING_RBI_EVENTS", extra={"since": last_dt.isoformat()})
+        now = datetime.now(timezone.utc)
+        gap_days = (now - last_dt).days
+
+        logger.info("FETCHING_RBI_EVENTS", extra={"since": last_dt.isoformat(), "gap_days": gap_days})
+
+        if gap_days > 365:
+            logger.warning("YEARLY_ARCHIVE_SCAN_REQUIRED", extra={"gap_days": gap_days})
+            # TODO: Implement yearly HTML archive scraping fallback
+        elif gap_days > 30:
+            logger.warning("MONTHLY_ARCHIVE_SCAN_REQUIRED", extra={"gap_days": gap_days})
+            # TODO: Implement monthly HTML archive scraping fallback
+        elif gap_days > 7:
+            logger.warning("WEEKLY_ARCHIVE_SCAN_REQUIRED", extra={"gap_days": gap_days})
+            
+        session = self._get_retry_session()
 
         for category, url in self.FEEDS.items():
-            feed = feedparser.parse(url)
+            try:
+                response = session.get(url, timeout=30)
+                response.raise_for_status()
+                feed = feedparser.parse(response.content)
+            except Exception as e:
+                logger.error("NETWORK_FAILURE", extra={"url": url, "error": str(e)})
+                continue
+                
             for entry in feed.entries:
                 try:
                     pub_dt = parsedate_to_datetime(entry.published)
