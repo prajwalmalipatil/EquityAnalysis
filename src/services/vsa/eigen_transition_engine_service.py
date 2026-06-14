@@ -336,6 +336,7 @@ class EigenTransitionEngineService:
             config_id=seq.config_id
         )
         self._append_event(event)
+        self._apply_event_to_state(event.model_dump(), {seq.sequence_id: seq})
 
     def _evaluate_sequence(self, seq: ETESequence, current: pd.Series, previous: pd.Series, current_date: str):
         config = self.sequences_config.get(seq.config_id, {})
@@ -398,6 +399,7 @@ class EigenTransitionEngineService:
             config_id=seq.config_id
         )
         self._append_event(event)
+        self._apply_event_to_state(event.model_dump(), {seq.sequence_id: seq})
 
 from src.services.orchestration.registry import platform_registry, ResearchModule
 platform_registry.register(ResearchModule(

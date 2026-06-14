@@ -615,15 +615,15 @@ async function fetchBacktestMetrics() {
 
 function openSequenceDrilldown(sequenceDataStr) {
     const item = JSON.parse(decodeURIComponent(sequenceDataStr));
-    let html = \`<div style="grid-column: 1/-1;">\`;
+    let html = `<div style="grid-column: 1/-1;">`;
     
-    html += \`<div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+    html += `<div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
         <span class="premium-badge badge-strong">Symbol: ${item.symbol}</span>
         <span class="premium-badge badge-label">Timeframe: ${item.timeframe}</span>
         <span class="premium-badge badge-gap-up">Confidence: ${item.confidence ? item.confidence.toFixed(1) + '%' : '--'}</span>
-    </div>\`;
+    </div>`;
 
-    html += \`<div class="sequence-timeline" style="border-left: 2px solid var(--accent-color); padding-left: 20px; margin-left: 10px;">\`;
+    html += `<div class="sequence-timeline" style="border-left: 2px solid var(--accent-color); padding-left: 20px; margin-left: 10px;">`;
     
     if (item.progress && item.progress.length > 0) {
         item.progress.forEach((evt, idx) => {
@@ -631,25 +631,25 @@ function openSequenceDrilldown(sequenceDataStr) {
             if (evt.action === "FAIL" || evt.action === "PAUSE") color = "#ff4c4c";
             if (evt.action === "ADVANCE" || evt.action === "COMPLETED") color = "#4cff4c";
             
-            html += \`
+            html += `
                 <div style="position: relative; margin-bottom: 25px;">
-                    <div style="position: absolute; left: -27px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: \${color};"></div>
-                    <div style="font-weight: bold; color: \${color};">\${evt.action} <span style="color: var(--text-muted); font-size: 0.9em; font-weight: normal;">(Stage: \${evt.stage})</span></div>
-                    <div style="color: var(--text-muted); font-size: 0.85em; margin-top: 4px;">Date: \${evt.timestamp}</div>
-                    \${evt.failure_reason && evt.failure_reason !== "None" ? \`<div style="color: #ff4c4c; font-size: 0.85em; margin-top: 4px;">Reason: \${evt.failure_reason}</div>\` : ''}
+                    <div style="position: absolute; left: -27px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: ${color};"></div>
+                    <div style="font-weight: bold; color: ${color};">${evt.action} <span style="color: var(--text-muted); font-size: 0.9em; font-weight: normal;">(Stage: ${evt.stage})</span></div>
+                    <div style="color: var(--text-muted); font-size: 0.85em; margin-top: 4px;">Date: ${evt.timestamp}</div>
+                    ${evt.failure_reason && evt.failure_reason !== "None" ? `<div style="color: #ff4c4c; font-size: 0.85em; margin-top: 4px;">Reason: ${evt.failure_reason}</div>` : ''}
                     <div style="font-size: 0.85em; margin-top: 4px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 4px;">
-                        Rule Evaluated: \${evt.rule_evaluated} <br>
-                        Metrics: Vol &Delta; \${evt.metrics?.vol_delta_pct?.toFixed(1) || 0}% | Spread &Delta; \${evt.metrics?.spread_delta_pct?.toFixed(1) || 0}%
+                        Rule Evaluated: ${evt.rule_evaluated} <br>
+                        Metrics: Vol &Delta; ${evt.metrics?.vol_delta_pct?.toFixed(1) || 0}% | Spread &Delta; ${evt.metrics?.spread_delta_pct?.toFixed(1) || 0}%
                     </div>
                 </div>
-            \`;
+            `;
         });
     } else {
-        html += \`<p style="color:var(--text-muted);">No transition events found.</p>\`;
+        html += `<p style="color:var(--text-muted);">No transition events found.</p>`;
     }
     
-    html += \`</div></div>\`;
-    openModal(\`Sequence Timeline\`, [], html);
+    html += `</div></div>`;
+    openModal(`Sequence Timeline`, [], html);
 }
 
 function renderBacktest(data) {
@@ -658,26 +658,161 @@ function renderBacktest(data) {
     
     if (data.overall_metrics) {
         const o = data.overall_metrics;
-        container.innerHTML = \`
+        container.innerHTML = `
             <div class="stat-card glass-panel" style="text-align: center; padding: 20px;">
                 <h3 style="color:var(--text-muted); margin-bottom: 15px; font-size:1em; text-transform:uppercase; letter-spacing:1px;">Total Evaluated</h3>
-                <div style="font-size: 2.5em; font-weight: bold;">\${o.total_sequences || 0}</div>
+                <div style="font-size: 2.5em; font-weight: bold;">${o.total_sequences || 0}</div>
             </div>
             <div class="stat-card glass-panel" style="text-align: center; padding: 20px;">
                 <h3 style="color:var(--text-muted); margin-bottom: 15px; font-size:1em; text-transform:uppercase; letter-spacing:1px;">Win Rate</h3>
-                <div style="font-size: 2.5em; font-weight: bold; color: #4cff4c;">\${o.win_rate ? o.win_rate.toFixed(1) + '%' : '0%'}</div>
+                <div style="font-size: 2.5em; font-weight: bold; color: #4cff4c;">${o.win_rate ? o.win_rate.toFixed(1) + '%' : '0%'}</div>
             </div>
-            <div class="stat-card glass-panel" style="text-align: center; padding: 20px;">
-                <h3 style="color:var(--text-muted); margin-bottom: 15px; font-size:1em; text-transform:uppercase; letter-spacing:1px;">Completions</h3>
-                <div style="font-size: 2.5em; font-weight: bold; color: var(--accent-color);">\${o.total_completed || 0}</div>
+            <div class="stat-card glass-panel clickable-card" style="text-align: center; padding: 20px; cursor: pointer;" onclick="openCompletionsDrilldown()">
+                <h3 style="color:var(--text-muted); margin-bottom: 15px; font-size:1em; text-transform:uppercase; letter-spacing:1px;">Completions <span style="font-size: 0.6em; color: var(--accent-color);">(Click for details)</span></h3>
+                <div style="font-size: 2.5em; font-weight: bold; color: var(--accent-color);">${o.total_completed || 0}</div>
             </div>
             <div class="stat-card glass-panel" style="text-align: center; padding: 20px;">
                 <h3 style="color:var(--text-muted); margin-bottom: 15px; font-size:1em; text-transform:uppercase; letter-spacing:1px;">Failures</h3>
-                <div style="font-size: 2.5em; font-weight: bold; color: #ff4c4c;">\${o.total_failed || 0}</div>
+                <div style="font-size: 2.5em; font-weight: bold; color: #ff4c4c;">${o.total_failed || 0}</div>
             </div>
-        \`;
+        `;
     } else {
         container.innerHTML = '<p>No metrics available.</p>';
     }
+}
+
+async function openCompletionsDrilldown() {
+    try {
+        const response = await fetch(`./backtest_results.json?t=${new Date().getTime()}`);
+        if (!response.ok) {
+            console.error('Failed to fetch completions');
+            return;
+        }
+        const data = await response.json();
+        
+        const daily = data.completions_daily || [];
+        const weekly = data.completions_weekly || [];
+        const monthly = data.completions_monthly || [];
+        
+        let html = `
+            <div class="tabs-container" style="margin-bottom: 20px; grid-column: 1/-1;">
+                <div class="tab-headers" style="display: flex; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                    <button class="tab-btn active" onclick="switchCompletionTab('daily')" id="tab-btn-daily" style="background:transparent; border:none; color:var(--text-color); cursor:pointer; font-weight:bold; padding: 8px 16px; border-radius: 4px; background: rgba(255,255,255,0.1);">Daily (${daily.length})</button>
+                    <button class="tab-btn" onclick="switchCompletionTab('weekly')" id="tab-btn-weekly" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; font-weight:bold; padding: 8px 16px; border-radius: 4px;">Weekly (${weekly.length})</button>
+                    <button class="tab-btn" onclick="switchCompletionTab('monthly')" id="tab-btn-monthly" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; font-weight:bold; padding: 8px 16px; border-radius: 4px;">Monthly (${monthly.length})</button>
+                </div>
+            </div>
+            <div class="tab-content" id="tab-content-daily" style="display:block; grid-column: 1/-1;">
+                ${renderCompletionTable(daily)}
+            </div>
+            <div class="tab-content" id="tab-content-weekly" style="display:none; grid-column: 1/-1;">
+                ${renderCompletionTable(weekly)}
+            </div>
+            <div class="tab-content" id="tab-content-monthly" style="display:none; grid-column: 1/-1;">
+                ${renderCompletionTable(monthly)}
+            </div>
+        `;
+        
+        openModal('Backtest Completions', [], html);
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+function switchCompletionTab(tabName) {
+    ['daily', 'weekly', 'monthly'].forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        const content = document.getElementById(`tab-content-${t}`);
+        if (btn && content) {
+            if (t === tabName) {
+                btn.style.color = 'var(--text-color)';
+                btn.style.background = 'rgba(255,255,255,0.1)';
+                content.style.display = 'block';
+            } else {
+                btn.style.color = 'var(--text-muted)';
+                btn.style.background = 'transparent';
+                content.style.display = 'none';
+            }
+        }
+    });
+}
+
+function renderCompletionTable(items) {
+    if (!items || items.length === 0) {
+        return `<p style="color:var(--text-muted); text-align:center; padding: 20px;">No completions found for this timeframe.</p>`;
+    }
+    
+    // Group items by symbol
+    const groups = {};
+    items.forEach(item => {
+        if (!groups[item.symbol]) groups[item.symbol] = [];
+        groups[item.symbol].push(item);
+    });
+    
+    // Sort symbols by the latest completion date descending
+    const sortedSymbols = Object.keys(groups).sort((a, b) => {
+        const latestA = Math.max(...groups[a].map(i => new Date(i.completion_date).getTime() || 0));
+        const latestB = Math.max(...groups[b].map(i => new Date(i.completion_date).getTime() || 0));
+        return latestB - latestA;
+    });
+    
+    let html = `<div class="table-container" style="max-height: 60vh; overflow-y: auto;">`;
+    
+    sortedSymbols.forEach((symbol, index) => {
+        const groupItems = groups[symbol];
+        
+        // Sort items within the group descending by completion date
+        groupItems.sort((a, b) => new Date(b.completion_date).getTime() - new Date(a.completion_date).getTime());
+        
+        const latestDate = groupItems[0].completion_date || '--';
+        const toggleId = `comp-group-${Math.random().toString(36).substring(2, 9)}`;
+        const displayState = index === 0 ? 'block' : 'none'; // Auto-expand the very first symbol
+        
+        // Accordion Row Header
+        html += `
+            <div class="eigen-row" onclick="const el = document.getElementById('${toggleId}'); el.style.display = el.style.display === 'none' ? 'block' : 'none';" style="cursor:pointer; margin-bottom: 5px; background: rgba(255,255,255,0.03);">
+                <span>
+                    <strong style="color: var(--text-color); font-size: 1.1em;">${symbol}</strong> 
+                    <span style="color:var(--text-muted); font-size: 0.9em; margin-left: 10px;">Latest: ${latestDate}</span>
+                </span>
+                <span class="badge" style="background: rgba(255,255,255,0.1); color: var(--text-color);">${groupItems.length}</span>
+            </div>
+            
+            <div class="eigen-table-container" id="${toggleId}" style="display: ${displayState}; margin-bottom: 15px; border-left: 2px solid rgba(255,255,255,0.1); padding-left: 10px;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Trigger Date</th>
+                            <th>Completion Date</th>
+                            <th>Pattern</th>
+                            <th>Sentiment</th>
+                            <th>Vol Surge</th>
+                            <th>Max Fwd Rtn (5b)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+        `;
+        
+        groupItems.forEach(item => {
+            const sentimentClass = item.sentiment === 'Bullish' ? 'badge-gap-up' : 'badge-gap-down';
+            const returnColor = item.fwd_return_5b > 0 ? '#4cff4c' : '#ff4c4c';
+            
+            html += `
+                <tr>
+                    <td>${item.start_date || '--'}</td>
+                    <td>${item.completion_date || '--'}</td>
+                    <td><span class="premium-badge badge-label">${item.trigger_pattern}</span></td>
+                    <td><span class="premium-badge ${sentimentClass}">${item.sentiment}</span></td>
+                    <td>${item.vol_surge_pct !== undefined ? item.vol_surge_pct.toFixed(1) + '%' : '--'}</td>
+                    <td style="color: ${returnColor}; font-weight: bold;">${item.fwd_return_5b !== null ? item.fwd_return_5b.toFixed(2) + '%' : '--'}</td>
+                </tr>
+            `;
+        });
+        
+        html += `</tbody></table></div>`;
+    });
+    
+    html += `</div>`;
+    return html;
 }
 
