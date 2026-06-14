@@ -1,4 +1,5 @@
 let currentData = null;
+let macroEvents = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     fetchHistoryIndex();
@@ -6,7 +7,17 @@ document.addEventListener('DOMContentLoaded', () => {
     setupNavigation();
     setupModal();
     setupClickableCards();
+    setupMacroControls();
 });
+
+function setupMacroControls() {
+    ['macro-search', 'macro-category-filter', 'macro-sort'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', () => renderMacroTimeline());
+        }
+    });
+}
 
 async function fetchHistoryIndex() {
     try {
@@ -268,68 +279,134 @@ function renderDashboard(data) {
 
     // Render Macro Intelligence
     const macroCount = document.getElementById('macro-count');
-    const macroTimeline = document.getElementById('macro-timeline');
     
-    if (macroCount && macroTimeline) {
+    if (macroCount) {
         if (data.macro_intelligence) {
             macroCount.textContent = data.macro_intelligence.total_events || 0;
-            macroTimeline.innerHTML = '';
-            
-            const recentEvents = data.macro_intelligence.recent_events || [];
-            if (recentEvents.length > 0) {
-                recentEvents.forEach(event => {
-                    const eventCard = document.createElement('div');
-                    eventCard.className = 'macro-event-card glass-panel clickable-card';
-                    
-                    const pubDate = new Date(event.published_at).toLocaleDateString();
-                    const impact = event.impact || {};
-                    
-                    let badgeClass = 'badge-label';
-                    if (impact.direction === 'Positive') badgeClass = 'badge-gap-up';
-                    else if (impact.direction === 'Negative') badgeClass = 'badge-gap-down';
-                    
-                    const isNewHtml = event.is_new_since_last_session ? `<span class="premium-badge badge-strong" style="background:var(--accent-color);color:#000;font-weight:bold;animation: pulse 2s infinite;">NEW SINCE LAST TRADING SESSION</span>` : '';
-
-                    eventCard.innerHTML = `
-                        <div class="macro-event-header" style="display:flex; flex-wrap:wrap; gap:8px;">
-                            <span class="macro-date">${pubDate}</span>
-                            <span class="premium-badge ${badgeClass}">${impact.direction || 'Unknown'}</span>
-                            ${isNewHtml}
-                        </div>
-                        <h3>${event.title}</h3>
-                        <p>${event.summary ? event.summary.substring(0, 150) + '...' : ''}</p>
-                    `;
-                    
-                    eventCard.addEventListener('click', () => {
-                        const impactHtml = `
-                            <div style="grid-column: 1/-1; text-align: left;">
-                                <p><strong>Published:</strong> ${pubDate}</p>
-                                <p><strong>Source:</strong> <a href="${event.url}" target="_blank">${event.source}</a></p>
-                                <div style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                                    <h4 style="margin-top: 0;">Event-to-Market Impact</h4>
-                                    <p><strong>Assets:</strong> ${(impact.asset_classes || []).join(', ')}</p>
-                                    <p><strong>Sectors:</strong> ${(impact.sectors || []).join(', ')}</p>
-                                    <p><strong>Horizon:</strong> ${impact.horizon || '--'}</p>
-                                </div>
-                                <div style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                                    <h4 style="margin-top: 0;">Detailed Summary</h4>
-                                    <p>${event.summary || 'No summary available.'}</p>
-                                </div>
-                            </div>
-                        `;
-                        openModal(event.title, [], impactHtml);
-                    });
-                    
-                    macroTimeline.appendChild(eventCard);
-                });
-            } else {
-                macroTimeline.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding: 20px;">No macro events found.</p>`;
-            }
+            macroEvents = data.macro_intelligence.recent_events || [];
+            renderMacroTimeline();
         } else {
             macroCount.textContent = '0';
-            macroTimeline.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding: 20px;">No macro intelligence data.</p>`;
+            macroEvents = [];
+            renderMacroTimeline();
         }
     }
+}
+
+function renderMacroTimeline() {
+    const timeline = document.getElementById('macro-timeline');
+    if (!timeline) return;
+    
+    if (!macroEvents || macroEvents.length === 0) {
+        timeline.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding: 20px;">No macro intelligence data.</p>`;
+        return;
+    }
+    
+    const searchStr = (document.getElementById('macro-search')?.value || '').toLowerCase();
+    const categoryFilter = document.getElementById('macro-category-filter')?.value || '';
+    const sortOrder = document.getElementById('macro-sort')?.value || 'desc';
+    
+    let filtered = macroEvents.filter(evt => {
+        // Handle both old schema (flat) and new schema (nested)
+        const title = (evt.official_data?.title || evt.title || '').toLowerCase();
+        const content = (evt.derived_data?.ai_summary || evt.official_data?.content || evt.summary || '').toLowerCase();
+        const eventId = (evt.event_id || '').toLowerCase();
+        const category = evt.official_data?.category || evt.category || '';
+        
+        if (searchStr && !title.includes(searchStr) && !content.includes(searchStr) && !eventId.includes(searchStr)) {
+            return false;
+        }
+        if (categoryFilter && category !== categoryFilter) {
+            return false;
+        }
+        return true;
+    });
+    
+    filtered.sort((a, b) => {
+        const dateA = new Date(a.official_data?.publication_date || a.published_at || 0).getTime();
+        const dateB = new Date(b.official_data?.publication_date || b.published_at || 0).getTime();
+        return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+    });
+    
+    timeline.innerHTML = '';
+    
+    if (filtered.length === 0) {
+        timeline.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding: 20px;">No events match your criteria.</p>`;
+        return;
+    }
+    
+    filtered.forEach(event => {
+        const card = document.createElement('div');
+        card.className = 'macro-event-card glass-panel clickable-card';
+        
+        const title = event.official_data?.title || event.title || 'Untitled Event';
+        const pubDateStr = event.official_data?.publication_date || event.published_at;
+        const pubDate = pubDateStr ? new Date(pubDateStr).toLocaleDateString() : 'Unknown Date';
+        const summary = event.derived_data?.ai_summary || event.official_data?.content || event.summary || '';
+        const url = event.official_data?.official_url || event.url || '#';
+        const source = event.official_data?.source || event.source || 'Unknown';
+        const category = event.official_data?.category || event.category || 'Uncategorized';
+        
+        const isNewHtml = (event.metadata?.lifecycle_status === 'NEW' || event.is_new_since_last_session) 
+            ? `<span class="premium-badge badge-strong" style="background:var(--accent-color);color:#000;font-weight:bold;animation: pulse 2s infinite;">NEW</span>` 
+            : '';
+
+        card.innerHTML = `
+            <div class="macro-event-header" style="display:flex; flex-wrap:wrap; gap:8px;">
+                <span class="macro-date">${pubDate}</span>
+                <span class="premium-badge badge-label">${category}</span>
+                <span class="premium-badge badge-strong" style="font-family:monospace; font-size:0.8em; opacity:0.7;">ID: ${event.event_id || '---'}</span>
+                ${isNewHtml}
+            </div>
+            <h3>${title}</h3>
+            <p>${summary.substring(0, 150)}${summary.length > 150 ? '...' : ''}</p>
+        `;
+        
+        card.addEventListener('click', () => {
+            let drilldownHtml = `
+                <div style="grid-column: 1/-1; text-align: left;">
+                    <div style="display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
+                        <span class="premium-badge badge-label"><strong>Published:</strong> ${pubDate}</span>
+                        <span class="premium-badge badge-label"><strong>Source:</strong> <a href="${url}" target="_blank" style="color:white; text-decoration:underline;">${source}</a></span>
+                        <span class="premium-badge badge-label"><strong>Category:</strong> ${category}</span>
+                        <span class="premium-badge badge-strong"><strong>ID:</strong> ${event.event_id}</span>
+                    </div>
+            `;
+            
+            if (event.derived_data && event.derived_data.ai_summary) {
+                drilldownHtml += `
+                    <div style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                        <h4 style="margin-top: 0; color:var(--accent-color);">✨ AI Enriched Summary</h4>
+                        <p>${event.derived_data.ai_summary.replace(/\n/g, '<br>')}</p>
+                        ${event.derived_data.themes ? `<p style="margin-top:10px;"><strong>Themes:</strong> ${event.derived_data.themes.join(', ')}</p>` : ''}
+                    </div>
+                `;
+            }
+            
+            drilldownHtml += `
+                    <div style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                        <h4 style="margin-top: 0;">Official Content / Abstract</h4>
+                        <p>${(event.official_data?.content || event.summary || 'No official content available.').replace(/\n/g, '<br>')}</p>
+                    </div>
+            `;
+            
+            if (event.official_data?.attachments && event.official_data.attachments.length > 0) {
+                drilldownHtml += `
+                    <div style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                        <h4 style="margin-top: 0;">Attachments</h4>
+                        <ul style="margin: 0; padding-left: 20px;">
+                            ${event.official_data.attachments.map(a => `<li>${a}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            drilldownHtml += `</div>`;
+            openModal(title, [], drilldownHtml);
+        });
+        
+        timeline.appendChild(card);
+    });
 }
 
 function setupClickableCards() {
