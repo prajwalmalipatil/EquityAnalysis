@@ -76,11 +76,17 @@ class JSONPublisher:
                     pass
 
         # Load Macro events via Query Service
-        macro_config = load_config()
-        macro_config.storage.base_path = history_dir
-        macro_config.storage.history_file = history_dir / "rbi_events.jsonl"
+        config_path = Path("src/services/macro_intelligence/config.yaml")
+        macro_config = load_config(config_path)
         
-        repo = JSONEventReadRepository(macro_config.storage)
+        import dataclasses
+        new_storage = dataclasses.replace(
+            macro_config.storage, 
+            base_path=history_dir, 
+            history_file=history_dir / "rbi_events.jsonl"
+        )
+        
+        repo = JSONEventReadRepository(new_storage)
         query_service = MacroQueryService(repo)
         
         all_macro_events = query_service.get_all_events()
