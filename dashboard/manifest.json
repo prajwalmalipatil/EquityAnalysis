@@ -1,1 +1,41 @@
-{"schema_version": "1.0", "engine_version": "1.0", "generated_at": "2026-06-14T11:25:22.684237+00:00", "research_events": 123, "active_sequences": 123, "completed_sequences": 0, "last_market_date": "2026-06-14", "files": {"summary": "summary.9ad10a.json", "indicator_catalog": "indicator_catalog.48b31d.json", "history_index": "history_index.9b4ce9.json"}}
+{
+  "schema_version": 2,
+  "generated_at": "2026-06-14T19:15:28.315969+00:00",
+  "generator": "Macro Intelligence Pipeline",
+  "pipeline_version": "2.1.0",
+  "repository_version": "v1",
+  "event_count": 30,
+  "analytics_version": 1,
+  "search_index_version": 1,
+  "artifacts": {
+    "dashboard": {
+      "version": "2",
+      "file": "data.json",
+      "record_count": 30
+    },
+    "analytics": {
+      "version": "1",
+      "file": "analytics.json",
+      "record_count": 30
+    },
+    "analytics_history": {
+      "version": "1",
+      "file": "analytics-history.json"
+    },
+    "search": {
+      "version": "1",
+      "file": "search-index.json",
+      "record_count": 5047
+    },
+    "relationships": {
+      "version": "1",
+      "file": "relationships.json",
+      "record_count": 108
+    },
+    "graph": {
+      "version": "1",
+      "file": "graph.json",
+      "record_count": 30
+    }
+  }
+}

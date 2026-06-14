@@ -1,4 +1,12 @@
 let currentData = null;
+let macroEvents = [];
+
+const workspaceState = {
+    selectedEventId: null,
+    selectedCategory: '',
+    searchQuery: '',
+    sortOrder: 'desc'
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     fetchHistoryIndex();
@@ -6,7 +14,64 @@ document.addEventListener('DOMContentLoaded', () => {
     setupNavigation();
     setupModal();
     setupClickableCards();
+    setupMacroControls();
 });
+
+function setupMacroControls() {
+    const searchInput = document.getElementById('macro-search');
+    const categorySelect = document.getElementById('macro-category-filter');
+    const sortSelect = document.getElementById('macro-sort');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            workspaceState.searchQuery = e.target.value.toLowerCase();
+            renderMacroTimeline();
+        });
+    }
+
+    if (categorySelect) {
+        categorySelect.addEventListener('change', (e) => {
+            workspaceState.selectedCategory = e.target.value;
+            renderMacroTimeline();
+        });
+    }
+
+    if (sortSelect) {
+        sortSelect.addEventListener('change', (e) => {
+            workspaceState.sortOrder = e.target.value;
+            renderMacroTimeline();
+        });
+    }
+
+    // Keyboard navigation for timeline
+    document.addEventListener('keydown', (e) => {
+        const macroTab = document.getElementById('macro');
+        if (!macroTab || macroTab.style.display === 'none') return;
+        
+        // Skip if typing in search
+        if (e.target.id === 'macro-search') return;
+        
+        if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            const cards = Array.from(document.querySelectorAll('.macro-event-card'));
+            if (cards.length === 0) return;
+            
+            e.preventDefault();
+            const currentIndex = cards.findIndex(c => c.dataset.eventId === workspaceState.selectedEventId);
+            
+            if (e.key === 'ArrowDown') {
+                const nextIndex = currentIndex < cards.length - 1 ? currentIndex + 1 : 0;
+                cards[nextIndex].focus();
+                cards[nextIndex].click();
+                cards[nextIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else if (e.key === 'ArrowUp') {
+                const prevIndex = currentIndex > 0 ? currentIndex - 1 : Math.max(0, cards.length - 1);
+                cards[prevIndex].focus();
+                cards[prevIndex].click();
+                cards[prevIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+    });
+}
 
 async function fetchHistoryIndex() {
     try {
@@ -68,45 +133,31 @@ function switchTab(tabId) {
     const consensus = document.getElementById('consensus');
     const eigen = document.getElementById('eigen');
     const macro = document.getElementById('macro');
+    const analytics = document.getElementById('analytics');
     const ete = document.getElementById('ete');
     const alerts = document.getElementById('alerts-container'); 
+    const backtest = document.getElementById('backtest');
+
+    const sections = [overview, consensus, eigen, macro, analytics, ete, backtest];
+    sections.forEach(s => { if (s) s.style.display = 'none'; });
 
     if (tabId === 'overview') {
         overview.style.display = 'grid';
         consensus.style.display = 'flex';
         eigen.style.display = 'flex';
-        if (macro) macro.style.display = 'none';
-        if (ete) ete.style.display = 'none';
         if (alerts) alerts.style.display = 'flex';
-        const backtest = document.getElementById('backtest');
-        if (backtest) backtest.style.display = 'none';
     } else if (tabId === 'consensus') {
-        overview.style.display = 'none';
         consensus.style.display = 'flex';
-        eigen.style.display = 'none';
-        if (macro) macro.style.display = 'none';
-        if (ete) ete.style.display = 'none';
         if (alerts) alerts.style.display = 'none';
-        const backtest = document.getElementById('backtest');
-        if (backtest) backtest.style.display = 'none';
     } else if (tabId === 'eigen') {
-        overview.style.display = 'none';
-        consensus.style.display = 'none';
         eigen.style.display = 'flex';
-        if (macro) macro.style.display = 'none';
-        if (ete) ete.style.display = 'none';
         if (alerts) alerts.style.display = 'none';
-        const backtest = document.getElementById('backtest');
-        if (backtest) backtest.style.display = 'none';
     } else if (tabId === 'macro') {
-        overview.style.display = 'none';
-        consensus.style.display = 'none';
-        eigen.style.display = 'none';
-        if (macro) macro.style.display = 'flex';
-        if (ete) ete.style.display = 'none';
+        macro.style.display = 'flex';
         if (alerts) alerts.style.display = 'none';
-        const backtest = document.getElementById('backtest');
-        if (backtest) backtest.style.display = 'none';
+    } else if (tabId === 'analytics') {
+        if (analytics) analytics.style.display = 'block';
+        if (alerts) alerts.style.display = 'none';
     } else if (tabId === 'ete') {
         overview.style.display = 'none';
         consensus.style.display = 'none';
@@ -142,23 +193,43 @@ function switchTab(tabId) {
 
 async function fetchData(date = '') {
     try {
-        const url = date ? `./history/data_${date}.json` : './data.json';
-        const response = await fetch(url);
+        const dataUrl = date ? `./history/data_${date}.json` : './data.json';
+        const analyticsUrl = date ? `./history/analytics_${date}.json` : './analytics.json';
+        const manifestUrl = date ? `./history/manifest_${date}.json` : './manifest.json';
         
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        const [dataRes, analyticsRes, manifestRes] = await Promise.all([
+            fetch(dataUrl),
+            fetch(analyticsUrl).catch(() => null),
+            fetch(manifestUrl).catch(() => null)
+        ]);
+        
+        if (!dataRes.ok) {
+            throw new Error(`HTTP error! status: ${dataRes.status}`);
         }
         
-        const data = await response.json();
+        const data = await dataRes.json();
+        const analytics = analyticsRes && analyticsRes.ok ? await analyticsRes.json() : null;
+        const manifest = manifestRes && manifestRes.ok ? await manifestRes.json() : null;
         
-        // Validate schema version
-        if (!data.schema_version) {
-            throw new Error('Invalid data schema: Missing schema_version');
+        if (analytics) {
+            data.analytics = analytics;
+        }
+        if (manifest) {
+            data.manifest = manifest;
         }
 
         currentData = data;
         renderDashboard(data);
-        checkStaleData(data.generated_at);
+        
+        if (analytics && analytics.analytics) {
+            renderAnalyticsWorkspace(analytics.analytics);
+        }
+        
+        const generatedAt = manifest ? manifest.generated_at : data.generated_at;
+        if (generatedAt) {
+            checkStaleData(generatedAt);
+        }
+        
         document.getElementById('error-boundary').classList.add('hidden');
         document.getElementById('dashboard-content').style.display = 'flex';
         
@@ -166,6 +237,74 @@ async function fetchData(date = '') {
         console.error('Failed to fetch or parse dashboard data:', error);
         showError(error.message);
     }
+}
+
+function renderAnalyticsWorkspace(analytics) {
+    const content = document.getElementById('analytics-content');
+    if (!content) return;
+    
+    const biz = analytics.business || {};
+    const ai = analytics.ai || {};
+    const ops = analytics.operational || {};
+    const qual = analytics.quality || {};
+    
+    content.innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+            <!-- Business Metrics -->
+            <div class="glass-panel" style="padding: 20px; border-radius: 8px;">
+                <h3 style="margin-top:0; color:var(--primary);">Business Health</h3>
+                <div style="font-size: 2rem; font-weight: bold; margin: 10px 0;">${analytics.total_events}</div>
+                <div style="color:var(--text-muted); font-size:0.9rem;">Total Processed Events</div>
+                
+                <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin: 15px 0;">
+                
+                <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
+                    <span style="color:var(--text-muted);">High Priority:</span>
+                    <span class="premium-badge badge-strong">${biz.high_priority_circulars || 0}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--text-muted);">Upcoming Effective:</span>
+                    <span class="premium-badge badge-gap-up">${biz.upcoming_effective_dates || 0}</span>
+                </div>
+            </div>
+            
+            <!-- AI Performance -->
+            <div class="glass-panel" style="padding: 20px; border-radius: 8px;">
+                <h3 style="margin-top:0; color:var(--accent-color);">AI Enrichment</h3>
+                <div style="font-size: 2rem; font-weight: bold; margin: 10px 0;">${(ai.processing_success_rate * 100).toFixed(1)}%</div>
+                <div style="color:var(--text-muted); font-size:0.9rem;">AI Generation Success</div>
+                
+                <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin: 15px 0;">
+                
+                <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
+                    <span style="color:var(--text-muted);">Avg Latency:</span>
+                    <span class="premium-badge badge-label">${(ai.avg_latency_ms || 0).toFixed(0)} ms</span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--text-muted);">Theme Coverage:</span>
+                    <span class="premium-badge badge-label">${(qual.ai_enrichment_coverage * 100).toFixed(1)}%</span>
+                </div>
+            </div>
+            
+            <!-- Quality & Completeness -->
+            <div class="glass-panel" style="padding: 20px; border-radius: 8px;">
+                <h3 style="margin-top:0; color:#3b82f6;">Data Quality</h3>
+                <div style="font-size: 2rem; font-weight: bold; margin: 10px 0;">${(qual.avg_quality_score || 0).toFixed(1)} / 100</div>
+                <div style="color:var(--text-muted); font-size:0.9rem;">Average Data Quality</div>
+                
+                <hr style="border:0; border-top:1px solid rgba(255,255,255,0.1); margin: 15px 0;">
+                
+                <div style="display:flex; justify-content:space-between; margin-bottom: 8px;">
+                    <span style="color:var(--text-muted);">Missing Attachments:</span>
+                    <span class="premium-badge badge-gap-down">${qual.events_missing_attachment || 0}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--text-muted);">Validation Failures:</span>
+                    <span class="premium-badge ${qual.validation_failures > 0 ? 'badge-gap-down' : 'badge-label'}">${qual.validation_failures || 0}</span>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 function renderDashboard(data) {
@@ -268,68 +407,263 @@ function renderDashboard(data) {
 
     // Render Macro Intelligence
     const macroCount = document.getElementById('macro-count');
-    const macroTimeline = document.getElementById('macro-timeline');
     
-    if (macroCount && macroTimeline) {
+    if (macroCount) {
         if (data.macro_intelligence) {
             macroCount.textContent = data.macro_intelligence.total_events || 0;
-            macroTimeline.innerHTML = '';
-            
-            const recentEvents = data.macro_intelligence.recent_events || [];
-            if (recentEvents.length > 0) {
-                recentEvents.forEach(event => {
-                    const eventCard = document.createElement('div');
-                    eventCard.className = 'macro-event-card glass-panel clickable-card';
-                    
-                    const pubDate = new Date(event.published_at).toLocaleDateString();
-                    const impact = event.impact || {};
-                    
-                    let badgeClass = 'badge-label';
-                    if (impact.direction === 'Positive') badgeClass = 'badge-gap-up';
-                    else if (impact.direction === 'Negative') badgeClass = 'badge-gap-down';
-                    
-                    const isNewHtml = event.is_new_since_last_session ? `<span class="premium-badge badge-strong" style="background:var(--accent-color);color:#000;font-weight:bold;animation: pulse 2s infinite;">NEW SINCE LAST TRADING SESSION</span>` : '';
-
-                    eventCard.innerHTML = `
-                        <div class="macro-event-header" style="display:flex; flex-wrap:wrap; gap:8px;">
-                            <span class="macro-date">${pubDate}</span>
-                            <span class="premium-badge ${badgeClass}">${impact.direction || 'Unknown'}</span>
-                            ${isNewHtml}
-                        </div>
-                        <h3>${event.title}</h3>
-                        <p>${event.summary ? event.summary.substring(0, 150) + '...' : ''}</p>
-                    `;
-                    
-                    eventCard.addEventListener('click', () => {
-                        const impactHtml = `
-                            <div style="grid-column: 1/-1; text-align: left;">
-                                <p><strong>Published:</strong> ${pubDate}</p>
-                                <p><strong>Source:</strong> <a href="${event.url}" target="_blank">${event.source}</a></p>
-                                <div style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                                    <h4 style="margin-top: 0;">Event-to-Market Impact</h4>
-                                    <p><strong>Assets:</strong> ${(impact.asset_classes || []).join(', ')}</p>
-                                    <p><strong>Sectors:</strong> ${(impact.sectors || []).join(', ')}</p>
-                                    <p><strong>Horizon:</strong> ${impact.horizon || '--'}</p>
-                                </div>
-                                <div style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                                    <h4 style="margin-top: 0;">Detailed Summary</h4>
-                                    <p>${event.summary || 'No summary available.'}</p>
-                                </div>
-                            </div>
-                        `;
-                        openModal(event.title, [], impactHtml);
-                    });
-                    
-                    macroTimeline.appendChild(eventCard);
-                });
-            } else {
-                macroTimeline.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding: 20px;">No macro events found.</p>`;
-            }
+            macroEvents = data.macro_intelligence.recent_events || [];
+            renderMacroTimeline();
         } else {
             macroCount.textContent = '0';
-            macroTimeline.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding: 20px;">No macro intelligence data.</p>`;
+            macroEvents = [];
+            renderMacroTimeline();
         }
     }
+}
+
+function renderMacroTimeline() {
+    const timeline = document.getElementById('macro-timeline');
+    if (!timeline) return;
+    
+    if (!macroEvents || macroEvents.length === 0) {
+        timeline.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding: 20px;">No macro intelligence data.</p>`;
+        return;
+    }
+    
+    const searchStr = workspaceState.searchQuery;
+    const categoryFilter = workspaceState.selectedCategory;
+    const sortOrder = workspaceState.sortOrder;
+    
+    let filtered = macroEvents.filter(evt => {
+        // Handle both old schema (flat) and new schema (nested)
+        const title = (evt.official_data?.title || evt.title || '').toLowerCase();
+        const content = (evt.derived_data?.ai_summary || evt.official_data?.content || evt.summary || '').toLowerCase();
+        const eventId = (evt.event_id || '').toLowerCase();
+        const category = evt.official_data?.category || evt.category || '';
+        
+        if (searchStr && !title.includes(searchStr) && !content.includes(searchStr) && !eventId.includes(searchStr)) {
+            return false;
+        }
+        if (categoryFilter && category !== categoryFilter) {
+            return false;
+        }
+        return true;
+    });
+    
+    filtered.sort((a, b) => {
+        const dateA = new Date(a.official_data?.publication_date || a.published_at || 0).getTime();
+        const dateB = new Date(b.official_data?.publication_date || b.published_at || 0).getTime();
+        return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
+    });
+    
+    timeline.innerHTML = '';
+    
+    // Reset workspace selection state on re-render to ensure safety
+    // Usually in React we'd keep selection unless it's filtered out, but for simplicity:
+    const currentlySelectedExists = filtered.some(e => e.event_id === workspaceState.selectedEventId);
+    if (!currentlySelectedExists) {
+        workspaceState.selectedEventId = null;
+    }
+    renderMacroWorkspace();
+    
+    if (filtered.length === 0) {
+        timeline.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding: 20px;">No events match your criteria.</p>`;
+        return;
+    }
+    
+    filtered.forEach(event => {
+        const card = document.createElement('div');
+        card.className = 'macro-event-card glass-panel clickable-card';
+        card.setAttribute('role', 'listitem');
+        card.tabIndex = 0; // Make focusable
+        
+        if (event.event_id === workspaceState.selectedEventId) {
+            card.classList.add('selected');
+            card.setAttribute('aria-selected', 'true');
+        } else {
+            card.setAttribute('aria-selected', 'false');
+        }
+        card.dataset.eventId = event.event_id;
+        
+        const title = event.official_data?.title || event.title || 'Untitled Event';
+        const pubDateStr = event.official_data?.publication_date || event.published_at;
+        const pubDate = pubDateStr ? new Date(pubDateStr).toLocaleDateString() : 'Unknown Date';
+        const summary = event.derived_data?.ai_summary || event.official_data?.content || event.summary || '';
+        const category = event.official_data?.category || event.category || 'Uncategorized';
+        
+        const isNewHtml = (event.metadata?.lifecycle_status === 'NEW' || event.is_new_since_last_session) 
+            ? `<span class="premium-badge badge-strong" style="background:var(--accent-color);color:#000;font-weight:bold;animation: pulse 2s infinite;">NEW</span>` 
+            : '';
+
+        card.innerHTML = `
+            <div class="macro-event-header" style="display:flex; flex-wrap:wrap; gap:8px;">
+                <span class="macro-date">${pubDate}</span>
+                <span class="premium-badge badge-label">${category}</span>
+                <span class="premium-badge badge-strong" style="font-family:monospace; font-size:0.8em; opacity:0.7;">ID: ${event.event_id || '---'}</span>
+                ${isNewHtml}
+            </div>
+            <h3>${title}</h3>
+            <p>${summary.substring(0, 150)}${summary.length > 150 ? '...' : ''}</p>
+        `;
+        
+        card.addEventListener('click', () => {
+            selectMacroEvent(event.event_id);
+        });
+        
+        timeline.appendChild(card);
+    });
+}
+
+// --- Workspace State Actions ---
+
+function selectMacroEvent(eventId) {
+    workspaceState.selectedEventId = eventId;
+    
+    // Update timeline visual selection
+    document.querySelectorAll('.macro-event-card').forEach(c => {
+        if (c.dataset.eventId === eventId) {
+            c.classList.add('selected');
+            c.setAttribute('aria-selected', 'true');
+        } else {
+            c.classList.remove('selected');
+            c.setAttribute('aria-selected', 'false');
+        }
+    });
+    
+    renderMacroWorkspace();
+}
+
+// --- Independent Widget Renderers ---
+
+function renderMacroWorkspace() {
+    const detailEmpty = document.getElementById('macro-detail-empty');
+    const detailContent = document.getElementById('macro-detail-content');
+    
+    if (!detailEmpty || !detailContent) return;
+    
+    if (!workspaceState.selectedEventId) {
+        detailEmpty.style.display = 'flex';
+        detailContent.style.display = 'none';
+        detailContent.innerHTML = '';
+        return;
+    }
+    
+    const event = macroEvents.find(e => e.event_id === workspaceState.selectedEventId);
+    if (!event) return;
+    
+    detailEmpty.style.display = 'none';
+    detailContent.style.display = 'flex';
+    
+    detailContent.innerHTML = `
+        ${renderHeaderWidget(event)}
+        <div style="flex:1; overflow-y:auto; padding-right:10px;">
+            ${renderAIInsightsWidget(event)}
+            ${renderOverviewWidget(event)}
+            ${renderAttachmentsWidget(event)}
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                ${renderMetadataWidget(event)}
+                ${renderRelatedEventsWidget(event)}
+            </div>
+        </div>
+    `;
+}
+
+function renderHeaderWidget(event) {
+    const title = event.official_data?.title || event.title || 'Untitled Event';
+    const pubDateStr = event.official_data?.publication_date || event.published_at;
+    const pubDate = pubDateStr ? new Date(pubDateStr).toLocaleDateString() : 'Unknown Date';
+    const url = event.official_data?.official_url || event.url || '#';
+    const source = event.official_data?.source || event.source || 'Unknown';
+    const category = event.official_data?.category || event.category || 'Uncategorized';
+    
+    return `
+        <div class="macro-detail-header">
+            <h2>${title}</h2>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <span class="premium-badge badge-label"><strong>Published:</strong> ${pubDate}</span>
+                <span class="premium-badge badge-label"><strong>Source:</strong> <a href="${url}" target="_blank" style="color:white; text-decoration:underline;">${source}</a></span>
+                <span class="premium-badge badge-label"><strong>Category:</strong> ${category}</span>
+                <span class="premium-badge badge-strong"><strong>ID:</strong> ${event.event_id}</span>
+            </div>
+        </div>
+    `;
+}
+
+function renderOverviewWidget(event) {
+    const summary = (event.official_data?.content || event.summary || 'No official content available.').replace(/\n/g, '<br>');
+    return `
+        <div style="margin-bottom: 20px; padding: 20px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--glass-border);">
+            <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:10px;">OFFICIAL CONTENT / ABSTRACT</h4>
+            <p style="line-height:1.6; color:var(--text-main);">${summary}</p>
+        </div>
+    `;
+}
+
+function renderAIInsightsWidget(event) {
+    if (!event.derived_data || !event.derived_data.ai_summary) return '';
+    return `
+        <div style="margin-bottom: 20px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 4px solid var(--accent-color, var(--primary));">
+            <h4 style="margin-top: 0; color:var(--accent-color, var(--primary)); margin-bottom:10px;">✨ AI Enriched Summary</h4>
+            <p style="line-height:1.6; color:var(--text-main);">${event.derived_data.ai_summary.replace(/\n/g, '<br>')}</p>
+            ${event.derived_data.themes ? `<p style="margin-top:15px;"><strong style="color:var(--text-muted);">Themes:</strong> <span class="premium-badge badge-label">${event.derived_data.themes.join('</span> <span class="premium-badge badge-label">')}</span></p>` : ''}
+        </div>
+    `;
+}
+
+function renderAttachmentsWidget(event) {
+    if (!event.official_data?.attachments || event.official_data.attachments.length === 0) return '';
+    return `
+        <div style="margin-bottom: 20px; padding: 20px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--glass-border);">
+            <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:10px;">ATTACHMENTS</h4>
+            <ul style="margin: 0; padding-left: 20px; color:var(--text-main);">
+                ${event.official_data.attachments.map(a => `<li><a href="${a}" target="_blank" style="color:var(--primary); text-decoration:none;">${a}</a></li>`).join('')}
+            </ul>
+        </div>
+    `;
+}
+
+function renderMetadataWidget(event) {
+    if (!event.metadata) return '';
+    const latency = event.metadata.processing_latency_ms ? `${event.metadata.processing_latency_ms} ms` : 'N/A';
+    const sourceSystem = event.metadata.source_system || 'Unknown';
+    const confidence = event.metadata.confidence_score ? `${(event.metadata.confidence_score * 100).toFixed(1)}%` : '--';
+
+    return `
+        <div style="padding: 16px; background: rgba(0,0,0,0.1); border-radius: 8px; font-size: 0.85rem;">
+            <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:10px;">METADATA</h4>
+            <table style="width:100%; border-collapse: collapse; color:var(--text-main);">
+                <tr><td style="padding:4px 0; color:var(--text-muted);">Source System</td><td style="text-align:right;">${sourceSystem}</td></tr>
+                <tr><td style="padding:4px 0; color:var(--text-muted);">Processing Latency</td><td style="text-align:right;">${latency}</td></tr>
+                <tr><td style="padding:4px 0; color:var(--text-muted);">Confidence</td><td style="text-align:right;">${confidence}</td></tr>
+                <tr><td style="padding:4px 0; color:var(--text-muted);">Lifecycle Status</td><td style="text-align:right;">${event.metadata.lifecycle_status || 'Unknown'}</td></tr>
+            </table>
+        </div>
+    `;
+}
+
+function renderRelatedEventsWidget(event) {
+    if (!event.derived_data || !event.derived_data.related_events || event.derived_data.related_events.length === 0) {
+        return `
+            <div style="padding: 16px; background: rgba(0,0,0,0.1); border-radius: 8px; font-size: 0.85rem;">
+                <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:10px;">RELATED EVENTS</h4>
+                <p style="color:var(--text-muted); margin:0;">No related events identified.</p>
+            </div>
+        `;
+    }
+
+    return `
+        <div style="padding: 16px; background: rgba(0,0,0,0.1); border-radius: 8px; font-size: 0.85rem;">
+            <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:10px;">RELATED EVENTS</h4>
+            <ul style="margin:0; padding-left:20px; color:var(--text-main);">
+                ${event.derived_data.related_events.map(ev => `
+                    <li style="margin-bottom:4px;">
+                        <a href="#" onclick="selectMacroEvent('${ev.event_id}'); return false;" style="color:var(--primary); text-decoration:none;">${ev.event_id}</a>
+                        <span style="color:var(--text-muted); margin-left:4px;">(${ev.relationship_type})</span>
+                    </li>
+                `).join('')}
+            </ul>
+        </div>
+    `;
 }
 
 function setupClickableCards() {

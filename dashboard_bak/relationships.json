@@ -1,0 +1,3095 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-06-14T19:13:30.607877+00:00",
+  "pipeline_version": "2.1.0",
+  "relationship_count": 117,
+  "relationships": [
+    {
+      "id": "61f773c1b30c56c3",
+      "source_event_id": "4b97d4b3cf2f9c48",
+      "target_event_id": "3d1f8d8932486a76",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.563024Z"
+    },
+    {
+      "id": "814393213033d338",
+      "source_event_id": "4b97d4b3cf2f9c48",
+      "target_event_id": "4e8fb1352724d668",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.563376Z"
+    },
+    {
+      "id": "ae9f1dacaafa56c3",
+      "source_event_id": "4b97d4b3cf2f9c48",
+      "target_event_id": "499fc76ee2323d06",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.563628Z"
+    },
+    {
+      "id": "1eabec7250f40d0f",
+      "source_event_id": "4b97d4b3cf2f9c48",
+      "target_event_id": "791aa757d12fd075",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.563811Z"
+    },
+    {
+      "id": "fed9f5baa8489bb4",
+      "source_event_id": "4b97d4b3cf2f9c48",
+      "target_event_id": "9479eb9a4e52f42d",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.563965Z"
+    },
+    {
+      "id": "58141c339f85241d",
+      "source_event_id": "4b97d4b3cf2f9c48",
+      "target_event_id": "842bc5012a2fc0f3",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.564105Z"
+    },
+    {
+      "id": "84ad86c840d7a98e",
+      "source_event_id": "4b97d4b3cf2f9c48",
+      "target_event_id": "5453788b2e556a00",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.564231Z"
+    },
+    {
+      "id": "70318b37c7be93b4",
+      "source_event_id": "4b97d4b3cf2f9c48",
+      "target_event_id": "a7f8290a65e53ce2",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.564374Z"
+    },
+    {
+      "id": "bb15954a6acc56ac",
+      "source_event_id": "4b97d4b3cf2f9c48",
+      "target_event_id": "bfe88ea20313f274",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.564492Z"
+    },
+    {
+      "id": "2aefc545289efddc",
+      "source_event_id": "4deb31aedabcf616",
+      "target_event_id": "da73018813df57df",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.564587Z"
+    },
+    {
+      "id": "878b376d7484fa9d",
+      "source_event_id": "da73018813df57df",
+      "target_event_id": "4deb31aedabcf616",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.564628Z"
+    },
+    {
+      "id": "f54c1f7c7c1c72ae",
+      "source_event_id": "4deb31aedabcf616",
+      "target_event_id": "9f23021fb163523f",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.564693Z"
+    },
+    {
+      "id": "8234ff5d41a1613f",
+      "source_event_id": "9f23021fb163523f",
+      "target_event_id": "4deb31aedabcf616",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.564709Z"
+    },
+    {
+      "id": "8df587d8b73d7a80",
+      "source_event_id": "4deb31aedabcf616",
+      "target_event_id": "5baa43ea00ca476d",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.564770Z"
+    },
+    {
+      "id": "71eb702fa21e17c6",
+      "source_event_id": "5baa43ea00ca476d",
+      "target_event_id": "4deb31aedabcf616",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.564787Z"
+    },
+    {
+      "id": "982c4bcbe9b9f49b",
+      "source_event_id": "4deb31aedabcf616",
+      "target_event_id": "b4e7dd30b3da29d4",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.564847Z"
+    },
+    {
+      "id": "d8442067552db7ea",
+      "source_event_id": "b4e7dd30b3da29d4",
+      "target_event_id": "4deb31aedabcf616",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.564926Z"
+    },
+    {
+      "id": "dc9a91c5a0f8aa01",
+      "source_event_id": "4deb31aedabcf616",
+      "target_event_id": "99ba70989822182c",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.564985Z"
+    },
+    {
+      "id": "fea2fde78296d2cd",
+      "source_event_id": "99ba70989822182c",
+      "target_event_id": "4deb31aedabcf616",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565009Z"
+    },
+    {
+      "id": "bc93a2f837e9c8e5",
+      "source_event_id": "4deb31aedabcf616",
+      "target_event_id": "2e1c927b354329d4",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565068Z"
+    },
+    {
+      "id": "390906b79b724f64",
+      "source_event_id": "2e1c927b354329d4",
+      "target_event_id": "4deb31aedabcf616",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565087Z"
+    },
+    {
+      "id": "cbf61e86f08da1d9",
+      "source_event_id": "4deb31aedabcf616",
+      "target_event_id": "a924c2bdfd1c24db",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565146Z"
+    },
+    {
+      "id": "134d07d3e4ddbfcd",
+      "source_event_id": "a924c2bdfd1c24db",
+      "target_event_id": "4deb31aedabcf616",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565163Z"
+    },
+    {
+      "id": "6c559b0662be2570",
+      "source_event_id": "4deb31aedabcf616",
+      "target_event_id": "78e07379a96cdaa5",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565221Z"
+    },
+    {
+      "id": "1181219c4e10861d",
+      "source_event_id": "78e07379a96cdaa5",
+      "target_event_id": "4deb31aedabcf616",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565238Z"
+    },
+    {
+      "id": "7e4a3e1c33d5f9e2",
+      "source_event_id": "4deb31aedabcf616",
+      "target_event_id": "1cc1e9773bd793ab",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565296Z"
+    },
+    {
+      "id": "b86edf852a298e88",
+      "source_event_id": "1cc1e9773bd793ab",
+      "target_event_id": "4deb31aedabcf616",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565312Z"
+    },
+    {
+      "id": "ff61a72ad9152196",
+      "source_event_id": "da73018813df57df",
+      "target_event_id": "9f23021fb163523f",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565351Z"
+    },
+    {
+      "id": "649306b91cb3783a",
+      "source_event_id": "9f23021fb163523f",
+      "target_event_id": "da73018813df57df",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565366Z"
+    },
+    {
+      "id": "0698a711b855810c",
+      "source_event_id": "da73018813df57df",
+      "target_event_id": "5baa43ea00ca476d",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565402Z"
+    },
+    {
+      "id": "93f47624c5c62343",
+      "source_event_id": "5baa43ea00ca476d",
+      "target_event_id": "da73018813df57df",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565418Z"
+    },
+    {
+      "id": "5f39e876484f6d98",
+      "source_event_id": "da73018813df57df",
+      "target_event_id": "b4e7dd30b3da29d4",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565453Z"
+    },
+    {
+      "id": "215c1775b3809c71",
+      "source_event_id": "b4e7dd30b3da29d4",
+      "target_event_id": "da73018813df57df",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565527Z"
+    },
+    {
+      "id": "70fe90c64d7b3d19",
+      "source_event_id": "da73018813df57df",
+      "target_event_id": "99ba70989822182c",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565563Z"
+    },
+    {
+      "id": "84e2e167a92b6ea2",
+      "source_event_id": "99ba70989822182c",
+      "target_event_id": "da73018813df57df",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565585Z"
+    },
+    {
+      "id": "130f20d8cef64f3c",
+      "source_event_id": "da73018813df57df",
+      "target_event_id": "2e1c927b354329d4",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565620Z"
+    },
+    {
+      "id": "af4b038c6139557b",
+      "source_event_id": "2e1c927b354329d4",
+      "target_event_id": "da73018813df57df",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565637Z"
+    },
+    {
+      "id": "d0489285a25f105b",
+      "source_event_id": "da73018813df57df",
+      "target_event_id": "a924c2bdfd1c24db",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565672Z"
+    },
+    {
+      "id": "31afed8700916d65",
+      "source_event_id": "a924c2bdfd1c24db",
+      "target_event_id": "da73018813df57df",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565691Z"
+    },
+    {
+      "id": "548ef1c06802bccf",
+      "source_event_id": "da73018813df57df",
+      "target_event_id": "78e07379a96cdaa5",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565726Z"
+    },
+    {
+      "id": "5129908d0055886b",
+      "source_event_id": "78e07379a96cdaa5",
+      "target_event_id": "da73018813df57df",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565742Z"
+    },
+    {
+      "id": "1e0926034be714da",
+      "source_event_id": "da73018813df57df",
+      "target_event_id": "1cc1e9773bd793ab",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565777Z"
+    },
+    {
+      "id": "58eaf5b918ccb843",
+      "source_event_id": "1cc1e9773bd793ab",
+      "target_event_id": "da73018813df57df",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565792Z"
+    },
+    {
+      "id": "d5095cfb3e105b0c",
+      "source_event_id": "9f23021fb163523f",
+      "target_event_id": "5baa43ea00ca476d",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565807Z"
+    },
+    {
+      "id": "0c508c672f79c7e5",
+      "source_event_id": "5baa43ea00ca476d",
+      "target_event_id": "9f23021fb163523f",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565822Z"
+    },
+    {
+      "id": "57707291e880dcf3",
+      "source_event_id": "9f23021fb163523f",
+      "target_event_id": "b4e7dd30b3da29d4",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565836Z"
+    },
+    {
+      "id": "4b735fc317292ce9",
+      "source_event_id": "b4e7dd30b3da29d4",
+      "target_event_id": "9f23021fb163523f",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565909Z"
+    },
+    {
+      "id": "fee6e7b77e6686f1",
+      "source_event_id": "9f23021fb163523f",
+      "target_event_id": "99ba70989822182c",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565923Z"
+    },
+    {
+      "id": "865294dc237f854b",
+      "source_event_id": "99ba70989822182c",
+      "target_event_id": "9f23021fb163523f",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565945Z"
+    },
+    {
+      "id": "b94fd2ab0755251a",
+      "source_event_id": "9f23021fb163523f",
+      "target_event_id": "2e1c927b354329d4",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565958Z"
+    },
+    {
+      "id": "ad45da1be4580e4f",
+      "source_event_id": "2e1c927b354329d4",
+      "target_event_id": "9f23021fb163523f",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565975Z"
+    },
+    {
+      "id": "4a6a3f3e12972cf3",
+      "source_event_id": "9f23021fb163523f",
+      "target_event_id": "a924c2bdfd1c24db",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.565989Z"
+    },
+    {
+      "id": "7ca7a4facde42fa1",
+      "source_event_id": "a924c2bdfd1c24db",
+      "target_event_id": "9f23021fb163523f",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566005Z"
+    },
+    {
+      "id": "e9027655988dbc56",
+      "source_event_id": "9f23021fb163523f",
+      "target_event_id": "78e07379a96cdaa5",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566019Z"
+    },
+    {
+      "id": "13a5e49519bae986",
+      "source_event_id": "78e07379a96cdaa5",
+      "target_event_id": "9f23021fb163523f",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566034Z"
+    },
+    {
+      "id": "2895bc23c4089d74",
+      "source_event_id": "9f23021fb163523f",
+      "target_event_id": "1cc1e9773bd793ab",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566048Z"
+    },
+    {
+      "id": "62da0d9987a8a99d",
+      "source_event_id": "1cc1e9773bd793ab",
+      "target_event_id": "9f23021fb163523f",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566063Z"
+    },
+    {
+      "id": "9ed8fd873f90ecd6",
+      "source_event_id": "5baa43ea00ca476d",
+      "target_event_id": "b4e7dd30b3da29d4",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566077Z"
+    },
+    {
+      "id": "11b0f9d9778325fb",
+      "source_event_id": "b4e7dd30b3da29d4",
+      "target_event_id": "5baa43ea00ca476d",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566149Z"
+    },
+    {
+      "id": "a230f79564d3f19e",
+      "source_event_id": "5baa43ea00ca476d",
+      "target_event_id": "99ba70989822182c",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566164Z"
+    },
+    {
+      "id": "0fe272e528d4be69",
+      "source_event_id": "99ba70989822182c",
+      "target_event_id": "5baa43ea00ca476d",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566185Z"
+    },
+    {
+      "id": "fd5cabac309a3ec3",
+      "source_event_id": "5baa43ea00ca476d",
+      "target_event_id": "2e1c927b354329d4",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566199Z"
+    },
+    {
+      "id": "ee9f7431168b60ab",
+      "source_event_id": "2e1c927b354329d4",
+      "target_event_id": "5baa43ea00ca476d",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566216Z"
+    },
+    {
+      "id": "1fbbe5e152286c9c",
+      "source_event_id": "5baa43ea00ca476d",
+      "target_event_id": "a924c2bdfd1c24db",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566230Z"
+    },
+    {
+      "id": "9020c20837b91b52",
+      "source_event_id": "a924c2bdfd1c24db",
+      "target_event_id": "5baa43ea00ca476d",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566245Z"
+    },
+    {
+      "id": "f64e17b291058555",
+      "source_event_id": "5baa43ea00ca476d",
+      "target_event_id": "78e07379a96cdaa5",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566259Z"
+    },
+    {
+      "id": "efdbb9a00725a06a",
+      "source_event_id": "78e07379a96cdaa5",
+      "target_event_id": "5baa43ea00ca476d",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566274Z"
+    },
+    {
+      "id": "b1b59de0fb052bb3",
+      "source_event_id": "5baa43ea00ca476d",
+      "target_event_id": "1cc1e9773bd793ab",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566288Z"
+    },
+    {
+      "id": "d247d1a318131273",
+      "source_event_id": "1cc1e9773bd793ab",
+      "target_event_id": "5baa43ea00ca476d",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566302Z"
+    },
+    {
+      "id": "5eab3aea7ea4fad6",
+      "source_event_id": "b4e7dd30b3da29d4",
+      "target_event_id": "99ba70989822182c",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566373Z"
+    },
+    {
+      "id": "8c4873a934d23400",
+      "source_event_id": "99ba70989822182c",
+      "target_event_id": "b4e7dd30b3da29d4",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566394Z"
+    },
+    {
+      "id": "f0aee0814264929b",
+      "source_event_id": "b4e7dd30b3da29d4",
+      "target_event_id": "2e1c927b354329d4",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566465Z"
+    },
+    {
+      "id": "9eddfa233a981ab9",
+      "source_event_id": "2e1c927b354329d4",
+      "target_event_id": "b4e7dd30b3da29d4",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566481Z"
+    },
+    {
+      "id": "1d1dbf5da1fcc6d3",
+      "source_event_id": "b4e7dd30b3da29d4",
+      "target_event_id": "a924c2bdfd1c24db",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566551Z"
+    },
+    {
+      "id": "eddf9b161c65e561",
+      "source_event_id": "a924c2bdfd1c24db",
+      "target_event_id": "b4e7dd30b3da29d4",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566566Z"
+    },
+    {
+      "id": "82170f58fdaa91c4",
+      "source_event_id": "b4e7dd30b3da29d4",
+      "target_event_id": "78e07379a96cdaa5",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566636Z"
+    },
+    {
+      "id": "b0f65e8c6758ea9a",
+      "source_event_id": "78e07379a96cdaa5",
+      "target_event_id": "b4e7dd30b3da29d4",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566650Z"
+    },
+    {
+      "id": "42063952befb5303",
+      "source_event_id": "b4e7dd30b3da29d4",
+      "target_event_id": "1cc1e9773bd793ab",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566723Z"
+    },
+    {
+      "id": "38367eef536f4b0d",
+      "source_event_id": "1cc1e9773bd793ab",
+      "target_event_id": "b4e7dd30b3da29d4",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566737Z"
+    },
+    {
+      "id": "199efc4b309447e7",
+      "source_event_id": "99ba70989822182c",
+      "target_event_id": "2e1c927b354329d4",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566768Z"
+    },
+    {
+      "id": "6c943035ea998b58",
+      "source_event_id": "2e1c927b354329d4",
+      "target_event_id": "99ba70989822182c",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566790Z"
+    },
+    {
+      "id": "35166dd62b226656",
+      "source_event_id": "99ba70989822182c",
+      "target_event_id": "a924c2bdfd1c24db",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566818Z"
+    },
+    {
+      "id": "e101e3d231aff94b",
+      "source_event_id": "a924c2bdfd1c24db",
+      "target_event_id": "99ba70989822182c",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566833Z"
+    },
+    {
+      "id": "bb572ce38b4346cc",
+      "source_event_id": "99ba70989822182c",
+      "target_event_id": "78e07379a96cdaa5",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566861Z"
+    },
+    {
+      "id": "c0717f86ffc83c97",
+      "source_event_id": "78e07379a96cdaa5",
+      "target_event_id": "99ba70989822182c",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566876Z"
+    },
+    {
+      "id": "5761d02b1b955c30",
+      "source_event_id": "99ba70989822182c",
+      "target_event_id": "1cc1e9773bd793ab",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566903Z"
+    },
+    {
+      "id": "0e4fd6ae408db713",
+      "source_event_id": "1cc1e9773bd793ab",
+      "target_event_id": "99ba70989822182c",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566918Z"
+    },
+    {
+      "id": "208a37b3e4fdbb48",
+      "source_event_id": "2e1c927b354329d4",
+      "target_event_id": "a924c2bdfd1c24db",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.566939Z"
+    },
+    {
+      "id": "c32c5bdb957a53a9",
+      "source_event_id": "a924c2bdfd1c24db",
+      "target_event_id": "2e1c927b354329d4",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.567035Z"
+    },
+    {
+      "id": "d3623067c298b237",
+      "source_event_id": "2e1c927b354329d4",
+      "target_event_id": "78e07379a96cdaa5",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.567064Z"
+    },
+    {
+      "id": "9e8f5245f6995e50",
+      "source_event_id": "78e07379a96cdaa5",
+      "target_event_id": "2e1c927b354329d4",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.567083Z"
+    },
+    {
+      "id": "a97e57eab16cdcaf",
+      "source_event_id": "2e1c927b354329d4",
+      "target_event_id": "1cc1e9773bd793ab",
+      "type": "WITHDRAWS",
+      "confidence": "MEDIUM",
+      "provenance": {
+        "rule": "WithdrawsRule",
+        "matched_terms": [
+          "matched 'withdrawn'"
+        ],
+        "signals": {
+          "keyword_match": 0.6
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.8
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.567106Z"
+    },
+    {
+      "id": "70c881cf9224edae",
+      "source_event_id": "1cc1e9773bd793ab",
+      "target_event_id": "2e1c927b354329d4",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.567122Z"
+    },
+    {
+      "id": "5715017dafba89c2",
+      "source_event_id": "a924c2bdfd1c24db",
+      "target_event_id": "78e07379a96cdaa5",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.567145Z"
+    },
+    {
+      "id": "ee08d4dcfda02f29",
+      "source_event_id": "78e07379a96cdaa5",
+      "target_event_id": "a924c2bdfd1c24db",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.567165Z"
+    },
+    {
+      "id": "3e14dfc947a7ab5b",
+      "source_event_id": "a924c2bdfd1c24db",
+      "target_event_id": "1cc1e9773bd793ab",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.567184Z"
+    },
+    {
+      "id": "af201f288d48122d",
+      "source_event_id": "1cc1e9773bd793ab",
+      "target_event_id": "a924c2bdfd1c24db",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.567203Z"
+    },
+    {
+      "id": "54f175644678b0c3",
+      "source_event_id": "78e07379a96cdaa5",
+      "target_event_id": "1cc1e9773bd793ab",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.567222Z"
+    },
+    {
+      "id": "a88b10e91ec2e25b",
+      "source_event_id": "1cc1e9773bd793ab",
+      "target_event_id": "78e07379a96cdaa5",
+      "type": "AMENDS",
+      "confidence": "HIGH",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'substituted'",
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.8
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 1.0
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.567240Z"
+    },
+    {
+      "id": "071906734bd30513",
+      "source_event_id": "5d4bddb3c3239c4f",
+      "target_event_id": "bee4b6659c965d57",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'modified'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.579584Z"
+    },
+    {
+      "id": "5aa2d2b0b53d548e",
+      "source_event_id": "45f1ba1e7604fa2d",
+      "target_event_id": "bee4b6659c965d57",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.582686Z"
+    },
+    {
+      "id": "45e745b482e9319c",
+      "source_event_id": "5d4bddb3c3239c4f",
+      "target_event_id": "a13b0da1cf2f113c",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'modified'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.585156Z"
+    },
+    {
+      "id": "3a5672177c8b8f9e",
+      "source_event_id": "45f1ba1e7604fa2d",
+      "target_event_id": "a13b0da1cf2f113c",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.585425Z"
+    },
+    {
+      "id": "4b0362bf76f65a95",
+      "source_event_id": "5d4bddb3c3239c4f",
+      "target_event_id": "8c027a22aa766656",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'modified'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.590722Z"
+    },
+    {
+      "id": "c6c587dc304672ad",
+      "source_event_id": "45f1ba1e7604fa2d",
+      "target_event_id": "8c027a22aa766656",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.592080Z"
+    },
+    {
+      "id": "15a634cf00702c66",
+      "source_event_id": "5d4bddb3c3239c4f",
+      "target_event_id": "7a1f8a1110c15d77",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'modified'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.596309Z"
+    },
+    {
+      "id": "311d29eb8002d47a",
+      "source_event_id": "45f1ba1e7604fa2d",
+      "target_event_id": "7a1f8a1110c15d77",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.597754Z"
+    },
+    {
+      "id": "d5a1fe9fc44f0213",
+      "source_event_id": "5d4bddb3c3239c4f",
+      "target_event_id": "568b057d51bad1db",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'modified'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.600117Z"
+    },
+    {
+      "id": "dd38bd847c3e9346",
+      "source_event_id": "45f1ba1e7604fa2d",
+      "target_event_id": "568b057d51bad1db",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.601002Z"
+    },
+    {
+      "id": "caa76e0df91ab064",
+      "source_event_id": "5d4bddb3c3239c4f",
+      "target_event_id": "52e7e5f1944a44a4",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'modified'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.603378Z"
+    },
+    {
+      "id": "3424b947a5df82ae",
+      "source_event_id": "45f1ba1e7604fa2d",
+      "target_event_id": "52e7e5f1944a44a4",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.605587Z"
+    },
+    {
+      "id": "e1120d5497364dbd",
+      "source_event_id": "5d4bddb3c3239c4f",
+      "target_event_id": "7ecd6e544105053b",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'modified'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.605939Z"
+    },
+    {
+      "id": "ac318dcd2b886973",
+      "source_event_id": "45f1ba1e7604fa2d",
+      "target_event_id": "7ecd6e544105053b",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.606198Z"
+    },
+    {
+      "id": "e51bf76e74c5c13d",
+      "source_event_id": "5d4bddb3c3239c4f",
+      "target_event_id": "d42e8466c9b36c24",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'modified'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.606622Z"
+    },
+    {
+      "id": "8372b187a2a77954",
+      "source_event_id": "5d4bddb3c3239c4f",
+      "target_event_id": "45f1ba1e7604fa2d",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'modified'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.607144Z"
+    },
+    {
+      "id": "253fbdd543d291b4",
+      "source_event_id": "45f1ba1e7604fa2d",
+      "target_event_id": "5d4bddb3c3239c4f",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.607234Z"
+    },
+    {
+      "id": "1c367d208584452f",
+      "source_event_id": "45f1ba1e7604fa2d",
+      "target_event_id": "d42e8466c9b36c24",
+      "type": "AMENDS",
+      "confidence": "LOW",
+      "provenance": {
+        "rule": "AmendsRule",
+        "matched_terms": [
+          "matched 'amendment'"
+        ],
+        "signals": {
+          "keyword_match": 0.4
+        },
+        "weights": {
+          "generator": 0.5,
+          "rule": 0.6000000000000001
+        },
+        "generator_signals": [
+          "Same Category"
+        ]
+      },
+      "rule_version": "1.0.0",
+      "resolver_version": "1.0.0",
+      "created_at": "2026-06-14T19:13:30.607459Z"
+    }
+  ]
+}
