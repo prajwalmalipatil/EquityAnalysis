@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-14T10:39:35.227882Z",
+  "generated_at": "2026-06-14T10:59:54.097761Z",
   "extraction_list": [
     "AMBUJACEM_1Y_20260614",
     "HINDALCO_1Y_20260614",
@@ -3755,18 +3755,18 @@
     }
   ],
   "macro_intelligence": {
-    "last_event_at": "2026-06-14T10:39:13.834221+00:00",
+    "last_event_at": "2026-06-14T10:59:32.605202+00:00",
     "total_events": 6,
     "recent_events": [
       {
         "event_id": "mock-rbi-1",
         "url": "https://www.rbi.org.in/mock-1",
-        "published_at": "2026-06-14T10:39:13.834221+00:00",
+        "published_at": "2026-06-14T10:59:32.605202+00:00",
         "title": "RBI Announces Special Liquidity Facility for Mutual Funds",
         "summary": "The Reserve Bank of India has decided to open a special liquidity facility for mutual funds of \u20b950,000 crore to ease liquidity pressures.",
         "category": "Press Releases",
         "source": "RBI",
-        "collected_at": "2026-06-14T10:39:13.834255+00:00",
+        "collected_at": "2026-06-14T10:59:32.605235+00:00",
         "version": 3,
         "status": "Active",
         "lifecycle": "Enriched",
@@ -3780,10 +3780,10 @@
           ],
           "securities": [
             "AXISBANK",
-            "ICICIBANK",
-            "KOTAKBANK",
             "SBIN",
-            "HDFCBANK"
+            "ICICIBANK",
+            "HDFCBANK",
+            "KOTAKBANK"
           ],
           "horizon": "1-5 days",
           "direction": "Neutral",
@@ -3821,27 +3821,17 @@
               "t_plus_10": null,
               "t_plus_20": null
             },
-            "ICICIBANK": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "KOTAKBANK": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
             "SBIN": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "ICICIBANK": {
               "t_minus_5": null,
               "t_minus_3": null,
               "t_minus_1": null,
@@ -3860,13 +3850,23 @@
               "t_plus_5": null,
               "t_plus_10": null,
               "t_plus_20": null
+            },
+            "KOTAKBANK": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
             }
           }
         },
         "ai_snapshots": [
           {
             "version": 1,
-            "timestamp": "2026-06-14T10:39:13.860002+00:00",
+            "timestamp": "2026-06-14T10:59:32.631028+00:00",
             "prompt_version": "v1.0.0",
             "summary": "AI summary not available. Please configure an API key.",
             "key_points": [
@@ -3879,12 +3879,12 @@
       {
         "event_id": "mock-rbi-2",
         "url": "https://www.rbi.org.in/mock-2",
-        "published_at": "2026-06-14T10:39:13.834221+00:00",
+        "published_at": "2026-06-14T10:59:32.605202+00:00",
         "title": "Monetary Policy Statement: Repo Rate unchanged at 6.5%",
         "summary": "The MPC met today and unanimously decided to keep the policy repo rate unchanged at 6.50 per cent with readiness to act should the situation so warrant.",
         "category": "Monetary Policy",
         "source": "RBI",
-        "collected_at": "2026-06-14T10:39:13.834269+00:00",
+        "collected_at": "2026-06-14T10:59:32.605248+00:00",
         "version": 3,
         "status": "Active",
         "lifecycle": "Enriched",
@@ -3902,23 +3902,23 @@
           ],
           "securities": [
             "AXISBANK",
-            "ICICIBANK",
-            "M&MFIN",
             "CHOLAFIN",
-            "BAJAJ-AUTO",
-            "KOTAKBANK",
-            "MARUTI",
-            "SBIN",
+            "SHRIRAMFIN",
+            "DLF",
             "TATAMOTORS",
+            "M&M",
+            "SBIN",
+            "ICICIBANK",
+            "HDFCBANK",
+            "MARUTI",
+            "MACROTECH",
+            "BAJAJ-AUTO",
             "HEROMOTOCO",
             "OBEROIRLTY",
-            "DLF",
+            "BAJFINANCE",
             "GODREJPROP",
-            "MACROTECH",
-            "HDFCBANK",
-            "SHRIRAMFIN",
-            "M&M",
-            "BAJFINANCE"
+            "KOTAKBANK",
+            "M&MFIN"
           ],
           "horizon": "1-5 days",
           "direction": "Neutral",
@@ -3956,16 +3956,6 @@
               "t_plus_10": null,
               "t_plus_20": null
             },
-            "ICICIBANK": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
             "CHOLAFIN": {
               "t_minus_5": null,
               "t_minus_3": null,
@@ -3976,7 +3966,7 @@
               "t_plus_10": null,
               "t_plus_20": null
             },
-            "BAJAJ-AUTO": {
+            "SHRIRAMFIN": {
               "t_minus_5": null,
               "t_minus_3": null,
               "t_minus_1": null,
@@ -3986,7 +3976,7 @@
               "t_plus_10": null,
               "t_plus_20": null
             },
-            "KOTAKBANK": {
+            "DLF": {
               "t_minus_5": null,
               "t_minus_3": null,
               "t_minus_1": null,
@@ -3996,7 +3986,17 @@
               "t_plus_10": null,
               "t_plus_20": null
             },
-            "MARUTI": {
+            "TATAMOTORS": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "M&M": {
               "t_minus_5": null,
               "t_minus_3": null,
               "t_minus_1": null,
@@ -4016,7 +4016,37 @@
               "t_plus_10": null,
               "t_plus_20": null
             },
-            "TATAMOTORS": {
+            "ICICIBANK": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "HDFCBANK": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "MARUTI": {
+              "t_minus_5": null,
+              "t_minus_3": null,
+              "t_minus_1": null,
+              "t_plus_1": null,
+              "t_plus_3": null,
+              "t_plus_5": null,
+              "t_plus_10": null,
+              "t_plus_20": null
+            },
+            "BAJAJ-AUTO": {
               "t_minus_5": null,
               "t_minus_3": null,
               "t_minus_1": null,
@@ -4046,7 +4076,7 @@
               "t_plus_10": null,
               "t_plus_20": null
             },
-            "DLF": {
+            "BAJFINANCE": {
               "t_minus_5": null,
               "t_minus_3": null,
               "t_minus_1": null,
@@ -4066,37 +4096,7 @@
               "t_plus_10": null,
               "t_plus_20": null
             },
-            "HDFCBANK": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "SHRIRAMFIN": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "M&M": {
-              "t_minus_5": null,
-              "t_minus_3": null,
-              "t_minus_1": null,
-              "t_plus_1": null,
-              "t_plus_3": null,
-              "t_plus_5": null,
-              "t_plus_10": null,
-              "t_plus_20": null
-            },
-            "BAJFINANCE": {
+            "KOTAKBANK": {
               "t_minus_5": null,
               "t_minus_3": null,
               "t_minus_1": null,
@@ -4111,7 +4111,7 @@
         "ai_snapshots": [
           {
             "version": 1,
-            "timestamp": "2026-06-14T10:39:13.911709+00:00",
+            "timestamp": "2026-06-14T10:59:32.683113+00:00",
             "prompt_version": "v1.0.0",
             "summary": "AI summary not available. Please configure an API key.",
             "key_points": [
