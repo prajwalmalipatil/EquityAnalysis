@@ -667,8 +667,8 @@ function renderBacktest(data) {
                 <h3 style="color:var(--text-muted); margin-bottom: 15px; font-size:1em; text-transform:uppercase; letter-spacing:1px;">Win Rate</h3>
                 <div style="font-size: 2.5em; font-weight: bold; color: #4cff4c;">${o.win_rate ? o.win_rate.toFixed(1) + '%' : '0%'}</div>
             </div>
-            <div class="stat-card glass-panel" style="text-align: center; padding: 20px;">
-                <h3 style="color:var(--text-muted); margin-bottom: 15px; font-size:1em; text-transform:uppercase; letter-spacing:1px;">Completions</h3>
+            <div class="stat-card glass-panel clickable-card" style="text-align: center; padding: 20px; cursor: pointer;" onclick="openCompletionsDrilldown()">
+                <h3 style="color:var(--text-muted); margin-bottom: 15px; font-size:1em; text-transform:uppercase; letter-spacing:1px;">Completions <span style="font-size: 0.6em; color: var(--accent-color);">(Click for details)</span></h3>
                 <div style="font-size: 2.5em; font-weight: bold; color: var(--accent-color);">${o.total_completed || 0}</div>
             </div>
             <div class="stat-card glass-panel" style="text-align: center; padding: 20px;">
@@ -679,5 +679,104 @@ function renderBacktest(data) {
     } else {
         container.innerHTML = '<p>No metrics available.</p>';
     }
+}
+
+async function openCompletionsDrilldown() {
+    try {
+        const response = await fetch(`./backtest_results.json?t=${new Date().getTime()}`);
+        if (!response.ok) {
+            console.error('Failed to fetch completions');
+            return;
+        }
+        const data = await response.json();
+        
+        const daily = data.completions_daily || [];
+        const weekly = data.completions_weekly || [];
+        const monthly = data.completions_monthly || [];
+        
+        let html = `
+            <div class="tabs-container" style="margin-bottom: 20px; grid-column: 1/-1;">
+                <div class="tab-headers" style="display: flex; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+                    <button class="tab-btn active" onclick="switchCompletionTab('daily')" id="tab-btn-daily" style="background:transparent; border:none; color:var(--text-color); cursor:pointer; font-weight:bold; padding: 8px 16px; border-radius: 4px; background: rgba(255,255,255,0.1);">Daily (${daily.length})</button>
+                    <button class="tab-btn" onclick="switchCompletionTab('weekly')" id="tab-btn-weekly" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; font-weight:bold; padding: 8px 16px; border-radius: 4px;">Weekly (${weekly.length})</button>
+                    <button class="tab-btn" onclick="switchCompletionTab('monthly')" id="tab-btn-monthly" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; font-weight:bold; padding: 8px 16px; border-radius: 4px;">Monthly (${monthly.length})</button>
+                </div>
+            </div>
+            <div class="tab-content" id="tab-content-daily" style="display:block; grid-column: 1/-1;">
+                ${renderCompletionTable(daily)}
+            </div>
+            <div class="tab-content" id="tab-content-weekly" style="display:none; grid-column: 1/-1;">
+                ${renderCompletionTable(weekly)}
+            </div>
+            <div class="tab-content" id="tab-content-monthly" style="display:none; grid-column: 1/-1;">
+                ${renderCompletionTable(monthly)}
+            </div>
+        `;
+        
+        openModal('Backtest Completions', [], html);
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+function switchCompletionTab(tabName) {
+    ['daily', 'weekly', 'monthly'].forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        const content = document.getElementById(`tab-content-${t}`);
+        if (btn && content) {
+            if (t === tabName) {
+                btn.style.color = 'var(--text-color)';
+                btn.style.background = 'rgba(255,255,255,0.1)';
+                content.style.display = 'block';
+            } else {
+                btn.style.color = 'var(--text-muted)';
+                btn.style.background = 'transparent';
+                content.style.display = 'none';
+            }
+        }
+    });
+}
+
+function renderCompletionTable(items) {
+    if (!items || items.length === 0) {
+        return `<p style="color:var(--text-muted); text-align:center; padding: 20px;">No completions found for this timeframe.</p>`;
+    }
+    
+    let html = \`
+    <div class="table-container" style="max-height: 60vh; overflow-y: auto;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Trigger Date</th>
+                    <th>Completion Date</th>
+                    <th>Pattern</th>
+                    <th>Sentiment</th>
+                    <th>Vol Surge</th>
+                    <th>Max Fwd Rtn (5b)</th>
+                </tr>
+            </thead>
+            <tbody>
+    \`;
+    
+    items.forEach(item => {
+        const sentimentClass = item.sentiment === 'Bullish' ? 'badge-gap-up' : 'badge-gap-down';
+        const returnColor = item.fwd_return_5b > 0 ? '#4cff4c' : '#ff4c4c';
+        
+        html += \`
+            <tr>
+                <td class="symbol-cell">\${item.symbol}</td>
+                <td>\${item.start_date || '--'}</td>
+                <td>\${item.completion_date || '--'}</td>
+                <td><span class="premium-badge badge-label">\${item.trigger_pattern}</span></td>
+                <td><span class="premium-badge \${sentimentClass}">\${item.sentiment}</span></td>
+                <td>\${item.vol_surge_pct !== undefined ? item.vol_surge_pct.toFixed(1) + '%' : '--'}</td>
+                <td style="color: \${returnColor}; font-weight: bold;">\${item.fwd_return_5b !== null ? item.fwd_return_5b.toFixed(2) + '%' : '--'}</td>
+            </tr>
+        \`;
+    });
+    
+    html += \`</tbody></table></div>\`;
+    return html;
 }
 
