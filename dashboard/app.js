@@ -78,6 +78,8 @@ function switchTab(tabId) {
         if (macro) macro.style.display = 'none';
         if (ete) ete.style.display = 'none';
         if (alerts) alerts.style.display = 'flex';
+        const backtest = document.getElementById('backtest');
+        if (backtest) backtest.style.display = 'none';
     } else if (tabId === 'consensus') {
         overview.style.display = 'none';
         consensus.style.display = 'flex';
@@ -85,6 +87,8 @@ function switchTab(tabId) {
         if (macro) macro.style.display = 'none';
         if (ete) ete.style.display = 'none';
         if (alerts) alerts.style.display = 'none';
+        const backtest = document.getElementById('backtest');
+        if (backtest) backtest.style.display = 'none';
     } else if (tabId === 'eigen') {
         overview.style.display = 'none';
         consensus.style.display = 'none';
@@ -92,6 +96,8 @@ function switchTab(tabId) {
         if (macro) macro.style.display = 'none';
         if (ete) ete.style.display = 'none';
         if (alerts) alerts.style.display = 'none';
+        const backtest = document.getElementById('backtest');
+        if (backtest) backtest.style.display = 'none';
     } else if (tabId === 'macro') {
         overview.style.display = 'none';
         consensus.style.display = 'none';
@@ -99,6 +105,8 @@ function switchTab(tabId) {
         if (macro) macro.style.display = 'flex';
         if (ete) ete.style.display = 'none';
         if (alerts) alerts.style.display = 'none';
+        const backtest = document.getElementById('backtest');
+        if (backtest) backtest.style.display = 'none';
     } else if (tabId === 'ete') {
         overview.style.display = 'none';
         consensus.style.display = 'none';
@@ -112,6 +120,23 @@ function switchTab(tabId) {
             }
         }
         if (alerts) alerts.style.display = 'none';
+        const backtest = document.getElementById('backtest');
+        if (backtest) backtest.style.display = 'none';
+    } else if (tabId === 'backtest') {
+        overview.style.display = 'none';
+        consensus.style.display = 'none';
+        eigen.style.display = 'none';
+        if (macro) macro.style.display = 'none';
+        if (ete) ete.style.display = 'none';
+        if (alerts) alerts.style.display = 'none';
+        const backtest = document.getElementById('backtest');
+        if (backtest) {
+            backtest.style.display = 'flex';
+            if (!window.backtestLoaded) {
+                fetchBacktestMetrics();
+                window.backtestLoaded = true;
+            }
+        }
     }
 }
 
@@ -497,34 +522,95 @@ async function fetchETESummary(summaryFile) {
 }
 
 function renderETE(summaryData) {
-    const tbody = document.getElementById('ete-body');
-    tbody.innerHTML = '';
-    
-    // Combine active and completed for the view
     const allItems = [...(summaryData.active || []), ...(summaryData.completed || [])];
     
-    if (allItems.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted)">No active or completed ETE sequences found.</td></tr>`;
-        return;
-    }
+    // Reset counts
+    document.getElementById('ete-daily-count').textContent = '0';
+    document.getElementById('ete-weekly-count').textContent = '0';
+    document.getElementById('ete-monthly-count').textContent = '0';
     
-    allItems.forEach(item => {
-        const tr = document.createElement('tr');
+    ['daily', 'weekly', 'monthly'].forEach(timeframe => {
+        const tbody = document.getElementById(`ete-body-${timeframe}`);
+        if (!tbody) return;
+        tbody.innerHTML = '';
         
-        let stateClass = 'badge-label';
-        if (item.state === 'Completed') stateClass = 'badge-gap-up';
-        else if (item.state === 'Waiting') stateClass = 'badge-strong'; // amber equivalent
-        else if (item.state === 'Failed') stateClass = 'badge-gap-down';
+        const items = allItems.filter(i => i.timeframe === timeframe);
+        document.getElementById(`ete-${timeframe}-count`).textContent = items.length;
+        
+        if (items.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted)">No sequences found.</td></tr>`;
+            return;
+        }
+        
+        items.forEach(item => {
+            const tr = document.createElement('tr');
+            
+            let stateClass = 'badge-label';
+            if (item.state === 'Completed') stateClass = 'badge-gap-up';
+            else if (item.state === 'Waiting') stateClass = 'badge-strong';
+            else if (item.state === 'Failed') stateClass = 'badge-gap-down';
+            else if (item.state === 'Triggered') stateClass = 'badge-label';
 
-        tr.innerHTML = `
-            <td class="symbol-cell">${item.symbol}</td>
-            <td>${item.timeframe}</td>
-            <td><span class="premium-badge ${stateClass}">${item.state}</span></td>
-            <td>${item.current_stage}</td>
-            <td>${item.confidence ? item.confidence.toFixed(1) + '%' : '--'}</td>
-            <td><button class="btn-small" onclick="alert('Drill-down coming soon! sequence_id: ${item.sequence_id}')">View</button></td>
-        `;
-        tbody.appendChild(tr);
+            tr.innerHTML = `
+                <td class="symbol-cell">${item.symbol}</td>
+                <td><span class="premium-badge ${stateClass}">${item.state}</span></td>
+                <td>${item.current_stage}</td>
+                <td>${item.confidence ? item.confidence.toFixed(1) + '%' : '--'}</td>
+                <td><button class="btn-small" onclick="alert('Drill-down coming soon! sequence_id: ${item.sequence_id}')">View</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
     });
+}
+
+function toggleEteTable(timeframe) {
+    const tableContainer = document.getElementById(`ete-table-${timeframe}`);
+    if (tableContainer) {
+        if (tableContainer.style.display === 'none') {
+            tableContainer.style.display = 'block';
+        } else {
+            tableContainer.style.display = 'none';
+        }
+    }
+}
+
+// ==========================================
+// Backtest & Replay Integration
+// ==========================================
+
+async function fetchBacktestMetrics() {
+    try {
+        const response = await fetch('./backtest_results.json');
+        if (!response.ok) {
+            document.getElementById('backtest-loading').textContent = 'No backtest metrics found. The backtest engine may not have run yet.';
+            return;
+        }
+        const data = await response.json();
+        renderBacktest(data);
+    } catch (e) {
+        console.error('Failed to load backtest metrics', e);
+        document.getElementById('backtest-loading').textContent = 'Failed to load backtest metrics.';
+    }
+}
+
+function renderBacktest(data) {
+    const container = document.getElementById('backtest-metrics-container');
+    container.innerHTML = '';
+    
+    if (data.overall_metrics) {
+        container.innerHTML = `
+            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+                <p><strong>Total Sequences Evaluated:</strong> ${data.overall_metrics.total_sequences || 0}</p>
+                <p><strong>Win Rate (Stage Transitions):</strong> ${data.overall_metrics.win_rate ? data.overall_metrics.win_rate.toFixed(1) + '%' : '0%'}</p>
+                <p><strong>Total Completions:</strong> ${data.overall_metrics.total_completed || 0}</p>
+                <p><strong>Total Failures:</strong> ${data.overall_metrics.total_failed || 0}</p>
+            </div>
+            <p style="margin-top: 15px; font-size: 0.9em; color: var(--text-muted);">
+                Detailed sequence logs and transitions are printed to the backend console.
+            </p>
+        `;
+    } else {
+        container.innerHTML = '<p>No metrics available.</p>';
+    }
 }
 

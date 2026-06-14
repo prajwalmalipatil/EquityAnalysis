@@ -52,10 +52,19 @@ class ViewBuilderService:
 
         # Copy static UI assets from dashboard_live if they exist, to prevent destroying the UI
         if self.dashboard_live.exists():
-            for asset in ["index.html", "app.js", "styles.css", "data.json"]:
+            for asset in ["index.html", "app.js", "styles.css", "data.json", "backtest_results.json"]:
                 asset_path = self.dashboard_live / asset
                 if asset_path.exists():
                     shutil.copy(asset_path, self.dashboard_next / asset)
+            
+            # Preserve JSONPublisher history (Time Travel)
+            history_dir = self.dashboard_live / "history"
+            if history_dir.exists():
+                next_history_dir = self.dashboard_next / "history"
+                next_history_dir.mkdir(parents=True, exist_ok=True)
+                for item in history_dir.iterdir():
+                    if item.is_file() and (item.name == "index.json" or item.name.startswith("data_") or item.name == "rbi_events.jsonl"):
+                        shutil.copy(item, next_history_dir / item.name)
 
         # 3. Build data structures
         summary_data = {

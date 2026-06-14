@@ -222,5 +222,21 @@ def run_backtest():
     print(f"  Pure Impulse Convergence: Win Rate {conv['win_3d'].mean()*100:.1f}% (Count: {len(conv)})")
     print(f"  Contested Divergence: Win Rate {div['win_3d'].mean()*100:.1f}% (Count: {len(div)})")
     
+    # Export to JSON for UI
+    import json
+    results_payload = {
+        "overall_metrics": {
+            "total_sequences": len(df_trades),
+            "win_rate": df_trades["win_5d"].mean() * 100 if len(df_trades) > 0 else 0,
+            "total_completed": len(df_trades[df_trades["win_5d"] == True]),
+            "total_failed": len(df_trades[df_trades["win_5d"] == False])
+        }
+    }
+    
+    out_dir = Path("dashboard")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    with open(out_dir / "backtest_results.json", "w") as f:
+        json.dump(results_payload, f, indent=2)
+    
 if __name__ == "__main__":
     run_backtest()

@@ -273,7 +273,8 @@ class EigenTransitionEngineService:
             current_date = "UNKNOWN_DATE"
         
         for seq in active_seqs:
-            self._evaluate_sequence(seq, current, previous, current_date)
+            if current_date > seq.trigger_date:
+                self._evaluate_sequence(seq, current, previous, current_date)
 
     def _handle_pause(self, seq: ETESequence, reason: FailureReason):
         metrics = StageMetrics(vol_delta_pct=0.0, spread_delta_pct=0.0, raw_vol=0.0, raw_spread=0.0)

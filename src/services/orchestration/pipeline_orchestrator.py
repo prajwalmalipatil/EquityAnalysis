@@ -86,6 +86,16 @@ class PipelineOrchestrator:
         total_size = sum(f.stat().st_size for f in directory.glob('**/*') if f.is_file())
         return round(total_size / (1024 * 1024), 2)
 
+    def run_stage_backtest(self) -> bool:
+        logger.info("DAG_STAGE: Backtesting Analytics")
+        try:
+            import backtest_eigen
+            backtest_eigen.run_backtest()
+            return True
+        except Exception as e:
+            logger.error(f"DAG_STAGE_FAILED: Backtesting: {e}")
+            return False
+
     def execute_dag(self):
         t0 = time.time()
         logger.info("STARTING_PIPELINE_ORCHESTRATOR")
@@ -121,6 +131,10 @@ class PipelineOrchestrator:
         t_start = time.time()
         self.run_stage_macro()
         self.stats["stages"]["macro_sec"] = round(time.time() - t_start, 2)
+        
+        t_start = time.time()
+        self.run_stage_backtest()
+        self.stats["stages"]["backtest_sec"] = round(time.time() - t_start, 2)
         
         # Calculate Event Repo Size
         from src.constants.vsa_constants import ETE_EVENTS_DIR
