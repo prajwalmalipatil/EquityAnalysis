@@ -17,6 +17,7 @@ class TradeRecord:
     fwd_return_5b: Optional[float]
     win: Optional[bool]
     sentiment: str
+    gauntlet_passed: bool
 
 EIGEN_LOWER = 0.30
 EIGEN_UPPER = 0.70
@@ -93,33 +94,64 @@ def evaluate_timeframe(df: pd.DataFrame, symbol: str) -> List[TradeRecord]:
         if not label_tuple: continue
         
         label, sentiment = label_tuple
+        label, sentiment = label_tuple
         
         start_date = str(df.iloc[i-1]["Date"]).split()[0]
-        completion_date = str(t["Date"]).split()[0]
+        t_vol_float = float(t_vol)
+        vol_surge_pct = float((t_vol/t1_vol - 1) * 100)
         
-        # Check forward 5 bars
-        if i + 5 < len(df):
-            fwd_5 = df.iloc[i+1 : i+6]
-            if sentiment == "Bullish":
-                fwd_return_5b = (fwd_5["Close"].max() - t_close) / t_close
-                win = fwd_return_5b > 0
-            else:
-                fwd_return_5b = (fwd_5["Close"].min() - t_close) / t_close
-                win = fwd_return_5b < 0
-        else:
-            fwd_return_5b = None
-            win = None
-            
+        # Evaluate 4-stage Gauntlet: LVLS -> HVHS -> LVLS -> HVHS
+        gauntlet_passed = False
+        completion_date = "--"
+        fwd_return_5b = None
+        win = None
+        
+        if i + 4 < len(df):
+            # T1: LVLS
+            t1_eval = df.iloc[i+1]
+            t1_vol_eval = t1_eval["Volume"]
+            t1_spread = t1_eval["Spread"]
+            if t1_vol_eval < t_vol and t1_spread < t["Spread"]:
+                # T2: HVHS
+                t2_eval = df.iloc[i+2]
+                t2_vol_eval = t2_eval["Volume"]
+                t2_spread = t2_eval["Spread"]
+                if t2_vol_eval > t1_vol_eval and t2_spread > t1_spread:
+                    # T3: LVLS
+                    t3_eval = df.iloc[i+3]
+                    t3_vol_eval = t3_eval["Volume"]
+                    t3_spread = t3_eval["Spread"]
+                    if t3_vol_eval < t2_vol_eval and t3_spread < t2_spread:
+                        # T4: HVHS
+                        t4_eval = df.iloc[i+4]
+                        t4_vol_eval = t4_eval["Volume"]
+                        t4_spread = t4_eval["Spread"]
+                        if t4_vol_eval > t3_vol_eval and t4_spread > t3_spread:
+                            gauntlet_passed = True
+                            completion_date = str(t4_eval["Date"]).split()[0]
+                            
+                            # Check forward 5 bars starting AFTER T+4
+                            if i + 4 + 5 < len(df):
+                                fwd_5 = df.iloc[i+5 : i+10]
+                                t4_close = t4_eval["Close"]
+                                if sentiment == "Bullish":
+                                    fwd_return_5b = (fwd_5["Close"].max() - t4_close) / t4_close
+                                    win = fwd_return_5b > 0
+                                else:
+                                    fwd_return_5b = (fwd_5["Close"].min() - t4_close) / t4_close
+                                    win = fwd_return_5b < 0
+        
         trades.append(TradeRecord(
             symbol=symbol,
             start_date=start_date,
             completion_date=completion_date,
             trigger_pattern=label,
-            t_vol=float(t_vol),
-            vol_surge_pct=float((t_vol/t1_vol - 1) * 100),
+            t_vol=t_vol_float,
+            vol_surge_pct=vol_surge_pct,
             fwd_return_5b=float(fwd_return_5b * 100) if fwd_return_5b is not None else None,
             win=bool(win) if win is not None else None,
-            sentiment=sentiment
+            sentiment=sentiment,
+            gauntlet_passed=gauntlet_passed
         ))
         
     return trades
@@ -184,11 +216,12 @@ def run_backtest():
         print("No trades found.")
         return
         
-    resolved_trades = [t for t in all_trades if t.win is not None]
-    total_eval = len(all_trades)
-    wins = len([t for t in resolved_trades if t.win])
-    win_rate = (wins / len(resolved_trades) * 100) if resolved_trades else 0
-    failures = len([t for t in resolved_trades if not t.win])
+    total_eval = len(all_trades) # Number of T0 triggers
+    completed_sequences = [t for t in all_trades if t.gauntlet_passed and t.win is not None]
+    
+    wins = len([t for t in completed_sequences if t.win])
+    failures = len([t for t in completed_sequences if not t.win])
+    win_rate = (wins / len(completed_sequences) * 100) if completed_sequences else 0
     
     results_payload = {
         "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
@@ -198,9 +231,9 @@ def run_backtest():
             "total_completed": wins,
             "total_failed": failures
         },
-        "completions_daily": [t.__dict__ for t in trades_daily if t.win],
-        "completions_weekly": [t.__dict__ for t in trades_weekly if t.win],
-        "completions_monthly": [t.__dict__ for t in trades_monthly if t.win]
+        "completions_daily": [t.__dict__ for t in trades_daily if t.gauntlet_passed and t.win],
+        "completions_weekly": [t.__dict__ for t in trades_weekly if t.gauntlet_passed and t.win],
+        "completions_monthly": [t.__dict__ for t in trades_monthly if t.gauntlet_passed and t.win]
     }
     
     out_dir = Path("dashboard")
