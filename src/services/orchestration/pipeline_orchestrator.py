@@ -149,6 +149,15 @@ class PipelineOrchestrator:
         t_start = time.time()
         if not self.run_stage_publisher():
             sys.exit(1)
+            
+        # Run the new Macro Publish Pipeline to generate analytics.json, search-index.json, etc.
+        try:
+            from src.services.macro_intelligence.publish_pipeline import run_publish_pipeline
+            run_publish_pipeline(self.data_dir.parent / "dashboard")
+        except Exception as e:
+            logger.error(f"DAG_STAGE_FAILED: Macro Publishers: {e}")
+            sys.exit(1)
+            
         self.stats["stages"]["publisher_sec"] = round(time.time() - t_start, 2)
 
         duration = time.time() - t0

@@ -6,7 +6,7 @@ from src.services.macro_intelligence.builders import ManifestBuilder, AnalyticsB
 from src.services.macro_intelligence.dashboard_mapper import DashboardMapper
 from src.services.macro_intelligence.analytics_provider import AnalyticsProvider
 from src.services.macro_intelligence.release_validator import ReleaseValidator
-from src.services.macro_intelligence.publishers import JSONPublisher, ManifestPublisher, AnalyticsPublisher, SearchPublisher, RelationshipPublisher, GraphPublisher
+from src.services.macro_intelligence.publishers import ManifestPublisher, AnalyticsPublisher, SearchPublisher, RelationshipPublisher, GraphPublisher
 from src.services.macro_intelligence.search_indexer import SearchIndexer, SearchDocumentBuilder
 from src.services.macro_intelligence.relationship_engine import RelationshipCandidateGenerator, RelationshipResolver
 from src.services.macro_intelligence.graph_builder import GraphBuilder, GraphViewModelBuilder
@@ -26,7 +26,8 @@ def run_publish_pipeline(output_dir: Path) -> bool:
     try:
         with metrics.time_block("pipeline_total_duration_ms"):
             # 1. Setup
-            config = load_config()
+            config_path = Path(__file__).parent / "config.yaml"
+            config = load_config(config_path)
             read_repo = JSONEventReadRepository(config.storage)
             
             # 2. Query
@@ -69,7 +70,7 @@ def run_publish_pipeline(output_dir: Path) -> bool:
             # 3.6 Manifest
             artifacts = {
                 "dashboard": {"version": "2", "file": "data.json", "record_count": len(events)},
-                "analytics": {"version": "1", "file": "analytics.json", "record_count": len(analytics_view_model.get("metrics", {}))},
+                "analytics": {"version": "1", "file": "analytics.json", "record_count": analytics_view_model.event_count},
                 "analytics_history": {"version": "1", "file": "analytics-history.json"},
                 "search": {"version": "1", "file": "search-index.json", "record_count": len(search_index)},
                 "relationships": {"version": "1", "file": "relationships.json", "record_count": len(relationships)},
@@ -88,7 +89,6 @@ def run_publish_pipeline(output_dir: Path) -> bool:
             
             # 5. Publish
             with metrics.time_block("publish_io_ms"):
-                JSONPublisher(output_dir).publish(dashboard_events)
                 AnalyticsPublisher(output_dir).publish(analytics_view_model)
                 SearchPublisher(output_dir).publish(search_index)
                 
