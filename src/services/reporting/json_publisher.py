@@ -83,8 +83,12 @@ class JSONPublisher:
                             pass
             if events:
                 macro_intelligence["total_events"] = len(events)
-                macro_intelligence["last_event_at"] = max(e.get("published_at", "") for e in events)
-                events.sort(key=lambda x: x.get("published_at", ""), reverse=True)
+                
+                def get_pub_date(evt):
+                    return evt.get("official_data", {}).get("publication_date", evt.get("published_at", ""))
+                
+                macro_intelligence["last_event_at"] = max(get_pub_date(e) for e in events)
+                events.sort(key=lambda x: get_pub_date(x), reverse=True)
                 
                 # Assign Trading Day Queue status
                 for e in events:
@@ -92,7 +96,7 @@ class JSONPublisher:
                     is_new = False
                     if last_session_date_str:
                         # last_session_date_str is "YYYY-MM-DD"
-                        if e.get("published_at", "")[:10] > last_session_date_str:
+                        if get_pub_date(e)[:10] > last_session_date_str:
                             is_new = True
                     else:
                         is_new = True # First run
