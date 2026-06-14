@@ -7,3 +7,4 @@ openpyxl
 feedparser==6.0.12
 python-dateutil==2.9.0.post0
 google-generativeai
+pyyaml>=6.0.3
