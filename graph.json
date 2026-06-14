@@ -1,14 +1,14 @@
 {
   "schema_version": "1",
-  "generated_at": "2026-06-14T19:06:25.198256Z",
+  "generated_at": "2026-06-14T19:22:57.535022Z",
   "pipeline_version": "1",
   "statistics": {
     "node_count": 30,
-    "edge_count": 117,
+    "edge_count": 108,
     "connected_components": 3,
-    "average_degree": 7.8,
+    "average_degree": 7.2,
     "relationship_distribution": {
-      "AMENDS": 99,
+      "AMENDS": 90,
       "WITHDRAWS": 18
     }
   },
@@ -1207,28 +1207,10 @@
       "confidence": "HIGH"
     },
     {
-      "id": "97d0930f4f08882d",
-      "relationship_id": "071906734bd30513",
-      "source": "5d4bddb3c3239c4f",
-      "target": "bee4b6659c965d57",
-      "weight": 0.4,
-      "relationship_type": "AMENDS",
-      "confidence": "LOW"
-    },
-    {
       "id": "de5b22f9ce0eaad1",
       "relationship_id": "5aa2d2b0b53d548e",
       "source": "45f1ba1e7604fa2d",
       "target": "bee4b6659c965d57",
-      "weight": 0.4,
-      "relationship_type": "AMENDS",
-      "confidence": "LOW"
-    },
-    {
-      "id": "3a63a821bebea0cd",
-      "relationship_id": "45e745b482e9319c",
-      "source": "5d4bddb3c3239c4f",
-      "target": "a13b0da1cf2f113c",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
@@ -1243,28 +1225,10 @@
       "confidence": "LOW"
     },
     {
-      "id": "bade98be66806267",
-      "relationship_id": "4b0362bf76f65a95",
-      "source": "5d4bddb3c3239c4f",
-      "target": "8c027a22aa766656",
-      "weight": 0.4,
-      "relationship_type": "AMENDS",
-      "confidence": "LOW"
-    },
-    {
       "id": "0c71d51d6d02530d",
       "relationship_id": "c6c587dc304672ad",
       "source": "45f1ba1e7604fa2d",
       "target": "8c027a22aa766656",
-      "weight": 0.4,
-      "relationship_type": "AMENDS",
-      "confidence": "LOW"
-    },
-    {
-      "id": "7ef8590e39342921",
-      "relationship_id": "15a634cf00702c66",
-      "source": "5d4bddb3c3239c4f",
-      "target": "7a1f8a1110c15d77",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
@@ -1279,28 +1243,10 @@
       "confidence": "LOW"
     },
     {
-      "id": "7bc9d0a6d82bce6b",
-      "relationship_id": "d5a1fe9fc44f0213",
-      "source": "5d4bddb3c3239c4f",
-      "target": "568b057d51bad1db",
-      "weight": 0.4,
-      "relationship_type": "AMENDS",
-      "confidence": "LOW"
-    },
-    {
       "id": "a3a5e5b70670bbc9",
       "relationship_id": "dd38bd847c3e9346",
       "source": "45f1ba1e7604fa2d",
       "target": "568b057d51bad1db",
-      "weight": 0.4,
-      "relationship_type": "AMENDS",
-      "confidence": "LOW"
-    },
-    {
-      "id": "606b6e91916566e9",
-      "relationship_id": "caa76e0df91ab064",
-      "source": "5d4bddb3c3239c4f",
-      "target": "52e7e5f1944a44a4",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
@@ -1315,37 +1261,10 @@
       "confidence": "LOW"
     },
     {
-      "id": "21375c38f856eeb5",
-      "relationship_id": "e1120d5497364dbd",
-      "source": "5d4bddb3c3239c4f",
-      "target": "7ecd6e544105053b",
-      "weight": 0.4,
-      "relationship_type": "AMENDS",
-      "confidence": "LOW"
-    },
-    {
       "id": "2f828cefe0d6a017",
       "relationship_id": "ac318dcd2b886973",
       "source": "45f1ba1e7604fa2d",
       "target": "7ecd6e544105053b",
-      "weight": 0.4,
-      "relationship_type": "AMENDS",
-      "confidence": "LOW"
-    },
-    {
-      "id": "ec5ba6023afad126",
-      "relationship_id": "e51bf76e74c5c13d",
-      "source": "5d4bddb3c3239c4f",
-      "target": "d42e8466c9b36c24",
-      "weight": 0.4,
-      "relationship_type": "AMENDS",
-      "confidence": "LOW"
-    },
-    {
-      "id": "aaa9e9575d319f2b",
-      "relationship_id": "8372b187a2a77954",
-      "source": "5d4bddb3c3239c4f",
-      "target": "45f1ba1e7604fa2d",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
