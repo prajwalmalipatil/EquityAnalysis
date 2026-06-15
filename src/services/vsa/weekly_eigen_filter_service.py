@@ -61,7 +61,7 @@ class WeeklyEigenFilterService:
         """Reads daily data, consolidates to weekly, evaluates EigenFilter conditions."""
         try:
             df = pd.read_excel(path, sheet_name="VSA_Analysis")
-        except Exception:
+        except (OSError, ValueError):
             return None
 
         weekly_df = self._consolidate_to_weekly(df)

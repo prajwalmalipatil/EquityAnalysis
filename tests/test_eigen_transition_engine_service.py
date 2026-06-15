@@ -94,3 +94,39 @@ def test_integrity_failure(clean_engine):
     state, _ = clean_engine.reconstruct_state()
     seq_id = list(state.keys())[0]
     assert state[seq_id].state == ETEState.INTEGRITY_FAILED
+
+def test_hvls_and_lvhs(clean_engine):
+    # Overwrite config to use HVLS and LVHS
+    with open("src/constants/ete_sequences.json", "w") as f:
+        json.dump({
+            "AVE_2": {
+                "sequence": ["HVLS", "LVHS"]
+            }
+        }, f)
+    # Re-instantiate engine to pick up new config
+    engine = EigenTransitionEngineService("daily")
+
+    df_trigger = pd.DataFrame({"Date": [datetime.now()], "Open": [10], "High": [20], "Low": [10], "Close": [15], "Volume": [100]}) # Spread = 10
+    engine.detect_triggers("TEST", df_trigger, True)
+    
+    # T+1: HVLS (Volume up, Spread down)
+    df_t1 = pd.DataFrame({
+        "Date": [datetime.now(), datetime.now()+timedelta(days=1)],
+        "Open": [10, 10], "High": [20, 15], "Low": [10, 10], "Close": [15, 12], "Volume": [100, 200] # Spread: 10 -> 5 (down), Vol: 100 -> 200 (up)
+    })
+    
+    engine.update_active_sequences("TEST", df_t1)
+    state, _ = engine.reconstruct_state()
+    seq_id = list(state.keys())[0]
+    assert state[seq_id].current_stage_index == 1
+    assert state[seq_id].state == ETEState.WAITING
+    
+    # T+2: LVHS (Volume down, Spread up)
+    df_t2 = pd.DataFrame({
+        "Date": [datetime.now()+timedelta(days=1), datetime.now()+timedelta(days=2)],
+        "Open": [10, 10], "High": [15, 27], "Low": [10, 10], "Close": [12, 20], "Volume": [200, 100] # Spread: 5 -> 17 (up), Vol: 200 -> 100 (down)
+    })
+    
+    engine.update_active_sequences("TEST", df_t2)
+    state2, _ = engine.reconstruct_state()
+    assert state2[seq_id].state == ETEState.COMPLETED

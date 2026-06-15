@@ -52,7 +52,7 @@ class EventStudyEngine:
             
             self._price_cache[symbol] = df
             return df
-        except Exception as e:
+        except (OSError, KeyError, ValueError, AttributeError) as e:
             logger.error("FAILED_TO_LOAD_PRICE_DATA", extra={"symbol": symbol, "error": str(e)})
             return None
 
@@ -99,7 +99,7 @@ class EventStudyEngine:
 
     def process(self, event: MacroEvent) -> EventStudy:
         """Generates an EventStudy for the given event."""
-        pub_dt = dateutil.parser.parse(event.published_at)
+        pub_dt = dateutil.parser.parse(event.official_data.publication_date)
         if pub_dt.tzinfo is None:
             pub_dt = pub_dt.replace(tzinfo=timezone.utc)
             
@@ -116,12 +116,15 @@ class EventStudyEngine:
         
         # 3. Determine specific stock returns if impacted
         stock_returns = {}
-        if event.impact and event.impact.securities:
-            for sec in event.impact.securities:
+        if event.derived_data.impact and event.derived_data.impact.securities:
+            for sec in event.derived_data.impact.securities:
                 df = self._load_price_data(sec)
                 if df is not None:
                     stock_returns[sec] = self._calculate_return_window(df, pub_dt)
 
+        # TODO: implement regime detection using historical Eigen state
+        # Currently returns Neutral for all eigenstates.
+        # Backlog: post-Sprint-5, requires historical EigenFilter Excel data integration.
         # 4. Regime shifts (Stubbed until we have historical Eigen storage)
         # For now, we assume Neutral to Neutral unless we can compute it on the fly.
         pre = PreEventRegime(daily_eigen="Neutral", weekly_eigen="Neutral", monthly_eigen="Neutral")

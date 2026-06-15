@@ -1,4 +1,6 @@
 from typing import List, Optional
+import sys
+from datetime import datetime, timezone
 from src.utils.observability import get_tenant_logger, get_metrics_tracker
 from src.services.macro_intelligence.config import MacroConfig
 from src.services.macro_intelligence.interfaces import (
@@ -8,6 +10,7 @@ from src.services.macro_intelligence.interfaces import (
     EnrichmentServiceInterface
 )
 from src.services.macro_intelligence.attachment_processor import AttachmentProcessor
+from src.services.macro_intelligence.state_manager import PipelineStateManager
 
 logger = get_tenant_logger("macro-pipeline")
 metrics = get_metrics_tracker()
@@ -24,7 +27,8 @@ class MacroPipeline:
         validator: ValidatorInterface,
         repository: EventWriteRepository,
         attachment_processor: Optional[AttachmentProcessor] = None,
-        enrichment: Optional[EnrichmentServiceInterface] = None
+        enrichment: Optional[EnrichmentServiceInterface] = None,
+        state_manager: Optional[PipelineStateManager] = None
     ):
         self.config = config
         self.collectors = collectors
@@ -32,6 +36,7 @@ class MacroPipeline:
         self.repository = repository
         self.attachment_processor = attachment_processor
         self.enrichment = enrichment
+        self.state_manager = state_manager
 
     def execute(self) -> None:
         """Runs the complete macro intelligence pipeline."""
@@ -44,10 +49,10 @@ class MacroPipeline:
             
             with metrics.time_block("runtime_pipeline_total_duration_ms"):
                 # 1. Collect & Normalize
-                # TODO: read last_ts from state file
+                last_ts = self.state_manager.get_last_fetch_timestamp() if self.state_manager else ""
                 for collector in self.collectors:
                     with metrics.time_block("collector_fetch_duration_ms", tags={"collector": type(collector).__name__}):
-                        events = collector.fetch_since("")
+                        events = collector.fetch_since(last_ts)
                     total_collected += len(events)
                     metrics.increment("events_collected", len(events), tags={"collector": type(collector).__name__})
                     
@@ -79,6 +84,11 @@ class MacroPipeline:
             metrics.gauge("pipeline_run_collected", total_collected)
             metrics.gauge("pipeline_run_saved", total_saved)
             metrics.gauge("pipeline_run_duplicates", total_duplicates)
+            
+            if self.state_manager:
+                self.state_manager.update_last_fetch_timestamp(
+                    datetime.now(timezone.utc).isoformat()
+                )
                         
             logger.info("PIPELINE_EXECUTION_SUCCESSFUL", extra={"collected": total_collected, "saved": total_saved, "duplicates": total_duplicates})
         except Exception as e:
@@ -86,24 +96,37 @@ class MacroPipeline:
             raise
 
 def run_macro_pipeline():
-    import sys
+    import os
     from pathlib import Path
     from src.services.macro_intelligence.config import load_config
     from src.services.macro_intelligence.validator import DefaultValidator
     from src.services.macro_intelligence.event_repository import JSONEventWriteRepository
     from src.services.macro_intelligence.rbi_collector import RBICollector
     from src.services.macro_intelligence.attachment_processor import AttachmentProcessor
+    from src.services.macro_intelligence.enrichment_service import EnrichmentService, GeminiProvider, DummyProvider
+    from src.services.macro_intelligence.state_manager import PipelineStateManager
     
     try:
         config_path = Path(__file__).parent / "config.yaml"
         config = load_config(config_path)
+        
+        api_key = os.environ.get("GOOGLE_API_KEY")
+        if api_key:
+            provider = GeminiProvider(api_key=api_key)
+        else:
+            provider = DummyProvider()
+            
+        enrichment = EnrichmentService(provider=provider)
+        state_manager = PipelineStateManager(state_file=config.storage.state_file)
         
         pipeline = MacroPipeline(
             config=config,
             collectors=[RBICollector()],
             validator=DefaultValidator(),
             repository=JSONEventWriteRepository(config=config),
-            attachment_processor=AttachmentProcessor(config=config.storage)
+            attachment_processor=AttachmentProcessor(config=config.storage),
+            enrichment=enrichment,
+            state_manager=state_manager
         )
         pipeline.execute()
         return True

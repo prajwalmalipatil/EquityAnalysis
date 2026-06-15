@@ -55,9 +55,10 @@ class Lexer:
             result += self.current_char
             self.advance()
             
-        if self.current_char == '"':
-            self.advance() # skip closing quote
+        if self.current_char is None:
+            raise SyntaxError(f"Unclosed string starting at position {start_pos}")
             
+        self.advance() # skip closing quote
         return Token(TokenType.STRING, result, start_pos)
         
     def identifier(self) -> Token:

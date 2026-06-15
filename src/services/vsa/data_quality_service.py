@@ -3,7 +3,7 @@ import numpy as np
 import shutil
 import logging
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 from src.utils.observability import get_tenant_logger
 
 logger = get_tenant_logger("data-quality")
@@ -33,17 +33,17 @@ class DataQualityService:
         self.quarantine_dir.mkdir(parents=True, exist_ok=True)
         try:
             shutil.move(str(file_path), str(self.quarantine_dir / file_path.name))
-        except Exception as e:
+        except OSError as e:
             logger.error(f"FAILED_TO_QUARANTINE {file_path.name}: {e}")
 
-    def validate_file(self, file_path: Path) -> bool:
-        """Returns True if valid, False if quarantined."""
+    def validate_file(self, file_path: Path) -> Optional[pd.DataFrame]:
+        """Returns the cleaned DataFrame if valid, None if quarantined."""
         try:
             # We don't want to parse dates immediately if it's huge, but for validation we must.
             df = pd.read_csv(file_path)
-        except Exception as e:
+        except (OSError, pd.errors.ParserError, pd.errors.EmptyDataError) as e:
             self._record_quarantine(file_path, f"CSV_PARSE_ERROR: {str(e)}")
-            return False
+            return None
 
         # Standardize Columns
         # Strip whitespace from column names and map to standard OHLCV
@@ -69,15 +69,16 @@ class DataQualityService:
         missing_cols = [c for c in self.REQUIRED_COLUMNS if c not in df.columns]
         if missing_cols:
             self._record_quarantine(file_path, f"MISSING_COLUMNS: {missing_cols}")
-            return False
+            return None
 
         # 2. NaN Check & Cleanup
         if df[self.REQUIRED_COLUMNS].isnull().values.any():
             df.dropna(subset=self.REQUIRED_COLUMNS, inplace=True)
 
-        # 3. Duplicate Dates & Cleanup
+        # 3. Duplicate Dates
         if df['Date'].duplicated().any():
-            df.drop_duplicates(subset=['Date'], keep='first', inplace=True)
+            self._record_quarantine(file_path, "DUPLICATE_DATES")
+            return None
 
         # 4. OHLC Logic
         invalid_ohlc = df[
@@ -89,22 +90,19 @@ class DataQualityService:
         ]
         if not invalid_ohlc.empty:
             self._record_quarantine(file_path, "INVALID_OHLC_PRICES")
-            return False
+            return None
 
         # 5. Volume Check (Entire file cannot be 0 volume)
         if df['Volume'].sum() == 0 and len(df) > 0:
             self._record_quarantine(file_path, "ZERO_TOTAL_VOLUME")
-            return False
+            return None
             
         # 6. Minimum rows (Requires at least some history for eigen filters to work)
         if len(df) < 5:
             self._record_quarantine(file_path, "INSUFFICIENT_DATA")
-            return False
+            return None
 
-        # Save the standardized and cleaned file back to disk
-        df.to_csv(file_path, index=False)
-
-        return True
+        return df
 
     def run_gate(self) -> Dict[str, int]:
         logger.info("Starting Data Quality Gate...")
@@ -115,8 +113,10 @@ class DataQualityService:
             if file_path.parent.name == "quarantine":
                 continue
                 
-            if self.validate_file(file_path):
+            cleaned_df = self.validate_file(file_path)
+            if cleaned_df is not None:
                 self.stats["passed"] += 1
+                cleaned_df.to_csv(file_path, index=False)
 
         logger.info(f"Data Quality Gate complete. Passed: {self.stats['passed']}/{self.stats['total_files']}")
         return self.stats

@@ -53,7 +53,7 @@ class DataContractValidator:
             with open(health_path, 'r') as f:
                 health_data = json.load(f)
             SystemHealth(**health_data)
-        except Exception as e:
+        except (OSError, json.JSONDecodeError, ValidationError) as e:
             logger.error(f"CONTRACT_FAILED: system_health.json violates schema: {e}")
             return False
 
@@ -72,7 +72,7 @@ class DataContractValidator:
             with open(summary_path, 'r') as f:
                 summary_data = json.load(f)
             SummarySchema(**summary_data)
-        except Exception as e:
+        except (OSError, json.JSONDecodeError, ValidationError) as e:
             logger.error(f"CONTRACT_FAILED: {summary_filename} violates schema: {e}")
             return False
 

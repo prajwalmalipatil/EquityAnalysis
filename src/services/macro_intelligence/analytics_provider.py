@@ -1,5 +1,5 @@
 from typing import List, Dict, Any
-from datetime import datetime
+from datetime import datetime, timezone
 
 from src.services.macro_intelligence.models import MacroEvent
 from src.services.macro_intelligence.read_models import AnalyticsReadModel
@@ -41,14 +41,11 @@ class AnalyticsProvider:
         ai_metrics = self.ai_calc.calculate(events)
         ops_metrics = self.ops_calc.calculate(events, run_stats)
         quality_metrics = self.quality_calc.calculate(events)
-
-        ops_metrics = self.ops_calc.calculate(events, run_stats)
-        quality_metrics = self.quality_calc.calculate(events)
         coverage_metrics = self.coverage_calc.calculate(events)
 
         model = AnalyticsReadModel(
             version=self.version,
-            generated_at=datetime.utcnow().isoformat() + "Z",
+            generated_at=datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             total_events=len(events),
             business=business_metrics,
             ai=ai_metrics,

@@ -2,53 +2,57 @@
 processor_service.py
 Refactored VSA Processing Engine.
 Stat-Perfect Calibration: Targeting 205 Analyzed, 0 Trending, 2 High-Prob, 18 Anomaly.
-Implements a collection-and-rank strategy to ensure exact stat parity.
+Acts as a lightweight orchestrator delegating calculations, loading, formatting,
+and distribution to specialized sub-services.
 """
 
-import pandas as pd
-from pathlib import Path
 import shutil
-from typing import List, Dict, Optional
-import os
-from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict
+import pandas as pd
 
-from src.services.vsa.indicators import (
-    calculate_spread, calculate_close_position, 
-    calculate_moving_average, calculate_price_trend, 
-    detect_bar_types, calculate_effort_vs_result,
-    calculate_support_resistance
-)
-from .pattern_matcher import VSAClassicMatcher, AnomalyV2Matcher
-from .formatters import ExcelFormatter
 from src.constants import vsa_constants as const
 from src.utils.observability import get_tenant_logger
+from .excel_report_generator import VSAExcelReportGenerator
+from .file_loader import VSAFileLoader
+from .indicators_enricher import VSAIndicatorsEnricher
+from .pattern_router_service import VSAPatternRouter
+from .signal_applier import VSASignalApplier
 
 logger = get_tenant_logger("vsa-processor-service")
 
+
 class VSAProcessorService:
-    """
-    Coordinates the processing and final stat-perfect distribution of analyzed files.
-    """
-    
+    """Coordinates the processing and final stat-perfect distribution of analyzed files."""
+
     def __init__(self, output_base: Path):
         self.output_base = output_base
-        self._processed_metadata = [] 
+        self._processed_metadata = []
         # Global Counters for summary reporting
         self.stats = {
-            "total_signals": 0, "confirmed": 0, "failed": 0, 
-            "pending": 0, "fire": 0, "success_files": 0
+            "total_signals": 0,
+            "confirmed": 0,
+            "failed": 0,
+            "pending": 0,
+            "fire": 0,
+            "success_files": 0,
         }
         self._ensure_dirs(clean=True)
 
-    def _ensure_dirs(self, clean: bool = False):
+    def _ensure_dirs(self, clean: bool = False) -> None:
         """Creates necessary subdirectories and optionally clears existing data."""
         dirs = [
-            const.RESULTS_DIR_NAME, const.TRENDING_DIR_NAME, 
-            const.ANOMALY_DIR_NAME, const.TICKER_DIR_NAME,
-            const.TRIGGERS_DIR_NAME, const.EFFORTS_DIR_NAME,
-            const.EIGEN_FILTER_DIR_NAME, const.AGE_AGAIN_FILTER_DIR_NAME,
-            const.MONTHLY_EIGEN_FILTER_DIR_NAME, const.WEEKLY_EIGEN_FILTER_DIR_NAME,
-            const.CONSENSUS_RESULTS_DIR_NAME
+            const.RESULTS_DIR_NAME,
+            const.TRENDING_DIR_NAME,
+            const.ANOMALY_DIR_NAME,
+            const.TICKER_DIR_NAME,
+            const.TRIGGERS_DIR_NAME,
+            const.EFFORTS_DIR_NAME,
+            const.EIGEN_FILTER_DIR_NAME,
+            const.AGE_AGAIN_FILTER_DIR_NAME,
+            const.MONTHLY_EIGEN_FILTER_DIR_NAME,
+            const.WEEKLY_EIGEN_FILTER_DIR_NAME,
+            const.CONSENSUS_RESULTS_DIR_NAME,
         ]
         for d in dirs:
             dir_path = self.output_base / d
@@ -56,380 +60,101 @@ class VSAProcessorService:
                 shutil.rmtree(dir_path, ignore_errors=True)
             dir_path.mkdir(parents=True, exist_ok=True)
 
-    def process_file(self, file_path: Path) -> bool:
+    def process_file(self, file_path: Path) -> Dict[str, Any]:
         """Analyzes a single file and generates a professional multi-sheet Excel report."""
         try:
-            df = self._load_and_clean(file_path)
-            if df.empty: 
+            df = VSAFileLoader.load_and_clean(file_path)
+            if df.empty:
                 logger.warning("SKIPPING_EMPTY_OR_INVALID_FILE", extra={"path": str(file_path)})
-                return False
-                
-            df = self._enrich_indicators(df)
-            df = self._apply_signals(df)
-            
-            symbol = file_path.stem.split('_')[0]
+                return {"success": False}
+
+            df = VSAIndicatorsEnricher.enrich(df)
+            df = VSASignalApplier.apply_signals(df)
+
+            symbol = file_path.stem.split("_")[0]
             out_path = self.output_base / const.RESULTS_DIR_NAME / f"{symbol}_VSA.xlsx"
-            
-            # Return sub-stats for aggregation in main process instead of mutating self
-            f_stats = {
-                "conf": len(df[df["Validation_Status"] == "Confirmed ✅"]),
-                "fail": len(df[df["Validation_Status"] == "Failed ❌"]),
-                "pend": len(df[df["Validation_Status"] == "Pending ⏳"]),
-                "fire": len(df[df["Confirmed_Fire"] == "🔥"]) if "Confirmed_Fire" in df.columns else 0,
-                "total_signals": len(df[df["Signal_Type"] != "No Signal"])
-            }
+
+            f_stats = self._gather_file_stats(df)
 
             # Create rich Excel output
-            with pd.ExcelWriter(out_path, engine='openpyxl') as writer:
-                df.to_excel(writer, sheet_name="VSA_Analysis", index=False)
-                
-                # Signal Summary sheet (matching legacy)
-                sig_counts = df["Signal_Type"].value_counts().reset_index()
-                sig_counts.columns = ["Signal", "Count"]
-                sig_counts.to_excel(writer, sheet_name="Signal_Summary", index=False)
-                
-                log_df = pd.DataFrame([
-                    {"Artifact": "Processing Engine", "Value": "V² Money V2.1 Prod"},
-                    {"Artifact": "Analysis Timestamp", "Value": datetime.now().isoformat()},
-                    {"Artifact": "Source File", "Value": str(file_path.name)},
-                    {"Artifact": "Rows Analyzed", "Value": len(df)},
-                    {"Artifact": "Confirmed Signals", "Value": f_stats["conf"]},
-                    {"Artifact": "Failed Signals", "Value": f_stats["fail"]}
-                ])
-                log_df.to_excel(writer, sheet_name="Processing_Log", index=False)
-                
-                meta_df = pd.DataFrame([
-                    {"Indicator": "Volume_MA", "Description": "20-period volume average"},
-                    {"Indicator": "Spread", "Description": "High - Low"},
-                    {"Indicator": "Fire", "Description": "Volume-spread anomaly (🔥)"}
-                ])
-                meta_df.to_excel(writer, sheet_name="Indicator_Meta", index=False)
+            VSAExcelReportGenerator.generate(
+                df, file_path, out_path, f_stats["conf"], f_stats["fail"]
+            )
 
-            # Apply UI Styling
-            from openpyxl import load_workbook
-            wb = load_workbook(out_path)
-            ExcelFormatter.apply_standard_styling(wb, "VSA_Analysis")
-            ExcelFormatter.add_vsa_legend(wb)
-            wb.save(out_path)
-            
-            # Progress log (legacy style)
-            status_str = f"✅{f_stats['conf']} ❌{f_stats['fail']} ⏳{f_stats['pend']}"
-            if f_stats['fire'] > 0: status_str += f" 🔥{f_stats['fire']}"
-            logger.info(f"PROCESSED: {symbol:<20} → {status_str}")
+            # Log progress
+            self._log_progress(symbol, f_stats)
 
-            latest = df.iloc[-1]
-            prev = df.iloc[-2] if len(df) > 1 else latest
-            prev2 = df.iloc[-3] if len(df) > 2 else prev
-            prev3 = df.iloc[-4] if len(df) > 3 else prev2
-            
-            # Legacy Parity Logic for Folders
-            recent_df = df.iloc[-5:] if len(df) >= 5 else df
-            
-            # Trending: Any confirmed signal in last 5 days
-            is_trending = (recent_df["Validation_Status"] == "Confirmed ✅").any()
-            
-            # Efforts: Any no demand/supply in last 5 days (Underscore Neutral)
-            recent_efforts = recent_df["Effort_Result"].fillna("").str.replace("_", " ").str.lower()
-            has_effort = recent_efforts.str.contains("no demand").any() or \
-                         recent_efforts.str.contains("no supply").any()
-            
-            # Ticker: ANY signal + no demand/supply on LATEST date
-            latest_effort = str(latest["Effort_Result"]).replace("_", " ").lower()
-            has_ticker = (latest["Signal_Type"] != "No Signal") and \
-                         ("no demand" in latest_effort or "no supply" in latest_effort)
-            
-            # Trigger: Vol < Prev and Spread > Prev
-            has_trigger = latest["Volume"] < prev["Volume"] and latest["Spread"] > prev["Spread"]
-            
-            # Anomaly: 3-day build-up then drop
-            has_anomaly = latest["Volume"] < prev["Volume"] and prev["Volume"] > prev2["Volume"] and prev2["Volume"] > prev3["Volume"]
+            # Gather metadata for routing
+            metadata = self._gather_routing_metadata(df, symbol, out_path)
 
-            # Track for post-processing
-            metadata = {
-                "symbol": symbol,
-                "path": out_path,
-                "is_trending": bool(is_trending),
-                "is_effort": bool(has_effort),
-                "is_ticker": bool(has_ticker),
-                "is_trigger": bool(has_trigger),
-                "is_anomaly": bool(has_anomaly),
-                "vol_pct": float(latest.get("Vol_Pct", 0)),
-                "vsa_signal": str(latest.get("Signal_Type", "No Signal")),
-                "vsa_confidence": float(latest.get("Confidence", 0))
-            }
-            return {
-                "success": True,
-                "metadata": metadata,
-                "stats": f_stats
-            }
+            return {"success": True, "metadata": metadata, "stats": f_stats}
         except Exception as e:
             logger.error("PROCESS_FILE_FAILED", extra={"path": str(file_path), "error": str(e)})
             return {"success": False}
 
-    def finalize_run(self):
-        """Disributes files to folders based on ACTUAL found patterns (Parity with legacy logic)."""
-        logger.info("-" * 60)
-        logger.info("Generating Pattern Folders (Trending, Efforts, Ticker, etc.)")
-        logger.info("-" * 60)
-        
-        # 1. Trending - Symbols with recent confirmed signals
-        trending = [m for m in self._processed_metadata if m["is_trending"]]
-        for m in trending: 
-            shutil.copy(m["path"], self.output_base / const.TRENDING_DIR_NAME)
-        logger.info(f"POST_PROCESS: Trending Filtered {len(trending)} symbols")
-        
-        # 2. Efforts (Target: symbols with "No Demand/Supply" patterns recently)
-        efforts = [m for m in self._processed_metadata if m["is_effort"]]
-        for m in efforts:
-            shutil.copy(m["path"], self.output_base / const.EFFORTS_DIR_NAME)
-        logger.info(f"POST_PROCESS: Efforts Filtered {len(efforts)} symbols")
-            
-        # 3. Ticker (Signal + Effort on Latest date)
-        tickers = [m for m in self._processed_metadata if m["is_ticker"]]
-        for m in tickers:
-            shutil.copy(m["path"], self.output_base / const.TICKER_DIR_NAME)
-        logger.info(f"POST_PROCESS: Ticker Filtered {len(tickers)} symbols")
-            
-        # 4. View Builder Atomic Swap is NOT called here anymore. Handled by Publisher DAG stage or separately?
-        # Actually ViewBuilder is its own thing.
+    def _gather_file_stats(self, df: pd.DataFrame) -> Dict[str, int]:
+        """Calculates signal-related metrics from the processed DataFrame."""
+        return {
+            "conf": len(df[df["Validation_Status"] == "Confirmed ✅"]),
+            "fail": len(df[df["Validation_Status"] == "Failed ❌"]),
+            "pend": len(df[df["Validation_Status"] == "Pending ⏳"]),
+            "fire": len(df[df["Confirmed_Fire"] == "🔥"]) if "Confirmed_Fire" in df.columns else 0,
+            "total_signals": len(df[df["Signal_Type"] != "No Signal"]),
+        }
 
-        from src.services.orchestration.registry import platform_registry, ResearchModule
-        platform_registry.register(ResearchModule(
-            name="VSAProcessorService",
-            version="1.0.0",
-            description="Core Volume Spread Analysis processing engine.",
-            inputs=["CleanCSV"],
-            outputs=["Signals"],
-            dependencies=["DataQualityGate"]
-        ))
-        
-        triggers = [m for m in self._processed_metadata if m["is_trigger"]]
-        for m in triggers:
-            shutil.copy(m["path"], self.output_base / const.TRIGGERS_DIR_NAME)
-        logger.info(f"POST_PROCESS: Triggers Filtered {len(triggers)} symbols")
-            
-        # 5. Anomaly (3-day build-up then drop)
-        anomalies = [m for m in self._processed_metadata if m["is_anomaly"]]
-        for m in anomalies:
-            shutil.copy(m["path"], self.output_base / const.ANOMALY_DIR_NAME)
-        logger.info(f"POST_PROCESS: Anomaly Filtered {len(anomalies)} symbols")
+    def _log_progress(self, symbol: str, f_stats: Dict[str, int]) -> None:
+        """Logs process file outcome status."""
+        status_str = f"✅{f_stats['conf']} ❌{f_stats['fail']} ⏳{f_stats['pend']}"
+        if f_stats["fire"] > 0:
+            status_str += f" 🔥{f_stats['fire']}"
+        logger.info(f"PROCESSED: {symbol:<20} → {status_str}")
 
-        # 6. EigenFilter — Volume-Amplitude OHLC Divergence (scans Results/ independently)
-        from .eigen_filter_service import EigenFilterService
-        eigen_service = EigenFilterService(self.output_base)
-        eigen_results = eigen_service.scan_and_classify()
-        logger.info(f"POST_PROCESS: EigenFilter Classified {len(eigen_results)} symbols")
+    def _gather_routing_metadata(
+        self, df: pd.DataFrame, symbol: str, out_path: Path
+    ) -> Dict[str, Any]:
+        """Determines routing criteria and flags for the pattern router."""
+        latest = df.iloc[-1]
+        prev = df.iloc[-2] if len(df) > 1 else latest
+        prev2 = df.iloc[-3] if len(df) > 2 else prev
+        prev3 = df.iloc[-4] if len(df) > 3 else prev2
 
-        # 7. AgeAgain Filter — Volume-Spread Structural Anomaly
-        from .age_again_filter_service import AgeAgainFilterService
-        age_again_service = AgeAgainFilterService(self.output_base)
-        age_again_results = age_again_service.scan_and_classify()
-        logger.info(f"POST_PROCESS: AgeAgain Classified {len(age_again_results)} symbols")
+        recent_df = df.iloc[-5:] if len(df) >= 5 else df
 
-        # 8. Monthly EigenFilter — Monthly consolidation + EigenFilter analysis
-        from .monthly_eigen_filter_service import MonthlyEigenFilterService
-        monthly_eigen_service = MonthlyEigenFilterService(self.output_base)
-        monthly_eigen_results = monthly_eigen_service.consolidate_and_classify()
-        logger.info(f"POST_PROCESS: MonthlyEigenFilter Classified {len(monthly_eigen_results)} symbols")
+        is_trending = (recent_df["Validation_Status"] == "Confirmed ✅").any()
 
-        # 9. Weekly EigenFilter — Weekly consolidation + EigenFilter analysis
-        from .weekly_eigen_filter_service import WeeklyEigenFilterService
-        weekly_eigen_service = WeeklyEigenFilterService(self.output_base)
-        weekly_eigen_results = weekly_eigen_service.consolidate_and_classify()
-        logger.info(f"POST_PROCESS: WeeklyEigenFilter Classified {len(weekly_eigen_results)} symbols")
+        recent_efforts = recent_df["Effort_Result"].fillna("").str.replace("_", " ").str.lower()
+        has_effort = (
+            recent_efforts.str.contains("no demand").any()
+            or recent_efforts.str.contains("no supply").any()
+        )
 
-        # 10. Multi-Timeframe Consensus Engine
-        from .consensus_engine_service import ConsensusEngineService
-        consensus_service = ConsensusEngineService(self.output_base)
-        consensus_results = consensus_service.compute_consensus(eigen_results, weekly_eigen_results, monthly_eigen_results)
-        logger.info(f"POST_PROCESS: ConsensusEngine Computed {len(consensus_results)} consensus ratings")
+        latest_effort = str(latest["Effort_Result"]).replace("_", " ").lower()
+        has_ticker = (latest["Signal_Type"] != "No Signal") and (
+            "no demand" in latest_effort or "no supply" in latest_effort
+        )
 
-        # 11. Eigen Transition Engine (ETE) - Compute triggers and updates across timeframes
-        from .eigen_transition_engine_service import EigenTransitionEngineService
-        logger.info("POST_PROCESS: Running Eigen Transition Engine (ETE)")
-        
-        ete_daily = EigenTransitionEngineService(timeframe="daily")
-        ete_weekly = EigenTransitionEngineService(timeframe="weekly")
-        ete_monthly = EigenTransitionEngineService(timeframe="monthly")
-        
-        eigen_symbols_daily = {r.symbol: r.sentiment for r in eigen_results}
-        eigen_symbols_weekly = {r.symbol: r.sentiment for r in weekly_eigen_results}
-        eigen_symbols_monthly = {r.symbol: r.sentiment for r in monthly_eigen_results}
-        
-        # Process ETE for all analyzed symbols
-        for m in self._processed_metadata:
-            symbol = m["symbol"]
-            path = m["path"]
-            try:
-                df = pd.read_excel(path, sheet_name="VSA_Analysis")
-                if df.empty:
-                    continue
-                
-                # Daily ETE
-                ete_daily.update_active_sequences(symbol, df)
-                ete_daily.detect_triggers(symbol, df, symbol in eigen_symbols_daily, eigen_symbols_daily.get(symbol, "Neutral"))
-                
-                # Weekly ETE
-                weekly_df = WeeklyEigenFilterService._consolidate_to_weekly(df)
-                if weekly_df is not None and not weekly_df.empty:
-                    ete_weekly.update_active_sequences(symbol, weekly_df)
-                    ete_weekly.detect_triggers(symbol, weekly_df, symbol in eigen_symbols_weekly, eigen_symbols_weekly.get(symbol, "Neutral"))
-                
-                # Monthly ETE
-                monthly_df = MonthlyEigenFilterService._consolidate_to_monthly(df)
-                if monthly_df is not None and not monthly_df.empty:
-                    ete_monthly.update_active_sequences(symbol, monthly_df)
-                    ete_monthly.detect_triggers(symbol, monthly_df, symbol in eigen_symbols_monthly, eigen_symbols_monthly.get(symbol, "Neutral"))
-                    
-            except Exception as e:
-                logger.error(f"ETE_PROCESS_FAILED for {symbol}: {e}")
-        
-        # 12. ETE View Builder (Publishing Layer)
-        from src.services.reporting.view_builder_service import ViewBuilderService
-        view_builder = ViewBuilderService(self.output_base.parent)
-        view_builder.publish(pipeline_seconds=12.5) # Example pipeline seconds
-        logger.info("POST_PROCESS: View Builder Published ETE UI artifacts")
+        has_trigger = latest["Volume"] < prev["Volume"] and latest["Spread"] > prev["Spread"]
 
-    def _load_and_clean(self, path: Path) -> pd.DataFrame:
-        """Robust NSE CSV loader."""
-        try:
-            df = pd.read_csv(path, encoding="utf-8-sig")
-            import re
-            df.columns = [re.sub(r'[\s_]+', '_', str(c).strip().strip('"').strip("'")).lower().strip('_') for c in df.columns]
-            # Comprehensive mapping for various NSE/Common formats
-            col_map = {
-                "open": "Open", "open_price": "Open",
-                "high": "High", "high_price": "High",
-                "low": "Low", "low_price": "Low",
-                "close": "Close", "close_price": "Close",
-                "volume": "Volume", "total_traded_quantity": "Volume", 
-                "qty": "Volume", "tottrdqty": "Volume", "trdqty": "Volume",
-                "date": "Date"
-            }
-            
-            # Apply mapping
-            df = df.rename(columns={c: col_map[c] for c in df.columns if c in col_map})
-            
-            # Robust fallback: search for keywords if columns are still missing
-            required = ["Open", "High", "Low", "Close", "Volume"]
-            for col in required:
-                if col not in df.columns:
-                    for actual in df.columns:
-                        if col.lower() in actual:
-                            df = df.rename(columns={actual: col})
-                            break
-            for col in required: df[col] = pd.to_numeric(df[col].astype(str).str.replace(",", "").str.strip(), errors='coerce')
-            
-            # CRITICAL: Handle NSE Latest-First format by ensuring chronological sort
-            if "Date" in df.columns: 
-                df["Date"] = pd.to_datetime(df["Date"], errors='coerce', dayfirst=True)
-                df = df.dropna(subset=["Date", "Close"]) # Ensure we have valid temporal data
-                df = df.sort_values("Date").reset_index(drop=True)
-                
-            return df.dropna(subset=required).reset_index(drop=True)
-        except Exception as e: 
-            logger.error(f"LOAD_FAILED: {path.name} - {str(e)}")
-            return pd.DataFrame()
+        has_anomaly = (
+            latest["Volume"] < prev["Volume"]
+            and prev["Volume"] > prev2["Volume"]
+            and prev2["Volume"] > prev3["Volume"]
+        )
 
-    def _enrich_indicators(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Calculates indicators."""
-        high, low, close = df["High"].values, df["Low"].values, df["Close"].values
-        df["Spread"] = calculate_spread(high, low)
-        df["Close_Position"] = calculate_close_position(close, low, df["Spread"].values)
-        df["Volume_MA"] = calculate_moving_average(df["Volume"].values, 20)
-        df["Spread_MA"] = calculate_moving_average(df["Spread"].values, 20)
-        df["Close_MA"] = calculate_moving_average(close, 20)
-        df["Price_Trend"] = calculate_price_trend(close, df["Close_MA"].values)
-        df["IsUpBar"], df["IsDownBar"], _ = detect_bar_types(df["Open"].values, close, df["Spread"].values)
-        
-        # Support/Resistance context
-        df["Support_20"], df["Resistance_20"] = calculate_support_resistance(low, high, 20)
-        
-        df["Prev_Volume"] = df["Volume"].shift(1).fillna(df["Volume"])
-        df["Prev_Spread"] = df["Spread"].shift(1).fillna(df["Spread"])
-        df["Vol_Pct"] = ((df["Volume"] - df["Prev_Volume"]) / df["Prev_Volume"]) * 100
-        df["Spr_Pct"] = ((df["Spread"] - df["Prev_Spread"]) / df["Prev_Spread"]) * 100
-        return df
+        return {
+            "symbol": symbol,
+            "path": out_path,
+            "is_trending": bool(is_trending),
+            "is_effort": bool(has_effort),
+            "is_ticker": bool(has_ticker),
+            "is_trigger": bool(has_trigger),
+            "is_anomaly": bool(has_anomaly),
+            "vol_pct": float(latest.get("Vol_Pct", 0)),
+            "vsa_signal": str(latest.get("Signal_Type", "No Signal")),
+            "vsa_confidence": float(latest.get("Confidence", 0)),
+        }
 
-    def _apply_signals(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Applies signals and performs forward validation (Parity with legacy logic)."""
-        signals, efforts, confidences, descriptions, anomaly_v2 = [], [], [], [], []
-        validation_status, confirmed_fire = [], []
-        
-        lookup_days = const.DEFAULT_LOOKAHEAD
-        
-        for i in range(len(df)):
-            row = df.iloc[i]
-            prev_up = df.iloc[i-1]["IsUpBar"] if i > 0 else False
-            
-            vsa_res = VSAClassicMatcher.match_signal(
-                row["Volume"], row["Volume_MA"], row["Spread"], 
-                row["Spread_MA"], row["Close_Position"], row["Price_Trend"], 
-                row["IsUpBar"], row["IsDownBar"], prev_up,
-                row["Support_20"], row["Low"]
-            )
-            
-            # 1. Base Signal logic
-            if vsa_res:
-                signals.append(vsa_res.pattern_name)
-                efforts.append(vsa_res.effort_vs_result)
-                confidences.append(vsa_res.confidence)
-                descriptions.append(vsa_res.description)
-                
-                # 2. Pattern-Specific Forward Validation (EXACT Legacy Rules)
-                status = "Pending ⏳"
-                if i + lookup_days < len(df):
-                    status = "Failed ❌"
-                    for j in range(1, lookup_days + 1):
-                        f = df.iloc[i + j]
-                        
-                        is_success = False
-                        sig = vsa_res.pattern_name
-                        
-                        if sig == "Upthrust (Bearish)":
-                            if f["IsDownBar"] and f["Volume"] >= row["Volume"] * 0.8: is_success = True
-                        elif sig == "No Demand (Bearish Weakness)":
-                            if j <= 2 and (f["IsDownBar"] or (f["IsUpBar"] and f["Volume"] < f["Volume_MA"] * 0.8)): is_success = True
-                        elif sig == "Stopping Volume (Potential Reversal)":
-                            if j >= 2 and f["Close"] > row["Close"] and f["Low"] >= row["Low"] * 0.99: is_success = True
-                        elif "Climax" in sig:
-                            if vsa_res.sentiment == "Bullish":
-                                if f["IsUpBar"] and f["Close"] > row["Close"]: is_success = True
-                            else:
-                                if f["IsDownBar"] and f["Close"] < row["Close"]: is_success = True
-                        elif sig == "Test (Bullish)":
-                            if f["Close"] > row["Close"] * 1.02: is_success = True
-                        
-                        if is_success:
-                            status = "Confirmed ✅"
-                            break
-                    validation_status.append(status)
-                else:
-                    validation_status.append("Pending ⏳")
-            else:
-                signals.append("No Signal")
-                efforts.append("Neutral")
-                confidences.append(0.0)
-                descriptions.append("No institutional signal detected.")
-                validation_status.append("N/A")
-
-            # 3. Anomaly V2 logic
-            if i > 0:
-                prev = df.iloc[i-1]
-                classif = AnomalyV2Matcher.classify(row["Vol_Pct"], {"open": row["Open"], "high": row["High"], "low": row["Low"], "close": row["Close"]}, prev["Close"], prev["Open"])
-                anomaly_v2.append(classif.pattern_name)
-            else:
-                anomaly_v2.append("Neutral")
-
-            # 4. Fire Signal Logic (🔥)
-            is_fire = row["Volume"] > (row["Volume_MA"] * 2.0) and "No" not in signals[-1]
-            confirmed_fire.append("🔥" if is_fire else "")
-
-        df["Signal_Type"] = signals
-        df["Effort_Result"] = calculate_effort_vs_result(df)
-        df["Validation_Status"] = validation_status
-        df["Confirmed_Fire"] = confirmed_fire
-        df["Confidence"] = confidences
-        df["Description"] = descriptions
-        df["Anomaly_V2"] = anomaly_v2
-        return df
+    def finalize_run(self) -> None:
+        """Delegates run finalization and folder routing tasks to VSAPatternRouter."""
+        router = VSAPatternRouter(self.output_base)
+        router.finalize(self._processed_metadata)

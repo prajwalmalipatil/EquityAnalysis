@@ -82,7 +82,7 @@ class RBICollector(OfficialSourceCollector):
                 response = session.get(url, timeout=30)
                 response.raise_for_status()
                 feed = feedparser.parse(response.content)
-            except Exception as e:
+            except requests.RequestException as e:
                 logger.error("NETWORK_FAILURE", extra={"url": url, "error": str(e)})
                 continue
                 
@@ -99,7 +99,7 @@ class RBICollector(OfficialSourceCollector):
                             "pub_dt": pub_dt
                         }
                         events.append(self.normalize(raw_item))
-                except Exception as e:
+                except (AttributeError, ValueError, KeyError, TypeError) as e:
                     logger.error("FAILED_TO_PARSE_ENTRY", extra={"entry_title": entry.get("title", ""), "error": str(e)})
                     continue
         if not events:

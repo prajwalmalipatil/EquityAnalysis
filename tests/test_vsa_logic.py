@@ -34,25 +34,25 @@ class TestVSALogic(unittest.TestCase):
 
     def test_vsa_matcher(self):
         """Verify VSA signal detection using match_signal."""
-        # Test Buying Climax
-        # v_ratio > 2.0 and s_ratio > 1.8, is_up=True, close_pos < 0.3
+        # Test Selling Climax (Bullish Reversal)
+        # vol > vol_ma * 2.5, spr > spr_ma * 2.0, close_pos <= 0.3, trend <= 0
         result = VSAClassicMatcher.match_signal(
             vol=300, vol_ma=100, spr=30, spr_ma=10,
-            close_pos=0.2, price_trend="Up", is_up=True
+            close_pos=0.2, trend=-1, is_up=False, is_down=True, prev_up=False
         )
         self.assertIsNotNone(result)
-        self.assertEqual(result.pattern_name, "Buying Climax")
-        self.assertEqual(result.sentiment, "Bearish")
-        
-        # Test Selling Climax
-        # v_ratio > 2.0 and s_ratio > 1.8, is_up=False, close_pos > 0.7
-        result = VSAClassicMatcher.match_signal(
-            vol=300, vol_ma=100, spr=30, spr_ma=10,
-            close_pos=0.8, price_trend="Down", is_up=False
-        )
-        self.assertIsNotNone(result)
-        self.assertEqual(result.pattern_name, "Selling Climax")
+        self.assertEqual(result.pattern_name, "Selling Climax (Bullish Reversal)")
         self.assertEqual(result.sentiment, "Bullish")
+        
+        # Test Buying Climax (Bearish Reversal)
+        # vol > vol_ma * 2.5, spr > spr_ma * 2.0, close_pos >= 0.7, trend >= 0
+        result = VSAClassicMatcher.match_signal(
+            vol=300, vol_ma=100, spr=30, spr_ma=10,
+            close_pos=0.8, trend=1, is_up=True, is_down=False, prev_up=True
+        )
+        self.assertIsNotNone(result)
+        self.assertEqual(result.pattern_name, "Buying Climax (Bearish Reversal)")
+        self.assertEqual(result.sentiment, "Bearish")
 
     def test_anomaly_v2_matcher(self):
         """Verify Anomaly V2 OHLC classification logic."""

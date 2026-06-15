@@ -18,7 +18,7 @@ class Planner:
         
     def plan(self, ast: ASTNode) -> QueryPlan:
         optimized_ast = self.optimizer.optimize(ast)
-        estimated_hits = self.optimizer._estimate_cost(optimized_ast)
+        estimated_hits = self.optimizer.estimate_cost(optimized_ast)
         
         # Simple step generation for diagnostic purposes
         steps = self._generate_steps(optimized_ast)

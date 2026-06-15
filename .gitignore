@@ -26,3 +26,16 @@ vsa_error*.txt
 
 # Temporary files
 tmp*
+
+# Pytest and Caches
+.pytest_cache/
+.cache/
+
+# Lock files
+*.lock
+
+# Backups
+dashboard_bak/
+dashboard_next/
+dashboard/history/metadata/
+

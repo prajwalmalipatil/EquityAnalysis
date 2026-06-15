@@ -12,6 +12,7 @@ from typing import Optional, Tuple
 from contextlib import contextmanager
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -69,7 +70,7 @@ class NSEClient:
                 self.session.cookies.set(cookie['name'], cookie['value'])
             
             logger.info("COOKIES_ACQUIRED_SUCCESSFULLY")
-        except Exception as e:
+        except (WebDriverException, OSError, requests.RequestException) as e:
             logger.error("COOKIE_WARMUP_FAILED", extra={"error": str(e)})
         finally:
             if driver:

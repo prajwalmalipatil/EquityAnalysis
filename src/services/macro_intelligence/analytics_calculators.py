@@ -1,6 +1,6 @@
 from typing import List, Dict, Any
 from collections import Counter
-from datetime import datetime
+from datetime import datetime, timezone
 
 from src.services.macro_intelligence.models import MacroEvent
 from src.services.macro_intelligence.read_models import (
@@ -35,7 +35,7 @@ class BusinessCalculator:
         )
 
         # Upcoming effective dates (future dates)
-        today = datetime.utcnow().date()
+        today = datetime.now(timezone.utc).date()
         upcoming_dates = 0
         for e in events:
             dt_str = e.official_data.effective_date

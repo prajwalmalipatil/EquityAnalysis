@@ -1,7 +1,7 @@
 from typing import List, Dict, Optional
 import re
 import hashlib
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 from collections import defaultdict
 from itertools import combinations
@@ -179,6 +179,7 @@ class RelationshipResolver:
     def resolve(self, candidates: List[RelationshipCandidate], events: List[MacroEvent]) -> List[Relationship]:
         event_map = {e.event_id: e for e in events}
         relationships = []
+        seen_relationships = set()
         
         for candidate in candidates:
             source = event_map.get(candidate.source_event_id)
@@ -197,6 +198,12 @@ class RelationshipResolver:
                             best_result = result
                             
                 if best_result and best_result.score >= 0.50:
+                    rel_key = (s.event_id, t.event_id, best_result.relationship_type.value)
+                    reverse_key = (t.event_id, s.event_id, best_result.relationship_type.value)
+                    if rel_key in seen_relationships or reverse_key in seen_relationships:
+                        continue
+                        
+                    seen_relationships.add(rel_key)
                     raw_id = f"{s.event_id}:{t.event_id}:{best_result.relationship_type.value}"
                     canon_id = hashlib.sha256(raw_id.encode('utf-8')).hexdigest()[:16]
                     
@@ -217,7 +224,7 @@ class RelationshipResolver:
                         provenance=provenance,
                         rule_version="1.0.0",
                         resolver_version="1.0.0",
-                        created_at=datetime.utcnow().isoformat() + "Z"
+                        created_at=datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
                     )
                     relationships.append(rel)
                     

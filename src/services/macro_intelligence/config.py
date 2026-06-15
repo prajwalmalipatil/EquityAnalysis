@@ -52,7 +52,7 @@ def load_config(config_path: Path) -> MacroConfig:
     try:
         with open(config_path, 'r', encoding='utf-8') as f:
             raw_config = yaml.safe_load(f)
-    except Exception as e:
+    except (yaml.YAMLError, OSError) as e:
         raise ConfigurationError(f"Failed to parse YAML configuration: {str(e)}")
         
     if not raw_config:
@@ -92,5 +92,5 @@ def load_config(config_path: Path) -> MacroConfig:
         )
     except KeyError as e:
         raise ConfigurationError(f"Missing required configuration key: {str(e)}")
-    except Exception as e:
+    except (ValueError, TypeError, AttributeError) as e:
         raise ConfigurationError(f"Configuration validation failed: {str(e)}")

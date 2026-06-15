@@ -10,6 +10,15 @@ from src.utils.observability import get_tenant_logger
 
 logger = get_tenant_logger("attachment-processor")
 
+ALLOWED_CONTENT_TYPES = {
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "text/csv"
+}
+ALLOWED_EXTENSIONS = {".pdf", ".xlsx", ".csv", ".xls"}
+MAX_ATTACHMENT_SIZE_BYTES = 50 * 1024 * 1024  # 50MB
+
+
 class AttachmentProcessor:
     """
     Downloads, verifies, and extracts attachments (e.g. PDFs) for Macro Events.
@@ -36,8 +45,31 @@ class AttachmentProcessor:
                     
         return event
 
+    def _validate_download(self, response: requests.Response, url: str) -> bool:
+        """Guard clause: validates content-type and size before saving."""
+        content_type = response.headers.get("Content-Type", "").split(";")[0].strip()
+        if content_type not in ALLOWED_CONTENT_TYPES:
+            raise ValueError(f"Forbidden Content-Type: {content_type}")
+            
+        content_length = response.headers.get("Content-Length")
+        if content_length:
+            try:
+                size = int(content_length)
+            except (ValueError, TypeError):
+                size = None
+            if size is not None and size > MAX_ATTACHMENT_SIZE_BYTES:
+                raise ValueError(f"File size {size} exceeds limit of {MAX_ATTACHMENT_SIZE_BYTES} bytes")
+                
+        parsed = urlparse(url)
+        ext = os.path.splitext(parsed.path)[1].lower()
+        if ext not in ALLOWED_EXTENSIONS:
+            raise ValueError(f"Forbidden file extension: {ext}")
+            
+        return True
+
     def _download_attachment(self, url: str, event_id: str) -> tuple[Optional[str], Optional[str]]:
         """Downloads the file and returns (local_relative_path, sha256_hash)."""
+        local_filepath = None
         try:
             parsed = urlparse(url)
             filename = os.path.basename(parsed.path)
@@ -54,14 +86,24 @@ class AttachmentProcessor:
             response = self.session.get(url, stream=True, timeout=30)
             response.raise_for_status()
             
+            # Run validation
+            self._validate_download(response, url)
+            
+            total_bytes = 0
             with open(local_filepath, 'wb') as f:
                 for chunk in response.iter_content(chunk_size=8192):
+                    total_bytes += len(chunk)
+                    if total_bytes > MAX_ATTACHMENT_SIZE_BYTES:
+                        raise ValueError(f"File size exceeds limit of {MAX_ATTACHMENT_SIZE_BYTES} bytes during streaming")
                     f.write(chunk)
                     
             file_hash = self._hash_file(local_filepath)
             return str(local_filepath), file_hash
             
-        except Exception as e:
+        except (requests.RequestException, OSError, ValueError) as e:
+            # Clean up if partial file was written
+            if local_filepath is not None and local_filepath.exists():
+                local_filepath.unlink(missing_ok=True)
             logger.error("ATTACHMENT_DOWNLOAD_FAILED", extra={"url": url, "error": str(e)})
             return None, None
 

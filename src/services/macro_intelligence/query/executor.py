@@ -103,8 +103,8 @@ class Executor:
                 val = getattr(doc.official_data, node.field, None)
                 if val is None:
                     # Try metadata
-                    if doc.metadata and node.field in doc.metadata:
-                        val = doc.metadata[node.field]
+                    if doc.metadata:
+                        val = getattr(doc.metadata, node.field, None)
                         
                 if val is not None:
                     if node.operator == ":" and str(val).lower() == str(node.value).lower():

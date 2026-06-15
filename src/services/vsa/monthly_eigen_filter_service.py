@@ -61,7 +61,7 @@ class MonthlyEigenFilterService:
         """Reads daily data, consolidates to monthly, evaluates EigenFilter conditions."""
         try:
             df = pd.read_excel(path, sheet_name="VSA_Analysis")
-        except Exception:
+        except (OSError, ValueError):
             return None
 
         monthly_df = self._consolidate_to_monthly(df)

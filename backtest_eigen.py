@@ -18,6 +18,10 @@ class TradeRecord:
     win: Optional[bool]
     sentiment: str
     gauntlet_passed: bool
+    vol_score: float = 0.0
+    close_score: float = 0.0
+    drift_score: float = 0.0
+    confidence: float = 0.0
 
 EIGEN_LOWER = 0.30
 EIGEN_UPPER = 0.70
@@ -25,9 +29,9 @@ EIGEN_UPPER = 0.70
 def _get_label(gap_dir, close_band):
     matrix = {
         ("Gap-Up", "Strong"): ("Bullish Impulse Convergence", "Bullish"),
-        ("Gap-Up", "Weak"): ("Contested Bullish Divergence", "Bullish"),
+        ("Gap-Up", "Weak"): ("Contested Bullish Divergence", "Bearish"),
         ("Gap-Down", "Weak"): ("Bearish Impulse Convergence", "Bearish"),
-        ("Gap-Down", "Strong"): ("Contested Bearish Divergence", "Bearish"),
+        ("Gap-Down", "Strong"): ("Contested Bearish Divergence", "Bullish"),
     }
     return matrix.get((gap_dir, close_band))
 
@@ -94,7 +98,45 @@ def evaluate_timeframe(df: pd.DataFrame, symbol: str) -> List[TradeRecord]:
         if not label_tuple: continue
         
         label, sentiment = label_tuple
-        label, sentiment = label_tuple
+        
+        # Calculate Sub-scores for Confidence
+        # 1. vol_score
+        rolling_20_avg_volume = df.iloc[max(0, i-20):i]["Volume"].mean()
+        if pd.isna(rolling_20_avg_volume) or rolling_20_avg_volume == 0 or i < 20:
+            vol_score = 0.5
+        else:
+            vol_score = max(0.0, min(1.0, (t_vol / rolling_20_avg_volume) - 1.0))
+            
+        # 2. close_score
+        t_spread = t["Spread"]
+        if t_spread == 0:
+            close_score = 0.5
+        elif gap_dir == "Gap-Up":
+            close_score = (t_close - t["Low"]) / t_spread
+        else: # gap_dir == "Gap-Down"
+            close_score = (t["High"] - t_close) / t_spread
+            
+        # 3. drift_score
+        if i == 0:
+            drift_score = 0.5
+        else:
+            prev_row = df.iloc[i-1]
+            prev_spread = prev_row["Spread"]
+            prev_close = prev_row["Close"]
+            prev_low = prev_row["Low"]
+            prev_high = prev_row["High"]
+            
+            if prev_spread == 0:
+                prev_close_score = 0.5
+            elif gap_dir == "Gap-Up":
+                prev_close_score = (prev_close - prev_low) / prev_spread
+            else: # gap_dir == "Gap-Down"
+                prev_close_score = (prev_high - prev_close) / prev_spread
+                
+            drift_score = max(0.0, min(1.0, 0.5 + (close_score - prev_close_score)))
+            
+        # 4. confidence
+        confidence = round((vol_score * 0.40 + close_score * 0.40 + drift_score * 0.20) * 100.0, 1)
         
         start_date = str(df.iloc[i-1]["Date"]).split()[0]
         t_vol_float = float(t_vol)
@@ -151,7 +193,11 @@ def evaluate_timeframe(df: pd.DataFrame, symbol: str) -> List[TradeRecord]:
             fwd_return_5b=float(fwd_return_5b * 100) if fwd_return_5b is not None else None,
             win=bool(win) if win is not None else None,
             sentiment=sentiment,
-            gauntlet_passed=gauntlet_passed
+            gauntlet_passed=gauntlet_passed,
+            vol_score=float(vol_score),
+            close_score=float(close_score),
+            drift_score=float(drift_score),
+            confidence=confidence
         ))
         
     return trades

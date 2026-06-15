@@ -45,6 +45,6 @@ class SMTPClient:
                 server.send_message(msg)
             logger.info("EMAIL_SENT_SUCCESSFULLY")
             return True
-        except Exception as e:
+        except (smtplib.SMTPException, ssl.SSLError, OSError) as e:
             logger.error("EMAIL_SEND_FAILED", extra={"error": str(e)})
             raise e

@@ -52,7 +52,10 @@ class ViewBuilderService:
 
         # Copy static UI assets from dashboard_live if they exist, to prevent destroying the UI
         if self.dashboard_live.exists():
-            for asset in ["index.html", "app.js", "styles.css", "data.json", "backtest_results.json"]:
+            for asset in [
+                "index.html", "app.js", "styles.css", "data.json", "backtest_results.json",
+                "analytics.json", "search-index.json", "relationships.json", "graph.json"
+            ]:
                 asset_path = self.dashboard_live / asset
                 if asset_path.exists():
                     shutil.copy(asset_path, self.dashboard_next / asset)
@@ -147,7 +150,7 @@ class ViewBuilderService:
                 total_files = dq_stats.get("total_files", 0)
                 if total_files > 0:
                     dq_rate = dq_stats.get("passed", 0) / total_files
-            except Exception as e:
+            except (OSError, json.JSONDecodeError, TypeError):
                 pass
 
         # 5. Write Health and Manifest (Stable filenames)
@@ -199,7 +202,7 @@ class ViewBuilderService:
                 self.dashboard_live.rename(backup)
             
             self.dashboard_next.rename(self.dashboard_live)
-        except Exception as e:
+        except OSError as e:
             # If rename fails, we keep what we had (or restore)
             if 'backup' in locals() and backup.exists() and not self.dashboard_live.exists():
                 backup.rename(self.dashboard_live)

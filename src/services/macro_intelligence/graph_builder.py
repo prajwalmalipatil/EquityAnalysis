@@ -2,7 +2,7 @@ import uuid
 import hashlib
 from typing import List, Dict, Set
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 
 from src.services.macro_intelligence.models import MacroEvent
 from src.services.macro_intelligence.relationship_models import Relationship
@@ -96,7 +96,7 @@ class GraphViewModelBuilder:
     def build(read_model: GraphReadModel, pipeline_version: str) -> GraphViewModel:
         return GraphViewModel(
             schema_version="1",
-            generated_at=datetime.utcnow().isoformat() + "Z",
+            generated_at=datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             pipeline_version=pipeline_version,
             statistics={
                 "node_count": read_model.statistics.node_count,

@@ -67,3 +67,28 @@ def test_relationship_engine():
     amends = [r for r in relationships if r.type == RelationshipType.AMENDS]
     assert len(amends) > 0
     assert amends[0].source_event_id == "ev-3"
+
+def test_relationship_resolver_bidirectional_deduplication():
+    from src.services.macro_intelligence.relationship_models import RelationshipCandidate
+    
+    # Setup two mock events that both contain the word "supersedes" and have the same publication date
+    e1 = create_event("ev-1", "Notice A", "This circular supersedes notice B.", "2026-06-15", "Banking")
+    e2 = create_event("ev-2", "Notice B", "This circular supersedes notice A.", "2026-06-15", "Banking")
+    
+    events = [e1, e2]
+    
+    # Generate candidate pair
+    candidate = RelationshipCandidate(
+        source_event_id="ev-1",
+        target_event_id="ev-2",
+        generator_score=0.5,
+        generator_signals=["Same Category"]
+    )
+    
+    resolver = RelationshipResolver()
+    relationships = resolver.resolve([candidate], events)
+    
+    # Without deduplication, both ev-1 supersedes ev-2 AND ev-2 supersedes ev-1 would be created.
+    # With deduplication, only 1 relationship of type SUPERSEDES should be created.
+    assert len(relationships) == 1
+    assert relationships[0].type == RelationshipType.SUPERSEDES

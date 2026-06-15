@@ -17,8 +17,8 @@ class Optimizer:
             
             # If it's an AND operation, put the node with lower estimated hits on the left.
             if node.operator == "AND":
-                cost_l = self._estimate_cost(left)
-                cost_r = self._estimate_cost(right)
+                cost_l = self.estimate_cost(left)
+                cost_r = self.estimate_cost(right)
                 if cost_r < cost_l:
                     return BinaryOpNode(operator="AND", left=right, right=left)
                     
@@ -29,13 +29,13 @@ class Optimizer:
             
         return node
         
-    def _estimate_cost(self, node: ASTNode) -> int:
+    def estimate_cost(self, node: ASTNode) -> int:
         """Rough estimation of how many documents this node matches."""
         if isinstance(node, KeywordNode):
             return self.context.estimate_hits(node.value.lower())
         elif isinstance(node, BinaryOpNode):
-            cost_l = self._estimate_cost(node.left)
-            cost_r = self._estimate_cost(node.right)
+            cost_l = self.estimate_cost(node.left)
+            cost_r = self.estimate_cost(node.right)
             if node.operator == "AND":
                 return min(cost_l, cost_r) # Intersection bounds
             elif node.operator == "OR":

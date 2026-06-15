@@ -35,6 +35,7 @@ jobs:
       run: mkdir -p equity_data && rm -rf equity_data/*.csv equity_data/Results/* equity_data/Trending/* equity_data/Anomaly/* equity_data/Ticker/* equity_data/Triggers/* equity_data/EigenFilter/* equity_data/AgeAgainFilter/* equity_data/MonthlyEigenFilter/* equity_data/WeeklyEigenFilter/* equity_data/ConsensusResults/*
 
     - name: "Run Stage 1: Extraction"
+      id: extraction
       run: |
         export PYTHONPATH=$PYTHONPATH:.
         python main_extractor.py \
@@ -42,7 +43,15 @@ jobs:
           --out-dir equity_data \
           --overwrite \
           --workers 3
-      continue-on-error: true
+
+    - name: "Validate Extraction Results"
+      run: |
+        CSV_COUNT=$(find equity_data -name "*.csv" | wc -l)
+        echo "Extracted ${CSV_COUNT} CSV files"
+        if [ "$CSV_COUNT" -lt 50 ]; then
+          echo "::error::Extraction yielded only ${CSV_COUNT} files (minimum: 50)"
+          exit 1
+        fi
 
     - name: "Debug: List Data"
       run: |
@@ -84,7 +93,7 @@ jobs:
         retention-days: 7
 
     - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
+      uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./dashboard

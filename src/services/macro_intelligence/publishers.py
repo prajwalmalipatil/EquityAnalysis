@@ -2,30 +2,9 @@ import json
 from pathlib import Path
 from dataclasses import asdict
 from src.services.macro_intelligence.read_models import DashboardBundle
+from src.utils.observability import get_tenant_logger
 
-class JSONPublisher:
-    """Pure serializer that writes the events to data.json."""
-    
-    def __init__(self, output_dir: Path):
-        self.output_dir = output_dir
-        
-    def publish(self, events: list) -> None:
-        self.output_dir.mkdir(parents=True, exist_ok=True)
-        
-        events_dict = [asdict(e) for e in events]
-        
-        payload = {
-            "macro_intelligence": {
-                "total_events": len(events_dict),
-                "last_event_at": max(e["published"] for e in events_dict) if events_dict else None,
-                "recent_events": events_dict[:20],
-                "all_events": events_dict
-            }
-        }
-        
-        data_file = self.output_dir / "data.json"
-        with open(data_file, 'w', encoding='utf-8') as f:
-            json.dump(payload, f, indent=2)
+logger = get_tenant_logger("publishers")
 
 
 class AnalyticsPublisher:
@@ -135,8 +114,7 @@ class GraphPublisher:
         
         # graph_view_model is a dataclass, but we need to dictify it 
         # Actually since we mapped it in GraphViewModelBuilder, we can just use dataclasses.asdict
-        import dataclasses
-        payload = dataclasses.asdict(graph_view_model)
+        payload = asdict(graph_view_model)
         
         with open(graph_file, 'w', encoding='utf-8') as f:
             json.dump(payload, f, indent=2)

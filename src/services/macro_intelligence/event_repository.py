@@ -3,12 +3,16 @@ import hashlib
 from pathlib import Path
 from typing import List, Optional, Dict, Union
 from difflib import SequenceMatcher
+from filelock import FileLock
 from src.services.macro_intelligence.models import MacroEvent
 from src.services.macro_intelligence.interfaces import EventReadRepository, EventWriteRepository
 from src.services.macro_intelligence.config import StorageConfig, MacroConfig
 from src.utils.observability import get_tenant_logger
 
 logger = get_tenant_logger("event-repository")
+
+PUBLISHABLE_STATUSES = {"ACTIVE", "ENRICHED", "VALIDATED"}
+
 
 class JSONEventReadRepository(EventReadRepository):
     """Read-optimized JSONL repository for queries and projections."""
@@ -32,7 +36,8 @@ class JSONEventReadRepository(EventReadRepository):
         return events
 
     def get_active_events(self) -> List[MacroEvent]:
-        return [e for e in self.get_all_events() if e.metadata.lifecycle_status == "ACTIVE"]
+        return [e for e in self.get_all_events() if e.metadata.lifecycle_status in PUBLISHABLE_STATUSES]
+
 
 
 class JSONEventWriteRepository(EventWriteRepository):
@@ -40,6 +45,7 @@ class JSONEventWriteRepository(EventWriteRepository):
     def __init__(self, config: MacroConfig):
         self.config = config
         self.filepath = self.config.storage.history_file
+        self._lock = FileLock(str(self.filepath) + ".lock", timeout=30)
         
         # Ensure directories exist
         self.config.storage.base_path.mkdir(parents=True, exist_ok=True)
@@ -50,6 +56,17 @@ class JSONEventWriteRepository(EventWriteRepository):
         
         self._cache = {}
         self._load_cache()
+        
+        self._events_cache: List[MacroEvent] = []
+        self._cache_loaded = False
+
+    def _ensure_cache(self):
+        """Loads all events into memory once per pipeline run."""
+        if self._cache_loaded:
+            return
+        reader = JSONEventReadRepository(self.config.storage)
+        self._events_cache = reader.get_all_events()
+        self._cache_loaded = True
 
     def _load_cache(self):
         if not self.filepath.exists():
@@ -95,12 +112,10 @@ class JSONEventWriteRepository(EventWriteRepository):
         if key in self._cache:
             return False
             
-        # We instantiate a temporary read repository purely for the deduplication check
-        reader = JSONEventReadRepository(self.config.storage)
-        all_events = reader.get_all_events()
-        
+        self._ensure_cache()
+            
         threshold = self.config.deduplication.similarity_threshold
-        for past_event in all_events:
+        for past_event in self._events_cache:
             if past_event.event_id == event.event_id:
                 self._cache[key] = True
                 return False
@@ -114,10 +129,12 @@ class JSONEventWriteRepository(EventWriteRepository):
                 })
                 self._cache[key] = True
                 return False
-
-        with open(self.filepath, 'a', encoding='utf-8') as f:
-            json_str = json.dumps(event.to_dict())
-            f.write(json_str + '\n')
-            
+    
+        with self._lock:
+            with open(self.filepath, 'a', encoding='utf-8') as f:
+                json_str = json.dumps(event.to_dict())
+                f.write(json_str + '\n')
+                
+        self._events_cache.append(event)
         self._cache[key] = True
         return True

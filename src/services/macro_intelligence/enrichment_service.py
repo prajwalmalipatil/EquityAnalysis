@@ -12,6 +12,16 @@ from src.utils.observability import get_tenant_logger
 logger = get_tenant_logger("enrichment-service")
 
 class AIProvider(ABC):
+    @property
+    @abstractmethod
+    def provider_name(self) -> str:
+        pass
+
+    @property
+    @abstractmethod
+    def model_name(self) -> str:
+        pass
+
     @abstractmethod
     def summarize(self, text: str) -> Optional[dict]:
         """Returns a dict with 'summary' and 'key_points'."""
@@ -24,6 +34,14 @@ class GeminiProvider(AIProvider):
         genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel('gemini-1.5-flash')
         
+    @property
+    def provider_name(self) -> str:
+        return "gemini"
+
+    @property
+    def model_name(self) -> str:
+        return "gemini-1.5-flash"
+        
     def summarize(self, text: str) -> Optional[dict]:
         prompt = f"""
         Summarize the following macroeconomic event for quantitative trading.
@@ -31,8 +49,9 @@ class GeminiProvider(AIProvider):
         Output MUST be valid JSON with keys "summary" (string) and "key_points" (list of strings).
         Do not include markdown blocks like ```json. Just raw JSON.
         
-        Event text:
+        ---BEGIN EVENT TEXT---
         {text}
+        ---END EVENT TEXT---
         """
         try:
             resp = self.model.generate_content(prompt)
@@ -45,11 +64,20 @@ class GeminiProvider(AIProvider):
 
 class DummyProvider(AIProvider):
     """Fallback provider when no API key is available."""
+    @property
+    def provider_name(self) -> str:
+        return "dummy"
+
+    @property
+    def model_name(self) -> str:
+        return "dummy"
+
     def summarize(self, text: str) -> Optional[dict]:
         logger.warning("USING_DUMMY_AI_PROVIDER")
         return {
             "summary": "AI summary not available. Please configure an API key.",
-            "key_points": ["No key points available."]
+            "key_points": ["No key points available."],
+            "confidence": 0
         }
 
 class EnrichmentService(EnrichmentServiceInterface):
@@ -62,11 +90,26 @@ class EnrichmentService(EnrichmentServiceInterface):
         self.provider = provider
         self.prompt_version = "v1.0.0"
         
+    @staticmethod
+    def _sanitize_prompt_input(text: str) -> str:
+        """Strips HTML tags, limits length, and adds boundary delimiters."""
+        if not text:
+            return ""
+        import re
+        # Strip HTML tags
+        clean = re.sub(r'<[^>]+>', '', text)
+        # Remove potential prompt injection delimiters
+        clean = clean.replace('"""', '').replace("'''", '')
+        # Truncate to prevent token overflow
+        return clean[:8000]
+
     def process(self, event: MacroEvent) -> MacroEvent:
         if not event.official_data.content:
             return event
             
-        result = self.provider.summarize(event.official_data.title + "\n\n" + event.official_data.content)
+        sanitized_title = self._sanitize_prompt_input(event.official_data.title or "")
+        sanitized_content = self._sanitize_prompt_input(event.official_data.content or "")
+        result = self.provider.summarize(sanitized_title + "\n\n" + sanitized_content)
         if result:
             new_version = 1
             if event.derived_data.ai_snapshots:
@@ -74,8 +117,8 @@ class EnrichmentService(EnrichmentServiceInterface):
                 
             snapshot = AISummarySnapshot(
                 version=new_version,
-                provider="gemini",
-                model="gemini-1.5-flash",
+                provider=self.provider.provider_name,
+                model=self.provider.model_name,
                 generated_time=datetime.now(timezone.utc).isoformat(),
                 confidence=result.get("confidence", 90),
                 prompt_version=self.prompt_version,

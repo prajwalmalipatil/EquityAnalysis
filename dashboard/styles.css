@@ -328,6 +328,21 @@ nav {
     padding: 16px 24px 24px;
 }
 
+.consensus-section .table-container {
+    max-height: 820px; /* Approximately fits 15 rows */
+    overflow-y: auto;
+    padding-top: 0;
+}
+
+.consensus-section .table-container .data-table th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg-darker);
+    box-shadow: inset 0 -1px 0 var(--glass-border);
+}
+
+
 .data-table {
     width: 100%;
     border-collapse: collapse;
@@ -786,3 +801,118 @@ nav {
     font-size: 1.5rem;
     margin-bottom: 12px;
 }
+
+/* Confidence Hover Tooltips */
+.confidence-cell {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+}
+
+#global-confidence-tooltip {
+  position: fixed;
+  width: 280px;
+  background: var(--glass-bg, rgba(255, 255, 255, 0.95));
+  border: 1px solid var(--glass-border, rgba(0, 0, 0, 0.08));
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-main, #0f172a);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  pointer-events: auto;
+}
+
+#global-confidence-tooltip .tip-header {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted, #64748b);
+}
+
+#global-confidence-tooltip .tip-scores {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+#global-confidence-tooltip .tip-score-item {
+  flex: 1;
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-muted, #64748b);
+}
+
+#global-confidence-tooltip .tip-score-val {
+  font-weight: 600;
+  font-size: 13px;
+  display: block;
+  color: var(--primary, #4f46e5);
+}
+
+#global-confidence-tooltip .tip-summary {
+  font-size: 12px;
+  color: var(--text-main, #0f172a);
+  border-top: 1px solid var(--glass-border, rgba(0,0,0,0.05));
+  padding-top: 8px;
+  margin-top: 4px;
+  text-align: left;
+}
+
+#global-confidence-tooltip .tip-loading {
+  color: var(--text-muted, #64748b);
+  font-style: italic;
+  font-size: 12px;
+}
+
+/* Key Setup UI */
+#global-confidence-tooltip .key-setup-container {
+  margin-top: 8px;
+  border-top: 1px solid var(--glass-border, rgba(0,0,0,0.05));
+  padding-top: 8px;
+  text-align: left;
+}
+
+#global-confidence-tooltip .key-setup-title {
+  font-size: 11px;
+  color: var(--text-muted, #64748b);
+  margin-bottom: 4px;
+}
+
+#global-confidence-tooltip .key-setup-row {
+  display: flex;
+  gap: 6px;
+}
+
+#global-confidence-tooltip .key-input {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--glass-border, rgba(0, 0, 0, 0.08));
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 11px;
+  color: var(--text-main, #0f172a);
+  outline: none;
+}
+
+#global-confidence-tooltip .key-save-btn {
+  background: var(--primary, #4f46e5);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#global-confidence-tooltip .key-save-btn:hover {
+  background: var(--secondary, #7c3aed);
+}
+

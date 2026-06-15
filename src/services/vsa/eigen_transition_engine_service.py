@@ -48,7 +48,7 @@ class EigenTransitionEngineService:
                 if not lines:
                     return ""
                 return json.loads(lines[-1]).get('hash', "")
-        except Exception:
+        except (OSError, json.JSONDecodeError):
             return ""
 
     def _append_event(self, event: ResearchEvent) -> None:
@@ -159,7 +159,7 @@ class EigenTransitionEngineService:
                     for k, v in snap.get('sequences', {}).items():
                         sequences[k] = ETESequence(**v)
                     last_hash = snap.get('last_hash', "")
-            except Exception:
+            except (OSError, json.JSONDecodeError, TypeError, ValueError):
                 pass # Fallback to 0
 
         if not self.events_file.exists():
@@ -374,6 +374,16 @@ class EigenTransitionEngineService:
                 failure_reason = FailureReason.VOLUME_MISMATCH if vol_delta_pct <= 0 else FailureReason.SPREAD_MISMATCH
         elif target_rule == RULE_LVLS:
             if vol_delta_pct < 0 and spread_delta_pct < 0:
+                matched = True
+            else:
+                failure_reason = FailureReason.VOLUME_MISMATCH if vol_delta_pct >= 0 else FailureReason.SPREAD_MISMATCH
+        elif target_rule == RULE_HVLS:
+            if vol_delta_pct > 0 and spread_delta_pct < 0:
+                matched = True
+            else:
+                failure_reason = FailureReason.VOLUME_MISMATCH if vol_delta_pct <= 0 else FailureReason.SPREAD_MISMATCH
+        elif target_rule == RULE_LVHS:
+            if vol_delta_pct < 0 and spread_delta_pct > 0:
                 matched = True
             else:
                 failure_reason = FailureReason.VOLUME_MISMATCH if vol_delta_pct >= 0 else FailureReason.SPREAD_MISMATCH

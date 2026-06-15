@@ -90,3 +90,25 @@ def test_active_events_only(macro_config, mock_event_1, mock_event_2):
     
     assert len(active_events) == 1
     assert active_events[0].event_id == "evt-1"
+
+def test_cache_deduplication(macro_config, mock_event_1, mock_event_2):
+    write_repo = JSONEventWriteRepository(macro_config)
+    
+    # Assert cache is initially empty
+    assert len(write_repo._events_cache) == 0
+    assert write_repo._cache_loaded == False
+    
+    # Save first event
+    assert write_repo.save_event(mock_event_1) == True
+    assert write_repo._cache_loaded == True
+    assert len(write_repo._events_cache) == 1
+    assert write_repo._events_cache[0].event_id == "evt-1"
+    
+    # Save second event - should use in-memory cache and not reload from file
+    assert write_repo.save_event(mock_event_2) == True
+    assert len(write_repo._events_cache) == 2
+    assert write_repo._events_cache[1].event_id == "evt-2"
+    
+    # Try saving a duplicate of event 1
+    assert write_repo.save_event(mock_event_1) == False
+

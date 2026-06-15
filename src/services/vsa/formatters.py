@@ -65,12 +65,12 @@ class ExcelFormatter:
                     try:
                         if len(str(cell.value)) > max_length:
                             max_length = len(str(cell.value))
-                    except:
+                    except (TypeError, ValueError):
                         pass
                 adjusted_width = (max_length + 2)
                 ws.column_dimensions[column].width = adjusted_width
 
-        except Exception as e:
+        except (AttributeError, ValueError, KeyError, TypeError):
             # Minimal logging as this is a utility
             pass
 

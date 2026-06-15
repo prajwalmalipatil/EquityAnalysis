@@ -41,6 +41,6 @@ class DefaultValidator(ValidatorInterface):
                 
             return True
             
-        except Exception as e:
+        except (AttributeError, TypeError, ValueError) as e:
             logger.error("VALIDATION_ERROR_DURING_CHECKS", extra={"event_id": getattr(event, "event_id", "Unknown"), "error": str(e)})
             return False

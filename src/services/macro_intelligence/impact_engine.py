@@ -31,8 +31,8 @@ class RuleBasedImpactEngine:
 
     def process(self, event: MacroEvent) -> ImpactAnalysis:
         """Determines impact based on deterministic keyword-to-impact mapping."""
-        title = event.title.lower()
-        summary = event.summary.lower()
+        title = (event.official_data.title or "").lower()
+        summary = (event.official_data.content or "").lower()
         content = title + " " + summary
 
         # Default fallback
@@ -40,7 +40,7 @@ class RuleBasedImpactEngine:
         sectors = ["All"]
         horizon = "1-5 days"
         direction = "Neutral"
-        category = event.category
+        category = event.official_data.category or ""
         severity = "Informational"
         importance = 10
         confidence = 50

@@ -136,7 +136,7 @@ class DataAggregator:
         if not path.exists(): return None
         try:
             return pd.read_excel(path, sheet_name="VSA_Analysis")
-        except Exception:
+        except (OSError, ValueError):
             return None
 
     def get_eigen_details(self, symbol: str) -> Optional[Dict]:
@@ -367,5 +367,5 @@ class DataAggregator:
             df = df.fillna("None")
             df.columns = [c.lower() for c in df.columns]
             return df.to_dict('records')
-        except Exception:
+        except (OSError, ValueError):
             return []

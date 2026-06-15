@@ -44,13 +44,19 @@ class PipelineOrchestrator:
             # Filter out quarantine
             csv_files = [f for f in csv_files if f.parent.name != "quarantine"]
             
-            with concurrent.futures.ProcessPoolExecutor(max_workers=self.workers) as executor:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=self.workers) as executor:
                 futures = {executor.submit(service.process_file, f): f for f in csv_files}
                 for future in concurrent.futures.as_completed(futures):
                     res = future.result()
                     if res.get("success"):
                         service.stats["success_files"] += 1
                         service._processed_metadata.append(res["metadata"])
+                        f_stats = res.get("stats", {})
+                        service.stats["confirmed"] += f_stats.get("conf", 0)
+                        service.stats["failed"] += f_stats.get("fail", 0)
+                        service.stats["pending"] += f_stats.get("pend", 0)
+                        service.stats["fire"] += f_stats.get("fire", 0)
+                        service.stats["total_signals"] += f_stats.get("total_signals", 0)
             
             service.finalize_run()
             self.stats["vsa_processor"] = service.stats

@@ -1,6 +1,5 @@
 from pathlib import Path
 from src.services.macro_intelligence.config import load_config
-from src.services.macro_intelligence.config import load_config
 from src.services.macro_intelligence.event_repository import JSONEventReadRepository
 from src.services.macro_intelligence.builders import ManifestBuilder, AnalyticsBuilder, RelationshipBuilder
 from src.services.macro_intelligence.dashboard_mapper import DashboardMapper

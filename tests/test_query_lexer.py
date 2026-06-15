@@ -67,3 +67,9 @@ def test_lexer_invalid():
     lexer = Lexer("repo & liquidity")
     with pytest.raises(LexerError):
         lexer.tokenize()
+
+def test_lexer_unclosed_string():
+    lexer = Lexer('theme:"Liquidity Management')
+    with pytest.raises(SyntaxError):
+        lexer.tokenize()
+

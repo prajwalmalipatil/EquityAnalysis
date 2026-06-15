@@ -28,13 +28,14 @@ class TestExtractionService(unittest.TestCase):
 
     def test_validate_symbols(self):
         """Verify symbol cleaning and validation."""
-        raw = "INFY, TCS TCS TCS TCS TCS,, RELIANCE!@# TCS"
+        raw = "INFY, TCS, INFY,, RELIANCE!@#, NIFTY 50"
         cleaned = self.service.validate_symbols(raw)
         
-        # Should deduplicate and clean
+        # Should deduplicate, preserve spaces for indices, and discard invalid format symbols
         self.assertIn("INFY", cleaned)
         self.assertIn("TCS", cleaned)
-        self.assertIn("RELIANCE", cleaned)
+        self.assertIn("NIFTY 50", cleaned)
+        self.assertNotIn("RELIANCE!@#", cleaned)
         self.assertEqual(len(cleaned), 3)
 
     def test_extract_symbol_data_success(self):

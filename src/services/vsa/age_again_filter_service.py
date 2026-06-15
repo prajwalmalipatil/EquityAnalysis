@@ -58,7 +58,7 @@ class AgeAgainFilterService:
         """Reads an Excel file, extracts T and T-1 rows, and evaluates conditions."""
         try:
             df = pd.read_excel(path, sheet_name="VSA_Analysis")
-        except Exception:
+        except (OSError, ValueError):
             return None
 
         if len(df) < MIN_ROWS_REQUIRED:

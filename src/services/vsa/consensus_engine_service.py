@@ -23,6 +23,15 @@ WEIGHT_WEEKLY = 35.0
 WEIGHT_DAILY = 25.0
 
 
+def _score_sentiment(sentiment: str, weight: float) -> float:
+    """Helper to score a sentiment with its timeframe weight."""
+    if sentiment == "Bullish":
+        return weight
+    elif sentiment == "Bearish":
+        return -weight
+    return 0.0
+
+
 class ConsensusEngineService:
     """
     Reads EigenFilter classifications across Daily, Weekly, and Monthly 
@@ -81,25 +90,14 @@ class ConsensusEngineService:
         w_sent = signals["weekly"]
         d_sent = signals["daily"]
         
-        total_weight_available = 0.0
-        score = 0.0
-        
-        m_score, w_score, d_score = 0.0, 0.0, 0.0
-        
-        if m_sent != "None":
-            m_score = WEIGHT_MONTHLY if m_sent == "Bullish" else -WEIGHT_MONTHLY
-            score += m_score
-            
-        if w_sent != "None":
-            w_score = WEIGHT_WEEKLY if w_sent == "Bullish" else -WEIGHT_WEEKLY
-            score += w_score
-            
-        if d_sent != "None":
-            d_score = WEIGHT_DAILY if d_sent == "Bullish" else -WEIGHT_DAILY
-            score += d_score
-            
         if m_sent == "None" and w_sent == "None" and d_sent == "None":
             return None
+            
+        m_score = _score_sentiment(m_sent, WEIGHT_MONTHLY)
+        w_score = _score_sentiment(w_sent, WEIGHT_WEEKLY)
+        d_score = _score_sentiment(d_sent, WEIGHT_DAILY)
+        
+        score = m_score + w_score + d_score
             
         # Divide by the absolute total possible weight (100) to ensure only 
         # full alignment across all timeframes results in 100%.
