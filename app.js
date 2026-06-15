@@ -8,6 +8,19 @@ const workspaceState = {
     sortOrder: 'desc'
 };
 
+/**
+ * Escapes HTML entities to prevent XSS when inserting untrusted data.
+ * @param {string} str - Raw string from server data
+ * @returns {string} Escaped string safe for innerHTML
+ */
+function sanitizeHTML(str) {
+    if (str === null || str === undefined) return '';
+    const text = String(str);
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     fetchHistoryIndex();
     fetchData();
@@ -15,7 +28,9 @@ document.addEventListener('DOMContentLoaded', () => {
     setupModal();
     setupClickableCards();
     setupMacroControls();
+    setupDelegatedClicks();
 });
+
 
 function setupMacroControls() {
     const searchInput = document.getElementById('macro-search');
@@ -71,6 +86,69 @@ function setupMacroControls() {
             }
         }
     });
+}
+
+function setupDelegatedClicks() {
+    const detailContent = document.getElementById('macro-detail-content');
+    if (detailContent) {
+        detailContent.addEventListener('click', (e) => {
+            const trigger = e.target.closest('.related-event-trigger');
+            if (trigger) {
+                e.preventDefault();
+                const eventId = trigger.dataset.eventId;
+                selectMacroEvent(eventId);
+            }
+        });
+    }
+
+    const modal = document.getElementById('premium-modal');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            // Delegated click for completion tabs
+            const tabBtn = e.target.closest('.completion-tab-trigger');
+            if (tabBtn) {
+                const tabName = tabBtn.dataset.tab;
+                switchCompletionTab(tabName);
+                return;
+            }
+            
+            // Delegated click for completion group toggle
+            const rowTrigger = e.target.closest('.completion-row-trigger');
+            if (rowTrigger) {
+                const targetId = rowTrigger.dataset.target;
+                const el = document.getElementById(targetId);
+                if (el) {
+                    el.style.display = el.style.display === 'none' ? 'block' : 'none';
+                }
+                return;
+            }
+        });
+
+        // Hover delegation for confidence cells in the modal
+        modal.addEventListener('mouseover', (e) => {
+            const cell = e.target.closest('.confidence-cell');
+            if (cell) {
+                showConfidenceTip(cell);
+            }
+        });
+
+        modal.addEventListener('mouseout', (e) => {
+            const cell = e.target.closest('.confidence-cell');
+            if (cell) {
+                hideConfidenceTip(cell);
+            }
+        });
+    }
+
+    const backtestTab = document.getElementById('backtest');
+    if (backtestTab) {
+        backtestTab.addEventListener('click', (e) => {
+            const card = e.target.closest('#backtest-completions-card');
+            if (card) {
+                openCompletionsDrilldown();
+            }
+        });
+    }
 }
 
 async function fetchHistoryIndex() {
@@ -344,12 +422,12 @@ function renderDashboard(data) {
             else neutralConsensus++;
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td class="symbol-cell">${item.symbol}</td>
+                <td class="symbol-cell">${sanitizeHTML(item.symbol)}</td>
                 <td>${item.score_pct.toFixed(1)}% <br><small style="color:var(--text-muted)">${'⭐'.repeat(item.stars)}</small></td>
-                <td><span class="rating-badge ${getRatingClass(item.label)}">${item.label}</span></td>
-                <td class="sentiment ${getSentimentClass(item.daily_sentiment)}">${item.daily_sentiment}</td>
-                <td class="sentiment ${getSentimentClass(item.weekly_sentiment)}">${item.weekly_sentiment}</td>
-                <td class="sentiment ${getSentimentClass(item.monthly_sentiment)}">${item.monthly_sentiment}</td>
+                <td><span class="rating-badge ${getRatingClass(item.label)}">${sanitizeHTML(item.label)}</span></td>
+                <td class="sentiment ${getSentimentClass(item.daily_sentiment)}">${sanitizeHTML(item.daily_sentiment)}</td>
+                <td class="sentiment ${getSentimentClass(item.weekly_sentiment)}">${sanitizeHTML(item.weekly_sentiment)}</td>
+                <td class="sentiment ${getSentimentClass(item.monthly_sentiment)}">${sanitizeHTML(item.monthly_sentiment)}</td>
             `;
             tbody.appendChild(tr);
         });
@@ -384,7 +462,7 @@ function renderDashboard(data) {
         totalAlerts = data.ticker_alerts.length;
         data.ticker_alerts.forEach(alert => {
             const li = document.createElement('li');
-            li.innerHTML = `<strong>${alert.symbol}</strong>: ${alert.pattern} <br><small style="color:var(--text-muted); margin-top:4px; display:block;">${alert.description}</small>`;
+            li.innerHTML = `<strong>${sanitizeHTML(alert.symbol)}</strong>: ${sanitizeHTML(alert.pattern)} <br><small style="color:var(--text-muted); margin-top:4px; display:block;">${sanitizeHTML(alert.description)}</small>`;
             alertsList.appendChild(li);
         });
     } else {
@@ -497,13 +575,13 @@ function renderMacroTimeline() {
 
         card.innerHTML = `
             <div class="macro-event-header" style="display:flex; flex-wrap:wrap; gap:8px;">
-                <span class="macro-date">${pubDate}</span>
-                <span class="premium-badge badge-label">${category}</span>
-                <span class="premium-badge badge-strong" style="font-family:monospace; font-size:0.8em; opacity:0.7;">ID: ${event.event_id || '---'}</span>
+                <span class="macro-date">${sanitizeHTML(pubDate)}</span>
+                <span class="premium-badge badge-label">${sanitizeHTML(category)}</span>
+                <span class="premium-badge badge-strong" style="font-family:monospace; font-size:0.8em; opacity:0.7;">ID: ${sanitizeHTML(event.event_id || '---')}</span>
                 ${isNewHtml}
             </div>
-            <h3>${title}</h3>
-            <p>${summary.substring(0, 150)}${summary.length > 150 ? '...' : ''}</p>
+            <h3>${sanitizeHTML(title)}</h3>
+            <p>${sanitizeHTML(summary.substring(0, 150))}${summary.length > 150 ? '...' : ''}</p>
         `;
         
         card.addEventListener('click', () => {
@@ -578,34 +656,35 @@ function renderHeaderWidget(event) {
     
     return `
         <div class="macro-detail-header">
-            <h2>${title}</h2>
+            <h2>${sanitizeHTML(title)}</h2>
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <span class="premium-badge badge-label"><strong>Published:</strong> ${pubDate}</span>
-                <span class="premium-badge badge-label"><strong>Source:</strong> <a href="${url}" target="_blank" style="color:white; text-decoration:underline;">${source}</a></span>
-                <span class="premium-badge badge-label"><strong>Category:</strong> ${category}</span>
-                <span class="premium-badge badge-strong"><strong>ID:</strong> ${event.event_id}</span>
+                <span class="premium-badge badge-label"><strong>Published:</strong> ${sanitizeHTML(pubDate)}</span>
+                <span class="premium-badge badge-label"><strong>Source:</strong> <a href="${sanitizeHTML(url)}" target="_blank" style="color:white; text-decoration:underline;">${sanitizeHTML(source)}</a></span>
+                <span class="premium-badge badge-label"><strong>Category:</strong> ${sanitizeHTML(category)}</span>
+                <span class="premium-badge badge-strong"><strong>ID:</strong> ${sanitizeHTML(event.event_id)}</span>
             </div>
         </div>
     `;
 }
 
 function renderOverviewWidget(event) {
-    const summary = (event.official_data?.content || event.summary || 'No official content available.').replace(/\n/g, '<br>');
+    const summary = (event.official_data?.content || event.summary || 'No official content available.');
     return `
         <div style="margin-bottom: 20px; padding: 20px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--glass-border);">
             <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:10px;">OFFICIAL CONTENT / ABSTRACT</h4>
-            <p style="line-height:1.6; color:var(--text-main);">${summary}</p>
+            <p style="line-height:1.6; color:var(--text-main);">${sanitizeHTML(summary).replace(/\n/g, '<br>')}</p>
         </div>
     `;
 }
 
 function renderAIInsightsWidget(event) {
     if (!event.derived_data || !event.derived_data.ai_summary) return '';
+    const themesHtml = event.derived_data.themes ? event.derived_data.themes.map(t => `<span class="premium-badge badge-label">${sanitizeHTML(t)}</span>`).join(' ') : '';
     return `
         <div style="margin-bottom: 20px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 4px solid var(--accent-color, var(--primary));">
             <h4 style="margin-top: 0; color:var(--accent-color, var(--primary)); margin-bottom:10px;">✨ AI Enriched Summary</h4>
-            <p style="line-height:1.6; color:var(--text-main);">${event.derived_data.ai_summary.replace(/\n/g, '<br>')}</p>
-            ${event.derived_data.themes ? `<p style="margin-top:15px;"><strong style="color:var(--text-muted);">Themes:</strong> <span class="premium-badge badge-label">${event.derived_data.themes.join('</span> <span class="premium-badge badge-label">')}</span></p>` : ''}
+            <p style="line-height:1.6; color:var(--text-main);">${sanitizeHTML(event.derived_data.ai_summary).replace(/\n/g, '<br>')}</p>
+            ${event.derived_data.themes ? `<p style="margin-top:15px;"><strong style="color:var(--text-muted);">Themes:</strong> ${themesHtml}</p>` : ''}
         </div>
     `;
 }
@@ -616,7 +695,7 @@ function renderAttachmentsWidget(event) {
         <div style="margin-bottom: 20px; padding: 20px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--glass-border);">
             <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:10px;">ATTACHMENTS</h4>
             <ul style="margin: 0; padding-left: 20px; color:var(--text-main);">
-                ${event.official_data.attachments.map(a => `<li><a href="${a}" target="_blank" style="color:var(--primary); text-decoration:none;">${a}</a></li>`).join('')}
+                ${event.official_data.attachments.map(a => `<li><a href="${sanitizeHTML(a)}" target="_blank" style="color:var(--primary); text-decoration:none;">${sanitizeHTML(a)}</a></li>`).join('')}
             </ul>
         </div>
     `;
@@ -632,10 +711,10 @@ function renderMetadataWidget(event) {
         <div style="padding: 16px; background: rgba(0,0,0,0.1); border-radius: 8px; font-size: 0.85rem;">
             <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:10px;">METADATA</h4>
             <table style="width:100%; border-collapse: collapse; color:var(--text-main);">
-                <tr><td style="padding:4px 0; color:var(--text-muted);">Source System</td><td style="text-align:right;">${sourceSystem}</td></tr>
-                <tr><td style="padding:4px 0; color:var(--text-muted);">Processing Latency</td><td style="text-align:right;">${latency}</td></tr>
-                <tr><td style="padding:4px 0; color:var(--text-muted);">Confidence</td><td style="text-align:right;">${confidence}</td></tr>
-                <tr><td style="padding:4px 0; color:var(--text-muted);">Lifecycle Status</td><td style="text-align:right;">${event.metadata.lifecycle_status || 'Unknown'}</td></tr>
+                <tr><td style="padding:4px 0; color:var(--text-muted);">Source System</td><td style="text-align:right;">${sanitizeHTML(sourceSystem)}</td></tr>
+                <tr><td style="padding:4px 0; color:var(--text-muted);">Processing Latency</td><td style="text-align:right;">${sanitizeHTML(latency)}</td></tr>
+                <tr><td style="padding:4px 0; color:var(--text-muted);">Confidence</td><td style="text-align:right;">${sanitizeHTML(confidence)}</td></tr>
+                <tr><td style="padding:4px 0; color:var(--text-muted);">Lifecycle Status</td><td style="text-align:right;">${sanitizeHTML(event.metadata.lifecycle_status || 'Unknown')}</td></tr>
             </table>
         </div>
     `;
@@ -657,8 +736,8 @@ function renderRelatedEventsWidget(event) {
             <ul style="margin:0; padding-left:20px; color:var(--text-main);">
                 ${event.derived_data.related_events.map(ev => `
                     <li style="margin-bottom:4px;">
-                        <a href="#" onclick="selectMacroEvent('${ev.event_id}'); return false;" style="color:var(--primary); text-decoration:none;">${ev.event_id}</a>
-                        <span style="color:var(--text-muted); margin-left:4px;">(${ev.relationship_type})</span>
+                        <a href="#" class="related-event-trigger" data-event-id="${sanitizeHTML(ev.event_id)}" style="color:var(--primary); text-decoration:none;">${sanitizeHTML(ev.event_id)}</a>
+                        <span style="color:var(--text-muted); margin-left:4px;">(${sanitizeHTML(ev.relationship_type)})</span>
                     </li>
                 `).join('')}
             </ul>
@@ -906,12 +985,17 @@ function renderETE(summaryData) {
             else if (item.state === 'Triggered') stateClass = 'badge-label';
 
             tr.innerHTML = `
-                <td class="symbol-cell">${item.symbol}</td>
-                <td><span class="premium-badge ${stateClass}">${item.state}</span></td>
-                <td>${item.current_stage}</td>
+                <td class="symbol-cell">${sanitizeHTML(item.symbol)}</td>
+                <td><span class="premium-badge ${stateClass}">${sanitizeHTML(item.state)}</span></td>
+                <td>${sanitizeHTML(item.current_stage)}</td>
                 <td>${item.confidence ? item.confidence.toFixed(1) + '%' : '--'}</td>
-                <td><button class="btn-small" onclick="openSequenceDrilldown('${encodeURIComponent(JSON.stringify(item))}')">View</button></td>
+                <td><button class="btn-small">View</button></td>
             `;
+            
+            const btn = tr.querySelector('.btn-small');
+            btn.addEventListener('click', () => {
+                openSequenceDrilldown(item);
+            });
             tbody.appendChild(tr);
         });
     });
@@ -947,13 +1031,12 @@ async function fetchBacktestMetrics() {
     }
 }
 
-function openSequenceDrilldown(sequenceDataStr) {
-    const item = JSON.parse(decodeURIComponent(sequenceDataStr));
+function openSequenceDrilldown(item) {
     let html = `<div style="grid-column: 1/-1;">`;
     
     html += `<div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-        <span class="premium-badge badge-strong">Symbol: ${item.symbol}</span>
-        <span class="premium-badge badge-label">Timeframe: ${item.timeframe}</span>
+        <span class="premium-badge badge-strong">Symbol: ${sanitizeHTML(item.symbol)}</span>
+        <span class="premium-badge badge-label">Timeframe: ${sanitizeHTML(item.timeframe)}</span>
         <span class="premium-badge badge-gap-up">Confidence: ${item.confidence ? item.confidence.toFixed(1) + '%' : '--'}</span>
     </div>`;
 
@@ -968,11 +1051,11 @@ function openSequenceDrilldown(sequenceDataStr) {
             html += `
                 <div style="position: relative; margin-bottom: 25px;">
                     <div style="position: absolute; left: -27px; top: 0; width: 12px; height: 12px; border-radius: 50%; background: ${color};"></div>
-                    <div style="font-weight: bold; color: ${color};">${evt.action} <span style="color: var(--text-muted); font-size: 0.9em; font-weight: normal;">(Stage: ${evt.stage})</span></div>
-                    <div style="color: var(--text-muted); font-size: 0.85em; margin-top: 4px;">Date: ${evt.timestamp}</div>
-                    ${evt.failure_reason && evt.failure_reason !== "None" ? `<div style="color: #ff4c4c; font-size: 0.85em; margin-top: 4px;">Reason: ${evt.failure_reason}</div>` : ''}
+                    <div style="font-weight: bold; color: ${color};">${sanitizeHTML(evt.action)} <span style="color: var(--text-muted); font-size: 0.9em; font-weight: normal;">(Stage: ${sanitizeHTML(evt.stage)})</span></div>
+                    <div style="color: var(--text-muted); font-size: 0.85em; margin-top: 4px;">Date: ${sanitizeHTML(evt.timestamp)}</div>
+                    ${evt.failure_reason && evt.failure_reason !== "None" ? `<div style="color: #ff4c4c; font-size: 0.85em; margin-top: 4px;">Reason: ${sanitizeHTML(evt.failure_reason)}</div>` : ''}
                     <div style="font-size: 0.85em; margin-top: 4px; background: rgba(255,255,255,0.05); padding: 8px; border-radius: 4px;">
-                        Rule Evaluated: ${evt.rule_evaluated} <br>
+                        Rule Evaluated: ${sanitizeHTML(evt.rule_evaluated)} <br>
                         Metrics: Vol &Delta; ${evt.metrics?.vol_delta_pct?.toFixed(1) || 0}% | Spread &Delta; ${evt.metrics?.spread_delta_pct?.toFixed(1) || 0}%
                     </div>
                 </div>
@@ -1001,7 +1084,7 @@ function renderBacktest(data) {
                 <h3 style="color:var(--text-muted); margin-bottom: 15px; font-size:1em; text-transform:uppercase; letter-spacing:1px;">Win Rate</h3>
                 <div style="font-size: 2.5em; font-weight: bold; color: #4cff4c;">${o.win_rate ? o.win_rate.toFixed(1) + '%' : '0%'}</div>
             </div>
-            <div class="stat-card glass-panel clickable-card" style="text-align: center; padding: 20px; cursor: pointer;" onclick="openCompletionsDrilldown()">
+            <div class="stat-card glass-panel clickable-card" id="backtest-completions-card" style="text-align: center; padding: 20px; cursor: pointer;">
                 <h3 style="color:var(--text-muted); margin-bottom: 15px; font-size:1em; text-transform:uppercase; letter-spacing:1px;">Completions <span style="font-size: 0.6em; color: var(--accent-color);">(Click for details)</span></h3>
                 <div style="font-size: 2.5em; font-weight: bold; color: var(--accent-color);">${o.total_completed || 0}</div>
             </div>
@@ -1031,9 +1114,9 @@ async function openCompletionsDrilldown() {
         let html = `
             <div class="tabs-container" style="margin-bottom: 20px; grid-column: 1/-1;">
                 <div class="tab-headers" style="display: flex; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
-                    <button class="tab-btn active" onclick="switchCompletionTab('daily')" id="tab-btn-daily" style="background:transparent; border:none; color:var(--text-color); cursor:pointer; font-weight:bold; padding: 8px 16px; border-radius: 4px; background: rgba(255,255,255,0.1);">Daily (${daily.length})</button>
-                    <button class="tab-btn" onclick="switchCompletionTab('weekly')" id="tab-btn-weekly" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; font-weight:bold; padding: 8px 16px; border-radius: 4px;">Weekly (${weekly.length})</button>
-                    <button class="tab-btn" onclick="switchCompletionTab('monthly')" id="tab-btn-monthly" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; font-weight:bold; padding: 8px 16px; border-radius: 4px;">Monthly (${monthly.length})</button>
+                    <button class="tab-btn active completion-tab-trigger" data-tab="daily" id="tab-btn-daily" style="background:transparent; border:none; color:var(--text-color); cursor:pointer; font-weight:bold; padding: 8px 16px; border-radius: 4px; background: rgba(255,255,255,0.1);">Daily (${daily.length})</button>
+                    <button class="tab-btn completion-tab-trigger" data-tab="weekly" id="tab-btn-weekly" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; font-weight:bold; padding: 8px 16px; border-radius: 4px;">Weekly (${weekly.length})</button>
+                    <button class="tab-btn completion-tab-trigger" data-tab="monthly" id="tab-btn-monthly" style="background:transparent; border:none; color:var(--text-muted); cursor:pointer; font-weight:bold; padding: 8px 16px; border-radius: 4px;">Monthly (${monthly.length})</button>
                 </div>
             </div>
             <div class="tab-content" id="tab-content-daily" style="display:block; grid-column: 1/-1;">
@@ -1104,10 +1187,10 @@ function renderCompletionTable(items) {
         
         // Accordion Row Header
         html += `
-            <div class="eigen-row" onclick="const el = document.getElementById('${toggleId}'); el.style.display = el.style.display === 'none' ? 'block' : 'none';" style="cursor:pointer; margin-bottom: 5px; background: rgba(255,255,255,0.03);">
+            <div class="eigen-row completion-row-trigger" data-target="${toggleId}" style="cursor:pointer; margin-bottom: 5px; background: rgba(255,255,255,0.03);">
                 <span>
-                    <strong style="color: var(--text-color); font-size: 1.1em;">${symbol}</strong> 
-                    <span style="color:var(--text-muted); font-size: 0.9em; margin-left: 10px;">Latest: ${latestDate}</span>
+                    <strong style="color: var(--text-color); font-size: 1.1em;">${sanitizeHTML(symbol)}</strong> 
+                    <span style="color:var(--text-muted); font-size: 0.9em; margin-left: 10px;">Latest: ${sanitizeHTML(latestDate)}</span>
                 </span>
                 <span class="badge" style="background: rgba(255,255,255,0.1); color: var(--text-color);">${groupItems.length}</span>
             </div>
@@ -1121,6 +1204,7 @@ function renderCompletionTable(items) {
                             <th>Pattern</th>
                             <th>Sentiment</th>
                             <th>Vol Surge</th>
+                            <th>Confidence</th>
                             <th>Max Fwd Rtn (5b)</th>
                         </tr>
                     </thead>
@@ -1131,13 +1215,37 @@ function renderCompletionTable(items) {
             const sentimentClass = item.sentiment === 'Bullish' ? 'badge-gap-up' : 'badge-gap-down';
             const returnColor = item.fwd_return_5b > 0 ? '#4cff4c' : '#ff4c4c';
             
+            let confidenceHtml = '—';
+            if (item.confidence !== null && item.confidence !== undefined && item.confidence !== 0) {
+                let badgeClass = 'badge-weak';
+                if (item.confidence >= 70.0) {
+                    badgeClass = 'badge-gap-up';
+                } else if (item.confidence < 40.0) {
+                    badgeClass = 'badge-gap-down';
+                }
+                confidenceHtml = `
+                    <span class="confidence-cell" 
+                          data-symbol="${sanitizeHTML(item.symbol)}"
+                          data-date="${sanitizeHTML(item.start_date)}"
+                          data-confidence="${item.confidence.toFixed(1)}"
+                          data-vol="${item.vol_score !== undefined ? item.vol_score : 0.0}"
+                          data-close="${item.close_score !== undefined ? item.close_score : 0.0}"
+                          data-drift="${item.drift_score !== undefined ? item.drift_score : 0.0}"
+                          data-pattern="${sanitizeHTML(item.trigger_pattern)}"
+                          data-sentiment="${sanitizeHTML(item.sentiment)}">
+                      <span class="premium-badge ${badgeClass}">${item.confidence.toFixed(1)}%</span>
+                    </span>
+                `;
+            }
+            
             html += `
                 <tr>
-                    <td>${item.start_date || '--'}</td>
-                    <td>${item.completion_date || '--'}</td>
-                    <td><span class="premium-badge badge-label">${item.trigger_pattern}</span></td>
-                    <td><span class="premium-badge ${sentimentClass}">${item.sentiment}</span></td>
+                    <td>${sanitizeHTML(item.start_date || '--')}</td>
+                    <td>${sanitizeHTML(item.completion_date || '--')}</td>
+                    <td><span class="premium-badge badge-label">${sanitizeHTML(item.trigger_pattern)}</span></td>
+                    <td><span class="premium-badge ${sentimentClass}">${sanitizeHTML(item.sentiment)}</span></td>
                     <td>${item.vol_surge_pct !== undefined ? item.vol_surge_pct.toFixed(1) + '%' : '--'}</td>
+                    <td>${confidenceHtml}</td>
                     <td style="color: ${returnColor}; font-weight: bold;">${item.fwd_return_5b !== null ? item.fwd_return_5b.toFixed(2) + '%' : '--'}</td>
                 </tr>
             `;
@@ -1148,5 +1256,235 @@ function renderCompletionTable(items) {
     
     html += `</div>`;
     return html;
+}
+
+// Initialize Cache and Global Tooltip state
+if (!window.tooltipCache) window.tooltipCache = {};
+
+function getGlobalTooltip() {
+    let tip = document.getElementById('global-confidence-tooltip');
+    if (!tip) {
+        tip = document.createElement('div');
+        tip.id = 'global-confidence-tooltip';
+        tip.style.position = 'fixed';
+        tip.style.display = 'none';
+        document.body.appendChild(tip);
+        
+        // Prevent mouseleave when user moves mouse inside the tooltip itself
+        // So that they can click the input field, type, and save the key
+        tip.addEventListener('mouseenter', () => {
+            if (window.tooltipHideTimeout) {
+                clearTimeout(window.tooltipHideTimeout);
+                window.tooltipHideTimeout = null;
+            }
+        });
+        
+        tip.addEventListener('mouseleave', () => {
+            hideConfidenceTip(null, true);
+        });
+    }
+    return tip;
+}
+
+window.tooltipHideTimeout = null;
+
+async function showConfidenceTip(cell) {
+    if (window.tooltipHideTimeout) {
+        clearTimeout(window.tooltipHideTimeout);
+        window.tooltipHideTimeout = null;
+    }
+
+    const tip = getGlobalTooltip();
+    window.globalTooltipActiveCell = cell;
+
+    const { symbol, date, confidence, vol, close, drift, pattern, sentiment } = cell.dataset;
+    const volPct   = (parseFloat(vol)   * 100).toFixed(1);
+    const closePct = (parseFloat(close) * 100).toFixed(1);
+    const driftPct = (parseFloat(drift) * 100).toFixed(1);
+
+    // Initial render of sub-scores skeleton
+    tip.innerHTML = `
+      <div class="tip-header">Confidence breakdown</div>
+      <div class="tip-scores">
+        <div class="tip-score-item"><span class="tip-score-val">${volPct}%</span>Volume</div>
+        <div class="tip-score-item"><span class="tip-score-val">${closePct}%</span>Close</div>
+        <div class="tip-score-item"><span class="tip-score-val">${driftPct}%</span>Drift</div>
+      </div>
+      <div class="tip-summary tip-loading">Generating summary…</div>
+    `;
+
+    tip.style.display = 'block';
+
+    // Position calculation (Fixed Viewport-relative)
+    const rect = cell.getBoundingClientRect();
+    const TOOLTIP_W = 280;
+    const TOOLTIP_H = 180;
+
+    const spaceAbove = rect.top;
+    const spaceBelow = window.innerHeight - rect.bottom;
+
+    let top = spaceAbove >= TOOLTIP_H || spaceAbove >= spaceBelow
+      ? rect.top - TOOLTIP_H - 8        // above
+      : rect.bottom + 8;                 // flip below
+
+    let left = rect.left + rect.width / 2 - TOOLTIP_W / 2;
+    left = Math.max(10, Math.min(left, window.innerWidth - TOOLTIP_W - 10));
+
+    tip.style.top  = top + 'px';
+    tip.style.left = left + 'px';
+
+    // Cache lookup key
+    const cacheKey = `${symbol}_${date}_${pattern}`;
+    
+    // Check cache
+    if (window.tooltipCache[cacheKey]) {
+        renderSummaryText(tip, window.tooltipCache[cacheKey], cell);
+        return;
+    }
+
+    // Check localStorage API key
+    const apiKey = localStorage.getItem('gemini_api_key') || '';
+    if (!apiKey) {
+        // Display setup prompt for key
+        renderKeySetupPrompt(tip, cell, () => {
+            // Callback after saving key - retry summary generation
+            showConfidenceTip(cell);
+        });
+        
+        // Render fallback summary below key setup prompt so there is zero blank state
+        const fallback = generateLocalSummary(confidence, pattern, sentiment, volPct, closePct, driftPct);
+        renderSummaryText(tip, fallback, cell);
+        return;
+    }
+
+    // Call Gemini API
+    const prompt = `You are a quantitative trading analyst. Summarize in 2 sentences what a confidence score of ${confidence}% means for a "${pattern}" (${sentiment}) trade signal. Sub-scores: Volume surge ${volPct}% (40% weight), Close position ${closePct}% (40% weight), Close drift ${driftPct}% (20% weight). Be direct and specific — state the dominant factor and what it implies for trade conviction.`;
+
+    try {
+        const summary = await fetchGeminiSummary(prompt, apiKey);
+        if (window.globalTooltipActiveCell === cell) {
+            window.tooltipCache[cacheKey] = summary;
+            renderSummaryText(tip, summary, cell);
+        }
+    } catch (err) {
+        console.warn('Gemini API call failed, falling back to local analyst:', err);
+        const fallback = generateLocalSummary(confidence, pattern, sentiment, volPct, closePct, driftPct);
+        if (window.globalTooltipActiveCell === cell) {
+            renderSummaryText(tip, fallback, cell);
+        }
+    }
+}
+
+function hideConfidenceTip(cell, immediate = false) {
+    if (immediate) {
+        const tip = document.getElementById('global-confidence-tooltip');
+        if (tip) tip.style.display = 'none';
+        window.globalTooltipActiveCell = null;
+    } else {
+        // Delay hide slightly so user can move mouse into tooltip
+        window.tooltipHideTimeout = setTimeout(() => {
+            const tip = document.getElementById('global-confidence-tooltip');
+            if (tip) tip.style.display = 'none';
+            window.globalTooltipActiveCell = null;
+        }, 300);
+    }
+}
+
+function renderSummaryText(tip, text, cell) {
+    if (window.globalTooltipActiveCell !== cell) return;
+    
+    let summaryDiv = tip.querySelector('.tip-summary');
+    if (!summaryDiv) {
+        summaryDiv = document.createElement('div');
+        summaryDiv.className = 'tip-summary';
+        tip.appendChild(summaryDiv);
+    }
+    summaryDiv.classList.remove('tip-loading');
+    summaryDiv.textContent = text;
+}
+
+function renderKeySetupPrompt(tip, cell, onSaveCallback) {
+    if (window.globalTooltipActiveCell !== cell) return;
+    
+    // Remove existing if any
+    const existing = tip.querySelector('.key-setup-container');
+    if (existing) existing.remove();
+    
+    const container = document.createElement('div');
+    container.className = 'key-setup-container';
+    container.innerHTML = `
+        <div class="key-setup-title">Enter Gemini API key for AI summaries:</div>
+        <div class="key-setup-row">
+            <input type="password" class="key-input" placeholder="AIzaSy...">
+            <button class="key-save-btn">Save</button>
+        </div>
+    `;
+    
+    // Wire up save button
+    const btn = container.querySelector('.key-save-btn');
+    const input = container.querySelector('.key-input');
+    
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const key = input.value.trim();
+        if (key) {
+            localStorage.setItem('gemini_api_key', key);
+            if (onSaveCallback) onSaveCallback();
+        }
+    });
+    
+    // Append before the summary section if possible, otherwise at the end
+    const summary = tip.querySelector('.tip-summary');
+    if (summary) {
+        tip.insertBefore(container, summary);
+    } else {
+        tip.appendChild(container);
+    }
+}
+
+async function fetchGeminiSummary(prompt, apiKey) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            contents: [{
+                parts: [{
+                    text: prompt
+                }]
+            }]
+        })
+    });
+    if (!response.ok) throw new Error(`API error ${response.status}`);
+    const data = await response.json();
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (text) return text.trim();
+    throw new Error('Empty response');
+}
+
+function generateLocalSummary(confidence, pattern, sentiment, volPct, closePct, driftPct) {
+  const conf = parseFloat(confidence);
+  const volVal = parseFloat(volPct);
+  const closeVal = parseFloat(closePct);
+  const driftVal = parseFloat(driftPct);
+  
+  const dominant = volVal >= closeVal && volVal >= driftVal ? 'volume'
+                 : closeVal >= driftVal ? 'close position' : 'drift';
+
+  const tier = conf >= 70 ? 'high' : conf >= 40 ? 'moderate' : 'low';
+
+  const domPhrase = {
+    volume:         `Volume surge of ${volPct}% vs the 20-period average is the primary driver.`,
+    'close position': `A close position score of ${closePct}% indicates price closed ${closeVal >= 50 ? 'near the favourable' : 'away from the favourable'} extreme.`,
+    drift:          `The drift score of ${driftPct}% reflects ${driftVal >= 50 ? 'improving' : 'deteriorating'} close position versus the prior candle.`
+  }[dominant];
+
+  const convPhrase = tier === 'high'   ? `Overall conviction for this ${sentiment} ${pattern} signal is strong.`
+                   : tier === 'moderate' ? `Overall conviction is moderate — treat as a qualifying signal requiring confirmation.`
+                   :                       `Overall conviction is low — this signal carries elevated uncertainty.`;
+
+  return `${domPhrase} ${convPhrase}`;
 }
 

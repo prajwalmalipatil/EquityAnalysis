@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-15T16:34:09.725870Z",
+  "generated_at": "2026-06-15T19:29:11.599523Z",
   "pipeline_version": "2.1.0",
-  "event_count": 51,
+  "event_count": 54,
   "analytics": {
-    "total_events": 51,
+    "total_events": 54,
     "business": {
       "events_per_day": {
         "name": "events_per_day",
@@ -47,18 +47,18 @@
           },
           {
             "date": "2026-06-15",
-            "value": 20.0
+            "value": 23.0
           }
         ]
       },
       "category_distribution": [
         {
           "label": "Press Releases",
-          "count": 20
+          "count": 22
         },
         {
           "label": "Notifications",
-          "count": 20
+          "count": 21
         },
         {
           "label": "Publications",
@@ -83,8 +83,8 @@
     },
     "quality": {
       "events_with_pdf": 0,
-      "events_missing_attachment": 51,
-      "missing_effective_date": 51,
+      "events_missing_attachment": 54,
+      "missing_effective_date": 54,
       "ai_enrichment_coverage": 0.0,
       "validation_failures": 0,
       "avg_quality_score": 0.0
