@@ -47,16 +47,8 @@ class VSAPatternRouter:
 
     def register_module(self) -> None:
         """Registers the VSAProcessorService with the platform registry."""
-        platform_registry.register(
-            ResearchModule(
-                name="VSAProcessorService",
-                version="1.0.0",
-                description="Core Volume Spread Analysis processing engine.",
-                inputs=["CleanCSV"],
-                outputs=["Signals"],
-                dependencies=["DataQualityGate"],
-            )
-        )
+        # Registered at module-level import to support early pipeline DAG validation.
+        pass
 
     def run_filters(self) -> Dict[str, Any]:
         """Runs the four Eigen/Age filters and consensus engine."""
@@ -184,3 +176,16 @@ class VSAPatternRouter:
         filter_results = self.run_filters()
         self.run_ete(processed_metadata, filter_results)
         self.publish_views()
+
+
+# Module-level platform registration to ensure early DAG validation success
+platform_registry.register(
+    ResearchModule(
+        name="VSAProcessorService",
+        version="1.0.0",
+        description="Core Volume Spread Analysis processing engine.",
+        inputs=["CleanCSV"],
+        outputs=["Signals"],
+        dependencies=["DataQualityGate"],
+    )
+)
