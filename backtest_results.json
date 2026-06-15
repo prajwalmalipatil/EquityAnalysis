@@ -1,24 +1,12 @@
 {
-  "generated_at": "2026-06-14T19:52:43.534030+00:00",
+  "generated_at": "2026-06-15T16:34:05.560223+00:00",
   "overall_metrics": {
-    "total_sequences": 8983,
-    "win_rate": 74.5398773006135,
-    "total_completed": 243,
+    "total_sequences": 8995,
+    "win_rate": 74.61773700305811,
+    "total_completed": 244,
     "total_failed": 83
   },
   "completions_daily": [
-    {
-      "symbol": "KAYNES",
-      "start_date": "2026-05-25",
-      "completion_date": "2026-06-02",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 2785242.0,
-      "vol_surge_pct": 95.92745475418694,
-      "fwd_return_5b": -4.468145530276732,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
     {
       "symbol": "RELIANCE",
       "start_date": "2026-05-25",
@@ -27,6 +15,18 @@
       "t_vol": 13769747.0,
       "vol_surge_pct": 103.99410613606878,
       "fwd_return_5b": -3.902327704244634,
+      "win": true,
+      "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "KAYNES",
+      "start_date": "2026-05-25",
+      "completion_date": "2026-06-02",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 2785242.0,
+      "vol_surge_pct": 95.92745475418694,
+      "fwd_return_5b": -4.468145530276732,
       "win": true,
       "sentiment": "Bearish",
       "gauntlet_passed": true
@@ -44,13 +44,13 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "GODREJCP",
+      "symbol": "RECLTD",
       "start_date": "2026-05-13",
       "completion_date": "2026-05-20",
       "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 1836948.0,
-      "vol_surge_pct": 15.651627542109846,
-      "fwd_return_5b": 2.101867240199444,
+      "t_vol": 5287354.0,
+      "vol_surge_pct": 10.956254223274286,
+      "fwd_return_5b": 2.7627627627627596,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -68,25 +68,13 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "RBLBANK",
+      "symbol": "GODREJCP",
       "start_date": "2026-05-13",
       "completion_date": "2026-05-20",
       "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 4998327.0,
-      "vol_surge_pct": 93.61083437014359,
-      "fwd_return_5b": 6.012176560121765,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "RECLTD",
-      "start_date": "2026-05-13",
-      "completion_date": "2026-05-20",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 5287354.0,
-      "vol_surge_pct": 10.956254223274286,
-      "fwd_return_5b": 2.7627627627627596,
+      "t_vol": 1836948.0,
+      "vol_surge_pct": 15.651627542109846,
+      "fwd_return_5b": 2.101867240199444,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -99,6 +87,18 @@
       "t_vol": 16545557.0,
       "vol_surge_pct": 20.69695201033357,
       "fwd_return_5b": 3.5027911535347505,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "RBLBANK",
+      "start_date": "2026-05-13",
+      "completion_date": "2026-05-20",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 4998327.0,
+      "vol_surge_pct": 93.61083437014359,
+      "fwd_return_5b": 6.012176560121765,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -140,18 +140,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "PERSISTENT",
-      "start_date": "2026-05-07",
-      "completion_date": "2026-05-14",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 633097.0,
-      "vol_surge_pct": 23.611921939218817,
-      "fwd_return_5b": 9.836242654683723,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "VOLTAS",
       "start_date": "2026-05-07",
       "completion_date": "2026-05-14",
@@ -165,12 +153,12 @@
     },
     {
       "symbol": "PERSISTENT",
-      "start_date": "2026-05-05",
-      "completion_date": "2026-05-12",
+      "start_date": "2026-05-07",
+      "completion_date": "2026-05-14",
       "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 799823.0,
-      "vol_surge_pct": 60.08786765809673,
-      "fwd_return_5b": 3.879354534456948,
+      "t_vol": 633097.0,
+      "vol_surge_pct": 23.611921939218817,
+      "fwd_return_5b": 9.836242654683723,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -195,6 +183,18 @@
       "t_vol": 8247404.0,
       "vol_surge_pct": 97.83540718107109,
       "fwd_return_5b": 7.055486615848245,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "PERSISTENT",
+      "start_date": "2026-05-05",
+      "completion_date": "2026-05-12",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 799823.0,
+      "vol_surge_pct": 60.08786765809673,
+      "fwd_return_5b": 3.879354534456948,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -248,18 +248,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "KEI",
-      "start_date": "2026-04-22",
-      "completion_date": "2026-04-29",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 367334.0,
-      "vol_surge_pct": 30.767587733975077,
-      "fwd_return_5b": -1.5744042794618214,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "HAVELLS",
       "start_date": "2026-04-22",
       "completion_date": "2026-04-29",
@@ -267,6 +255,18 @@
       "t_vol": 5666205.0,
       "vol_surge_pct": 17.65901094006481,
       "fwd_return_5b": -1.0299401197604863,
+      "win": true,
+      "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "KEI",
+      "start_date": "2026-04-22",
+      "completion_date": "2026-04-29",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 367334.0,
+      "vol_surge_pct": 30.767587733975077,
+      "fwd_return_5b": -1.5744042794618214,
       "win": true,
       "sentiment": "Bearish",
       "gauntlet_passed": true
@@ -284,18 +284,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "NUVAMA",
-      "start_date": "2026-04-21",
-      "completion_date": "2026-04-28",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 514586.0,
-      "vol_surge_pct": 148.74728695660582,
-      "fwd_return_5b": -3.75825292026409,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "HCLTECH",
       "start_date": "2026-04-21",
       "completion_date": "2026-04-28",
@@ -303,6 +291,18 @@
       "t_vol": 33066256.0,
       "vol_surge_pct": 969.5906533004991,
       "fwd_return_5b": -0.5769230769230845,
+      "win": true,
+      "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "NUVAMA",
+      "start_date": "2026-04-21",
+      "completion_date": "2026-04-28",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 514586.0,
+      "vol_surge_pct": 148.74728695660582,
+      "fwd_return_5b": -3.75825292026409,
       "win": true,
       "sentiment": "Bearish",
       "gauntlet_passed": true
@@ -320,18 +320,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "NBCC",
-      "start_date": "2026-04-15",
-      "completion_date": "2026-04-22",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 12866006.0,
-      "vol_surge_pct": 67.03744825684443,
-      "fwd_return_5b": 1.2845010615711185,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "YESBANK",
       "start_date": "2026-04-15",
       "completion_date": "2026-04-22",
@@ -339,6 +327,18 @@
       "t_vol": 161480178.0,
       "vol_surge_pct": 140.12366206263113,
       "fwd_return_5b": 1.4007003501750932,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "NBCC",
+      "start_date": "2026-04-15",
+      "completion_date": "2026-04-22",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 12866006.0,
+      "vol_surge_pct": 67.03744825684443,
+      "fwd_return_5b": 1.2845010615711185,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -416,18 +416,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "MUTHOOTFIN",
-      "start_date": "2026-04-02",
-      "completion_date": "2026-04-10",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 756759.0,
-      "vol_surge_pct": 15.08854907268704,
-      "fwd_return_5b": 0.6743333613139681,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "ADANIGREEN",
       "start_date": "2026-04-02",
       "completion_date": "2026-04-10",
@@ -435,6 +423,18 @@
       "t_vol": 13113062.0,
       "vol_surge_pct": 37.79937963775528,
       "fwd_return_5b": 6.2053715391348545,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "MUTHOOTFIN",
+      "start_date": "2026-04-02",
+      "completion_date": "2026-04-10",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 756759.0,
+      "vol_surge_pct": 15.08854907268704,
+      "fwd_return_5b": 0.6743333613139681,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -548,18 +548,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "ADANIGREEN",
-      "start_date": "2026-03-05",
-      "completion_date": "2026-03-12",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 5784124.0,
-      "vol_surge_pct": 24.249161486507088,
-      "fwd_return_5b": -1.3444117477352695,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "CGPOWER",
       "start_date": "2026-03-05",
       "completion_date": "2026-03-12",
@@ -567,6 +555,18 @@
       "t_vol": 2922020.0,
       "vol_surge_pct": 116.68443931616581,
       "fwd_return_5b": -6.86287806862877,
+      "win": true,
+      "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "ADANIGREEN",
+      "start_date": "2026-03-05",
+      "completion_date": "2026-03-12",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 5784124.0,
+      "vol_surge_pct": 24.249161486507088,
+      "fwd_return_5b": -1.3444117477352695,
       "win": true,
       "sentiment": "Bearish",
       "gauntlet_passed": true
@@ -668,18 +668,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "RBLBANK",
-      "start_date": "2026-02-16",
-      "completion_date": "2026-02-23",
-      "trigger_pattern": "Contested Bearish Divergence",
-      "t_vol": 9189092.0,
-      "vol_surge_pct": 416.8215315964389,
-      "fwd_return_5b": -2.4150825802430664,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "SRF",
       "start_date": "2026-02-16",
       "completion_date": "2026-02-23",
@@ -692,13 +680,13 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "BAJAJ-AUTO",
-      "start_date": "2026-02-05",
-      "completion_date": "2026-02-12",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 198790.0,
-      "vol_surge_pct": 27.705363509632996,
-      "fwd_return_5b": -1.4481707317073171,
+      "symbol": "RBLBANK",
+      "start_date": "2026-02-16",
+      "completion_date": "2026-02-23",
+      "trigger_pattern": "Contested Bearish Divergence",
+      "t_vol": 9189092.0,
+      "vol_surge_pct": 416.8215315964389,
+      "fwd_return_5b": -2.4150825802430664,
       "win": true,
       "sentiment": "Bearish",
       "gauntlet_passed": true
@@ -713,6 +701,18 @@
       "fwd_return_5b": 2.5673105795215667,
       "win": true,
       "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "BAJAJ-AUTO",
+      "start_date": "2026-02-05",
+      "completion_date": "2026-02-12",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 198790.0,
+      "vol_surge_pct": 27.705363509632996,
+      "fwd_return_5b": -1.4481707317073171,
+      "win": true,
+      "sentiment": "Bearish",
       "gauntlet_passed": true
     },
     {
@@ -764,18 +764,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "CHOLAFIN",
-      "start_date": "2026-01-21",
-      "completion_date": "2026-01-29",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 1241584.0,
-      "vol_surge_pct": 21.228548441271357,
-      "fwd_return_5b": 5.494572139001753,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "GODREJCP",
       "start_date": "2026-01-21",
       "completion_date": "2026-01-29",
@@ -783,6 +771,18 @@
       "t_vol": 1010238.0,
       "vol_surge_pct": 154.62129594390578,
       "fwd_return_5b": 1.281052540465676,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "CHOLAFIN",
+      "start_date": "2026-01-21",
+      "completion_date": "2026-01-29",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 1241584.0,
+      "vol_surge_pct": 21.228548441271357,
+      "fwd_return_5b": 5.494572139001753,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -848,6 +848,18 @@
       "gauntlet_passed": true
     },
     {
+      "symbol": "MANAPPURAM",
+      "start_date": "2026-01-02",
+      "completion_date": "2026-01-09",
+      "trigger_pattern": "Contested Bullish Divergence",
+      "t_vol": 3775651.0,
+      "vol_surge_pct": 18.648967397743,
+      "fwd_return_5b": 10.005247507433957,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
       "symbol": "ULTRACEMCO",
       "start_date": "2026-01-02",
       "completion_date": "2026-01-09",
@@ -869,18 +881,6 @@
       "fwd_return_5b": -3.7520740780388686,
       "win": true,
       "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "MANAPPURAM",
-      "start_date": "2026-01-02",
-      "completion_date": "2026-01-09",
-      "trigger_pattern": "Contested Bullish Divergence",
-      "t_vol": 3775651.0,
-      "vol_surge_pct": 18.648967397743,
-      "fwd_return_5b": 10.005247507433957,
-      "win": true,
-      "sentiment": "Bullish",
       "gauntlet_passed": true
     },
     {
@@ -980,18 +980,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "PNB",
-      "start_date": "2025-12-10",
-      "completion_date": "2025-12-17",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 14403309.0,
-      "vol_surge_pct": 17.395556832844548,
-      "fwd_return_5b": 1.6592642252576923,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "KEI",
       "start_date": "2025-12-10",
       "completion_date": "2025-12-17",
@@ -1004,13 +992,13 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "360ONE",
-      "start_date": "2025-12-08",
-      "completion_date": "2025-12-15",
-      "trigger_pattern": "Contested Bullish Divergence",
-      "t_vol": 1731802.0,
-      "vol_surge_pct": 90.51936764980913,
-      "fwd_return_5b": 1.8170699746658474,
+      "symbol": "PNB",
+      "start_date": "2025-12-10",
+      "completion_date": "2025-12-17",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 14403309.0,
+      "vol_surge_pct": 17.395556832844548,
+      "fwd_return_5b": 1.6592642252576923,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -1023,6 +1011,18 @@
       "t_vol": 889952074.0,
       "vol_surge_pct": 4.948290890611462,
       "fwd_return_5b": 5.374449339207059,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "360ONE",
+      "start_date": "2025-12-08",
+      "completion_date": "2025-12-15",
+      "trigger_pattern": "Contested Bullish Divergence",
+      "t_vol": 1731802.0,
+      "vol_surge_pct": 90.51936764980913,
+      "fwd_return_5b": 1.8170699746658474,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -1064,18 +1064,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "PETRONET",
-      "start_date": "2025-11-21",
-      "completion_date": "2025-11-28",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 2563697.0,
-      "vol_surge_pct": 125.81431359837647,
-      "fwd_return_5b": -1.140334743424691,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "MCX",
       "start_date": "2025-11-21",
       "completion_date": "2025-11-28",
@@ -1085,6 +1073,18 @@
       "fwd_return_5b": 2.6753362783540973,
       "win": true,
       "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "PETRONET",
+      "start_date": "2025-11-21",
+      "completion_date": "2025-11-28",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 2563697.0,
+      "vol_surge_pct": 125.81431359837647,
+      "fwd_return_5b": -1.140334743424691,
+      "win": true,
+      "sentiment": "Bearish",
       "gauntlet_passed": true
     },
     {
@@ -1148,18 +1148,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "TECHM",
-      "start_date": "2025-11-11",
-      "completion_date": "2025-11-18",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 2958869.0,
-      "vol_surge_pct": 18.923882130322877,
-      "fwd_return_5b": 5.112517580872014,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "LTIM",
       "start_date": "2025-11-11",
       "completion_date": "2025-11-18",
@@ -1167,6 +1155,18 @@
       "t_vol": 513138.0,
       "vol_surge_pct": 221.0744654890845,
       "fwd_return_5b": 4.70813064628214,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "TECHM",
+      "start_date": "2025-11-11",
+      "completion_date": "2025-11-18",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 2958869.0,
+      "vol_surge_pct": 18.923882130322877,
+      "fwd_return_5b": 5.112517580872014,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -1208,18 +1208,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "360ONE",
-      "start_date": "2025-10-30",
-      "completion_date": "2025-11-07",
-      "trigger_pattern": "Contested Bullish Divergence",
-      "t_vol": 587485.0,
-      "vol_surge_pct": 89.36956858093299,
-      "fwd_return_5b": 2.1575984990619137,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "BAJFINANCE",
       "start_date": "2025-10-30",
       "completion_date": "2025-11-07",
@@ -1232,13 +1220,13 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "ONGC",
-      "start_date": "2025-10-28",
-      "completion_date": "2025-11-04",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 8806213.0,
-      "vol_surge_pct": 3.2418638328324256,
-      "fwd_return_5b": 0.5944125222904696,
+      "symbol": "360ONE",
+      "start_date": "2025-10-30",
+      "completion_date": "2025-11-07",
+      "trigger_pattern": "Contested Bullish Divergence",
+      "t_vol": 587485.0,
+      "vol_surge_pct": 89.36956858093299,
+      "fwd_return_5b": 2.1575984990619137,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -1256,6 +1244,18 @@
       "gauntlet_passed": true
     },
     {
+      "symbol": "ONGC",
+      "start_date": "2025-10-28",
+      "completion_date": "2025-11-04",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 8806213.0,
+      "vol_surge_pct": 3.2418638328324256,
+      "fwd_return_5b": 0.5944125222904696,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
       "symbol": "360ONE",
       "start_date": "2025-10-24",
       "completion_date": "2025-10-31",
@@ -1263,6 +1263,18 @@
       "t_vol": 607697.0,
       "vol_surge_pct": 23.004631166454814,
       "fwd_return_5b": -1.3602294808920186,
+      "win": true,
+      "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "CIPLA",
+      "start_date": "2025-10-23",
+      "completion_date": "2025-10-30",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 2941997.0,
+      "vol_surge_pct": 36.79094258912692,
+      "fwd_return_5b": -2.5193169274722393,
       "win": true,
       "sentiment": "Bearish",
       "gauntlet_passed": true
@@ -1280,18 +1292,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "CIPLA",
-      "start_date": "2025-10-23",
-      "completion_date": "2025-10-30",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 2941997.0,
-      "vol_surge_pct": 36.79094258912692,
-      "fwd_return_5b": -2.5193169274722393,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "SBIN",
       "start_date": "2025-10-17",
       "completion_date": "2025-10-28",
@@ -1304,30 +1304,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "PNB",
-      "start_date": "2025-10-17",
-      "completion_date": "2025-10-27",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 39131377.0,
-      "vol_surge_pct": 133.70174054190738,
-      "fwd_return_5b": 3.251692719217588,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "RELIANCE",
-      "start_date": "2025-10-17",
-      "completion_date": "2025-10-27",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 24721978.0,
-      "vol_surge_pct": 27.85756772198127,
-      "fwd_return_5b": 1.3543561754598838,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "BHARTIARTL",
       "start_date": "2025-10-17",
       "completion_date": "2025-10-27",
@@ -1335,18 +1311,6 @@
       "t_vol": 7387180.0,
       "vol_surge_pct": 9.540302271671418,
       "fwd_return_5b": 0.9855295418489497,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "RBLBANK",
-      "start_date": "2025-10-17",
-      "completion_date": "2025-10-27",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 101896918.0,
-      "vol_surge_pct": 784.0094851274137,
-      "fwd_return_5b": 2.080422294674736,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -1376,6 +1340,42 @@
       "gauntlet_passed": true
     },
     {
+      "symbol": "RELIANCE",
+      "start_date": "2025-10-17",
+      "completion_date": "2025-10-27",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 24721978.0,
+      "vol_surge_pct": 27.85756772198127,
+      "fwd_return_5b": 1.3543561754598838,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "PNB",
+      "start_date": "2025-10-17",
+      "completion_date": "2025-10-27",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 39131377.0,
+      "vol_surge_pct": 133.70174054190738,
+      "fwd_return_5b": 3.251692719217588,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "RBLBANK",
+      "start_date": "2025-10-17",
+      "completion_date": "2025-10-27",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 101896918.0,
+      "vol_surge_pct": 784.0094851274137,
+      "fwd_return_5b": 2.080422294674736,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
       "symbol": "RBLBANK",
       "start_date": "2025-10-15",
       "completion_date": "2025-10-23",
@@ -1400,18 +1400,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "HAL",
-      "start_date": "2025-10-08",
-      "completion_date": "2025-10-15",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 1003478.0,
-      "vol_surge_pct": 42.52430493910451,
-      "fwd_return_5b": 0.6872781309337114,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "INDIGO",
       "start_date": "2025-10-08",
       "completion_date": "2025-10-15",
@@ -1424,15 +1412,15 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "KPITTECH",
-      "start_date": "2025-10-07",
-      "completion_date": "2025-10-14",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 1506566.0,
-      "vol_surge_pct": 133.3839893049288,
-      "fwd_return_5b": -1.0202317136434338,
+      "symbol": "HAL",
+      "start_date": "2025-10-08",
+      "completion_date": "2025-10-15",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 1003478.0,
+      "vol_surge_pct": 42.52430493910451,
+      "fwd_return_5b": 0.6872781309337114,
       "win": true,
-      "sentiment": "Bearish",
+      "sentiment": "Bullish",
       "gauntlet_passed": true
     },
     {
@@ -1443,6 +1431,18 @@
       "t_vol": 972845.0,
       "vol_surge_pct": 15.56380482879458,
       "fwd_return_5b": -1.847671599364594,
+      "win": true,
+      "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "KPITTECH",
+      "start_date": "2025-10-07",
+      "completion_date": "2025-10-14",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 1506566.0,
+      "vol_surge_pct": 133.3839893049288,
+      "fwd_return_5b": -1.0202317136434338,
       "win": true,
       "sentiment": "Bearish",
       "gauntlet_passed": true
@@ -1616,13 +1616,13 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "HFCL",
+      "symbol": "MAXHEALTH",
       "start_date": "2025-09-09",
       "completion_date": "2025-09-16",
-      "trigger_pattern": "Contested Bullish Divergence",
-      "t_vol": 14886869.0,
-      "vol_surge_pct": 33.200429981607506,
-      "fwd_return_5b": 1.5432906094690124,
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 3661895.0,
+      "vol_surge_pct": 104.56576849552141,
+      "fwd_return_5b": 1.2686631569862816,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -1640,6 +1640,18 @@
       "gauntlet_passed": true
     },
     {
+      "symbol": "HFCL",
+      "start_date": "2025-09-09",
+      "completion_date": "2025-09-16",
+      "trigger_pattern": "Contested Bullish Divergence",
+      "t_vol": 14886869.0,
+      "vol_surge_pct": 33.200429981607506,
+      "fwd_return_5b": 1.5432906094690124,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
       "symbol": "RBLBANK",
       "start_date": "2025-09-09",
       "completion_date": "2025-09-16",
@@ -1647,30 +1659,6 @@
       "t_vol": 8544963.0,
       "vol_surge_pct": 100.68119171090322,
       "fwd_return_5b": 1.459034792368117,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "MAXHEALTH",
-      "start_date": "2025-09-09",
-      "completion_date": "2025-09-16",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 3661895.0,
-      "vol_surge_pct": 104.56576849552141,
-      "fwd_return_5b": 1.2686631569862816,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "DRREDDY",
-      "start_date": "2025-09-08",
-      "completion_date": "2025-09-15",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 1643726.0,
-      "vol_surge_pct": 69.57918986647023,
-      "fwd_return_5b": 1.683579335793365,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -1688,13 +1676,13 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "TATAMOTORS",
-      "start_date": "2025-09-05",
-      "completion_date": "2025-09-12",
+      "symbol": "DRREDDY",
+      "start_date": "2025-09-08",
+      "completion_date": "2025-09-15",
       "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 20531027.0,
-      "vol_surge_pct": 206.7548735801344,
-      "fwd_return_5b": 0.5452638937434431,
+      "t_vol": 1643726.0,
+      "vol_surge_pct": 69.57918986647023,
+      "fwd_return_5b": 1.683579335793365,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -1712,13 +1700,13 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "ASHOKLEY",
+      "symbol": "TATAMOTORS",
       "start_date": "2025-09-05",
       "completion_date": "2025-09-12",
       "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 33590663.0,
-      "vol_surge_pct": 71.59058935887583,
-      "fwd_return_5b": 5.071220821836067,
+      "t_vol": 20531027.0,
+      "vol_surge_pct": 206.7548735801344,
+      "fwd_return_5b": 0.5452638937434431,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -1736,13 +1724,13 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "IGL",
-      "start_date": "2025-09-04",
-      "completion_date": "2025-09-11",
-      "trigger_pattern": "Contested Bullish Divergence",
-      "t_vol": 1470158.0,
-      "vol_surge_pct": 37.75688429290525,
-      "fwd_return_5b": 0.6063150039643727,
+      "symbol": "ASHOKLEY",
+      "start_date": "2025-09-05",
+      "completion_date": "2025-09-12",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 33590663.0,
+      "vol_surge_pct": 71.59058935887583,
+      "fwd_return_5b": 5.071220821836067,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -1755,6 +1743,18 @@
       "t_vol": 6159420.0,
       "vol_surge_pct": 17.869198796702413,
       "fwd_return_5b": 1.7812499999999964,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "IGL",
+      "start_date": "2025-09-04",
+      "completion_date": "2025-09-11",
+      "trigger_pattern": "Contested Bullish Divergence",
+      "t_vol": 1470158.0,
+      "vol_surge_pct": 37.75688429290525,
+      "fwd_return_5b": 0.6063150039643727,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -1784,6 +1784,30 @@
       "gauntlet_passed": true
     },
     {
+      "symbol": "DLF",
+      "start_date": "2025-08-28",
+      "completion_date": "2025-09-04",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 3054170.0,
+      "vol_surge_pct": 8.825374926019602,
+      "fwd_return_5b": -0.9233610341643583,
+      "win": true,
+      "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "BANKINDIA",
+      "start_date": "2025-08-28",
+      "completion_date": "2025-09-04",
+      "trigger_pattern": "Contested Bullish Divergence",
+      "t_vol": 4167804.0,
+      "vol_surge_pct": 4.181035560199375,
+      "fwd_return_5b": 5.314785090065984,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
       "symbol": "NESTLEIND",
       "start_date": "2025-08-28",
       "completion_date": "2025-09-04",
@@ -1808,30 +1832,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "BANKINDIA",
-      "start_date": "2025-08-28",
-      "completion_date": "2025-09-04",
-      "trigger_pattern": "Contested Bullish Divergence",
-      "t_vol": 4167804.0,
-      "vol_surge_pct": 4.181035560199375,
-      "fwd_return_5b": 5.314785090065984,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "DLF",
-      "start_date": "2025-08-28",
-      "completion_date": "2025-09-04",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 3054170.0,
-      "vol_surge_pct": 8.825374926019602,
-      "fwd_return_5b": -0.9233610341643583,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "OFSS",
       "start_date": "2025-08-26",
       "completion_date": "2025-09-03",
@@ -1841,6 +1841,18 @@
       "fwd_return_5b": 10.127786032689452,
       "win": true,
       "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "INDUSTOWER",
+      "start_date": "2025-08-25",
+      "completion_date": "2025-09-02",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 11956450.0,
+      "vol_surge_pct": 170.82156914308678,
+      "fwd_return_5b": -1.6390954621338525,
+      "win": true,
+      "sentiment": "Bearish",
       "gauntlet_passed": true
     },
     {
@@ -1863,18 +1875,6 @@
       "t_vol": 2798216.0,
       "vol_surge_pct": 189.35408083916548,
       "fwd_return_5b": -0.24726808646407722,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "INDUSTOWER",
-      "start_date": "2025-08-25",
-      "completion_date": "2025-09-02",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 11956450.0,
-      "vol_surge_pct": 170.82156914308678,
-      "fwd_return_5b": -1.6390954621338525,
       "win": true,
       "sentiment": "Bearish",
       "gauntlet_passed": true
@@ -1952,18 +1952,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "KFINTECH",
-      "start_date": "2025-08-12",
-      "completion_date": "2025-08-20",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 925152.0,
-      "vol_surge_pct": 11.316970221285839,
-      "fwd_return_5b": 1.066499372647436,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "BEL",
       "start_date": "2025-08-12",
       "completion_date": "2025-08-20",
@@ -1971,6 +1959,18 @@
       "t_vol": 10930440.0,
       "vol_surge_pct": 17.16508775290373,
       "fwd_return_5b": 0.8067769261799113,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "KFINTECH",
+      "start_date": "2025-08-12",
+      "completion_date": "2025-08-20",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 925152.0,
+      "vol_surge_pct": 11.316970221285839,
+      "fwd_return_5b": 1.066499372647436,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -2108,18 +2108,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "HFCL",
-      "start_date": "2025-07-11",
-      "completion_date": "2025-07-18",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 8509957.0,
-      "vol_surge_pct": 23.141376999592378,
-      "fwd_return_5b": 0.20843550760176766,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "ASIANPAINT",
       "start_date": "2025-07-10",
       "completion_date": "2025-07-18",
@@ -2129,6 +2117,18 @@
       "fwd_return_5b": -1.939220953660186,
       "win": true,
       "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "HFCL",
+      "start_date": "2025-07-11",
+      "completion_date": "2025-07-18",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 8509957.0,
+      "vol_surge_pct": 23.141376999592378,
+      "fwd_return_5b": 0.20843550760176766,
+      "win": true,
+      "sentiment": "Bullish",
       "gauntlet_passed": true
     },
     {
@@ -2144,18 +2144,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "SBIN",
-      "start_date": "2025-07-07",
-      "completion_date": "2025-07-15",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 5935770.0,
-      "vol_surge_pct": 33.035828949995995,
-      "fwd_return_5b": 1.8678424888235654,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "VOLTAS",
       "start_date": "2025-07-08",
       "completion_date": "2025-07-15",
@@ -2165,6 +2153,18 @@
       "fwd_return_5b": -2.8068165544894614,
       "win": true,
       "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "SBIN",
+      "start_date": "2025-07-07",
+      "completion_date": "2025-07-15",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 5935770.0,
+      "vol_surge_pct": 33.035828949995995,
+      "fwd_return_5b": 1.8678424888235654,
+      "win": true,
+      "sentiment": "Bullish",
       "gauntlet_passed": true
     },
     {
@@ -2187,6 +2187,18 @@
       "t_vol": 4544818.0,
       "vol_surge_pct": 1.6341957192959056,
       "fwd_return_5b": 0.34928396786587496,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "COALINDIA",
+      "start_date": "2025-07-01",
+      "completion_date": "2025-07-08",
+      "trigger_pattern": "Contested Bullish Divergence",
+      "t_vol": 7752338.0,
+      "vol_surge_pct": 29.26416845761657,
+      "fwd_return_5b": 1.2015149536371859,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -2216,18 +2228,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "COALINDIA",
-      "start_date": "2025-07-01",
-      "completion_date": "2025-07-08",
-      "trigger_pattern": "Contested Bullish Divergence",
-      "t_vol": 7752338.0,
-      "vol_surge_pct": 29.26416845761657,
-      "fwd_return_5b": 1.2015149536371859,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "TRENT",
       "start_date": "2025-06-27",
       "completion_date": "2025-07-04",
@@ -2240,18 +2240,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "NBCC",
-      "start_date": "2025-06-20",
-      "completion_date": "2025-06-27",
-      "trigger_pattern": "Contested Bearish Divergence",
-      "t_vol": 19949193.0,
-      "vol_surge_pct": 29.538885250398074,
-      "fwd_return_5b": -4.618506493506491,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "HUDCO",
       "start_date": "2025-06-20",
       "completion_date": "2025-06-27",
@@ -2259,6 +2247,18 @@
       "t_vol": 11755735.0,
       "vol_surge_pct": 70.62220307025291,
       "fwd_return_5b": -2.1309947466531103,
+      "win": true,
+      "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "NBCC",
+      "start_date": "2025-06-20",
+      "completion_date": "2025-06-27",
+      "trigger_pattern": "Contested Bearish Divergence",
+      "t_vol": 19949193.0,
+      "vol_surge_pct": 29.538885250398074,
+      "fwd_return_5b": -4.618506493506491,
       "win": true,
       "sentiment": "Bearish",
       "gauntlet_passed": true
@@ -2290,39 +2290,15 @@
   ],
   "completions_weekly": [
     {
-      "symbol": "MOTHERSON",
-      "start_date": "2026-04-05",
-      "completion_date": "2026-05-10",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 139571342.0,
-      "vol_surge_pct": 61.6961914523815,
-      "fwd_return_5b": 10.384003635537384,
+      "symbol": "TATAPOWER",
+      "start_date": "2026-04-12",
+      "completion_date": "2026-05-17",
+      "trigger_pattern": "Contested Bearish Divergence",
+      "t_vol": 59702268.0,
+      "vol_surge_pct": 80.69111271080396,
+      "fwd_return_5b": -3.304668304668302,
       "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "ABB",
-      "start_date": "2026-04-05",
-      "completion_date": "2026-05-10",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 2529931.0,
-      "vol_surge_pct": 164.25705705705704,
-      "fwd_return_5b": 3.4295900178253116,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "TIINDIA",
-      "start_date": "2026-04-05",
-      "completion_date": "2026-05-10",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 1381965.0,
-      "vol_surge_pct": 31.272156299513277,
-      "fwd_return_5b": 3.016591251885369,
-      "win": true,
-      "sentiment": "Bullish",
+      "sentiment": "Bearish",
       "gauntlet_passed": true
     },
     {
@@ -2333,18 +2309,6 @@
       "t_vol": 46999941.0,
       "vol_surge_pct": 192.37164713061753,
       "fwd_return_5b": 12.531346806313623,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "EXIDEIND",
-      "start_date": "2026-04-05",
-      "completion_date": "2026-05-10",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 13133900.0,
-      "vol_surge_pct": 137.44302969054795,
-      "fwd_return_5b": 10.296756383712909,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -2362,6 +2326,18 @@
       "gauntlet_passed": true
     },
     {
+      "symbol": "MOTHERSON",
+      "start_date": "2026-04-05",
+      "completion_date": "2026-05-10",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 139571342.0,
+      "vol_surge_pct": 61.6961914523815,
+      "fwd_return_5b": 10.384003635537384,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
       "symbol": "TATACONSUM",
       "start_date": "2026-04-05",
       "completion_date": "2026-05-10",
@@ -2374,6 +2350,42 @@
       "gauntlet_passed": true
     },
     {
+      "symbol": "ABB",
+      "start_date": "2026-04-05",
+      "completion_date": "2026-05-10",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 2529931.0,
+      "vol_surge_pct": 164.25705705705704,
+      "fwd_return_5b": 3.4295900178253116,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "EXIDEIND",
+      "start_date": "2026-04-05",
+      "completion_date": "2026-05-10",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 13133900.0,
+      "vol_surge_pct": 137.44302969054795,
+      "fwd_return_5b": 10.296756383712909,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "TIINDIA",
+      "start_date": "2026-04-05",
+      "completion_date": "2026-05-10",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 1381965.0,
+      "vol_surge_pct": 31.272156299513277,
+      "fwd_return_5b": 3.016591251885369,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
       "symbol": "BANKBARODA",
       "start_date": "2026-03-22",
       "completion_date": "2026-04-26",
@@ -2381,102 +2393,6 @@
       "t_vol": 53174975.0,
       "vol_surge_pct": 47.46052610890021,
       "fwd_return_5b": -4.6437821471564655,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "AMBUJACEM",
-      "start_date": "2026-03-08",
-      "completion_date": "2026-04-12",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 18762362.0,
-      "vol_surge_pct": 129.04887221670768,
-      "fwd_return_5b": -2.571877807726862,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "MOTHERSON",
-      "start_date": "2026-03-08",
-      "completion_date": "2026-04-12",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 109857802.0,
-      "vol_surge_pct": 47.57000624881347,
-      "fwd_return_5b": -0.7776686313032113,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "PNB",
-      "start_date": "2026-03-08",
-      "completion_date": "2026-04-12",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 90894372.0,
-      "vol_surge_pct": 17.63903789174477,
-      "fwd_return_5b": -8.720930232558139,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "PATANJALI",
-      "start_date": "2026-03-08",
-      "completion_date": "2026-04-12",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 8199854.0,
-      "vol_surge_pct": 13.64835740550041,
-      "fwd_return_5b": -1.690381940729653,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "KAYNES",
-      "start_date": "2026-03-08",
-      "completion_date": "2026-04-12",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 6544674.0,
-      "vol_surge_pct": 38.4746631639683,
-      "fwd_return_5b": -16.02546005184406,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "GODREJCP",
-      "start_date": "2026-03-08",
-      "completion_date": "2026-04-12",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 10914274.0,
-      "vol_surge_pct": 90.04515069676249,
-      "fwd_return_5b": -3.6081996104257366,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "SHREECEM",
-      "start_date": "2026-03-08",
-      "completion_date": "2026-04-12",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 240933.0,
-      "vol_surge_pct": 96.79727511088241,
-      "fwd_return_5b": -0.5957271980279375,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "UNIONBANK",
-      "start_date": "2026-03-08",
-      "completion_date": "2026-04-12",
-      "trigger_pattern": "Bearish Impulse Convergence",
-      "t_vol": 78320137.0,
-      "vol_surge_pct": 2.694027286746592,
-      "fwd_return_5b": -14.331058562132998,
       "win": true,
       "sentiment": "Bearish",
       "gauntlet_passed": true
@@ -2506,6 +2422,102 @@
       "gauntlet_passed": true
     },
     {
+      "symbol": "PATANJALI",
+      "start_date": "2026-03-08",
+      "completion_date": "2026-04-12",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 8199854.0,
+      "vol_surge_pct": 13.64835740550041,
+      "fwd_return_5b": -1.690381940729653,
+      "win": true,
+      "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "GODREJCP",
+      "start_date": "2026-03-08",
+      "completion_date": "2026-04-12",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 10914274.0,
+      "vol_surge_pct": 90.04515069676249,
+      "fwd_return_5b": -3.6081996104257366,
+      "win": true,
+      "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "MOTHERSON",
+      "start_date": "2026-03-08",
+      "completion_date": "2026-04-12",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 109857802.0,
+      "vol_surge_pct": 47.57000624881347,
+      "fwd_return_5b": -0.7776686313032113,
+      "win": true,
+      "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "PNB",
+      "start_date": "2026-03-08",
+      "completion_date": "2026-04-12",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 90894372.0,
+      "vol_surge_pct": 17.63903789174477,
+      "fwd_return_5b": -8.720930232558139,
+      "win": true,
+      "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "SHREECEM",
+      "start_date": "2026-03-08",
+      "completion_date": "2026-04-12",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 240933.0,
+      "vol_surge_pct": 96.79727511088241,
+      "fwd_return_5b": -0.5957271980279375,
+      "win": true,
+      "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "AMBUJACEM",
+      "start_date": "2026-03-08",
+      "completion_date": "2026-04-12",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 18762362.0,
+      "vol_surge_pct": 129.04887221670768,
+      "fwd_return_5b": -2.571877807726862,
+      "win": true,
+      "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "KAYNES",
+      "start_date": "2026-03-08",
+      "completion_date": "2026-04-12",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 6544674.0,
+      "vol_surge_pct": 38.4746631639683,
+      "fwd_return_5b": -16.02546005184406,
+      "win": true,
+      "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "UNIONBANK",
+      "start_date": "2026-03-08",
+      "completion_date": "2026-04-12",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 78320137.0,
+      "vol_surge_pct": 2.694027286746592,
+      "fwd_return_5b": -14.331058562132998,
+      "win": true,
+      "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
       "symbol": "POLYCAB",
       "start_date": "2026-02-22",
       "completion_date": "2026-03-29",
@@ -2513,30 +2525,6 @@
       "t_vol": 3630302.0,
       "vol_surge_pct": 256.5327472147582,
       "fwd_return_5b": 15.784632800339606,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "OFSS",
-      "start_date": "2026-02-08",
-      "completion_date": "2026-03-15",
-      "trigger_pattern": "Contested Bullish Divergence",
-      "t_vol": 1086101.0,
-      "vol_surge_pct": 42.19220084155293,
-      "fwd_return_5b": 22.471651854121973,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
-      "symbol": "COFORGE",
-      "start_date": "2026-02-08",
-      "completion_date": "2026-03-15",
-      "trigger_pattern": "Contested Bullish Divergence",
-      "t_vol": 24518906.0,
-      "vol_surge_pct": 118.03478930514761,
-      "fwd_return_5b": 20.840598329815535,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -2554,13 +2542,25 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "HCLTECH",
+      "symbol": "COFORGE",
       "start_date": "2026-02-08",
       "completion_date": "2026-03-15",
       "trigger_pattern": "Contested Bullish Divergence",
-      "t_vol": 20655586.0,
-      "vol_surge_pct": 18.17155826590746,
-      "fwd_return_5b": 9.491474271917907,
+      "t_vol": 24518906.0,
+      "vol_surge_pct": 118.03478930514761,
+      "fwd_return_5b": 20.840598329815535,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "OFSS",
+      "start_date": "2026-02-08",
+      "completion_date": "2026-03-15",
+      "trigger_pattern": "Contested Bullish Divergence",
+      "t_vol": 1086101.0,
+      "vol_surge_pct": 42.19220084155293,
+      "fwd_return_5b": 22.471651854121973,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -2573,6 +2573,18 @@
       "t_vol": 31072485.0,
       "vol_surge_pct": 19.216738456363004,
       "fwd_return_5b": 7.093963907902924,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "HCLTECH",
+      "start_date": "2026-02-08",
+      "completion_date": "2026-03-15",
+      "trigger_pattern": "Contested Bullish Divergence",
+      "t_vol": 20655586.0,
+      "vol_surge_pct": 18.17155826590746,
+      "fwd_return_5b": 9.491474271917907,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -2602,18 +2614,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "KFINTECH",
-      "start_date": "2025-12-21",
-      "completion_date": "2026-01-25",
-      "trigger_pattern": "Contested Bearish Divergence",
-      "t_vol": 5015080.0,
-      "vol_surge_pct": 10.755648447965992,
-      "fwd_return_5b": -6.086188279179345,
-      "win": true,
-      "sentiment": "Bearish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "TRENT",
       "start_date": "2025-12-21",
       "completion_date": "2026-01-25",
@@ -2623,6 +2623,18 @@
       "fwd_return_5b": 13.208551878378017,
       "win": true,
       "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "KFINTECH",
+      "start_date": "2025-12-21",
+      "completion_date": "2026-01-25",
+      "trigger_pattern": "Contested Bearish Divergence",
+      "t_vol": 5015080.0,
+      "vol_surge_pct": 10.755648447965992,
+      "fwd_return_5b": -6.086188279179345,
+      "win": true,
+      "sentiment": "Bearish",
       "gauntlet_passed": true
     },
     {
@@ -2758,18 +2770,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "HDFCBANK",
-      "start_date": "2025-09-28",
-      "completion_date": "2025-11-02",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 112703994.0,
-      "vol_surge_pct": 20.82090165690078,
-      "fwd_return_5b": 2.056112630406165,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "KALYANKJIL",
       "start_date": "2025-09-28",
       "completion_date": "2025-11-02",
@@ -2777,6 +2777,18 @@
       "t_vol": 30210288.0,
       "vol_surge_pct": 29.88726486211508,
       "fwd_return_5b": 0.608200902491655,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "HDFCBANK",
+      "start_date": "2025-09-28",
+      "completion_date": "2025-11-02",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 112703994.0,
+      "vol_surge_pct": 20.82090165690078,
+      "fwd_return_5b": 2.056112630406165,
       "win": true,
       "sentiment": "Bullish",
       "gauntlet_passed": true
@@ -2806,18 +2818,6 @@
       "gauntlet_passed": true
     },
     {
-      "symbol": "COALINDIA",
-      "start_date": "2025-08-31",
-      "completion_date": "2025-10-05",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 28503150.0,
-      "vol_surge_pct": 44.817309781765125,
-      "fwd_return_5b": 2.791182992043821,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true
-    },
-    {
       "symbol": "TATACONSUM",
       "start_date": "2025-08-31",
       "completion_date": "2025-10-05",
@@ -2827,6 +2827,18 @@
       "fwd_return_5b": -0.967032967032967,
       "win": true,
       "sentiment": "Bearish",
+      "gauntlet_passed": true
+    },
+    {
+      "symbol": "COALINDIA",
+      "start_date": "2025-08-31",
+      "completion_date": "2025-10-05",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 28503150.0,
+      "vol_surge_pct": 44.817309781765125,
+      "fwd_return_5b": 2.791182992043821,
+      "win": true,
+      "sentiment": "Bullish",
       "gauntlet_passed": true
     },
     {
