@@ -1,6 +1,6 @@
 {
   "schema_version": "2",
-  "generated_at": "2026-06-16T13:17:49.822654Z",
+  "generated_at": "2026-06-16T13:27:33.182945Z",
   "extraction_list": [
     "ABB",
     "AMBER",
@@ -1193,7 +1193,7 @@
         "display_date": "16 Jun 2026",
         "category": "Notifications",
         "priority": "Informational",
-        "summary": "",
+        "summary": "RBI/2026-27/132 DOR.STR.REC.111/21-01-002/2026-27 June 16, 2026 Reserve Bank of India (Commercial Banks- Prudential Norms on Capital Adequacy) Ninth Amendment Directions, 2026 Please refer to Reserve Bank of India (Commercial Banks- Prudential Norms on Capital Adequacy) Directions, 2025 (hereinafter referred to as \u2018the Directions\u2019). 2. Please refer to circular Ref no. 0264/NCGTC/ECLGS5.0 dated May 08, 2026, issued by National Credit Guarantee Trustee Company (NCGTC) in respect of Emergency Credit Line Guarantee Scheme (ECLGS) 5.0, introduced by the Government of India. 3. In exercise of the powers conferred by the section 35A of the Banking Regulation Act, 1949 and all other laws enabling the Reserve Bank in this regard, the Reserve Bank being satisfied that it is necessary and expedient in the public interest so to do, hereby issues the Amendment Directions hereinafter specified. 4. These Amendment Directions shall amend the Directions as specified below: (1) Paragraph 34A shall be inserted as below: \u201cExposures guaranteed under the Emergency Credit Line Guarantee Scheme (ECLGS) 5.0 shall attract risk weight of zero percent to the extent of 75% of the guaranteed portion, i.e., to the extent of guaranteed portion wherein the settlement amount is expected to be received within thirty days from the date of invocation. The remaining exposure shall attract risk weight as per the extant guidelines.\u201d 5. The above amendment shall come into force with immediate effect. (Vaibhav Chaturvedi) Chief General Manager",
         "confidence": 0,
         "impact": "Neutral",
         "pdf": null,
