@@ -166,5 +166,58 @@ class TestExtractionService(unittest.TestCase):
         self.assertEqual(resp_data["data"][0]["date"], expected_date)
         self.assertEqual(resp_data["data"][0]["close"], "102.0")
 
+    @patch("requests.Session")
+    def test_fetch_historical_data_yahoo_fallback(self, mock_session_class):
+        """Verify fetch_historical_data falls back to Yahoo Finance Chart API on stock extraction failure."""
+        from src.clients.nse_client import NSEClient
+        
+        mock_session = mock_session_class.return_value
+        
+        # 1. Setup mock responses
+        # First request to NSE fails (raises exception or status code 503)
+        mock_nse_resp = MagicMock()
+        mock_nse_resp.raise_for_status.side_effect = Exception("NSE HTTP 503")
+        
+        # Second request to Yahoo Finance succeeds
+        mock_yahoo_resp = MagicMock()
+        mock_yahoo_resp.status_code = 200
+        
+        mock_json_response = {
+            "chart": {
+                "result": [{
+                    "timestamp": [1750098600],
+                    "indicators": {
+                        "quote": [{
+                            "open": [100.0],
+                            "high": [105.0],
+                            "low": [95.0],
+                            "close": [102.0],
+                            "volume": [10000]
+                        }]
+                    }
+                }]
+            }
+        }
+        mock_yahoo_resp.json.return_value = mock_json_response
+        
+        mock_session.get.side_effect = [mock_nse_resp, mock_yahoo_resp]
+        
+        # Create client without selenium cookie warmup to avoid browser mocks
+        client = NSEClient(use_selenium=False)
+        client.session = mock_session
+        
+        resp = client.fetch_historical_data("VEDL", "15-06-2026", "16-06-2026")
+        
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("Date,Open,High,Low,Close,Volume", resp.text)
+        
+        # Check that the data rows are correct
+        rows = resp.text.strip().split("\n")
+        self.assertEqual(len(rows), 2)
+        
+        from datetime import datetime
+        expected_date = datetime.fromtimestamp(1750098600).strftime("%Y-%m-%d")
+        self.assertEqual(rows[1], f"{expected_date},100.0,105.0,95.0,102.0,10000")
+
 if __name__ == "__main__":
     unittest.main()

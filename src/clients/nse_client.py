@@ -77,6 +77,39 @@ def parse_yahoo_chart_json_to_nse_json(json_data: dict) -> dict:
         })
     return {"data": data_list}
 
+def convert_yahoo_chart_json_to_csv(json_data: dict) -> str:
+    result = json_data.get("chart", {}).get("result", [])
+    if not result:
+        return "Date,Open,High,Low,Close,Volume"
+        
+    timestamps = result[0].get("timestamp", [])
+    quotes = result[0].get("indicators", {}).get("quote", [{}])[0]
+    
+    opens = quotes.get("open", [])
+    highs = quotes.get("high", [])
+    lows = quotes.get("low", [])
+    closes = quotes.get("close", [])
+    volumes = quotes.get("volume", [])
+    
+    lines = ["Date,Open,High,Low,Close,Volume"]
+    for i in range(len(timestamps)):
+        ts = timestamps[i]
+        dt = datetime.fromtimestamp(ts)
+        formatted_date = dt.strftime("%Y-%m-%d")
+        
+        o = opens[i] if i < len(opens) and opens[i] is not None else 0
+        h = highs[i] if i < len(highs) and highs[i] is not None else 0
+        l = lows[i] if i < len(lows) and lows[i] is not None else 0
+        c = closes[i] if i < len(closes) and closes[i] is not None else 0
+        v = volumes[i] if i < len(volumes) and volumes[i] is not None else 0
+        
+        if o == 0 and c == 0:
+            continue
+            
+        lines.append(f"{formatted_date},{o},{h},{l},{c},{int(v)}")
+        
+    return "\n".join(lines)
+
 class NSEClient:
     """
     Client for extracting data from NSE India.
@@ -132,6 +165,7 @@ class NSEClient:
         """
         Fetches historical CSV data for a symbol using the historicalOR endpoint.
         Note: from_date and to_date format: DD-MM-YYYY
+        Falls back to Yahoo Finance chart API if NSE fails or returns HTML.
         """
         url = (
             f"https://www.nseindia.com/api/historicalOR/generateSecurityWiseHistoricalData"
@@ -149,27 +183,56 @@ class NSEClient:
             "Sec-Fetch-Site": "same-origin",
         }
         
-        resp = self.session.get(url, headers=headers, timeout=(10, 60))
-        resp.raise_for_status()
-        
-        # Validate content type and size
-        content_type = resp.headers.get("Content-Type", "")
-        if "text/csv" not in content_type and "application/octet-stream" not in content_type:
-            if "<html" in resp.text.lower():
-                logger.error("RECEIVED_HTML_NOT_CSV", extra={"symbol": symbol})
-                raise ValueError(f"Received HTML instead of CSV for {symbol}")
-                
-        # Length check: NSE sometimes returns just the header (approx 140-150 bytes)
-        # if there's no data for that period/series.
-        if len(resp.text.strip().split('\n')) <= 1:
-            logger.warning("EMPTY_DATASET_FOR_SYMBOL", extra={
-                "symbol": symbol, 
-                "from": from_date, 
-                "to": to_date,
-                "detail": "Only headers received"
-            })
+        try:
+            resp = self.session.get(url, headers=headers, timeout=(10, 60))
+            resp.raise_for_status()
             
-        return resp
+            # Validate content type and size
+            content_type = resp.headers.get("Content-Type", "")
+            if "text/csv" not in content_type and "application/octet-stream" not in content_type:
+                if "<html" in resp.text.lower():
+                    logger.error("RECEIVED_HTML_NOT_CSV", extra={"symbol": symbol})
+                    raise ValueError(f"Received HTML instead of CSV for {symbol}")
+                    
+            # Length check: NSE sometimes returns just the header (approx 140-150 bytes)
+            if len(resp.text.strip().split('\n')) <= 1:
+                logger.warning("EMPTY_DATASET_FOR_SYMBOL", extra={
+                    "symbol": symbol, 
+                    "from": from_date, 
+                    "to": to_date,
+                    "detail": "Only headers received"
+                })
+                
+            return resp
+        except Exception as e:
+            logger.warning("NSE_STOCK_FETCH_FAILED_TRYING_YAHOO", extra={"symbol": symbol, "error": str(e)})
+            try:
+                start_dt = datetime.strptime(from_date, "%d-%m-%Y")
+                end_dt = datetime.strptime(to_date, "%d-%m-%Y")
+                period1 = int(start_dt.timestamp())
+                period2 = int(end_dt.timestamp())
+                
+                yahoo_symbol = f"{symbol}.NS"
+                yahoo_url = f"https://query2.finance.yahoo.com/v8/finance/chart/{quote(yahoo_symbol)}?period1={period1}&period2={period2}&interval=1d"
+                
+                logger.info("FETCHING_STOCK_FROM_YAHOO_FALLBACK", extra={"symbol": symbol, "url": yahoo_url})
+                
+                # Fetch Yahoo Finance Chart JSON
+                y_resp = self.session.get(yahoo_url, timeout=(10, 60))
+                y_resp.raise_for_status()
+                
+                # Convert Yahoo JSON to CSV format
+                csv_data = convert_yahoo_chart_json_to_csv(y_resp.json())
+                
+                # Create a mock Response
+                mock_resp = requests.Response()
+                mock_resp.status_code = 200
+                mock_resp._content = csv_data.encode('utf-8')
+                mock_resp.headers['Content-Type'] = 'text/csv'
+                return mock_resp
+            except Exception as ex:
+                logger.error("YAHOO_STOCK_FALLBACK_FAILED", extra={"symbol": symbol, "error": str(ex)})
+                raise
 
 
 
