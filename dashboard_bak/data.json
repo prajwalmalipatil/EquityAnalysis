@@ -1,6 +1,6 @@
 {
   "schema_version": "2",
-  "generated_at": "2026-06-15T19:23:25.040682Z",
+  "generated_at": "2026-06-15T19:28:10.248729Z",
   "extraction_list": [
     "ADANIGREEN_1Y_20260613",
     "TORNTPOWER_1Y_20260613",
@@ -3137,7 +3137,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "2742b3efeb3455fc",
@@ -3162,7 +3162,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "5967fdb26124d30d",
@@ -3187,7 +3187,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "cdc4d5fcd38fdec4",
@@ -3212,7 +3212,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "74f2c2e100c55f55",
@@ -3237,7 +3237,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "27ef0bff815cda27",
@@ -3262,7 +3262,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "6dba16ff2cef6e80",
@@ -3287,7 +3287,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "e570b52f8bf382bc",
@@ -3312,7 +3312,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "70a0d18e78a4f729",
@@ -3337,7 +3337,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "4e3c41baa1a5cd01",
@@ -3362,7 +3362,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "066ccc1af85a202b",
@@ -3387,7 +3387,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "dca6aeb9d9a81703",
@@ -3412,7 +3412,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "4120da416b5f245f",
@@ -3437,7 +3437,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "da47348c0d9e14ba",
@@ -3462,7 +3462,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "7fd9306b9af6e2d6",
@@ -3487,7 +3487,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "20fb742d75d2f1cf",
@@ -3512,7 +3512,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "399427bb74320b36",
@@ -3537,7 +3537,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "61d1fe65bc1b4f19",
@@ -3562,7 +3562,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "2e89041bc35c9b48",
@@ -3587,7 +3587,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "97ab402975cdc6ff",
@@ -3612,7 +3612,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       }
     ]
   }
