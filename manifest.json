@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-06-16T13:27:33.394416+00:00",
+  "generated_at": "2026-06-16T13:35:56.558722+00:00",
   "generator": "Macro Intelligence Pipeline",
   "pipeline_version": "2.1.0",
   "repository_version": "v1",
@@ -44,8 +44,8 @@
   "completed_sequences": 1,
   "last_market_date": "2026-06-16",
   "files": {
-    "summary": "summary.81ee61.json",
+    "summary": "summary.40b369.json",
     "indicator_catalog": "indicator_catalog.8ba9f5.json",
-    "history_index": "history_index.bcdb04.json"
+    "history_index": "history_index.f5c996.json"
   }
 }
