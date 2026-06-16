@@ -428,15 +428,15 @@ nav {
     display: inline-block;
 }
 
-.rating-buy { background: rgba(5, 150, 105, 0.15); color: #059669; }
-.rating-sell { background: rgba(220, 38, 38, 0.15); color: #dc2626; }
+.rating-buy { background: rgba(4, 120, 87, 0.15); color: #047857; }
+.rating-sell { background: rgba(185, 28, 28, 0.15); color: #b91c1c; }
 .rating-neutral { background: rgba(71, 85, 105, 0.15); color: #475569; }
 
 .sentiment {
     font-size: 0.85rem;
 }
-.sentiment.bullish { color: #059669; }
-.sentiment.bearish { color: #dc2626; }
+.sentiment.bullish { color: #047857; }
+.sentiment.bearish { color: #b91c1c; }
 .sentiment.none, .sentiment.neutral { color: var(--text-muted); }
 
 /* Side Panels */
