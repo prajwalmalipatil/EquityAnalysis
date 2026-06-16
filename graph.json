@@ -1,18 +1,48 @@
 {
   "schema_version": "1",
-  "generated_at": "2026-06-16T09:10:11.175321Z",
+  "generated_at": "2026-06-16T09:55:10.850516Z",
   "pipeline_version": "1",
   "statistics": {
-    "node_count": 54,
-    "edge_count": 306,
+    "node_count": 57,
+    "edge_count": 312,
     "connected_components": 3,
-    "average_degree": 11.33,
+    "average_degree": 10.95,
     "relationship_distribution": {
-      "AMENDS": 267,
+      "AMENDS": 273,
       "WITHDRAWS": 39
     }
   },
   "nodes": [
+    {
+      "id": "a7f740f051c23700",
+      "type": "Event",
+      "label": "Result of Yield/Price Based Auction of State Government Securities",
+      "category": "Press Releases",
+      "metadata": {
+        "date": "2026-06-16T15:15:00+00:00",
+        "source": "RBI"
+      }
+    },
+    {
+      "id": "da784617bf14aed2",
+      "type": "Event",
+      "label": "Result of the 7-day Variable Rate Repo (VRR) auction held on June 16, 2026",
+      "category": "Press Releases",
+      "metadata": {
+        "date": "2026-06-16T10:30:00+00:00",
+        "source": "RBI"
+      }
+    },
+    {
+      "id": "2aefa5ff56932d57",
+      "type": "Event",
+      "label": "Money Market Operations as on June 15, 2026",
+      "category": "Press Releases",
+      "metadata": {
+        "date": "2026-06-16T09:00:00+00:00",
+        "source": "RBI"
+      }
+    },
     {
       "id": "b8ccf37af044ecf2",
       "type": "Event",
@@ -555,6 +585,60 @@
     }
   ],
   "edges": [
+    {
+      "id": "854837ef8b403c06",
+      "relationship_id": "ef25d7a9920a3f71",
+      "source": "74f2c2e100c55f55",
+      "target": "a7f740f051c23700",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "f93d7e56fa8f3349",
+      "relationship_id": "568ffa6db294342f",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "a7f740f051c23700",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "ca31048dc7b17fa7",
+      "relationship_id": "c6445f4725539528",
+      "source": "74f2c2e100c55f55",
+      "target": "da784617bf14aed2",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "28af680a9c131e8f",
+      "relationship_id": "41ff923451372529",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "da784617bf14aed2",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "d4a916f20aa4117b",
+      "relationship_id": "6850d3d3733200d2",
+      "source": "74f2c2e100c55f55",
+      "target": "2aefa5ff56932d57",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "4a8bf03ae1d6aa29",
+      "relationship_id": "efd2e3783b6234fa",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "2aefa5ff56932d57",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
     {
       "id": "65c141f95f9cf149",
       "relationship_id": "0796363f5a82ccdd",

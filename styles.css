@@ -1,6 +1,6 @@
 :root {
-    --bg-dark: #ffffff;
-    --bg-darker: #f8fafc;
+    --bg-main: #ffffff;
+    --bg-alt: #f8fafc;
     --glass-bg: rgba(255, 255, 255, 0.85);
     --glass-border: rgba(0, 0, 0, 0.08);
     --glass-highlight: rgba(0, 0, 0, 0.04);
@@ -8,6 +8,7 @@
     --primary: #4f46e5;
     --primary-glow: rgba(79, 70, 229, 0.2);
     --secondary: #7c3aed;
+    --accent-color: #7c3aed;
     
     --text-main: #0f172a;
     --text-muted: #64748b;
@@ -28,7 +29,7 @@
 
 body {
     font-family: var(--font-sans);
-    background-color: var(--bg-dark);
+    background-color: var(--bg-main);
     color: var(--text-main);
     min-height: 100vh;
     overflow-x: hidden;
@@ -342,7 +343,7 @@ nav {
     position: sticky;
     top: 0;
     z-index: 10;
-    background: var(--bg-darker);
+    background: var(--bg-alt);
     box-shadow: inset 0 -1px 0 var(--glass-border);
 }
 
@@ -427,15 +428,15 @@ nav {
     display: inline-block;
 }
 
-.rating-buy { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-.rating-sell { background: rgba(239, 68, 68, 0.15); color: #f87171; }
-.rating-neutral { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; }
+.rating-buy { background: rgba(5, 150, 105, 0.15); color: #059669; }
+.rating-sell { background: rgba(220, 38, 38, 0.15); color: #dc2626; }
+.rating-neutral { background: rgba(71, 85, 105, 0.15); color: #475569; }
 
 .sentiment {
     font-size: 0.85rem;
 }
-.sentiment.bullish { color: #34d399; }
-.sentiment.bearish { color: #f87171; }
+.sentiment.bullish { color: #059669; }
+.sentiment.bearish { color: #dc2626; }
 .sentiment.none, .sentiment.neutral { color: var(--text-muted); }
 
 /* Side Panels */
@@ -919,4 +920,70 @@ nav {
 #global-confidence-tooltip .key-save-btn:hover {
   background: var(--secondary, #7c3aed);
 }
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+    background: var(--glass-highlight);
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    outline: none;
+}
+
+.theme-toggle-btn:hover {
+    transform: rotate(15deg) scale(1.08);
+    background: var(--glass-bg);
+    border-color: var(--primary);
+    box-shadow: 0 0 10px var(--primary-glow);
+}
+
+.theme-toggle-btn:active {
+    transform: scale(0.95);
+}
+
+body:not(.dark-mode) .theme-icon-light {
+    display: block;
+}
+body:not(.dark-mode) .theme-icon-dark {
+    display: none;
+}
+body.dark-mode .theme-icon-light {
+    display: none;
+}
+body.dark-mode .theme-icon-dark {
+    display: block;
+}
+
+/* Dark Mode Variable Overrides */
+body.dark-mode {
+    --bg-main: #0b0f19;
+    --bg-alt: #111827;
+    --glass-bg: rgba(17, 24, 39, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-highlight: rgba(255, 255, 255, 0.04);
+    
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    
+    --primary-glow: rgba(99, 102, 241, 0.4);
+    --accent-color: #a78bfa;
+    
+    background-image: 
+        radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 30%),
+        radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 30%);
+}
+
+body.dark-mode .rating-buy { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+body.dark-mode .rating-sell { background: rgba(248, 113, 113, 0.15); color: #f87171; }
+body.dark-mode .rating-neutral { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; }
+body.dark-mode .sentiment.bullish { color: #34d399; }
+body.dark-mode .sentiment.bearish { color: #f87171; }
 
