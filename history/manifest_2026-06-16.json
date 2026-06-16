@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-06-16T10:01:33.914878+00:00",
+  "generated_at": "2026-06-16T10:36:09.561291+00:00",
   "generator": "Macro Intelligence Pipeline",
   "pipeline_version": "2.1.0",
   "repository_version": "v1",
@@ -25,7 +25,7 @@
     "search": {
       "version": "1",
       "file": "search-index.json",
-      "record_count": 5369
+      "record_count": 5386
     },
     "relationships": {
       "version": "1",
