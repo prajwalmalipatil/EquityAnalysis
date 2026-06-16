@@ -92,6 +92,16 @@ jobs:
           equity_data/ConsensusResults/
         retention-days: 7
 
+    - name: Copy Dashboard Backup for Deployment
+      run: |
+        if [ -d "dashboard_bak" ]; then
+          echo "Copying dashboard_bak to dashboard/dashboard_bak"
+          rm -rf dashboard/dashboard_bak
+          cp -r dashboard_bak dashboard/dashboard_bak
+        else
+          echo "No dashboard_bak directory found, skipping copy"
+        fi
+
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
