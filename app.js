@@ -279,7 +279,8 @@ function switchTab(tabId) {
                 if (ete) {
                     ete.style.display = 'flex';
                     if (!window.eteLoaded) {
-                        fetchETEManifest();
+                        const selectedDate = document.getElementById('history-selector')?.value || '';
+                        fetchETEManifest(selectedDate);
                         window.eteLoaded = true;
                     }
                 }
@@ -343,6 +344,17 @@ async function fetchData(date = '') {
         const generatedAt = manifest ? manifest.generated_at : data.generated_at;
         if (generatedAt) {
             checkStaleData(generatedAt);
+        }
+        
+        // Reset ETE and Backtest load states so they reload when switched to
+        window.eteLoaded = false;
+        window.backtestLoaded = false;
+        
+        // If currently on ETE tab, reload immediately
+        const activeTab = document.querySelector('.nav-item.active')?.getAttribute('href')?.replace('#', '') || 'overview';
+        if (activeTab === 'ete') {
+            fetchETEManifest(date);
+            window.eteLoaded = true;
         }
         
         document.getElementById('error-boundary').classList.add('hidden');
@@ -946,9 +958,10 @@ function toggleEigenTable(timeframe) {
 // Eigen Transition Engine (ETE) Integration
 // ==========================================
 
-async function fetchETEManifest() {
+async function fetchETEManifest(date = '') {
     try {
-        const response = await fetch('./manifest.json');
+        const manifestUrl = date ? `./history/manifest_${date}.json` : './manifest.json';
+        const response = await fetch(manifestUrl);
         if (!response.ok) {
             document.getElementById('ete-loading').textContent = 'No ETE data generated yet.';
             return;
