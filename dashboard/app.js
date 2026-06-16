@@ -22,6 +22,10 @@ function sanitizeHTML(str) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    if (document.documentElement.classList.contains('dark-mode')) {
+        document.body.classList.add('dark-mode');
+    }
+    setupThemeToggle();
     fetchHistoryIndex();
     fetchData();
     setupNavigation();
@@ -149,6 +153,24 @@ function setupDelegatedClicks() {
             }
         });
     }
+}
+
+function setupThemeToggle() {
+    const btn = document.getElementById('theme-toggle');
+    if (!btn) return;
+    
+    btn.addEventListener('click', () => {
+        const isDark = document.body.classList.contains('dark-mode');
+        if (isDark) {
+            document.body.classList.remove('dark-mode');
+            document.documentElement.classList.remove('dark-mode');
+            localStorage.setItem('theme', 'light');
+        } else {
+            document.body.classList.add('dark-mode');
+            document.documentElement.classList.add('dark-mode');
+            localStorage.setItem('theme', 'dark');
+        }
+    });
 }
 
 async function fetchHistoryIndex() {
