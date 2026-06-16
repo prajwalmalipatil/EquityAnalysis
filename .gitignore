@@ -39,3 +39,6 @@ dashboard_bak/
 dashboard_next/
 dashboard/history/metadata/
 
+# Scratch folder (temporary scripts and tools)
+scratch/
+

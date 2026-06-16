@@ -17,15 +17,18 @@ def clean_engine():
     # Mock sequence config
     if not os.path.exists("src/constants"):
         os.makedirs("src/constants")
-    with open("src/constants/ete_sequences.json", "w") as f:
+    config_path = "src/constants/ete_sequences_test.json"
+    with open(config_path, "w") as f:
         json.dump({
             "AVE_1": {
                 "sequence": ["HVHS", "LVLS"]
             }
         }, f)
         
-    engine = EigenTransitionEngineService("daily")
+    engine = EigenTransitionEngineService("daily", config_path=config_path)
     yield engine
+    if os.path.exists(config_path):
+        os.remove(config_path)
 
 def test_detect_triggers_idempotency(clean_engine):
     df = pd.DataFrame({
@@ -97,14 +100,15 @@ def test_integrity_failure(clean_engine):
 
 def test_hvls_and_lvhs(clean_engine):
     # Overwrite config to use HVLS and LVHS
-    with open("src/constants/ete_sequences.json", "w") as f:
+    config_path = "src/constants/ete_sequences_test.json"
+    with open(config_path, "w") as f:
         json.dump({
             "AVE_2": {
                 "sequence": ["HVLS", "LVHS"]
             }
         }, f)
     # Re-instantiate engine to pick up new config
-    engine = EigenTransitionEngineService("daily")
+    engine = EigenTransitionEngineService("daily", config_path=config_path)
 
     df_trigger = pd.DataFrame({"Date": [datetime.now()], "Open": [10], "High": [20], "Low": [10], "Close": [15], "Volume": [100]}) # Spread = 10
     engine.detect_triggers("TEST", df_trigger, True)
