@@ -54,11 +54,23 @@ class ViewBuilderService:
         if self.dashboard_live.exists():
             for asset in [
                 "index.html", "app.js", "styles.css", "data.json", "backtest_results.json",
-                "analytics.json", "search-index.json", "relationships.json", "graph.json"
+                "analytics.json", "search-index.json", "relationships.json", "graph.json",
+                "analytics-history.json", "system_health.json"
             ]:
                 asset_path = self.dashboard_live / asset
                 if asset_path.exists():
                     shutil.copy(asset_path, self.dashboard_next / asset)
+            
+            # Preserve ETE content-hashed files (Task 6.8)
+            for item in self.dashboard_live.iterdir():
+                if item.is_file():
+                    is_ete_file = (
+                        item.name.startswith("summary.") or
+                        item.name.startswith("indicator_catalog.") or
+                        item.name.startswith("history_index.")
+                    ) and item.name.endswith(".json")
+                    if is_ete_file:
+                        shutil.copy(item, self.dashboard_next / item.name)
             
             # Preserve JSONPublisher history (Time Travel)
             history_dir = self.dashboard_live / "history"

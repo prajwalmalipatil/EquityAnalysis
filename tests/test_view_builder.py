@@ -89,3 +89,44 @@ def test_publish_preserves_history_assets(clean_dirs):
         
     assert not (new_history_dir / "unpreserved.json").exists()
 
+
+def test_publish_preserves_ete_and_metadata_assets(clean_dirs):
+    live_dashboard = clean_dirs / "dashboard"
+    live_dashboard.mkdir(parents=True, exist_ok=True)
+    
+    ete_files = [
+        "summary.oldhash.json",
+        "indicator_catalog.oldhash.json",
+        "history_index.oldhash.json"
+    ]
+    metadata_files = [
+        "analytics-history.json",
+        "system_health.json"
+    ]
+    
+    all_files = ete_files + metadata_files
+    for filename in all_files:
+        with open(live_dashboard / filename, 'w') as f:
+            f.write(f"dummy content for {filename}")
+            
+    # Add an unpreserved JSON file in root to verify it gets filtered out
+    with open(live_dashboard / "unpreserved_root.json", 'w') as f:
+        f.write("should not be preserved")
+        
+    vb = ViewBuilderService(clean_dirs)
+    vb.publish()
+    
+    # Check that expected files were preserved in the live dashboard directory after the swap
+    for filename in all_files:
+        preserved_path = live_dashboard / filename
+        assert preserved_path.exists(), f"File {filename} was not preserved"
+        if filename != "system_health.json":
+            with open(preserved_path, 'r') as f:
+                content = f.read()
+            assert content == f"dummy content for {filename}"
+        
+    assert not (live_dashboard / "unpreserved_root.json").exists()
+
+
+
+
