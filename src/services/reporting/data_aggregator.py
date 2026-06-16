@@ -24,7 +24,7 @@ class DataAggregator:
     def aggregate_pipeline_stats(self) -> Dict:
         """Collects high-level counts for the report summary."""
         return {
-            "extraction_count": len(list(self.base_dir.glob("*.csv"))),
+            "extraction_count": len(set(f.name.split("_")[0] for f in self.base_dir.glob("*.csv") if "_" in f.name)),
             "vsa": self._count_files(const.RESULTS_DIR_NAME),
             "trending": self._count_files(const.TRENDING_DIR_NAME),
             "anomaly": self._count_files(const.ANOMALY_DIR_NAME),
@@ -38,7 +38,7 @@ class DataAggregator:
     def get_symbol_lists(self) -> Dict[str, List[str]]:
         """Returns simple lists of symbols for categorization."""
         return {
-            "extraction": [f.stem for f in self.base_dir.glob("*.csv")],
+            "extraction": sorted(list(set(f.name.split("_")[0] for f in self.base_dir.glob("*.csv") if "_" in f.name))),
             "vsa": self._get_symbols(const.RESULTS_DIR_NAME),
             "trending": self._get_symbols(const.TRENDING_DIR_NAME),
             "anomaly": self._get_symbols(const.ANOMALY_DIR_NAME),
