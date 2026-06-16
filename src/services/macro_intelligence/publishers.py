@@ -35,6 +35,13 @@ class AnalyticsPublisher:
         # Use YYYY-MM-DD from generated_at
         current_date = analytics_view_model.generated_at[:10]
         
+        # Archive analytics json historically
+        history_dir = self.output_dir / "history"
+        history_dir.mkdir(parents=True, exist_ok=True)
+        history_analytics_file = history_dir / f"analytics_{current_date}.json"
+        with open(history_analytics_file, 'w', encoding='utf-8') as f:
+            json.dump(analytics_dict, f, indent=2)
+        
         # Check if today's entry exists, if so update it, else append
         existing_entry = next((entry for entry in history if entry.get('date') == current_date), None)
         
@@ -63,9 +70,36 @@ class ManifestPublisher:
         self.output_dir.mkdir(parents=True, exist_ok=True)
         manifest_file = self.output_dir / "manifest.json"
         
+        existing_data = {}
+        if manifest_file.exists():
+            try:
+                with open(manifest_file, 'r', encoding='utf-8') as f:
+                    existing_data = json.load(f)
+            except Exception as e:
+                logger.warning(f"Could not load existing manifest for merge: {e}")
+                
         manifest_dict = asdict(manifest_view_model)
         
+        # Merge ETE keys if present in existing manifest to prevent clobbering ETE UI tab
+        ete_keys = ["engine_version", "research_events", "active_sequences", "completed_sequences", "last_market_date", "files"]
+        for key in ete_keys:
+            if key in existing_data:
+                if key == "files" and isinstance(existing_data["files"], dict):
+                    if "files" not in manifest_dict or not isinstance(manifest_dict["files"], dict):
+                        manifest_dict["files"] = {}
+                    manifest_dict["files"].update(existing_data["files"])
+                else:
+                    manifest_dict[key] = existing_data[key]
+                    
         with open(manifest_file, 'w', encoding='utf-8') as f:
+            json.dump(manifest_dict, f, indent=2)
+            
+        # Archive manifest json historically
+        current_date = manifest_view_model.generated_at[:10]
+        history_dir = self.output_dir / "history"
+        history_dir.mkdir(parents=True, exist_ok=True)
+        history_manifest_file = history_dir / f"manifest_{current_date}.json"
+        with open(history_manifest_file, 'w', encoding='utf-8') as f:
             json.dump(manifest_dict, f, indent=2)
 
 class SearchPublisher:

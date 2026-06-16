@@ -66,7 +66,7 @@ class ViewBuilderService:
                 next_history_dir = self.dashboard_next / "history"
                 next_history_dir.mkdir(parents=True, exist_ok=True)
                 for item in history_dir.iterdir():
-                    if item.is_file() and (item.name == "index.json" or item.name.startswith("data_") or item.name == "rbi_events.jsonl"):
+                    if item.is_file() and (item.name == "index.json" or item.name.startswith("data_") or item.name.startswith("analytics_") or item.name.startswith("manifest_") or item.name == "rbi_events.jsonl"):
                         shutil.copy(item, next_history_dir / item.name)
 
         # 3. Build data structures

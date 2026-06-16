@@ -307,6 +307,10 @@ nav {
     gap: 24px;
 }
 
+.main-panels.single-panel {
+    grid-template-columns: 1fr;
+}
+
 .panel {
     display: flex;
     flex-direction: column;

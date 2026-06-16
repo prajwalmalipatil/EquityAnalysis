@@ -51,3 +51,41 @@ def test_publish_preserves_macro_assets(clean_dirs):
         with open(live_dashboard / asset, 'r') as f:
             content = f.read()
         assert content == f"dummy content for {asset}"
+
+def test_publish_preserves_history_assets(clean_dirs):
+    live_dashboard = clean_dirs / "dashboard"
+    history_dir = live_dashboard / "history"
+    history_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Create history files
+    history_files = [
+        "index.json",
+        "data_2026-06-16.json",
+        "analytics_2026-06-16.json",
+        "manifest_2026-06-16.json",
+        "rbi_events.jsonl"
+    ]
+    for h_file in history_files:
+        with open(history_dir / h_file, 'w') as f:
+            f.write(f"dummy history content for {h_file}")
+            
+    # Add an unpreserved file to verify it gets filtered out
+    with open(history_dir / "unpreserved.json", 'w') as f:
+        f.write("should not be preserved")
+        
+    vb = ViewBuilderService(clean_dirs)
+    vb.publish()
+    
+    # Check that history folder and expected files were preserved in the live dashboard directory after the swap
+    new_history_dir = live_dashboard / "history"
+    assert new_history_dir.exists()
+    
+    for h_file in history_files:
+        preserved_path = new_history_dir / h_file
+        assert preserved_path.exists(), f"History file {h_file} was not preserved"
+        with open(preserved_path, 'r') as f:
+            content = f.read()
+        assert content == f"dummy history content for {h_file}"
+        
+    assert not (new_history_dir / "unpreserved.json").exists()
+
