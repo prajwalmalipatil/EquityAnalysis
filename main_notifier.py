@@ -31,21 +31,57 @@ def main():
                 macro_events = data.get("macro_intelligence", {}).get("recent_events", [])
                 
                 if macro_events:
+                    # Deduplicate new_events by title (near-duplicate detection)
+                    seen_titles = []
+                    deduped_events = []
+                    
                     # Look for strictly NEW events
-                    new_events = [e for e in macro_events if e.get("is_new_since_last_session") or e.get("metadata", {}).get("lifecycle_status") == "NEW"]
-                    if not new_events:
-                        new_events = macro_events[:3] # Fallback to latest 3
+                    raw_new_events = [
+                        e for e in macro_events 
+                        if e.get("is_new_since_last_session") or e.get("processing_state") == "NEW"
+                    ]
+                    if not raw_new_events:
+                        raw_new_events = macro_events[:3] # Fallback to latest 3
                         
+                    def clean_title(t: str) -> set:
+                        fillers = {"rbi", "issues", "announces", "to", "on", "for", "a", "an", "the", "and", "of", "in", "with", "under"}
+                        words = [w for w in t.lower().split() if w.isalnum()]
+                        return set(w for w in words if w not in fillers)
+
+                    def is_duplicate(t1: str, t2: str) -> bool:
+                        s1 = clean_title(t1)
+                        s2 = clean_title(t2)
+                        if not s1 or not s2:
+                            return False
+                        common = s1.intersection(s2)
+                        overlap = len(common) / min(len(s1), len(s2))
+                        return overlap >= 0.7
+
+                    for e in raw_new_events:
+                        title = e.get("title", "")
+                        # Check if this title is a near-duplicate of any already processed
+                        duplicate = False
+                        for seen in seen_titles:
+                            if is_duplicate(title, seen):
+                                duplicate = True
+                                break
+                        if not duplicate:
+                            seen_titles.append(title)
+                            deduped_events.append(e)
+                            
+                    # Limit to top 3
+                    new_events = deduped_events[:3]
+                    
                     macro_html = f"""
                     <div style="background-color: #334155; padding: 20px; border-radius: 8px; margin: 30px 0; border-left: 4px solid #f59e0b;">
                         <h3 style="color: #fbbf24; margin-top: 0;">🌍 Latest Macro Intelligence</h3>
                         <ul style="padding-left: 20px; margin-bottom: 0;">
-                            {''.join([f'<li style="margin-bottom: 10px;"><strong>{e.get("official_data", {}).get("title", e.get("title", ""))}</strong> - {e.get("derived_data", {}).get("ai_summary", e.get("summary", "")).split(".")[0]}...</li>' for e in new_events])}
+                            {''.join([f'<li style="margin-bottom: 10px;"><strong>{e.get("title", "")}</strong> - {(e.get("summary", "") or "No summary available").split(".")[0]}...</li>' for e in new_events])}
                         </ul>
                     </div>
                     """
                     
-                    macro_text = "\nLatest Macro Intelligence:\n" + "\n".join([f"- {e.get('official_data', {}).get('title', e.get('title', ''))}" for e in new_events]) + "\n"
+                    macro_text = "\nLatest Macro Intelligence:\n" + "\n".join([f"- {e.get('title', '')}" for e in new_events]) + "\n"
     except Exception as e:
         logger.warning("FAILED_TO_LOAD_MACRO_FOR_EMAIL", extra={"error": str(e)})
 

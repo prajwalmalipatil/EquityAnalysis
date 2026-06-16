@@ -74,5 +74,97 @@ class TestExtractionService(unittest.TestCase):
         self.assertFalse(result.success)
         self.assertEqual(result.error, "API_ERROR")
 
+    def test_parse_yahoo_chart_json_to_nse_json(self):
+        """Verify that Yahoo Finance Chart JSON is correctly parsed to NSE JSON format."""
+        from src.clients.nse_client import parse_yahoo_chart_json_to_nse_json
+        
+        mock_json = {
+            "chart": {
+                "result": [{
+                    "timestamp": [1750098600],
+                    "indicators": {
+                        "quote": [{
+                            "open": [100.0],
+                            "high": [105.0],
+                            "low": [95.0],
+                            "close": [102.0],
+                            "volume": [10000]
+                        }]
+                    }
+                }]
+            }
+        }
+        
+        parsed = parse_yahoo_chart_json_to_nse_json(mock_json)
+        
+        self.assertIn("data", parsed)
+        self.assertEqual(len(parsed["data"]), 1)
+        
+        first_row = parsed["data"][0]
+        # 1750098600 is 2025-06-17. Let's make sure it matches the converted local format or date format.
+        # Since we use datetime.fromtimestamp, we can assert its formatting contains the date components.
+        # We can dynamically construct the expected date for the test environment's timezone:
+        from datetime import datetime
+        expected_date = datetime.fromtimestamp(1750098600).strftime("%d-%m-%Y")
+        
+        self.assertEqual(first_row["date"], expected_date)
+        self.assertEqual(first_row["open"], "100.0")
+        self.assertEqual(first_row["high"], "105.0")
+        self.assertEqual(first_row["low"], "95.0")
+        self.assertEqual(first_row["close"], "102.0")
+        self.assertEqual(first_row["sharesTraded"], "10000")
+        self.assertEqual(first_row["turnoverInCr"], "0")
+
+    @patch("requests.Session")
+    def test_fetch_historical_index_data_yahoo_fallback(self, mock_session_class):
+        """Verify fetch_historical_index_data falls back to Yahoo Finance Chart API on NSE failure."""
+        from src.clients.nse_client import NSEClient
+        
+        mock_session = mock_session_class.return_value
+        
+        # 1. Setup mock responses
+        # First request to NSE fails (raises exception or status code 503)
+        mock_nse_resp = MagicMock()
+        mock_nse_resp.raise_for_status.side_effect = Exception("NSE HTTP 503")
+        
+        # Second request to Yahoo Finance succeeds
+        mock_yahoo_resp = MagicMock()
+        mock_yahoo_resp.status_code = 200
+        
+        mock_json_response = {
+            "chart": {
+                "result": [{
+                    "timestamp": [1750098600],
+                    "indicators": {
+                        "quote": [{
+                            "open": [100.0],
+                            "high": [105.0],
+                            "low": [95.0],
+                            "close": [102.0],
+                            "volume": [10000]
+                        }]
+                    }
+                }]
+            }
+        }
+        mock_yahoo_resp.json.return_value = mock_json_response
+        
+        mock_session.get.side_effect = [mock_nse_resp, mock_yahoo_resp]
+        
+        # Create client without selenium cookie warmup to avoid browser mocks
+        client = NSEClient(use_selenium=False)
+        client.session = mock_session
+        
+        resp = client.fetch_historical_index_data("NIFTY 50", "15-06-2026", "16-06-2026")
+        
+        self.assertEqual(resp.status_code, 200)
+        resp_data = resp.json()
+        self.assertEqual(len(resp_data["data"]), 1)
+        
+        from datetime import datetime
+        expected_date = datetime.fromtimestamp(1750098600).strftime("%d-%m-%Y")
+        self.assertEqual(resp_data["data"][0]["date"], expected_date)
+        self.assertEqual(resp_data["data"][0]["close"], "102.0")
+
 if __name__ == "__main__":
     unittest.main()

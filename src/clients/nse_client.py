@@ -7,6 +7,9 @@ Handles session management, cookie acquisition via Selenium, and raw data fetchi
 import time
 import random
 import requests
+import json
+import io
+from datetime import datetime
 from pathlib import Path
 from typing import Optional, Tuple
 from contextlib import contextmanager
@@ -25,6 +28,54 @@ from src.utils.http_client import with_retry
 from src.utils.observability import get_tenant_logger
 
 logger = get_tenant_logger("nse-client")
+
+YAHOO_INDEX_MAP = {
+    "NIFTY 50": "^NSEI",
+    "NIFTY BANK": "^NSEBANK",
+    "NIFTY FIN SERVICE": "^CNXFIN",
+    "NIFTY MIDCAP 50": "^NSEMDCP50",
+    "NIFTY SMALLCAP 50": "^NSESMLC50"
+}
+
+def parse_yahoo_chart_json_to_nse_json(json_data: dict) -> dict:
+    result = json_data.get("chart", {}).get("result", [])
+    if not result:
+        return {"data": []}
+        
+    timestamps = result[0].get("timestamp", [])
+    quotes = result[0].get("indicators", {}).get("quote", [{}])[0]
+    
+    opens = quotes.get("open", [])
+    highs = quotes.get("high", [])
+    lows = quotes.get("low", [])
+    closes = quotes.get("close", [])
+    volumes = quotes.get("volume", [])
+    
+    data_list = []
+    for i in range(len(timestamps)):
+        ts = timestamps[i]
+        dt = datetime.fromtimestamp(ts)
+        formatted_date = dt.strftime("%d-%m-%Y")
+        
+        o = opens[i] if i < len(opens) and opens[i] is not None else 0
+        h = highs[i] if i < len(highs) and highs[i] is not None else 0
+        l = lows[i] if i < len(lows) and lows[i] is not None else 0
+        c = closes[i] if i < len(closes) and closes[i] is not None else 0
+        v = volumes[i] if i < len(volumes) and volumes[i] is not None else 0
+        
+        if o == 0 and c == 0:
+            continue
+            
+        data_list.append({
+            "date": formatted_date,
+            "open": str(o),
+            "high": str(h),
+            "low": str(l),
+            "close": str(c),
+            "sharesTraded": str(int(v)),
+            "turnoverInCr": "0"
+        })
+    return {"data": data_list}
 
 class NSEClient:
     """
@@ -120,10 +171,13 @@ class NSEClient:
             
         return resp
 
+
+
     @with_retry(max_attempts=const.MAX_RETRIES, base_delay=const.BACKOFF_FACTOR)
     def fetch_historical_index_data(self, index_name: str, from_date: str, to_date: str) -> requests.Response:
         """
         Fetches historical data for an index (e.g. 'NIFTY 50', 'NIFTY BANK') in JSON format.
+        Tries NSE India first, and falls back to Yahoo Finance on failure.
         """
         url = f"https://www.nseindia.com/api/historical/indicesHistory?indexType={quote(index_name)}&from={from_date}&to={to_date}"
         
@@ -138,9 +192,44 @@ class NSEClient:
             "Sec-Fetch-Site": "same-origin",
         }
         
-        resp = self.session.get(url, headers=headers, timeout=(10, 60))
-        resp.raise_for_status()
-        return resp
+        try:
+            resp = self.session.get(url, headers=headers, timeout=(10, 60))
+            resp.raise_for_status()
+            # Try to parse as JSON to ensure we received JSON and not an HTML redirect/error
+            resp.json()
+            return resp
+        except Exception as e:
+            logger.warning("NSE_INDEX_FETCH_FAILED_TRYING_YAHOO", extra={"index": index_name, "error": str(e)})
+            yahoo_symbol = YAHOO_INDEX_MAP.get(index_name)
+            if not yahoo_symbol:
+                yahoo_symbol = index_name
+                
+            try:
+                start_dt = datetime.strptime(from_date, "%d-%m-%Y")
+                end_dt = datetime.strptime(to_date, "%d-%m-%Y")
+                period1 = int(start_dt.timestamp())
+                period2 = int(end_dt.timestamp())
+                yahoo_url = f"https://query2.finance.yahoo.com/v8/finance/chart/{quote(yahoo_symbol)}?period1={period1}&period2={period2}&interval=1d"
+                
+                logger.info("FETCHING_INDEX_FROM_YAHOO_FALLBACK", extra={"index": index_name, "url": yahoo_url})
+                
+                # Fetch Yahoo Finance Chart JSON
+                y_resp = self.session.get(yahoo_url, timeout=(10, 60))
+                y_resp.raise_for_status()
+                
+                # Convert Yahoo JSON to NSE JSON structure
+                nse_json = parse_yahoo_chart_json_to_nse_json(y_resp.json())
+                
+                # Create a mock Response
+                mock_resp = requests.Response()
+                mock_resp.status_code = 200
+                mock_resp._content = json.dumps(nse_json).encode('utf-8')
+                mock_resp.headers['Content-Type'] = 'application/json'
+                return mock_resp
+            except Exception as ex:
+                logger.error("YAHOO_FALLBACK_FAILED", extra={"index": index_name, "error": str(ex)})
+                raise
+
 
     def close(self):
         """Cleanup resources."""
