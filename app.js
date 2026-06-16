@@ -219,51 +219,66 @@ function switchTab(tabId) {
     const sections = [overview, consensus, eigen, macro, analytics, ete, backtest];
     sections.forEach(s => { if (s) s.style.display = 'none'; });
 
+    const mainPanels = document.querySelector('.main-panels');
+    const sidePanels = document.querySelector('.side-panels');
+
     if (tabId === 'overview') {
+        if (mainPanels) mainPanels.classList.remove('single-panel');
+        if (sidePanels) sidePanels.style.display = 'flex';
+        
         overview.style.display = 'grid';
         consensus.style.display = 'flex';
         eigen.style.display = 'flex';
         if (alerts) alerts.style.display = 'flex';
-    } else if (tabId === 'consensus') {
-        consensus.style.display = 'flex';
-        if (alerts) alerts.style.display = 'none';
-    } else if (tabId === 'eigen') {
-        eigen.style.display = 'flex';
-        if (alerts) alerts.style.display = 'none';
-    } else if (tabId === 'macro') {
-        macro.style.display = 'flex';
-        if (alerts) alerts.style.display = 'none';
-    } else if (tabId === 'analytics') {
-        if (analytics) analytics.style.display = 'block';
-        if (alerts) alerts.style.display = 'none';
-    } else if (tabId === 'ete') {
-        overview.style.display = 'none';
-        consensus.style.display = 'none';
-        eigen.style.display = 'none';
-        if (macro) macro.style.display = 'none';
-        if (ete) {
-            ete.style.display = 'flex';
-            if (!window.eteLoaded) {
-                fetchETEManifest();
-                window.eteLoaded = true;
-            }
-        }
-        if (alerts) alerts.style.display = 'none';
-        const backtest = document.getElementById('backtest');
-        if (backtest) backtest.style.display = 'none';
-    } else if (tabId === 'backtest') {
-        overview.style.display = 'none';
-        consensus.style.display = 'none';
-        eigen.style.display = 'none';
-        if (macro) macro.style.display = 'none';
-        if (ete) ete.style.display = 'none';
-        if (alerts) alerts.style.display = 'none';
-        const backtest = document.getElementById('backtest');
-        if (backtest) {
-            backtest.style.display = 'flex';
-            if (!window.backtestLoaded) {
-                fetchBacktestMetrics();
-                window.backtestLoaded = true;
+    } else {
+        if (mainPanels) mainPanels.classList.add('single-panel');
+        
+        if (tabId === 'eigen') {
+            if (sidePanels) sidePanels.style.display = 'flex';
+            eigen.style.display = 'flex';
+            if (alerts) alerts.style.display = 'none';
+        } else {
+            if (sidePanels) sidePanels.style.display = 'none';
+            
+            if (tabId === 'consensus') {
+                consensus.style.display = 'flex';
+                if (alerts) alerts.style.display = 'none';
+            } else if (tabId === 'macro') {
+                macro.style.display = 'flex';
+                if (alerts) alerts.style.display = 'none';
+            } else if (tabId === 'analytics') {
+                if (analytics) analytics.style.display = 'block';
+                if (alerts) alerts.style.display = 'none';
+            } else if (tabId === 'ete') {
+                overview.style.display = 'none';
+                consensus.style.display = 'none';
+                eigen.style.display = 'none';
+                if (macro) macro.style.display = 'none';
+                if (ete) {
+                    ete.style.display = 'flex';
+                    if (!window.eteLoaded) {
+                        fetchETEManifest();
+                        window.eteLoaded = true;
+                    }
+                }
+                if (alerts) alerts.style.display = 'none';
+                const backtest = document.getElementById('backtest');
+                if (backtest) backtest.style.display = 'none';
+            } else if (tabId === 'backtest') {
+                overview.style.display = 'none';
+                consensus.style.display = 'none';
+                eigen.style.display = 'none';
+                if (macro) macro.style.display = 'none';
+                if (ete) ete.style.display = 'none';
+                if (alerts) alerts.style.display = 'none';
+                const backtest = document.getElementById('backtest');
+                if (backtest) {
+                    backtest.style.display = 'flex';
+                    if (!window.backtestLoaded) {
+                        fetchBacktestMetrics();
+                        window.backtestLoaded = true;
+                    }
+                }
             }
         }
     }
