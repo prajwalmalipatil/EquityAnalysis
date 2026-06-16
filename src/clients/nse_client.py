@@ -34,7 +34,7 @@ YAHOO_INDEX_MAP = {
     "NIFTY BANK": "^NSEBANK",
     "NIFTY FIN SERVICE": "^CNXFIN",
     "NIFTY MIDCAP 50": "^NSEMDCP50",
-    "NIFTY SMALLCAP 50": "^NSESMLC50"
+    "NIFTY SMALLCAP 50": "NIFTYSMLCAP50.NS"
 }
 
 def parse_yahoo_chart_json_to_nse_json(json_data: dict) -> dict:
