@@ -1,12 +1,28 @@
 {
-  "generated_at": "2026-06-16T10:53:36.319782+00:00",
+  "generated_at": "2026-06-16T12:17:39.456998+00:00",
   "overall_metrics": {
-    "total_sequences": 3699,
-    "win_rate": 73.42657342657343,
-    "total_completed": 105,
-    "total_failed": 38
+    "total_sequences": 3722,
+    "win_rate": 73.10344827586206,
+    "total_completed": 106,
+    "total_failed": 39
   },
   "completions_daily": [
+    {
+      "symbol": "BANDHANBNK",
+      "start_date": "2026-06-02",
+      "completion_date": "2026-06-09",
+      "trigger_pattern": "Bullish Impulse Convergence",
+      "t_vol": 11101299.0,
+      "vol_surge_pct": 45.58618598596609,
+      "fwd_return_5b": 4.735672175509815,
+      "win": true,
+      "sentiment": "Bullish",
+      "gauntlet_passed": true,
+      "vol_score": 0.05978750310202163,
+      "close_score": 0.7843601895734604,
+      "drift_score": 0.7650941345275855,
+      "confidence": 49.1
+    },
     {
       "symbol": "IGL",
       "start_date": "2026-05-21",
