@@ -340,7 +340,7 @@ class EigenTransitionEngineService:
 
     def _evaluate_sequence(self, seq: ETESequence, current: pd.Series, previous: pd.Series, current_date: str):
         config = self.sequences_config.get(seq.config_id, {})
-        target_rules = config.get("sequence", ["LVLS", "HVHS", "LVLS", "HVHS"])
+        target_rules = config.get("sequence", ["LVLS", "HVLS", "LVLS", "HVLS"])
         
         if seq.current_stage_index >= len(target_rules):
             return
