@@ -48,6 +48,11 @@ class DataQualityService:
         # Standardize Columns
         # Strip whitespace from column names and map to standard OHLCV
         df.rename(columns=lambda x: str(x).strip(), inplace=True)
+        
+        # Filter by Series if present (NSE files contain multiple series e.g. EQ, BL)
+        if 'Series' in df.columns:
+            df = df[df['Series'].astype(str).str.strip().str.upper() == 'EQ'].copy()
+
         rename_map = {
             'Open Price': 'Open',
             'High Price': 'High',

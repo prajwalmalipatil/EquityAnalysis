@@ -55,3 +55,31 @@ def test_data_quality_service(test_dir):
     assert "DUPLICATE_DATES" in stats["reasons"]
     assert "INVALID_OHLC_PRICES" in stats["reasons"]
     assert "ZERO_TOTAL_VOLUME" in stats["reasons"]
+
+def test_series_filtering(test_dir):
+    service = DataQualityService(test_dir)
+    
+    # DataFrame with EQ and BL series on duplicate dates
+    mixed_df = pd.DataFrame({
+        "Date": ["2023-01-01", "2023-01-01", "2023-01-02", "2023-01-02", "2023-01-03", "2023-01-04", "2023-01-05"],
+        "Series": ["EQ", "BL", "EQ", "W2", "EQ", "EQ", "EQ"],
+        "Open": [100, 100, 101, 101, 102, 103, 104],
+        "High": [105, 105, 106, 106, 107, 108, 109],
+        "Low": [95, 95, 96, 96, 97, 98, 99],
+        "Close": [102, 102, 103, 103, 104, 105, 106],
+        "Volume": [1000, 5000, 1000, 2000, 1000, 1000, 1000]
+    })
+    mixed_df.to_csv(test_dir / "mixed.csv", index=False)
+    
+    stats = service.run_gate()
+    assert stats["total_files"] == 1
+    assert stats["passed"] == 1
+    assert stats["quarantined"] == 0
+    assert (test_dir / "mixed.csv").exists()
+    
+    # Read the cleaned file and check that only EQ rows remain (meaning no duplicates)
+    cleaned_df = pd.read_csv(test_dir / "mixed.csv")
+    assert len(cleaned_df) == 5
+    assert not cleaned_df['Date'].duplicated().any()
+    assert (cleaned_df['Series'] == 'EQ').all()
+
