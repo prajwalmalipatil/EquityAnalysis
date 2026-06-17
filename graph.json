@@ -1,18 +1,148 @@
 {
   "schema_version": "1",
-  "generated_at": "2026-06-16T16:56:29.464349Z",
+  "generated_at": "2026-06-17T14:45:13.733183Z",
   "pipeline_version": "1",
   "statistics": {
-    "node_count": 66,
-    "edge_count": 471,
+    "node_count": 79,
+    "edge_count": 749,
     "connected_components": 3,
-    "average_degree": 14.27,
+    "average_degree": 18.96,
     "relationship_distribution": {
-      "AMENDS": 420,
-      "WITHDRAWS": 51
+      "AMENDS": 599,
+      "WITHDRAWS": 150
     }
   },
   "nodes": [
+    {
+      "id": "d56685b7a2e274d6",
+      "type": "Event",
+      "label": "Reserve Bank of India (Rural Co-operative Banks \u2013 Interest Rate on Deposits) Amendment Directions, 2026",
+      "category": "Notifications",
+      "metadata": {
+        "date": "2026-06-17T18:15:00+00:00",
+        "source": "RBI"
+      }
+    },
+    {
+      "id": "8136d09d06450f0c",
+      "type": "Event",
+      "label": "Reserve Bank of India (Urban Co-operative Banks \u2013 Interest Rate on Deposits) Amendment Directions, 2026",
+      "category": "Notifications",
+      "metadata": {
+        "date": "2026-06-17T18:15:00+00:00",
+        "source": "RBI"
+      }
+    },
+    {
+      "id": "b59b6f64530aaa84",
+      "type": "Event",
+      "label": "Reserve Bank of India (Local Area Banks \u2013 Interest Rate on Deposits) Amendment Directions, 2026",
+      "category": "Notifications",
+      "metadata": {
+        "date": "2026-06-17T18:10:00+00:00",
+        "source": "RBI"
+      }
+    },
+    {
+      "id": "28fe13759d77bcf3",
+      "type": "Event",
+      "label": "Reserve Bank of India (Regional Rural Banks \u2013 Interest Rate on Deposits) Amendment Directions, 2026",
+      "category": "Notifications",
+      "metadata": {
+        "date": "2026-06-17T18:05:00+00:00",
+        "source": "RBI"
+      }
+    },
+    {
+      "id": "9c77ae5a9bc48336",
+      "type": "Event",
+      "label": "Reserve Bank of India (Small Finance Banks \u2013 Interest Rate on Deposits) Amendment Directions, 2026",
+      "category": "Notifications",
+      "metadata": {
+        "date": "2026-06-17T18:00:00+00:00",
+        "source": "RBI"
+      }
+    },
+    {
+      "id": "d90dbebda0d656dd",
+      "type": "Event",
+      "label": "Reserve Bank of India (Commercial Banks \u2013 Interest Rate on Deposits) Amendment Directions, 2026",
+      "category": "Notifications",
+      "metadata": {
+        "date": "2026-06-17T17:55:00+00:00",
+        "source": "RBI"
+      }
+    },
+    {
+      "id": "6093970627846428",
+      "type": "Event",
+      "label": "Directions under Section 35A read with Section 56 of the Banking Regulation Act, 1949 (As Applicable to Co-operative Societies) \u2013 The Gauhati Co-operative Urban Bank Ltd., Guwahati \u2013 Extension of period",
+      "category": "Press Releases",
+      "metadata": {
+        "date": "2026-06-17T17:00:00+00:00",
+        "source": "RBI"
+      }
+    },
+    {
+      "id": "68d455884d9efad2",
+      "type": "Event",
+      "label": "Treasury Bills: Full Auction Result",
+      "category": "Press Releases",
+      "metadata": {
+        "date": "2026-06-17T15:15:00+00:00",
+        "source": "RBI"
+      }
+    },
+    {
+      "id": "d6395439deb31aaa",
+      "type": "Event",
+      "label": "91-Day, 182-Day and 364-Day T-Bill Auction Result: Cut-off",
+      "category": "Press Releases",
+      "metadata": {
+        "date": "2026-06-17T13:15:00+00:00",
+        "source": "RBI"
+      }
+    },
+    {
+      "id": "44c0c1058cfefbe6",
+      "type": "Event",
+      "label": "Result of the Second 2-day Variable Rate Repo (VRR) auction held on June 17, 2026",
+      "category": "Press Releases",
+      "metadata": {
+        "date": "2026-06-17T12:05:00+00:00",
+        "source": "RBI"
+      }
+    },
+    {
+      "id": "6e30465edc96b23b",
+      "type": "Event",
+      "label": "RBI to conduct Second 2-day Variable Rate Repo (VRR) auction under LAF on June 17, 2026",
+      "category": "Press Releases",
+      "metadata": {
+        "date": "2026-06-17T10:35:00+00:00",
+        "source": "RBI"
+      }
+    },
+    {
+      "id": "975fe6dad8887e68",
+      "type": "Event",
+      "label": "Result of the 2-day Variable Rate Repo (VRR) auction held on June 17, 2026",
+      "category": "Press Releases",
+      "metadata": {
+        "date": "2026-06-17T10:25:00+00:00",
+        "source": "RBI"
+      }
+    },
+    {
+      "id": "c49167f3f2e36b93",
+      "type": "Event",
+      "label": "Money Market Operations as on June 16, 2026",
+      "category": "Press Releases",
+      "metadata": {
+        "date": "2026-06-17T09:00:00+00:00",
+        "source": "RBI"
+      }
+    },
     {
       "id": "db112b8298ebb2c9",
       "type": "Event",
@@ -676,481 +806,2380 @@
   ],
   "edges": [
     {
-      "id": "ea213ed2f2f7c8f3",
-      "relationship_id": "39dad7e4e299ac77",
-      "source": "74f2c2e100c55f55",
-      "target": "db112b8298ebb2c9",
+      "id": "707321e0565d1b58",
+      "relationship_id": "8c5257d20425189a",
+      "source": "d56685b7a2e274d6",
+      "target": "8136d09d06450f0c",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "2dee44fa1b89e41c",
-      "relationship_id": "8bf6c1e8652b9485",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "db112b8298ebb2c9",
+      "id": "6ee27efbab0f45f2",
+      "relationship_id": "10b4c1e1e676564a",
+      "source": "d56685b7a2e274d6",
+      "target": "b59b6f64530aaa84",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "714838fe91ba601e",
-      "relationship_id": "b2f365724242e498",
-      "source": "74f2c2e100c55f55",
-      "target": "299664ae1330b6c4",
+      "id": "e4db78d941b5ca96",
+      "relationship_id": "816da335dd84ca6b",
+      "source": "d56685b7a2e274d6",
+      "target": "28fe13759d77bcf3",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "b1f96ecdac6db4c3",
-      "relationship_id": "21d30a8b8274ad27",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "299664ae1330b6c4",
+      "id": "58f5f9611d2cdd22",
+      "relationship_id": "4f7b548592bca70e",
+      "source": "28fe13759d77bcf3",
+      "target": "d56685b7a2e274d6",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "12e6a4c6db035441",
+      "relationship_id": "d58eaae91a2ee5b5",
+      "source": "d56685b7a2e274d6",
+      "target": "9c77ae5a9bc48336",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "007be1303fd8874b",
-      "relationship_id": "77943f9f5b0e1ece",
-      "source": "74f2c2e100c55f55",
-      "target": "4c5b17d9caa369a9",
+      "id": "76b7236606fd113f",
+      "relationship_id": "d6adcdcc849a6aa1",
+      "source": "9c77ae5a9bc48336",
+      "target": "d56685b7a2e274d6",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "e0e379e2e1755738",
+      "relationship_id": "5154adc34f97b3da",
+      "source": "d56685b7a2e274d6",
+      "target": "d90dbebda0d656dd",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "c44877cbe2b0293e",
-      "relationship_id": "2e7a25c6f57c4500",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "4c5b17d9caa369a9",
+      "id": "630e55398d2475da",
+      "relationship_id": "61931f1c01309074",
+      "source": "d90dbebda0d656dd",
+      "target": "d56685b7a2e274d6",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "034fa1f289c37677",
+      "relationship_id": "03c6c81554b3bbb7",
+      "source": "d56685b7a2e274d6",
+      "target": "7a11e2fb1a6c9db4",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "854837ef8b403c06",
-      "relationship_id": "ef25d7a9920a3f71",
-      "source": "74f2c2e100c55f55",
-      "target": "a7f740f051c23700",
+      "id": "1569cd345cca2870",
+      "relationship_id": "484b238dad684d39",
+      "source": "d56685b7a2e274d6",
+      "target": "845925ec4d44b49f",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "f93d7e56fa8f3349",
-      "relationship_id": "568ffa6db294342f",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "a7f740f051c23700",
+      "id": "2c54c3e9fd8e78f0",
+      "relationship_id": "0e1953157791445d",
+      "source": "d56685b7a2e274d6",
+      "target": "b22d5e9fc8a6a86b",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "ca31048dc7b17fa7",
-      "relationship_id": "c6445f4725539528",
-      "source": "74f2c2e100c55f55",
-      "target": "da784617bf14aed2",
+      "id": "8c40f85aa4541034",
+      "relationship_id": "7af3dda3caee5a84",
+      "source": "d56685b7a2e274d6",
+      "target": "fa03c539445825f7",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "28af680a9c131e8f",
-      "relationship_id": "41ff923451372529",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "da784617bf14aed2",
+      "id": "232731a4d7e88dc6",
+      "relationship_id": "4d9d5b81c50786ef",
+      "source": "d56685b7a2e274d6",
+      "target": "281e56614e09cac2",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "d4a916f20aa4117b",
-      "relationship_id": "6850d3d3733200d2",
-      "source": "74f2c2e100c55f55",
-      "target": "2aefa5ff56932d57",
+      "id": "77a849a3630cf354",
+      "relationship_id": "c31d29314a8d73a0",
+      "source": "d56685b7a2e274d6",
+      "target": "a89a9ab20b69e862",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "4a8bf03ae1d6aa29",
-      "relationship_id": "efd2e3783b6234fa",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "2aefa5ff56932d57",
+      "id": "6653a3d292636e06",
+      "relationship_id": "4705c8a99698d8d9",
+      "source": "d56685b7a2e274d6",
+      "target": "2742b3efeb3455fc",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "65c141f95f9cf149",
-      "relationship_id": "0796363f5a82ccdd",
-      "source": "74f2c2e100c55f55",
-      "target": "b8ccf37af044ecf2",
+      "id": "b13dbb4adb6a61d0",
+      "relationship_id": "09606dbf79d7b97f",
+      "source": "d56685b7a2e274d6",
+      "target": "27ef0bff815cda27",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "77e7a2e31f0c30d8",
-      "relationship_id": "0823cabeb0aed9e6",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "b8ccf37af044ecf2",
+      "id": "a5c13430d4cf8140",
+      "relationship_id": "e7ce7fdc2f01c534",
+      "source": "d56685b7a2e274d6",
+      "target": "6dba16ff2cef6e80",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "7f1ec413ebcf7a77",
-      "relationship_id": "344ed9df82576de0",
-      "source": "74f2c2e100c55f55",
-      "target": "5967fdb26124d30d",
+      "id": "5b1e7b020654d0e0",
+      "relationship_id": "227194807e95d4af",
+      "source": "d56685b7a2e274d6",
+      "target": "e570b52f8bf382bc",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "c2bc293a857152a0",
-      "relationship_id": "178aa21d0f7a39b8",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "5967fdb26124d30d",
+      "id": "243b5eb5f849e383",
+      "relationship_id": "f30fe824c19f3c50",
+      "source": "d56685b7a2e274d6",
+      "target": "70a0d18e78a4f729",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "2095a7870667ef68",
-      "relationship_id": "2032e33f62300e6e",
-      "source": "74f2c2e100c55f55",
-      "target": "cdc4d5fcd38fdec4",
+      "id": "1d42842ce5b04772",
+      "relationship_id": "7b3e99cc5a6bae39",
+      "source": "d56685b7a2e274d6",
+      "target": "4e3c41baa1a5cd01",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "0e5119098b785ac7",
-      "relationship_id": "06cc5830725385bf",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "cdc4d5fcd38fdec4",
+      "id": "1f5015ff895089db",
+      "relationship_id": "acb12aaea8872a6d",
+      "source": "d56685b7a2e274d6",
+      "target": "066ccc1af85a202b",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "686eae876ad40db8",
-      "relationship_id": "9d721254861705b8",
-      "source": "74f2c2e100c55f55",
-      "target": "20fb742d75d2f1cf",
+      "id": "e1de6d7265511876",
+      "relationship_id": "cba97ef96051522e",
+      "source": "d56685b7a2e274d6",
+      "target": "dca6aeb9d9a81703",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "b9076e6837e32a8e",
-      "relationship_id": "4552f9dd82184323",
-      "source": "74f2c2e100c55f55",
-      "target": "399427bb74320b36",
+      "id": "3ff72233dc396d30",
+      "relationship_id": "a9b39ddcc4c8dda7",
+      "source": "d56685b7a2e274d6",
+      "target": "4120da416b5f245f",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "e131f6fdc7f2e0b3",
-      "relationship_id": "5cc80f572bf3d9cc",
-      "source": "74f2c2e100c55f55",
-      "target": "61d1fe65bc1b4f19",
+      "id": "d2b69b44e6c35542",
+      "relationship_id": "1e6e4bbd57d40137",
+      "source": "d56685b7a2e274d6",
+      "target": "da47348c0d9e14ba",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "22f3e22093aec1bb",
-      "relationship_id": "d1b371a0d7c50dd7",
-      "source": "74f2c2e100c55f55",
-      "target": "2e89041bc35c9b48",
+      "id": "8c64a7b529d540c3",
+      "relationship_id": "b84b2a8da85cc5d9",
+      "source": "d56685b7a2e274d6",
+      "target": "7fd9306b9af6e2d6",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "fcafc9d94424cf9b",
-      "relationship_id": "7c13a57330611513",
-      "source": "74f2c2e100c55f55",
-      "target": "97ab402975cdc6ff",
+      "id": "5673382fa5ceb5f8",
+      "relationship_id": "0bf30ea03cb002c7",
+      "source": "d56685b7a2e274d6",
+      "target": "4deb31aedabcf616",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "29a23843365dd397",
-      "relationship_id": "e78531ec99354c21",
-      "source": "74f2c2e100c55f55",
-      "target": "d857ad1d9bc025c7",
+      "id": "f4fd2489c2bb53ed",
+      "relationship_id": "d3ced119133032c9",
+      "source": "d56685b7a2e274d6",
+      "target": "da73018813df57df",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "04b20b4449353776",
-      "relationship_id": "54c1cb0912d3d147",
-      "source": "74f2c2e100c55f55",
-      "target": "e25151dd5e07118e",
+      "id": "8884e28388a56d5c",
+      "relationship_id": "9dcf4a125f32f2a3",
+      "source": "d56685b7a2e274d6",
+      "target": "9f23021fb163523f",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "4f49716f4cd956cc",
-      "relationship_id": "50b9f746972ccd6d",
-      "source": "74f2c2e100c55f55",
-      "target": "05aed445843e172f",
+      "id": "ed4de2ad0a90d5df",
+      "relationship_id": "c6ad6c1b081bcaef",
+      "source": "d56685b7a2e274d6",
+      "target": "5baa43ea00ca476d",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "ed311c918eee567d",
-      "relationship_id": "71d8305ef400e642",
-      "source": "74f2c2e100c55f55",
-      "target": "3d1f8d8932486a76",
+      "id": "3ead39093514715f",
+      "relationship_id": "2d57765092e8f03b",
+      "source": "d56685b7a2e274d6",
+      "target": "b4e7dd30b3da29d4",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "b885b52d56f9e791",
-      "relationship_id": "1cad68fb7a98e24d",
-      "source": "74f2c2e100c55f55",
-      "target": "4e8fb1352724d668",
+      "id": "1c7245b0f8771cc7",
+      "relationship_id": "df409ca751d0d92e",
+      "source": "d56685b7a2e274d6",
+      "target": "99ba70989822182c",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "a7a521a8bf631fe5",
-      "relationship_id": "01bd33c1e8ec6f30",
-      "source": "74f2c2e100c55f55",
-      "target": "499fc76ee2323d06",
+      "id": "57222adb6b0a1f3f",
+      "relationship_id": "32b64e9885526dd9",
+      "source": "99ba70989822182c",
+      "target": "d56685b7a2e274d6",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "1ad1179a9946858c",
+      "relationship_id": "632403cc38a560e4",
+      "source": "d56685b7a2e274d6",
+      "target": "2e1c927b354329d4",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "91d6061f51843883",
-      "relationship_id": "7e125cf425f063f1",
-      "source": "74f2c2e100c55f55",
-      "target": "791aa757d12fd075",
+      "id": "c7fee5aeed0a6f76",
+      "relationship_id": "0f26c2ac5463ad03",
+      "source": "2e1c927b354329d4",
+      "target": "d56685b7a2e274d6",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "8927821c5b42614a",
+      "relationship_id": "6451f78f5e1ad6dd",
+      "source": "d56685b7a2e274d6",
+      "target": "a924c2bdfd1c24db",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "0a155b1e2f9bbcb2",
-      "relationship_id": "e76b297acc052201",
-      "source": "74f2c2e100c55f55",
-      "target": "9479eb9a4e52f42d",
+      "id": "d7bd78e1a6c5102a",
+      "relationship_id": "c79220d83e53cf22",
+      "source": "d56685b7a2e274d6",
+      "target": "78e07379a96cdaa5",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "a49358276a5ee9fc",
-      "relationship_id": "9bd5a74cb42475af",
-      "source": "74f2c2e100c55f55",
-      "target": "842bc5012a2fc0f3",
+      "id": "43379bbdbe3fe67c",
+      "relationship_id": "8614e73c72a8ac29",
+      "source": "d56685b7a2e274d6",
+      "target": "1cc1e9773bd793ab",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "f19f7c186878a9c0",
-      "relationship_id": "0151dcc392101ac3",
-      "source": "74f2c2e100c55f55",
-      "target": "5453788b2e556a00",
+      "id": "51af077f86d19166",
+      "relationship_id": "ce1183a9a01fbcb5",
+      "source": "8136d09d06450f0c",
+      "target": "b59b6f64530aaa84",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "d125fd45679dccc1",
-      "relationship_id": "2a97a6b4c1b2f245",
-      "source": "74f2c2e100c55f55",
-      "target": "4b97d4b3cf2f9c48",
+      "id": "2e3c1c59c75cfe2d",
+      "relationship_id": "1e96297bbccb97a1",
+      "source": "8136d09d06450f0c",
+      "target": "28fe13759d77bcf3",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "2907bd7f8326017b",
-      "relationship_id": "e1327bf944a58b7d",
-      "source": "74f2c2e100c55f55",
-      "target": "a7f8290a65e53ce2",
+      "id": "1f6bfdac3ae59251",
+      "relationship_id": "35cfc8403831ed04",
+      "source": "28fe13759d77bcf3",
+      "target": "8136d09d06450f0c",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "673a3e1afea322bf",
+      "relationship_id": "e0502e292067153d",
+      "source": "8136d09d06450f0c",
+      "target": "9c77ae5a9bc48336",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "abfec28134700e87",
-      "relationship_id": "0453d964c66dd011",
-      "source": "74f2c2e100c55f55",
-      "target": "bfe88ea20313f274",
+      "id": "daba148c47cc0e29",
+      "relationship_id": "441b72a973ef2480",
+      "source": "9c77ae5a9bc48336",
+      "target": "8136d09d06450f0c",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "a106cd5e857475b2",
+      "relationship_id": "d78dbe1277b45c9d",
+      "source": "8136d09d06450f0c",
+      "target": "d90dbebda0d656dd",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "82d16252170a70c9",
-      "relationship_id": "e6509493153da5ca",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "20fb742d75d2f1cf",
+      "id": "7e70aeb961bae0eb",
+      "relationship_id": "fb21d154af5235b6",
+      "source": "d90dbebda0d656dd",
+      "target": "8136d09d06450f0c",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "2d445254515d92a0",
+      "relationship_id": "cd9ddb83595d8e92",
+      "source": "8136d09d06450f0c",
+      "target": "7a11e2fb1a6c9db4",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "6116c799484377c9",
-      "relationship_id": "4edb1e79bcf35dc3",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "399427bb74320b36",
+      "id": "f318f53c7cbbf154",
+      "relationship_id": "96c19ec1095b3ef3",
+      "source": "8136d09d06450f0c",
+      "target": "845925ec4d44b49f",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "afbc02e3791e2dff",
-      "relationship_id": "3ccbef4a7be1825c",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "61d1fe65bc1b4f19",
+      "id": "dd5dd83b994068d4",
+      "relationship_id": "3284124ff0b452cc",
+      "source": "8136d09d06450f0c",
+      "target": "b22d5e9fc8a6a86b",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "51538608959ae716",
-      "relationship_id": "98c0598db0e7dc87",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "2e89041bc35c9b48",
+      "id": "50a920ab32251fe8",
+      "relationship_id": "8c4953f1dae4d5da",
+      "source": "8136d09d06450f0c",
+      "target": "fa03c539445825f7",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "1baa82dea885c85a",
-      "relationship_id": "f83707ee043485f6",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "97ab402975cdc6ff",
+      "id": "af40234b1602305e",
+      "relationship_id": "d3e185a216d83e92",
+      "source": "8136d09d06450f0c",
+      "target": "281e56614e09cac2",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "160afca79f1d3a2b",
-      "relationship_id": "42769b694ee167e1",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "d857ad1d9bc025c7",
+      "id": "5f48ae9b2059e423",
+      "relationship_id": "4c8e057fa682e44e",
+      "source": "8136d09d06450f0c",
+      "target": "a89a9ab20b69e862",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "2c04d07c17c02505",
-      "relationship_id": "da0f11ec73e378da",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "e25151dd5e07118e",
+      "id": "468eb5873abb30e9",
+      "relationship_id": "4bf6bf63acf98f18",
+      "source": "8136d09d06450f0c",
+      "target": "2742b3efeb3455fc",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "9060754de33f08d7",
-      "relationship_id": "32b0dcb7da6219e3",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "05aed445843e172f",
+      "id": "211bbceb156a7976",
+      "relationship_id": "d83349c927dd4364",
+      "source": "8136d09d06450f0c",
+      "target": "27ef0bff815cda27",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "fd020edbefb532e5",
-      "relationship_id": "61f773c1b30c56c3",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "3d1f8d8932486a76",
+      "id": "19d25f3a3879868e",
+      "relationship_id": "f21a80bccae4ea87",
+      "source": "8136d09d06450f0c",
+      "target": "6dba16ff2cef6e80",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "b2d0d5c50dc08a05",
-      "relationship_id": "814393213033d338",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "4e8fb1352724d668",
+      "id": "52045a476e9eed38",
+      "relationship_id": "d5ff59e04820f660",
+      "source": "8136d09d06450f0c",
+      "target": "e570b52f8bf382bc",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "be759a841624c9af",
-      "relationship_id": "ae9f1dacaafa56c3",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "499fc76ee2323d06",
+      "id": "198baa03cbe38be2",
+      "relationship_id": "7dab2066a4e17992",
+      "source": "8136d09d06450f0c",
+      "target": "70a0d18e78a4f729",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "7d609c3d0a6d6df5",
-      "relationship_id": "1eabec7250f40d0f",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "791aa757d12fd075",
+      "id": "968a8c52a7348fca",
+      "relationship_id": "a6eff613b4c3ac36",
+      "source": "8136d09d06450f0c",
+      "target": "4e3c41baa1a5cd01",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "1ad6203054c2f45f",
-      "relationship_id": "fed9f5baa8489bb4",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "9479eb9a4e52f42d",
+      "id": "6b8a1167a04fa279",
+      "relationship_id": "6e05bd168a6b3877",
+      "source": "8136d09d06450f0c",
+      "target": "066ccc1af85a202b",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "1cbf7d412c9282a9",
-      "relationship_id": "58141c339f85241d",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "842bc5012a2fc0f3",
+      "id": "11ca4290e29e6ef6",
+      "relationship_id": "22b1e79684515a1d",
+      "source": "8136d09d06450f0c",
+      "target": "dca6aeb9d9a81703",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "8f3fc324ef6b9cba",
-      "relationship_id": "84ad86c840d7a98e",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "5453788b2e556a00",
+      "id": "15d7cd6e8c6bb677",
+      "relationship_id": "7d4197b1380ea459",
+      "source": "8136d09d06450f0c",
+      "target": "4120da416b5f245f",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "2fe8150900646547",
-      "relationship_id": "70318b37c7be93b4",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "a7f8290a65e53ce2",
+      "id": "d1a0b1032cf77626",
+      "relationship_id": "a2012aae082afa5c",
+      "source": "8136d09d06450f0c",
+      "target": "da47348c0d9e14ba",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
     },
     {
-      "id": "eec27e1374d78083",
-      "relationship_id": "bb15954a6acc56ac",
-      "source": "4b97d4b3cf2f9c48",
-      "target": "bfe88ea20313f274",
+      "id": "4c9b747227ea830f",
+      "relationship_id": "c9ac11b0949925fb",
+      "source": "8136d09d06450f0c",
+      "target": "7fd9306b9af6e2d6",
       "weight": 0.4,
       "relationship_type": "AMENDS",
       "confidence": "LOW"
+    },
+    {
+      "id": "5b875cc18d507020",
+      "relationship_id": "7a5c38837d1fe8b4",
+      "source": "8136d09d06450f0c",
+      "target": "4deb31aedabcf616",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "e96d91b4502f4d5a",
+      "relationship_id": "9c99cc93eee0d454",
+      "source": "8136d09d06450f0c",
+      "target": "da73018813df57df",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "4290815606c44b3f",
+      "relationship_id": "fde60a5235f4fba2",
+      "source": "8136d09d06450f0c",
+      "target": "9f23021fb163523f",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "549a8af7e06c3435",
+      "relationship_id": "68de197b33fc1146",
+      "source": "8136d09d06450f0c",
+      "target": "5baa43ea00ca476d",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "ed18612dcfff1a8c",
+      "relationship_id": "d575c0c15dbef2e8",
+      "source": "8136d09d06450f0c",
+      "target": "b4e7dd30b3da29d4",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "351180ae83b1b4c5",
+      "relationship_id": "e5c382aebe7d9d4f",
+      "source": "8136d09d06450f0c",
+      "target": "99ba70989822182c",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "c9ca128537c3c910",
+      "relationship_id": "45373f2b939e76d4",
+      "source": "99ba70989822182c",
+      "target": "8136d09d06450f0c",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "60780f0b71aa31ed",
+      "relationship_id": "5c0f50f453214f5f",
+      "source": "8136d09d06450f0c",
+      "target": "2e1c927b354329d4",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "53f0a68d1bd1b118",
+      "relationship_id": "b3c3cd2f22949843",
+      "source": "2e1c927b354329d4",
+      "target": "8136d09d06450f0c",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "d5ac0f9bd34252f3",
+      "relationship_id": "2707787fb9bfafa1",
+      "source": "8136d09d06450f0c",
+      "target": "a924c2bdfd1c24db",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "ee149de30c21e731",
+      "relationship_id": "d0217a88a46c536d",
+      "source": "8136d09d06450f0c",
+      "target": "78e07379a96cdaa5",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "3bc925738e266ea3",
+      "relationship_id": "35ba5d92b412ec18",
+      "source": "8136d09d06450f0c",
+      "target": "1cc1e9773bd793ab",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "b80da2bbf9636073",
+      "relationship_id": "44a703c004df6d95",
+      "source": "b59b6f64530aaa84",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "32f033ec5be8487f",
+      "relationship_id": "874ae4c685df47b4",
+      "source": "28fe13759d77bcf3",
+      "target": "b59b6f64530aaa84",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "25e65cf496f14a02",
+      "relationship_id": "867c092683623b38",
+      "source": "b59b6f64530aaa84",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "8dc1787875223717",
+      "relationship_id": "7ac7c69cf7e82c1b",
+      "source": "9c77ae5a9bc48336",
+      "target": "b59b6f64530aaa84",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "c1bcc5949df3e8fc",
+      "relationship_id": "43f138c2da96e6f0",
+      "source": "b59b6f64530aaa84",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "892b125f6bf4d12f",
+      "relationship_id": "fbbfd8afa5b19a62",
+      "source": "d90dbebda0d656dd",
+      "target": "b59b6f64530aaa84",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ed301363b52e1364",
+      "relationship_id": "ebdea4ec4c78c171",
+      "source": "b59b6f64530aaa84",
+      "target": "7a11e2fb1a6c9db4",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "44a1338731f832cf",
+      "relationship_id": "ea85c684f30feee8",
+      "source": "b59b6f64530aaa84",
+      "target": "845925ec4d44b49f",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "a0e66bc599d78571",
+      "relationship_id": "5ffb341111d2f90b",
+      "source": "b59b6f64530aaa84",
+      "target": "b22d5e9fc8a6a86b",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "9ecdae2ea251c928",
+      "relationship_id": "ce7486420b6dd9ac",
+      "source": "b59b6f64530aaa84",
+      "target": "fa03c539445825f7",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "1533bbd969087416",
+      "relationship_id": "f39f9f393c773687",
+      "source": "b59b6f64530aaa84",
+      "target": "281e56614e09cac2",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "7a17ed26a4e78dbf",
+      "relationship_id": "f589051b1fcd1734",
+      "source": "b59b6f64530aaa84",
+      "target": "a89a9ab20b69e862",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "d852c81f6f1d9161",
+      "relationship_id": "245028c26a5f253f",
+      "source": "b59b6f64530aaa84",
+      "target": "2742b3efeb3455fc",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "483bb97fece2e40a",
+      "relationship_id": "ba1c91f2e1d14380",
+      "source": "b59b6f64530aaa84",
+      "target": "27ef0bff815cda27",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "f425ad88c28fdd90",
+      "relationship_id": "3852495900ff3c04",
+      "source": "b59b6f64530aaa84",
+      "target": "6dba16ff2cef6e80",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "8396cff718f6e4a0",
+      "relationship_id": "b769cefd564293bc",
+      "source": "b59b6f64530aaa84",
+      "target": "e570b52f8bf382bc",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "798632b62110b003",
+      "relationship_id": "508c000f1a708215",
+      "source": "b59b6f64530aaa84",
+      "target": "70a0d18e78a4f729",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "d08f23fa093b15e7",
+      "relationship_id": "0770fb1e8e7dc068",
+      "source": "b59b6f64530aaa84",
+      "target": "4e3c41baa1a5cd01",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "8a5e68fdf6f953f5",
+      "relationship_id": "696b370ef8cb00a8",
+      "source": "b59b6f64530aaa84",
+      "target": "066ccc1af85a202b",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "822ed130f1974de4",
+      "relationship_id": "cef8d1755f4727fb",
+      "source": "b59b6f64530aaa84",
+      "target": "dca6aeb9d9a81703",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "46515e65691f3503",
+      "relationship_id": "be7e9c64be1c4da5",
+      "source": "b59b6f64530aaa84",
+      "target": "4120da416b5f245f",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "d16763473e6672b8",
+      "relationship_id": "2eecef95ee21739b",
+      "source": "b59b6f64530aaa84",
+      "target": "da47348c0d9e14ba",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "0454858ade0a408a",
+      "relationship_id": "cb4724266cadee6c",
+      "source": "b59b6f64530aaa84",
+      "target": "7fd9306b9af6e2d6",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "9f763d0235e3b42e",
+      "relationship_id": "e51798ef17c0acff",
+      "source": "b59b6f64530aaa84",
+      "target": "4deb31aedabcf616",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "1614432ef734cd83",
+      "relationship_id": "86fc95be6bb573c0",
+      "source": "b59b6f64530aaa84",
+      "target": "da73018813df57df",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "858c689a4275a53d",
+      "relationship_id": "fe0a84df9b79aa73",
+      "source": "b59b6f64530aaa84",
+      "target": "9f23021fb163523f",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "5052613302e26ab9",
+      "relationship_id": "9943794cf12e132b",
+      "source": "b59b6f64530aaa84",
+      "target": "5baa43ea00ca476d",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "561058dbe279eb37",
+      "relationship_id": "5f4a901ba6a91260",
+      "source": "b59b6f64530aaa84",
+      "target": "b4e7dd30b3da29d4",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "bacefd08c404fc55",
+      "relationship_id": "bd7a55532d9c27cc",
+      "source": "b59b6f64530aaa84",
+      "target": "99ba70989822182c",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "b9b37096e98040e5",
+      "relationship_id": "72a4f3fbc6c87db9",
+      "source": "99ba70989822182c",
+      "target": "b59b6f64530aaa84",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "5bb1c45d55dc92c7",
+      "relationship_id": "fb7cdde48a089368",
+      "source": "b59b6f64530aaa84",
+      "target": "2e1c927b354329d4",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "a55e5fa1f5f3d0d6",
+      "relationship_id": "793d79e78d7c5a64",
+      "source": "2e1c927b354329d4",
+      "target": "b59b6f64530aaa84",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "8ca497892dfed8b4",
+      "relationship_id": "2b6a22d238b2682b",
+      "source": "b59b6f64530aaa84",
+      "target": "a924c2bdfd1c24db",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "439ef40f00a86c4f",
+      "relationship_id": "a78ccdb5870cee0f",
+      "source": "b59b6f64530aaa84",
+      "target": "78e07379a96cdaa5",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "8462852c8e57ad2b",
+      "relationship_id": "8b20353ed53208b6",
+      "source": "b59b6f64530aaa84",
+      "target": "1cc1e9773bd793ab",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "2e5e09baa7fde556",
+      "relationship_id": "ac00415f1c5e63a5",
+      "source": "28fe13759d77bcf3",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "c92f5047608c27f2",
+      "relationship_id": "1534031b6d58eb82",
+      "source": "28fe13759d77bcf3",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ddb7361174ca4ca6",
+      "relationship_id": "0540daf3296ced04",
+      "source": "28fe13759d77bcf3",
+      "target": "7a11e2fb1a6c9db4",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "7841957b62451594",
+      "relationship_id": "7d26bf639ab118d6",
+      "source": "7a11e2fb1a6c9db4",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "8506219959795acc",
+      "relationship_id": "d48abe1ed7279aa2",
+      "source": "28fe13759d77bcf3",
+      "target": "845925ec4d44b49f",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "0a792bf51e9c58d4",
+      "relationship_id": "9034941f9cb9b027",
+      "source": "845925ec4d44b49f",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "cb567902a02c376b",
+      "relationship_id": "fcbd668eed1a98f5",
+      "source": "28fe13759d77bcf3",
+      "target": "b22d5e9fc8a6a86b",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "aed382507b476556",
+      "relationship_id": "5594eb31916f32dd",
+      "source": "b22d5e9fc8a6a86b",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "0a41c313ada34b8a",
+      "relationship_id": "d80d9079902a41e2",
+      "source": "28fe13759d77bcf3",
+      "target": "fa03c539445825f7",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "7e58dc3067e1e1c1",
+      "relationship_id": "3f6619cccbee4e0c",
+      "source": "fa03c539445825f7",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "315955d078a12e24",
+      "relationship_id": "75ba0677ee3fb4f1",
+      "source": "28fe13759d77bcf3",
+      "target": "281e56614e09cac2",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "aa1edaca0c86260e",
+      "relationship_id": "ef48b3d29bf2d3e6",
+      "source": "281e56614e09cac2",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "500bfa8c5956e402",
+      "relationship_id": "44546134245e5864",
+      "source": "28fe13759d77bcf3",
+      "target": "a89a9ab20b69e862",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "52a983d1f47e6a50",
+      "relationship_id": "915c822c641df4e3",
+      "source": "a89a9ab20b69e862",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "ce8303c842fd1582",
+      "relationship_id": "7989afd5502fe0b8",
+      "source": "28fe13759d77bcf3",
+      "target": "2742b3efeb3455fc",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "8bfa2c94990b05a7",
+      "relationship_id": "34392318b0a1d627",
+      "source": "28fe13759d77bcf3",
+      "target": "27ef0bff815cda27",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "bcb031900f64c35b",
+      "relationship_id": "e83b2b5b711e7b47",
+      "source": "27ef0bff815cda27",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "5187cf8f08ada44a",
+      "relationship_id": "3589bb21e2cde935",
+      "source": "28fe13759d77bcf3",
+      "target": "6dba16ff2cef6e80",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "c5fb23d62bcd32c5",
+      "relationship_id": "80cca32b5b3335c9",
+      "source": "6dba16ff2cef6e80",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "635a5666b1fb9beb",
+      "relationship_id": "1abda8449ab1bd5e",
+      "source": "28fe13759d77bcf3",
+      "target": "e570b52f8bf382bc",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "476f8345d1d72bbb",
+      "relationship_id": "6e7bca908b8807f2",
+      "source": "e570b52f8bf382bc",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "77a4e6581cbf4562",
+      "relationship_id": "1948de5b5728830b",
+      "source": "28fe13759d77bcf3",
+      "target": "70a0d18e78a4f729",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "a2c1c753154357d4",
+      "relationship_id": "ce935cd8d1734f68",
+      "source": "70a0d18e78a4f729",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "8448915a5a87c79c",
+      "relationship_id": "3e8d38f5849dc251",
+      "source": "28fe13759d77bcf3",
+      "target": "4e3c41baa1a5cd01",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "900378a652ad7c9e",
+      "relationship_id": "72ced86d02440fb4",
+      "source": "4e3c41baa1a5cd01",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "f0c900dc994cb146",
+      "relationship_id": "3e6dd60c198be76a",
+      "source": "28fe13759d77bcf3",
+      "target": "066ccc1af85a202b",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "042c7835f1630a31",
+      "relationship_id": "31e27ab1ae6d8e80",
+      "source": "066ccc1af85a202b",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "efd74dba47c4a1f4",
+      "relationship_id": "e48882cb095335b9",
+      "source": "28fe13759d77bcf3",
+      "target": "dca6aeb9d9a81703",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "7fd6ba3e48d0e6ff",
+      "relationship_id": "808faa9da27fbd39",
+      "source": "dca6aeb9d9a81703",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "400a84b82013e313",
+      "relationship_id": "f98f61613f5f39c5",
+      "source": "28fe13759d77bcf3",
+      "target": "4120da416b5f245f",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ad45b65ca8e54a56",
+      "relationship_id": "2d6a12877028ecf7",
+      "source": "4120da416b5f245f",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "d6e2fd52e1d4401a",
+      "relationship_id": "a1d3034d85d99e84",
+      "source": "28fe13759d77bcf3",
+      "target": "da47348c0d9e14ba",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "e828aba0ce88e6a3",
+      "relationship_id": "0ce5ef2c518a7c9f",
+      "source": "da47348c0d9e14ba",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "808906f218bd9685",
+      "relationship_id": "9ee90180be72bac1",
+      "source": "28fe13759d77bcf3",
+      "target": "7fd9306b9af6e2d6",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "d1f2488c9c107d76",
+      "relationship_id": "893e25302af68ee5",
+      "source": "7fd9306b9af6e2d6",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "b637184f284a74bd",
+      "relationship_id": "cc7eb2eeaa6ae2b4",
+      "source": "28fe13759d77bcf3",
+      "target": "4deb31aedabcf616",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "a27078f4da7b7a64",
+      "relationship_id": "be6fb2818397803a",
+      "source": "4deb31aedabcf616",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "914328904c8e113b",
+      "relationship_id": "14e789e5e6b5a2a8",
+      "source": "28fe13759d77bcf3",
+      "target": "da73018813df57df",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "06ed87dac66732a0",
+      "relationship_id": "6dd06ca5c7255a32",
+      "source": "da73018813df57df",
+      "target": "28fe13759d77bcf3",
+      "weight": 1.0,
+      "relationship_type": "AMENDS",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "64f4ae5760997a6b",
+      "relationship_id": "235f197063866f83",
+      "source": "28fe13759d77bcf3",
+      "target": "9f23021fb163523f",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "54cce89c9e6a9c9f",
+      "relationship_id": "8220d12d3a27e0ee",
+      "source": "9f23021fb163523f",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "8094156def1d632c",
+      "relationship_id": "4558e82e92d2d85f",
+      "source": "28fe13759d77bcf3",
+      "target": "5baa43ea00ca476d",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "9dd0d2317675073c",
+      "relationship_id": "3a31aab26adad0de",
+      "source": "5baa43ea00ca476d",
+      "target": "28fe13759d77bcf3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "2e2d954500073096",
+      "relationship_id": "aa2d9ae58305526e",
+      "source": "28fe13759d77bcf3",
+      "target": "b4e7dd30b3da29d4",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "b41e70271c5abae1",
+      "relationship_id": "42bd2318f8354a60",
+      "source": "b4e7dd30b3da29d4",
+      "target": "28fe13759d77bcf3",
+      "weight": 1.0,
+      "relationship_type": "AMENDS",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "bd34515d9695ddf8",
+      "relationship_id": "24f2dbc8f220f0b4",
+      "source": "28fe13759d77bcf3",
+      "target": "99ba70989822182c",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "afcdd907d11d9172",
+      "relationship_id": "b3aefd623f052330",
+      "source": "28fe13759d77bcf3",
+      "target": "2e1c927b354329d4",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "95cc3ebbd6aa0e0c",
+      "relationship_id": "3b3f06190caf9f4e",
+      "source": "28fe13759d77bcf3",
+      "target": "a924c2bdfd1c24db",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "e5cc2acfcb5c7285",
+      "relationship_id": "4165b5d1745ac561",
+      "source": "a924c2bdfd1c24db",
+      "target": "28fe13759d77bcf3",
+      "weight": 1.0,
+      "relationship_type": "AMENDS",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "d7b38d254e84bb8d",
+      "relationship_id": "240e1675c82433dd",
+      "source": "28fe13759d77bcf3",
+      "target": "78e07379a96cdaa5",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "d839ca0e06d803d3",
+      "relationship_id": "9a8b119759fcfa9c",
+      "source": "78e07379a96cdaa5",
+      "target": "28fe13759d77bcf3",
+      "weight": 1.0,
+      "relationship_type": "AMENDS",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "c181a2adfe5b3b5b",
+      "relationship_id": "d667287ccf17cc8f",
+      "source": "28fe13759d77bcf3",
+      "target": "1cc1e9773bd793ab",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "80992322fe60a468",
+      "relationship_id": "43488b8bedce97ef",
+      "source": "1cc1e9773bd793ab",
+      "target": "28fe13759d77bcf3",
+      "weight": 1.0,
+      "relationship_type": "AMENDS",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "753496fe38708630",
+      "relationship_id": "9c064b5961f861a0",
+      "source": "9c77ae5a9bc48336",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "70b54fa55f89b4cf",
+      "relationship_id": "c95c7e49c7c9be6c",
+      "source": "9c77ae5a9bc48336",
+      "target": "7a11e2fb1a6c9db4",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "419303157a2b17f2",
+      "relationship_id": "7e01080b8de6103a",
+      "source": "7a11e2fb1a6c9db4",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "e58fa538063d0d7d",
+      "relationship_id": "5deb1337d3fa1b0a",
+      "source": "9c77ae5a9bc48336",
+      "target": "845925ec4d44b49f",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "a95102065c2c0f24",
+      "relationship_id": "7181c0be688348df",
+      "source": "845925ec4d44b49f",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "1c22b63f61e62ded",
+      "relationship_id": "86ac451d1cd8ad3b",
+      "source": "9c77ae5a9bc48336",
+      "target": "b22d5e9fc8a6a86b",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "c2ee8f344632c0cf",
+      "relationship_id": "66393e98936b59fb",
+      "source": "b22d5e9fc8a6a86b",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "ce5f435d40a0893d",
+      "relationship_id": "4ae0b474af6fe0f3",
+      "source": "9c77ae5a9bc48336",
+      "target": "fa03c539445825f7",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "bdf82548520ab2c0",
+      "relationship_id": "7e8d46883cfbb406",
+      "source": "fa03c539445825f7",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "5cfdc18b6024994a",
+      "relationship_id": "65c62f7be2ead928",
+      "source": "9c77ae5a9bc48336",
+      "target": "281e56614e09cac2",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "dc066234f034ef51",
+      "relationship_id": "b6f55e93f5313dfe",
+      "source": "281e56614e09cac2",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "64899653dbf6c2f5",
+      "relationship_id": "f19742848ea7649d",
+      "source": "9c77ae5a9bc48336",
+      "target": "a89a9ab20b69e862",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "844403646a26e8f3",
+      "relationship_id": "9a43ffeacc726efc",
+      "source": "a89a9ab20b69e862",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "633fa3ca75088d16",
+      "relationship_id": "6f49a2a69a74d414",
+      "source": "9c77ae5a9bc48336",
+      "target": "2742b3efeb3455fc",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "11eaad40572c82f4",
+      "relationship_id": "4f97d37b5c95d578",
+      "source": "9c77ae5a9bc48336",
+      "target": "27ef0bff815cda27",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "bfdf8d84aa177a13",
+      "relationship_id": "2e49a53dd6573806",
+      "source": "27ef0bff815cda27",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "d9a3e7690b9bbe30",
+      "relationship_id": "ee2bcf08e550f9b9",
+      "source": "9c77ae5a9bc48336",
+      "target": "6dba16ff2cef6e80",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "9678c87ff964a186",
+      "relationship_id": "53f0d2a0ab089416",
+      "source": "6dba16ff2cef6e80",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "0cac229cce85bb9a",
+      "relationship_id": "0f833dbfa6c576c0",
+      "source": "9c77ae5a9bc48336",
+      "target": "e570b52f8bf382bc",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "f4e4e836036c8bf3",
+      "relationship_id": "899c543fc17cf677",
+      "source": "e570b52f8bf382bc",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "1a6dac670164d2c6",
+      "relationship_id": "5f9301d21de0cf41",
+      "source": "9c77ae5a9bc48336",
+      "target": "70a0d18e78a4f729",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "92a46548a363f47c",
+      "relationship_id": "ddfe1bd8a1478c54",
+      "source": "70a0d18e78a4f729",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "d61b25d242193672",
+      "relationship_id": "84ec9ca3df2be7b2",
+      "source": "9c77ae5a9bc48336",
+      "target": "4e3c41baa1a5cd01",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "886dc735dacb56a1",
+      "relationship_id": "873521491e03be67",
+      "source": "4e3c41baa1a5cd01",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "147fc0ba5f27b3ac",
+      "relationship_id": "1f1d64d980344423",
+      "source": "9c77ae5a9bc48336",
+      "target": "066ccc1af85a202b",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "54ffb8625b6a59ce",
+      "relationship_id": "6e6d024a8cb48c7b",
+      "source": "066ccc1af85a202b",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "86bee03b30d1b09d",
+      "relationship_id": "a273d376689edebe",
+      "source": "9c77ae5a9bc48336",
+      "target": "dca6aeb9d9a81703",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "f04194b5a614be6c",
+      "relationship_id": "21f7362adbe4a812",
+      "source": "dca6aeb9d9a81703",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "0f0a15931c85ce89",
+      "relationship_id": "9389e8111b3bfde1",
+      "source": "9c77ae5a9bc48336",
+      "target": "4120da416b5f245f",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "58486dde7c4b717d",
+      "relationship_id": "30c09699ab03246e",
+      "source": "4120da416b5f245f",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "2994193e67bac545",
+      "relationship_id": "35dd199dd8eae24c",
+      "source": "9c77ae5a9bc48336",
+      "target": "da47348c0d9e14ba",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "e6eadf90e5126fcb",
+      "relationship_id": "bf15a584f898e2ab",
+      "source": "da47348c0d9e14ba",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "be256193cfed1d6b",
+      "relationship_id": "78e0924423dbe708",
+      "source": "9c77ae5a9bc48336",
+      "target": "7fd9306b9af6e2d6",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "4e7d40e2d7713c69",
+      "relationship_id": "910e94d5081ede06",
+      "source": "7fd9306b9af6e2d6",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "8e4be1fbab8fcdea",
+      "relationship_id": "c1184976aef2d3dd",
+      "source": "9c77ae5a9bc48336",
+      "target": "4deb31aedabcf616",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "eb1da00fe6d61916",
+      "relationship_id": "28b3261f7ac6ffa7",
+      "source": "4deb31aedabcf616",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "c87a13417849d594",
+      "relationship_id": "6b0af7f55dffbf75",
+      "source": "9c77ae5a9bc48336",
+      "target": "da73018813df57df",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ca9f35da5e16ce30",
+      "relationship_id": "448d7b13f651b372",
+      "source": "da73018813df57df",
+      "target": "9c77ae5a9bc48336",
+      "weight": 1.0,
+      "relationship_type": "AMENDS",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "0b29c7de0c56aa64",
+      "relationship_id": "f7fc6a78d8cd7b83",
+      "source": "9c77ae5a9bc48336",
+      "target": "9f23021fb163523f",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "c94b14a2d9aca6af",
+      "relationship_id": "2f6cd91659484f34",
+      "source": "9f23021fb163523f",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "901324ed5918c286",
+      "relationship_id": "1de0bbfbfc97adf3",
+      "source": "9c77ae5a9bc48336",
+      "target": "5baa43ea00ca476d",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "5194efa9998266d2",
+      "relationship_id": "ee2195ce091dbf1a",
+      "source": "5baa43ea00ca476d",
+      "target": "9c77ae5a9bc48336",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "7ccc6872895ab2aa",
+      "relationship_id": "d61dee18fef9a162",
+      "source": "9c77ae5a9bc48336",
+      "target": "b4e7dd30b3da29d4",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "f39542da608e5459",
+      "relationship_id": "0c7a4f48a47c6d6c",
+      "source": "b4e7dd30b3da29d4",
+      "target": "9c77ae5a9bc48336",
+      "weight": 1.0,
+      "relationship_type": "AMENDS",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "eb450584847e1453",
+      "relationship_id": "1cd6e2d02d74a859",
+      "source": "9c77ae5a9bc48336",
+      "target": "99ba70989822182c",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "6e4661d1ff1e5873",
+      "relationship_id": "5b2e56d31230abd3",
+      "source": "9c77ae5a9bc48336",
+      "target": "2e1c927b354329d4",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "c939bdc34de2658b",
+      "relationship_id": "01915db6c6906e14",
+      "source": "9c77ae5a9bc48336",
+      "target": "a924c2bdfd1c24db",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "1410698e18034943",
+      "relationship_id": "3e6aa15b4666393d",
+      "source": "a924c2bdfd1c24db",
+      "target": "9c77ae5a9bc48336",
+      "weight": 1.0,
+      "relationship_type": "AMENDS",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "6f161befa173fd72",
+      "relationship_id": "18d904ad337f2735",
+      "source": "9c77ae5a9bc48336",
+      "target": "78e07379a96cdaa5",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "d10880b85288161a",
+      "relationship_id": "0008e1638f389c04",
+      "source": "78e07379a96cdaa5",
+      "target": "9c77ae5a9bc48336",
+      "weight": 1.0,
+      "relationship_type": "AMENDS",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "3a2da651cf8972dd",
+      "relationship_id": "85ceef5b981328ca",
+      "source": "9c77ae5a9bc48336",
+      "target": "1cc1e9773bd793ab",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "dd5de5d147ae76dc",
+      "relationship_id": "77e310f1660261c0",
+      "source": "1cc1e9773bd793ab",
+      "target": "9c77ae5a9bc48336",
+      "weight": 1.0,
+      "relationship_type": "AMENDS",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "e732ffe5f614c936",
+      "relationship_id": "6b7944c3079ce70e",
+      "source": "d90dbebda0d656dd",
+      "target": "7a11e2fb1a6c9db4",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "3fd87906e62750ca",
+      "relationship_id": "331f20ded6148859",
+      "source": "7a11e2fb1a6c9db4",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "df9d223e1dac5e0b",
+      "relationship_id": "9d8562a5112b28b0",
+      "source": "d90dbebda0d656dd",
+      "target": "845925ec4d44b49f",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "81c300050df4da18",
+      "relationship_id": "07ad9bc5c2129b0a",
+      "source": "845925ec4d44b49f",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "822f4c58eae31ed4",
+      "relationship_id": "3080e8d6aaa436a1",
+      "source": "d90dbebda0d656dd",
+      "target": "b22d5e9fc8a6a86b",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "d0dab3119604d4e0",
+      "relationship_id": "f868d0f9091d147f",
+      "source": "b22d5e9fc8a6a86b",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "179d8379896c72cd",
+      "relationship_id": "f6dd24d58ed19bb0",
+      "source": "d90dbebda0d656dd",
+      "target": "fa03c539445825f7",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "b9e4b0ef6a0c9fa1",
+      "relationship_id": "b91e39bdff0013c5",
+      "source": "fa03c539445825f7",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "f4583e340a7e3e08",
+      "relationship_id": "8b9533ed71b20d46",
+      "source": "d90dbebda0d656dd",
+      "target": "281e56614e09cac2",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "3946b60bd542c27c",
+      "relationship_id": "104c92612852eadb",
+      "source": "281e56614e09cac2",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "b9fec986ca652393",
+      "relationship_id": "fa70be93dc03cd53",
+      "source": "d90dbebda0d656dd",
+      "target": "a89a9ab20b69e862",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "40676c16ee10bf69",
+      "relationship_id": "ee8ea822930d8940",
+      "source": "a89a9ab20b69e862",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "048f180c70a6db39",
+      "relationship_id": "d17f134166b9618d",
+      "source": "d90dbebda0d656dd",
+      "target": "2742b3efeb3455fc",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "c1e91ed2b1e80ad8",
+      "relationship_id": "0c9357c0e42e4c6c",
+      "source": "d90dbebda0d656dd",
+      "target": "27ef0bff815cda27",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "f79a137e80988b2f",
+      "relationship_id": "c919a549e0fb39dd",
+      "source": "27ef0bff815cda27",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "d04de9582ee1172f",
+      "relationship_id": "5c9d7b9f2fde97ba",
+      "source": "d90dbebda0d656dd",
+      "target": "6dba16ff2cef6e80",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "fdd2f9cf6d54e533",
+      "relationship_id": "fa655647a9f57074",
+      "source": "6dba16ff2cef6e80",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "cbe554ae6aef9045",
+      "relationship_id": "7a02dfb81d2faf3c",
+      "source": "d90dbebda0d656dd",
+      "target": "e570b52f8bf382bc",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "1b76ba6fbfd369f0",
+      "relationship_id": "d792f4dab260e608",
+      "source": "e570b52f8bf382bc",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "0f7a7eabccc6d4a3",
+      "relationship_id": "9e106641ce644f96",
+      "source": "d90dbebda0d656dd",
+      "target": "70a0d18e78a4f729",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "7217800558be6de4",
+      "relationship_id": "aec71ddd9e31d8b1",
+      "source": "70a0d18e78a4f729",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "453e1f80d06defad",
+      "relationship_id": "c492e4f4301f6737",
+      "source": "d90dbebda0d656dd",
+      "target": "4e3c41baa1a5cd01",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "7564e88b7db8384b",
+      "relationship_id": "72a51fb038fd980a",
+      "source": "4e3c41baa1a5cd01",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "b4e57af99eceb71b",
+      "relationship_id": "3d4fc2c2218b7656",
+      "source": "d90dbebda0d656dd",
+      "target": "066ccc1af85a202b",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "87358dedb94a3d1d",
+      "relationship_id": "34cd7c1ea4bb92b3",
+      "source": "066ccc1af85a202b",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "74c8b26b4ad8e712",
+      "relationship_id": "c3169c6721eda508",
+      "source": "d90dbebda0d656dd",
+      "target": "dca6aeb9d9a81703",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "d62cc62a9fa8da3d",
+      "relationship_id": "7563161c3db39db4",
+      "source": "dca6aeb9d9a81703",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "1942ef187db5ae1c",
+      "relationship_id": "8deaced78863f073",
+      "source": "d90dbebda0d656dd",
+      "target": "4120da416b5f245f",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "da6a86ea376dff42",
+      "relationship_id": "dc4b5d5cf9b07356",
+      "source": "4120da416b5f245f",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "62e09830914d63d1",
+      "relationship_id": "3387a5fb86a04d5b",
+      "source": "d90dbebda0d656dd",
+      "target": "da47348c0d9e14ba",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "da1e17dbe00065ee",
+      "relationship_id": "5a83c2941dbc7a63",
+      "source": "da47348c0d9e14ba",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "9ac5ba7a7c72bf38",
+      "relationship_id": "cd0aa71954ba8fb0",
+      "source": "d90dbebda0d656dd",
+      "target": "7fd9306b9af6e2d6",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "fa89de756daa5f40",
+      "relationship_id": "6a7f94607c6cb2ad",
+      "source": "7fd9306b9af6e2d6",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "3464b516b8f885fb",
+      "relationship_id": "349bac2e447337dc",
+      "source": "d90dbebda0d656dd",
+      "target": "4deb31aedabcf616",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "f762092dfa89b60f",
+      "relationship_id": "7284917ebe22a832",
+      "source": "4deb31aedabcf616",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "8ab230ba76aa4ae8",
+      "relationship_id": "7655fb9bc1fc4d73",
+      "source": "d90dbebda0d656dd",
+      "target": "da73018813df57df",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "858d7d7e32f5c74c",
+      "relationship_id": "35b0660e0010d919",
+      "source": "da73018813df57df",
+      "target": "d90dbebda0d656dd",
+      "weight": 1.0,
+      "relationship_type": "AMENDS",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "8b6552a9911e30c6",
+      "relationship_id": "3b68567c38b313a6",
+      "source": "d90dbebda0d656dd",
+      "target": "9f23021fb163523f",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "39215cd70ec4026c",
+      "relationship_id": "a7b2e5db2181012c",
+      "source": "9f23021fb163523f",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "4a0b651c876ed518",
+      "relationship_id": "1350b1ec3fe67414",
+      "source": "d90dbebda0d656dd",
+      "target": "5baa43ea00ca476d",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "c944938b044bf30e",
+      "relationship_id": "b55a4cbcaa75d628",
+      "source": "5baa43ea00ca476d",
+      "target": "d90dbebda0d656dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "24b5be3db5ecda22",
+      "relationship_id": "4cbf5ba204165824",
+      "source": "d90dbebda0d656dd",
+      "target": "b4e7dd30b3da29d4",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "d5bc3717b2bb683d",
+      "relationship_id": "e1c6ab5fd8bd9f8b",
+      "source": "b4e7dd30b3da29d4",
+      "target": "d90dbebda0d656dd",
+      "weight": 1.0,
+      "relationship_type": "AMENDS",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "0c65ab09c9bb3c69",
+      "relationship_id": "de3d5bb31ff62583",
+      "source": "d90dbebda0d656dd",
+      "target": "99ba70989822182c",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "77da15ced787c81b",
+      "relationship_id": "080900100ef3b3f4",
+      "source": "d90dbebda0d656dd",
+      "target": "2e1c927b354329d4",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "ddf70c74a0d470a3",
+      "relationship_id": "1df24ef775420398",
+      "source": "d90dbebda0d656dd",
+      "target": "a924c2bdfd1c24db",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "f2b7992a351f6a3d",
+      "relationship_id": "12afdec8f03a1945",
+      "source": "a924c2bdfd1c24db",
+      "target": "d90dbebda0d656dd",
+      "weight": 1.0,
+      "relationship_type": "AMENDS",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "6494aae1724e1a23",
+      "relationship_id": "e6337f75e51533da",
+      "source": "d90dbebda0d656dd",
+      "target": "78e07379a96cdaa5",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "0dbe402d0b70abe9",
+      "relationship_id": "253ef18282a13ac8",
+      "source": "78e07379a96cdaa5",
+      "target": "d90dbebda0d656dd",
+      "weight": 1.0,
+      "relationship_type": "AMENDS",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "763e85fcc887960d",
+      "relationship_id": "eb6e1352271dce36",
+      "source": "d90dbebda0d656dd",
+      "target": "1cc1e9773bd793ab",
+      "weight": 0.7,
+      "relationship_type": "WITHDRAWS",
+      "confidence": "MEDIUM"
+    },
+    {
+      "id": "940c13cc0655ee8e",
+      "relationship_id": "cda14c7ebc898897",
+      "source": "1cc1e9773bd793ab",
+      "target": "d90dbebda0d656dd",
+      "weight": 1.0,
+      "relationship_type": "AMENDS",
+      "confidence": "HIGH"
     },
     {
       "id": "a65d00b780a180a2",
@@ -4742,6 +6771,609 @@
       "weight": 1.0,
       "relationship_type": "AMENDS",
       "confidence": "HIGH"
+    },
+    {
+      "id": "770a7701c50fb747",
+      "relationship_id": "086a6091c39cabfb",
+      "source": "74f2c2e100c55f55",
+      "target": "6093970627846428",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "c8a588f0218a0a8b",
+      "relationship_id": "afdf11cafc1e71c4",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "6093970627846428",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "0dc003727e087e68",
+      "relationship_id": "db040b3123405771",
+      "source": "74f2c2e100c55f55",
+      "target": "68d455884d9efad2",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "38fbe3e3651775ab",
+      "relationship_id": "6092753aebfdbcf9",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "68d455884d9efad2",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "1ba76aa903a56aa9",
+      "relationship_id": "84f57d2b23fa9452",
+      "source": "74f2c2e100c55f55",
+      "target": "d6395439deb31aaa",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "980546a83ff15da3",
+      "relationship_id": "66649194e7277365",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "d6395439deb31aaa",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "9c10dd58915134cc",
+      "relationship_id": "dfe47d03cf06bcf5",
+      "source": "74f2c2e100c55f55",
+      "target": "44c0c1058cfefbe6",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "eaae50960507aba9",
+      "relationship_id": "59f240d0173154ce",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "44c0c1058cfefbe6",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "07b4aafc7ac34d58",
+      "relationship_id": "e763fde821d783b5",
+      "source": "74f2c2e100c55f55",
+      "target": "6e30465edc96b23b",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "9c789d200af76743",
+      "relationship_id": "704447fcdd34967f",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "6e30465edc96b23b",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "05db9b07fab1981b",
+      "relationship_id": "1e27df437a8fca66",
+      "source": "74f2c2e100c55f55",
+      "target": "975fe6dad8887e68",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "45653117b1c64577",
+      "relationship_id": "901773e76c92b9ca",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "975fe6dad8887e68",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "d4204ba30b0728ba",
+      "relationship_id": "51c9b4183952298d",
+      "source": "74f2c2e100c55f55",
+      "target": "c49167f3f2e36b93",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "6b511493a72539b2",
+      "relationship_id": "3647601b4dacb391",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "c49167f3f2e36b93",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "ea213ed2f2f7c8f3",
+      "relationship_id": "39dad7e4e299ac77",
+      "source": "74f2c2e100c55f55",
+      "target": "db112b8298ebb2c9",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "2dee44fa1b89e41c",
+      "relationship_id": "8bf6c1e8652b9485",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "db112b8298ebb2c9",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "714838fe91ba601e",
+      "relationship_id": "b2f365724242e498",
+      "source": "74f2c2e100c55f55",
+      "target": "299664ae1330b6c4",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "b1f96ecdac6db4c3",
+      "relationship_id": "21d30a8b8274ad27",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "299664ae1330b6c4",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "007be1303fd8874b",
+      "relationship_id": "77943f9f5b0e1ece",
+      "source": "74f2c2e100c55f55",
+      "target": "4c5b17d9caa369a9",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "c44877cbe2b0293e",
+      "relationship_id": "2e7a25c6f57c4500",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "4c5b17d9caa369a9",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "854837ef8b403c06",
+      "relationship_id": "ef25d7a9920a3f71",
+      "source": "74f2c2e100c55f55",
+      "target": "a7f740f051c23700",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "f93d7e56fa8f3349",
+      "relationship_id": "568ffa6db294342f",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "a7f740f051c23700",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "ca31048dc7b17fa7",
+      "relationship_id": "c6445f4725539528",
+      "source": "74f2c2e100c55f55",
+      "target": "da784617bf14aed2",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "28af680a9c131e8f",
+      "relationship_id": "41ff923451372529",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "da784617bf14aed2",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "d4a916f20aa4117b",
+      "relationship_id": "6850d3d3733200d2",
+      "source": "74f2c2e100c55f55",
+      "target": "2aefa5ff56932d57",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "4a8bf03ae1d6aa29",
+      "relationship_id": "efd2e3783b6234fa",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "2aefa5ff56932d57",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "65c141f95f9cf149",
+      "relationship_id": "0796363f5a82ccdd",
+      "source": "74f2c2e100c55f55",
+      "target": "b8ccf37af044ecf2",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "77e7a2e31f0c30d8",
+      "relationship_id": "0823cabeb0aed9e6",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "b8ccf37af044ecf2",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "7f1ec413ebcf7a77",
+      "relationship_id": "344ed9df82576de0",
+      "source": "74f2c2e100c55f55",
+      "target": "5967fdb26124d30d",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "c2bc293a857152a0",
+      "relationship_id": "178aa21d0f7a39b8",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "5967fdb26124d30d",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "2095a7870667ef68",
+      "relationship_id": "2032e33f62300e6e",
+      "source": "74f2c2e100c55f55",
+      "target": "cdc4d5fcd38fdec4",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "0e5119098b785ac7",
+      "relationship_id": "06cc5830725385bf",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "cdc4d5fcd38fdec4",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "686eae876ad40db8",
+      "relationship_id": "9d721254861705b8",
+      "source": "74f2c2e100c55f55",
+      "target": "20fb742d75d2f1cf",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "b9076e6837e32a8e",
+      "relationship_id": "4552f9dd82184323",
+      "source": "74f2c2e100c55f55",
+      "target": "399427bb74320b36",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "e131f6fdc7f2e0b3",
+      "relationship_id": "5cc80f572bf3d9cc",
+      "source": "74f2c2e100c55f55",
+      "target": "61d1fe65bc1b4f19",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "22f3e22093aec1bb",
+      "relationship_id": "d1b371a0d7c50dd7",
+      "source": "74f2c2e100c55f55",
+      "target": "2e89041bc35c9b48",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "fcafc9d94424cf9b",
+      "relationship_id": "7c13a57330611513",
+      "source": "74f2c2e100c55f55",
+      "target": "97ab402975cdc6ff",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "29a23843365dd397",
+      "relationship_id": "e78531ec99354c21",
+      "source": "74f2c2e100c55f55",
+      "target": "d857ad1d9bc025c7",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "04b20b4449353776",
+      "relationship_id": "54c1cb0912d3d147",
+      "source": "74f2c2e100c55f55",
+      "target": "e25151dd5e07118e",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "4f49716f4cd956cc",
+      "relationship_id": "50b9f746972ccd6d",
+      "source": "74f2c2e100c55f55",
+      "target": "05aed445843e172f",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "ed311c918eee567d",
+      "relationship_id": "71d8305ef400e642",
+      "source": "74f2c2e100c55f55",
+      "target": "3d1f8d8932486a76",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "b885b52d56f9e791",
+      "relationship_id": "1cad68fb7a98e24d",
+      "source": "74f2c2e100c55f55",
+      "target": "4e8fb1352724d668",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "a7a521a8bf631fe5",
+      "relationship_id": "01bd33c1e8ec6f30",
+      "source": "74f2c2e100c55f55",
+      "target": "499fc76ee2323d06",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "91d6061f51843883",
+      "relationship_id": "7e125cf425f063f1",
+      "source": "74f2c2e100c55f55",
+      "target": "791aa757d12fd075",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "0a155b1e2f9bbcb2",
+      "relationship_id": "e76b297acc052201",
+      "source": "74f2c2e100c55f55",
+      "target": "9479eb9a4e52f42d",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "a49358276a5ee9fc",
+      "relationship_id": "9bd5a74cb42475af",
+      "source": "74f2c2e100c55f55",
+      "target": "842bc5012a2fc0f3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "f19f7c186878a9c0",
+      "relationship_id": "0151dcc392101ac3",
+      "source": "74f2c2e100c55f55",
+      "target": "5453788b2e556a00",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "d125fd45679dccc1",
+      "relationship_id": "2a97a6b4c1b2f245",
+      "source": "74f2c2e100c55f55",
+      "target": "4b97d4b3cf2f9c48",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "2907bd7f8326017b",
+      "relationship_id": "e1327bf944a58b7d",
+      "source": "74f2c2e100c55f55",
+      "target": "a7f8290a65e53ce2",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "abfec28134700e87",
+      "relationship_id": "0453d964c66dd011",
+      "source": "74f2c2e100c55f55",
+      "target": "bfe88ea20313f274",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "82d16252170a70c9",
+      "relationship_id": "e6509493153da5ca",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "20fb742d75d2f1cf",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "6116c799484377c9",
+      "relationship_id": "4edb1e79bcf35dc3",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "399427bb74320b36",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "afbc02e3791e2dff",
+      "relationship_id": "3ccbef4a7be1825c",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "61d1fe65bc1b4f19",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "51538608959ae716",
+      "relationship_id": "98c0598db0e7dc87",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "2e89041bc35c9b48",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "1baa82dea885c85a",
+      "relationship_id": "f83707ee043485f6",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "97ab402975cdc6ff",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "160afca79f1d3a2b",
+      "relationship_id": "42769b694ee167e1",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "d857ad1d9bc025c7",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "2c04d07c17c02505",
+      "relationship_id": "da0f11ec73e378da",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "e25151dd5e07118e",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "9060754de33f08d7",
+      "relationship_id": "32b0dcb7da6219e3",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "05aed445843e172f",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "fd020edbefb532e5",
+      "relationship_id": "61f773c1b30c56c3",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "3d1f8d8932486a76",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "b2d0d5c50dc08a05",
+      "relationship_id": "814393213033d338",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "4e8fb1352724d668",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "be759a841624c9af",
+      "relationship_id": "ae9f1dacaafa56c3",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "499fc76ee2323d06",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "7d609c3d0a6d6df5",
+      "relationship_id": "1eabec7250f40d0f",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "791aa757d12fd075",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "1ad6203054c2f45f",
+      "relationship_id": "fed9f5baa8489bb4",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "9479eb9a4e52f42d",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "1cbf7d412c9282a9",
+      "relationship_id": "58141c339f85241d",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "842bc5012a2fc0f3",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "8f3fc324ef6b9cba",
+      "relationship_id": "84ad86c840d7a98e",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "5453788b2e556a00",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "2fe8150900646547",
+      "relationship_id": "70318b37c7be93b4",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "a7f8290a65e53ce2",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "eec27e1374d78083",
+      "relationship_id": "bb15954a6acc56ac",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "bfe88ea20313f274",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
     },
     {
       "id": "5267405a11b21b18",
