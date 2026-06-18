@@ -108,7 +108,7 @@ jobs:
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         
         # Track and stage event logs, snapshots, and dashboard history files
-        git add data/events/ data/snapshots/ dashboard/history/ dashboard/manifest.json dashboard/data.json dashboard/analytics.json
+                  git add data/events/ data/snapshots/ dashboard/
         
         if git diff --staged --quiet; then
           echo "No state changes to commit."
