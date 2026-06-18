@@ -7,13 +7,7 @@ from src.services.vsa.eigen_transition_engine_service import EigenTransitionEngi
 from src.models.ete_models import ETEState
 
 @pytest.fixture
-def clean_engine():
-    # Remove files
-    if os.path.exists("data/events/daily_events.jsonl"):
-        os.remove("data/events/daily_events.jsonl")
-    if os.path.exists("data/snapshots/daily_snapshots.json"):
-        os.remove("data/snapshots/daily_snapshots.json")
-    
+def clean_engine(tmp_path):
     # Mock sequence config
     if not os.path.exists("src/constants"):
         os.makedirs("src/constants")
@@ -25,7 +19,7 @@ def clean_engine():
             }
         }, f)
         
-    engine = EigenTransitionEngineService("daily", config_path=config_path)
+    engine = EigenTransitionEngineService("daily", config_path=config_path, events_dir=tmp_path)
     yield engine
     if os.path.exists(config_path):
         os.remove(config_path)
@@ -85,13 +79,13 @@ def test_integrity_failure(clean_engine):
     clean_engine.update_active_sequences("TEST", df_t1)
     
     # Manually corrupt the log (second event)
-    with open("data/events/daily_events.jsonl", "r") as f:
+    with open(clean_engine.events_file, "r") as f:
         lines = f.readlines()
     
     event = json.loads(lines[1])
     event['matched'] = False # Tamper
     lines[1] = json.dumps(event) + "\n"
-    with open("data/events/daily_events.jsonl", "w") as f:
+    with open(clean_engine.events_file, "w") as f:
         f.writelines(lines)
         
     state, _ = clean_engine.reconstruct_state()
@@ -108,7 +102,7 @@ def test_hvls_and_lvhs(clean_engine):
             }
         }, f)
     # Re-instantiate engine to pick up new config
-    engine = EigenTransitionEngineService("daily", config_path=config_path)
+    engine = EigenTransitionEngineService("daily", config_path=config_path, events_dir=clean_engine.events_dir)
 
     df_trigger = pd.DataFrame({"Date": [datetime.now()], "Open": [10], "High": [20], "Low": [10], "Close": [15], "Volume": [100]}) # Spread = 10
     engine.detect_triggers("TEST", df_trigger, True)

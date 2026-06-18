@@ -102,6 +102,22 @@ jobs:
           echo "No dashboard_bak directory found, skipping copy"
         fi
 
+    - name: Commit and Push State and History Updates
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git pull origin main --rebase
+        
+        # Track and stage event logs, snapshots, and dashboard history files
+        git add data/events/ data/snapshots/ dashboard/history/ dashboard/manifest.json dashboard/data.json dashboard/analytics.json
+        
+        if git diff --staged --quiet; then
+          echo "No state changes to commit."
+        else
+          git commit -m "chore: persist events, snapshots, and historical data [skip ci]"
+          git push origin main
+        fi
+
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
