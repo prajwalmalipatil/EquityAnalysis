@@ -108,12 +108,18 @@ jobs:
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         
         # Track and stage event logs, snapshots, and dashboard history files
-                  git add data/events/ data/snapshots/ dashboard/ orchestrator_metrics.json
+        git add -u
+        git add data/events/ data/snapshots/ dashboard/ orchestrator_metrics.json
         
         if git diff --staged --quiet; then
           echo "No state changes to commit."
         else
           git commit -m "chore: persist events, snapshots, and historical data [skip ci]"
+          
+          # Clean working directory of any other unstaged or untracked changes
+          git checkout -- .
+          git clean -fd
+          
           git pull origin main --rebase
           git push origin main
         fi
