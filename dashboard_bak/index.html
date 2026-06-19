@@ -201,7 +201,10 @@
                             <div class="eigen-stats">
                                 <!-- Daily ETE -->
                                 <div class="eigen-row" onclick="toggleEteTable('daily')">
-                                    <span>Daily Sequences</span>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span class="ete-timeframe-arrow" id="ete-arrow-daily" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        <span>Daily Sequences</span>
+                                    </div>
                                     <span class="badge" id="ete-daily-count">--</span>
                                 </div>
                                 <div class="eigen-table-container" id="ete-table-daily" style="display: none;">
@@ -212,7 +215,10 @@
                                 
                                 <!-- Weekly ETE -->
                                 <div class="eigen-row" onclick="toggleEteTable('weekly')">
-                                    <span>Weekly Sequences</span>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span class="ete-timeframe-arrow" id="ete-arrow-weekly" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        <span>Weekly Sequences</span>
+                                    </div>
                                     <span class="badge" id="ete-weekly-count">--</span>
                                 </div>
                                 <div class="eigen-table-container" id="ete-table-weekly" style="display: none;">
@@ -223,7 +229,10 @@
                                 
                                 <!-- Monthly ETE -->
                                 <div class="eigen-row" onclick="toggleEteTable('monthly')">
-                                    <span>Monthly Sequences</span>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span class="ete-timeframe-arrow" id="ete-arrow-monthly" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        <span>Monthly Sequences</span>
+                                    </div>
                                     <span class="badge" id="ete-monthly-count">--</span>
                                 </div>
                                 <div class="eigen-table-container" id="ete-table-monthly" style="display: none;">
