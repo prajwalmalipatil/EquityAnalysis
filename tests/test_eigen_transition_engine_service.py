@@ -128,3 +128,78 @@ def test_hvls_and_lvhs(clean_engine):
     engine.update_active_sequences("TEST", df_t2)
     state2, _ = engine.reconstruct_state()
     assert state2[seq_id].state == ETEState.COMPLETED
+
+def test_weekly_transition(tmp_path):
+    config_path = "src/constants/ete_sequences_test_weekly.json"
+    with open(config_path, "w") as f:
+        json.dump({
+            "AVE_1": {
+                "sequence": ["HVHS", "LVLS"]
+            }
+        }, f)
+        
+    engine = EigenTransitionEngineService("weekly", config_path=config_path, events_dir=tmp_path)
+    
+    # T (trigger) on 2026-W23
+    df_trigger = pd.DataFrame({
+        "YearWeek": ["2026-W23"], "Open": [100], "High": [110], "Low": [90], "Close": [105], "Volume": [1000]
+    })
+    engine.detect_triggers("WEEKLY_TEST", df_trigger, True)
+    
+    # T+1 on 2026-W24 (HVHS: Vol up, Spread up)
+    df_t1 = pd.DataFrame({
+        "YearWeek": ["2026-W23", "2026-W24"],
+        "Open": [100, 100], "High": [110, 130], "Low": [90, 80], "Close": [105, 120], "Volume": [1000, 1500]
+    })
+    
+    engine.update_active_sequences("WEEKLY_TEST", df_t1)
+    state, _ = engine.reconstruct_state()
+    seq_id = list(state.keys())[0]
+    assert state[seq_id].current_stage_index == 1
+    assert state[seq_id].state == ETEState.WAITING
+    
+    # T+2 on 2026-W25 (LVLS: Vol down, Spread down)
+    df_t2 = pd.DataFrame({
+        "YearWeek": ["2026-W23", "2026-W24", "2026-W25"],
+        "Open": [100, 100, 100], "High": [110, 130, 115], "Low": [90, 80, 95], "Close": [105, 120, 110], "Volume": [1000, 1500, 800]
+    })
+    
+    engine.update_active_sequences("WEEKLY_TEST", df_t2)
+    state2, _ = engine.reconstruct_state()
+    assert state2[seq_id].state == ETEState.COMPLETED
+    
+    if os.path.exists(config_path):
+        os.remove(config_path)
+
+def test_monthly_transition(tmp_path):
+    config_path = "src/constants/ete_sequences_test_monthly.json"
+    with open(config_path, "w") as f:
+        json.dump({
+            "AVE_1": {
+                "sequence": ["HVHS", "LVLS"]
+            }
+        }, f)
+        
+    engine = EigenTransitionEngineService("monthly", config_path=config_path, events_dir=tmp_path)
+    
+    # T (trigger) on 2026-05
+    df_trigger = pd.DataFrame({
+        "YearMonth": ["2026-05"], "Open": [100], "High": [110], "Low": [90], "Close": [105], "Volume": [1000]
+    })
+    engine.detect_triggers("MONTHLY_TEST", df_trigger, True)
+    
+    # T+1 on 2026-06 (HVHS: Vol up, Spread up)
+    df_t1 = pd.DataFrame({
+        "YearMonth": ["2026-05", "2026-06"],
+        "Open": [100, 100], "High": [110, 130], "Low": [90, 80], "Close": [105, 120], "Volume": [1000, 1500]
+    })
+    
+    engine.update_active_sequences("MONTHLY_TEST", df_t1)
+    state, _ = engine.reconstruct_state()
+    seq_id = list(state.keys())[0]
+    assert state[seq_id].current_stage_index == 1
+    assert state[seq_id].state == ETEState.WAITING
+    
+    if os.path.exists(config_path):
+        os.remove(config_path)
+

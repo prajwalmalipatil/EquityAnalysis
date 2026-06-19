@@ -115,6 +115,11 @@ class EigenTransitionEngineService:
         for config_id, config in self.sequences_config.items():
             if not config.get('enabled', True):
                 continue
+                
+            if "timeframes" in config:
+                allowed = [tf.lower() for tf in config["timeframes"]]
+                if self.timeframe not in allowed:
+                    continue
             
             # Deterministic sequence_id
             seq_seed = f"{symbol}_{self.timeframe}_{trigger_date}_{config_id}"
