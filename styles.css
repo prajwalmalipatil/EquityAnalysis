@@ -507,6 +507,35 @@ nav {
     font-size: 0.9rem;
 }
 
+/* ETE Stage-wise Sections */
+.ete-stage-section {
+    margin-bottom: 24px;
+}
+.ete-stage-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+    margin-bottom: 12px;
+    padding: 8px 16px;
+    background: var(--glass-highlight);
+    border-radius: 8px;
+    border-left: 3px solid var(--primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.ete-stage-count {
+    background: var(--primary-glow);
+    color: var(--primary);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+.ete-stage-section .data-table {
+    margin-bottom: 8px;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .main-panels {

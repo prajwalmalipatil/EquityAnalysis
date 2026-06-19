@@ -1022,41 +1022,105 @@ function renderETE(summaryData) {
     document.getElementById('ete-weekly-count').textContent = '0';
     document.getElementById('ete-monthly-count').textContent = '0';
     
+    const stageConfigs = [
+        { id: 'T+0', name: 'Stage T+0: Eigen Filter Trigger' },
+        { id: 'T+1', name: 'Stage T+1: LVLS Transition' },
+        { id: 'T+2', name: 'Stage T+2: HVHS Transition' },
+        { id: 'T+3', name: 'Stage T+3: LVLS Transition' },
+        { id: 'Completed', name: 'Completed Sequences' }
+    ];
+    
     ['daily', 'weekly', 'monthly'].forEach(timeframe => {
-        const tbody = document.getElementById(`ete-body-${timeframe}`);
-        if (!tbody) return;
-        tbody.innerHTML = '';
+        const container = document.getElementById(`ete-stages-${timeframe}`);
+        if (!container) return;
+        container.innerHTML = '';
         
         const items = allItems.filter(i => i.timeframe === timeframe);
         document.getElementById(`ete-${timeframe}-count`).textContent = items.length;
         
         if (items.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted)">No sequences found.</td></tr>`;
+            container.innerHTML = `<div style="text-align:center; color:var(--text-muted); padding: 20px;">No sequences found.</div>`;
             return;
         }
         
-        items.forEach(item => {
-            const tr = document.createElement('tr');
-            
-            let stateClass = 'badge-label';
-            if (item.state === 'Completed') stateClass = 'badge-gap-up';
-            else if (item.state === 'Waiting') stateClass = 'badge-strong';
-            else if (item.state === 'Failed') stateClass = 'badge-gap-down';
-            else if (item.state === 'Triggered') stateClass = 'badge-label';
-
-            tr.innerHTML = `
-                <td class="symbol-cell">${sanitizeHTML(item.symbol)}</td>
-                <td><span class="premium-badge ${stateClass}">${sanitizeHTML(item.state)}</span></td>
-                <td>${sanitizeHTML(item.current_stage)}</td>
-                <td>${item.confidence ? item.confidence.toFixed(1) + '%' : '--'}</td>
-                <td><button class="btn-small">View</button></td>
-            `;
-            
-            const btn = tr.querySelector('.btn-small');
-            btn.addEventListener('click', () => {
-                openSequenceDrilldown(item);
+        stageConfigs.forEach(stage => {
+            const stageItems = items.filter(item => {
+                if (stage.id === 'Completed') {
+                    return item.current_stage === 'Completed' || item.state === 'Completed';
+                } else {
+                    return item.current_stage === stage.id && item.state !== 'Completed';
+                }
             });
-            tbody.appendChild(tr);
+            
+            // Create section container
+            const section = document.createElement('div');
+            section.className = 'ete-stage-section';
+            
+            // Create title banner
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'ete-stage-title';
+            titleDiv.innerHTML = `
+                <span>${sanitizeHTML(stage.name)}</span>
+                <span class="ete-stage-count">${stageItems.length}</span>
+            `;
+            section.appendChild(titleDiv);
+            
+            if (stageItems.length === 0) {
+                const emptyMsg = document.createElement('div');
+                emptyMsg.style.padding = '12px 16px';
+                emptyMsg.style.textAlign = 'center';
+                emptyMsg.style.color = 'var(--text-muted)';
+                emptyMsg.style.fontSize = '0.85rem';
+                emptyMsg.style.background = 'rgba(0, 0, 0, 0.02)';
+                emptyMsg.style.borderRadius = '8px';
+                emptyMsg.textContent = 'No sequences in this stage.';
+                section.appendChild(emptyMsg);
+            } else {
+                // Create table
+                const table = document.createElement('table');
+                table.className = 'data-table';
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>State</th>
+                            <th>Stage</th>
+                            <th>Confidence</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                `;
+                
+                const tbody = table.querySelector('tbody');
+                stageItems.forEach(item => {
+                    const tr = document.createElement('tr');
+                    
+                    let stateClass = 'badge-label';
+                    if (item.state === 'Completed') stateClass = 'badge-gap-up';
+                    else if (item.state === 'Waiting') stateClass = 'badge-strong';
+                    else if (item.state === 'Failed') stateClass = 'badge-gap-down';
+                    else if (item.state === 'Triggered') stateClass = 'badge-label';
+                    
+                    tr.innerHTML = `
+                        <td class="symbol-cell">${sanitizeHTML(item.symbol)}</td>
+                        <td><span class="premium-badge ${stateClass}">${sanitizeHTML(item.state)}</span></td>
+                        <td>${sanitizeHTML(item.current_stage)}</td>
+                        <td>${item.confidence ? item.confidence.toFixed(1) + '%' : '--'}</td>
+                        <td><button class="btn-small">View</button></td>
+                    `;
+                    
+                    const btn = tr.querySelector('.btn-small');
+                    btn.addEventListener('click', () => {
+                        openSequenceDrilldown(item);
+                    });
+                    tbody.appendChild(tr);
+                });
+                section.appendChild(table);
+            }
+            
+            container.appendChild(section);
         });
     });
 }
