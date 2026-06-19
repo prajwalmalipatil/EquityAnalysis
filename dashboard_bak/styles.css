@@ -813,7 +813,7 @@ nav {
 .macro-event-card h3 {
     margin: 0 0 8px 0;
     font-size: 1.1rem;
-    color: var(--glass-highlight);
+    color: var(--text-main);
 }
 
 .macro-event-card p {
