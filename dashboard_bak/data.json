@@ -1,6 +1,6 @@
 {
   "schema_version": "2",
-  "generated_at": "2026-06-18T19:02:14.806569Z",
+  "generated_at": "2026-06-19T03:22:01.023437Z",
   "extraction_list": [
     "360ONE",
     "ABB",
@@ -440,7 +440,6 @@
     "ABB",
     "TATAMOTORS",
     "HAL",
-    "NIFTYMIDCAP50",
     "KAYNES",
     "COALINDIA",
     "NMDC",
@@ -479,10 +478,12 @@
     "NAUKRI",
     "COFORGE",
     "FEDERALBNK",
+    "NIFTYMIDCAP50",
     "DMART",
     "SOLARINDS",
     "CYIENT",
     "MPHASIS",
+    "NIFTYBANK",
     "POLYCAB",
     "BLUESTARCO",
     "FORTIS",
@@ -504,12 +505,14 @@
     "BPCL",
     "CHOLAFIN",
     "NUVAMA",
+    "NIFTY50",
     "TATACONSUM",
     "INOXWIND",
     "ABCAPITAL",
     "SBICARD",
     "MPHASIS",
     "HAVELLS",
+    "NIFTYBANK",
     "ADANIGREEN",
     "TITAN",
     "PHOENIXLTD"
@@ -517,11 +520,11 @@
   "stage_statistics": {
     "extraction_count": 208,
     "vsa": 208,
-    "trending": 49,
-    "anomaly": 15,
+    "trending": 48,
+    "anomaly": 17,
     "ticker": 0,
-    "triggers": 23,
-    "eigen_filter": 31,
+    "triggers": 25,
+    "eigen_filter": 30,
     "monthly_eigen": 21,
     "weekly_eigen": 6
   },
@@ -536,43 +539,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "LAURUSLABS",
-      "monthly_sentiment": "Bullish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": 40,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "INDUSTOWER",
-      "monthly_sentiment": "Bullish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": 40,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "IDEA",
-      "monthly_sentiment": "Bullish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": 40,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "COFORGE",
-      "monthly_sentiment": "Bullish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": 40,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "ADANIENSOL",
+      "symbol": "MOTHERSON",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "None",
       "daily_sentiment": "None",
@@ -590,7 +557,52 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "MOTHERSON",
+      "symbol": "ADANIENSOL",
+      "monthly_sentiment": "Bullish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": 40,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "COFORGE",
+      "monthly_sentiment": "Bullish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": 40,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "IDEA",
+      "monthly_sentiment": "Bullish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": 40,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "INDUSTOWER",
+      "monthly_sentiment": "Bullish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": 40,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "LAURUSLABS",
+      "monthly_sentiment": "Bullish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": 40,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "JSWENERGY",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "None",
       "daily_sentiment": "None",
@@ -644,15 +656,6 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "JSWENERGY",
-      "monthly_sentiment": "Bullish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": 40,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
       "symbol": "VEDL",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "None",
@@ -671,79 +674,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "SYNGENE",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "ASIANPAINT",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "AUBANK",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "BAJAJFINSV",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "CAMS",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "GAIL",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "HDFCLIFE",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "ICICIPRULI",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "INDHOTEL",
+      "symbol": "NHPC",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -770,16 +701,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "IRCTC",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "IREDA",
+      "symbol": "ALKEM",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -797,15 +719,6 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "INDIGO",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bullish",
-      "score_pct": 25,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
       "symbol": "PAGEIND",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
@@ -815,7 +728,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "NIFTYBANK",
+      "symbol": "SYNGENE",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -824,7 +737,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "NHPC",
+      "symbol": "IRCTC",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -833,7 +746,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "MFSL",
+      "symbol": "INDHOTEL",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -842,7 +755,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "MANKIND",
+      "symbol": "ICICIPRULI",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -851,7 +764,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "LUPIN",
+      "symbol": "HDFCLIFE",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -860,7 +773,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "KAYNES",
+      "symbol": "IREDA",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -878,7 +791,88 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "ALKEM",
+      "symbol": "KAYNES",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "GAIL",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "CAMS",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "BAJAJFINSV",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "AUBANK",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "LUPIN",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "MANKIND",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "ASIANPAINT",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "MFSL",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bullish",
+      "score_pct": 25,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "INDIGO",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bullish",
@@ -914,24 +908,6 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "PRESTIGE",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "MUTHOOTFIN",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
       "symbol": "INFY",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
@@ -950,7 +926,25 @@
       "label": "Cautious Bearish"
     },
     {
+      "symbol": "PRESTIGE",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
       "symbol": "SUNPHARMA",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "MUTHOOTFIN",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bearish",
@@ -1471,22 +1465,6 @@
         "vol_delta_pct": 7.8,
         "t_vol": 600888,
         "t1_vol": 557209
-      },
-      {
-        "symbol": "NIFTYBANK",
-        "gap_dir": "Gap-Up",
-        "close_band": "Strong",
-        "label": "Bullish Impulse Convergence",
-        "sentiment": "Bullish",
-        "t_open": 57434.05078125,
-        "t_close": 57585.05078125,
-        "t_spread": 423.75,
-        "t_cp": 0.8558,
-        "t1_cp": 0.6829,
-        "delta_cp": 0.1729,
-        "vol_delta_pct": 55.4,
-        "t_vol": 583400,
-        "t1_vol": 375400
       },
       {
         "symbol": "CAMS",
@@ -2040,7 +2018,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "8459bb4ee8c6fbeb",
@@ -2065,7 +2043,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "6bb18c70337fa58f",
@@ -2090,7 +2068,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "cf7b94560acc6e93",
@@ -2115,7 +2093,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "60a6d8c236b0cc20",
@@ -2140,7 +2118,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "1ca78ae324f03f93",
@@ -2165,7 +2143,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "247fd39fa94c15b0",
@@ -2190,7 +2168,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "56a72ce923ef8451",
@@ -2215,7 +2193,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "44d142ae92fbae7b",
@@ -2240,7 +2218,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "c47daa9f12934882",
@@ -2265,7 +2243,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "d56685b7a2e274d6",
@@ -2290,7 +2268,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "8136d09d06450f0c",
@@ -2315,7 +2293,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "b59b6f64530aaa84",
@@ -2340,7 +2318,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "28fe13759d77bcf3",
@@ -2365,7 +2343,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "9c77ae5a9bc48336",
@@ -2390,7 +2368,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "d90dbebda0d656dd",
@@ -2415,7 +2393,7 @@
         "processing_state": "NEW",
         "related_events": [],
         "supersedes": null,
-        "is_new_since_last_session": true
+        "is_new_since_last_session": false
       },
       {
         "event_id": "db112b8298ebb2c9",
