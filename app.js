@@ -960,10 +960,16 @@ function toggleEigenTable(timeframe) {
 
 async function fetchETEManifest(date = '') {
     try {
+        document.getElementById('ete-loading').textContent = 'Loading ETE data...';
+        document.getElementById('ete-loading').style.display = 'block';
+        document.getElementById('ete-content').style.display = 'none';
+        
         const manifestUrl = date ? `./history/manifest_${date}.json` : './manifest.json';
         const response = await fetch(manifestUrl);
         if (!response.ok) {
             document.getElementById('ete-loading').textContent = 'No ETE data generated yet.';
+            document.getElementById('ete-loading').style.display = 'block';
+            document.getElementById('ete-content').style.display = 'none';
             return;
         }
         const manifest = await response.json();
@@ -981,10 +987,14 @@ async function fetchETEManifest(date = '') {
             fetchETESummary(manifest.files.summary);
         } else {
             document.getElementById('ete-loading').textContent = 'No ETE summary found in manifest.';
+            document.getElementById('ete-loading').style.display = 'block';
+            document.getElementById('ete-content').style.display = 'none';
         }
     } catch (e) {
         console.error('Failed to load ETE manifest', e);
         document.getElementById('ete-loading').textContent = 'Failed to load ETE data.';
+        document.getElementById('ete-loading').style.display = 'block';
+        document.getElementById('ete-content').style.display = 'none';
     }
 }
 
