@@ -1068,10 +1068,18 @@ function renderETE(summaryData) {
             const titleDiv = document.createElement('div');
             titleDiv.className = 'ete-stage-title';
             titleDiv.innerHTML = `
-                <span>${sanitizeHTML(stage.name)}</span>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="ete-stage-arrow" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                    <span>${sanitizeHTML(stage.name)}</span>
+                </div>
                 <span class="ete-stage-count">${stageItems.length}</span>
             `;
             section.appendChild(titleDiv);
+            
+            // Create content container
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'ete-stage-content';
+            contentDiv.style.display = 'none'; // Collapsed by default
             
             if (stageItems.length === 0) {
                 const emptyMsg = document.createElement('div');
@@ -1082,7 +1090,7 @@ function renderETE(summaryData) {
                 emptyMsg.style.background = 'rgba(0, 0, 0, 0.02)';
                 emptyMsg.style.borderRadius = '8px';
                 emptyMsg.textContent = 'No sequences in this stage.';
-                section.appendChild(emptyMsg);
+                contentDiv.appendChild(emptyMsg);
             } else {
                 // Create table
                 const table = document.createElement('table');
@@ -1120,13 +1128,26 @@ function renderETE(summaryData) {
                     `;
                     
                     const btn = tr.querySelector('.btn-small');
-                    btn.addEventListener('click', () => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Avoid triggering accordion toggle when clicking view button
                         openSequenceDrilldown(item);
                     });
                     tbody.appendChild(tr);
                 });
-                section.appendChild(table);
+                contentDiv.appendChild(table);
             }
+            
+            section.appendChild(contentDiv);
+            
+            // Add click listener to toggle content
+            titleDiv.addEventListener('click', () => {
+                const isHidden = contentDiv.style.display === 'none';
+                contentDiv.style.display = isHidden ? 'block' : 'none';
+                const arrow = titleDiv.querySelector('.ete-stage-arrow');
+                if (arrow) {
+                    arrow.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
+                }
+            });
             
             container.appendChild(section);
         });
