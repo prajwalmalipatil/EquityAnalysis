@@ -84,6 +84,13 @@ class JSONEventWriteRepository(EventWriteRepository):
                     continue
 
     def _calculate_similarity(self, a: MacroEvent, b: MacroEvent) -> float:
+        # If the official URL is identical, it's the exact same event
+        if a.official_data.official_url and b.official_data.official_url:
+            url_a = a.official_data.official_url.strip().lower().rstrip('/')
+            url_b = b.official_data.official_url.strip().lower().rstrip('/')
+            if url_a == url_b:
+                return 1.0
+
         weights = self.config.deduplication.weights
         score = 0.0
         
@@ -99,7 +106,8 @@ class JSONEventWriteRepository(EventWriteRepository):
         content_a = a.official_data.content or ""
         content_b = b.official_data.content or ""
         if content_a and content_b:
-            content_sim = SequenceMatcher(None, content_a.lower(), content_b.lower()).ratio()
+            # Prevent SequenceMatcher timeouts on massive texts by truncating inputs
+            content_sim = SequenceMatcher(None, content_a[:10000].lower(), content_b[:10000].lower()).ratio()
             score += content_sim * weights.get("document_hash", 0.20)
             
         if len(a.official_data.attachments) == len(b.official_data.attachments) and a.official_data.attachments:

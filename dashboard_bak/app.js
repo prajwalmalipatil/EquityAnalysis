@@ -618,17 +618,22 @@ function renderMacroTimeline() {
         const title = event.official_data?.title || event.title || 'Untitled Event';
         const pubDateStr = event.official_data?.publication_date || event.published_at || event.published;
         const pubDate = pubDateStr ? new Date(pubDateStr).toLocaleDateString() : 'Unknown Date';
-        const summary = event.derived_data?.ai_summary || event.official_data?.content || event.summary || '';
+        const summary = event.derived_data?.ai_summary || event.ai_summary || event.official_data?.content || event.content || event.summary || '';
         const category = event.official_data?.category || event.category || 'Uncategorized';
         
         const isNewHtml = (event.metadata?.lifecycle_status === 'NEW' || event.processing_state === 'NEW' || event.is_new_since_last_session) 
             ? `<span class="premium-badge badge-strong" style="background:var(--accent-color);color:#000;font-weight:bold;animation: pulse 2s infinite;">NEW</span>` 
             : '';
 
+        let categoryClass = 'badge-label';
+        if (category === 'Press Releases') categoryClass = 'badge-press-releases';
+        else if (category === 'Notifications') categoryClass = 'badge-notifications';
+        else if (category === 'Monetary Policy') categoryClass = 'badge-monetary-policy';
+
         card.innerHTML = `
-            <div class="macro-event-header" style="display:flex; flex-wrap:wrap; gap:8px;">
+            <div class="macro-event-header" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
                 <span class="macro-date">${sanitizeHTML(pubDate)}</span>
-                <span class="premium-badge badge-label">${sanitizeHTML(category)}</span>
+                <span class="premium-badge ${categoryClass}">${sanitizeHTML(category)}</span>
                 <span class="premium-badge badge-strong" style="font-family:monospace; font-size:0.8em; opacity:0.7;">ID: ${sanitizeHTML(event.event_id || '---')}</span>
                 ${isNewHtml}
             </div>
@@ -690,7 +695,7 @@ function renderMacroWorkspace() {
             ${renderAIInsightsWidget(event)}
             ${renderOverviewWidget(event)}
             ${renderAttachmentsWidget(event)}
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom: 20px;">
                 ${renderMetadataWidget(event)}
                 ${renderRelatedEventsWidget(event)}
             </div>
@@ -706,90 +711,132 @@ function renderHeaderWidget(event) {
     const source = event.official_data?.source || event.source || 'Unknown';
     const category = event.official_data?.category || event.category || 'Uncategorized';
     
+    let categoryClass = 'badge-label';
+    if (category === 'Press Releases') categoryClass = 'badge-press-releases';
+    else if (category === 'Notifications') categoryClass = 'badge-notifications';
+    else if (category === 'Monetary Policy') categoryClass = 'badge-monetary-policy';
+
     return `
-        <div class="macro-detail-header">
-            <h2>${sanitizeHTML(title)}</h2>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <span class="premium-badge badge-label"><strong>Published:</strong> ${sanitizeHTML(pubDate)}</span>
-                <span class="premium-badge badge-label"><strong>Source:</strong> <a href="${sanitizeHTML(url)}" target="_blank" style="color:white; text-decoration:underline;">${sanitizeHTML(source)}</a></span>
-                <span class="premium-badge badge-label"><strong>Category:</strong> ${sanitizeHTML(category)}</span>
-                <span class="premium-badge badge-strong"><strong>ID:</strong> ${sanitizeHTML(event.event_id)}</span>
+        <div class="macro-detail-header" style="border-bottom: 1px solid var(--glass-border); padding-bottom: 20px; margin-bottom: 20px;">
+            <h2 style="font-size: 1.6rem; font-weight: 700; line-height: 1.4; color: var(--text-main); margin-bottom: 16px;">${sanitizeHTML(title)}</h2>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                <span class="premium-badge badge-label" style="background: rgba(255,255,255,0.05); color: var(--text-muted);">🗓️ ${sanitizeHTML(pubDate)}</span>
+                <span class="premium-badge ${categoryClass}">${sanitizeHTML(category)}</span>
+                <span class="premium-badge badge-label" style="background: rgba(79, 70, 229, 0.1); color: var(--primary);">🏛️ ${sanitizeHTML(source)}</span>
+                <span class="premium-badge badge-strong" style="font-family: monospace;">ID: ${sanitizeHTML(event.event_id)}</span>
+                <a href="${sanitizeHTML(url)}" target="_blank" class="premium-badge" style="background: var(--primary-glow); color: var(--primary); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s;">
+                    🔗 Official Link ↗
+                </a>
             </div>
         </div>
     `;
 }
 
 function renderOverviewWidget(event) {
-    const summary = (event.official_data?.content || event.summary || 'No official content available.');
+    const summary = event.official_data?.content || event.content || event.summary || 'No official content available.';
     return `
-        <div style="margin-bottom: 20px; padding: 20px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--glass-border);">
-            <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:10px;">OFFICIAL CONTENT / ABSTRACT</h4>
-            <p style="line-height:1.6; color:var(--text-main);">${sanitizeHTML(summary).replace(/\n/g, '<br>')}</p>
+        <div class="glass-panel" style="margin-bottom: 20px; padding: 20px; background: rgba(255,255,255,0.01); border: 1px solid var(--glass-border);">
+            <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:12px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Official Content / Abstract</h4>
+            <p style="line-height:1.7; color:var(--text-main); font-size: 0.95rem;">${sanitizeHTML(summary).replace(/\n/g, '<br>')}</p>
         </div>
     `;
 }
 
 function renderAIInsightsWidget(event) {
-    if (!event.derived_data || !event.derived_data.ai_summary) return '';
-    const themesHtml = event.derived_data.themes ? event.derived_data.themes.map(t => `<span class="premium-badge badge-label">${sanitizeHTML(t)}</span>`).join(' ') : '';
+    const aiSummary = event.derived_data?.ai_summary || event.ai_summary;
+    if (!aiSummary) return '';
+    
+    const themes = event.derived_data?.themes || event.themes || [];
+    const themesHtml = themes.map(t => `<span class="premium-badge badge-label" style="margin-right: 6px;">${sanitizeHTML(t)}</span>`).join('');
+    
     return `
-        <div style="margin-bottom: 20px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 4px solid var(--accent-color, var(--primary));">
-            <h4 style="margin-top: 0; color:var(--accent-color, var(--primary)); margin-bottom:10px;">✨ AI Enriched Summary</h4>
-            <p style="line-height:1.6; color:var(--text-main);">${sanitizeHTML(event.derived_data.ai_summary).replace(/\n/g, '<br>')}</p>
-            ${event.derived_data.themes ? `<p style="margin-top:15px;"><strong style="color:var(--text-muted);">Themes:</strong> ${themesHtml}</p>` : ''}
+        <div class="glass-panel" style="margin-bottom: 20px; padding: 22px; background: linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(79, 70, 229, 0.05)); border: 1px solid rgba(124, 58, 237, 0.15); border-left: 5px solid var(--accent-color, var(--primary)); position: relative; box-shadow: 0 4px 20px rgba(124, 58, 237, 0.08);">
+            <div style="position: absolute; top: 15px; right: 20px; font-size: 1.25rem; opacity: 0.8;">✨</div>
+            <h4 style="margin-top: 0; color:var(--accent-color, var(--primary)); margin-bottom:12px; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">✨ AI Enriched Summary</h4>
+            <p style="line-height:1.7; color:var(--text-main); font-size: 0.95rem; font-weight: 450;">${sanitizeHTML(aiSummary).replace(/\n/g, '<br>')}</p>
+            ${themes.length > 0 ? `<div style="margin-top:15px; display:flex; align-items:center; gap:8px;"><strong style="color:var(--text-muted); font-size: 0.85rem;">Themes:</strong> <div>${themesHtml}</div></div>` : ''}
         </div>
     `;
 }
 
 function renderAttachmentsWidget(event) {
-    if (!event.official_data?.attachments || event.official_data.attachments.length === 0) return '';
-    return `
-        <div style="margin-bottom: 20px; padding: 20px; background: rgba(255,255,255,0.02); border-radius: 8px; border: 1px solid var(--glass-border);">
-            <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:10px;">ATTACHMENTS</h4>
-            <ul style="margin: 0; padding-left: 20px; color:var(--text-main);">
-                ${event.official_data.attachments.map(a => `<li><a href="${sanitizeHTML(a)}" target="_blank" style="color:var(--primary); text-decoration:none;">${sanitizeHTML(a)}</a></li>`).join('')}
+    const attachments = event.official_data?.attachments || event.attachments || [];
+    const pdfUrl = event.official_data?.pdf_url || event.pdf;
+    
+    if (attachments.length === 0 && !pdfUrl) return '';
+    
+    let pdfBtnHtml = '';
+    if (pdfUrl) {
+        pdfBtnHtml = `
+            <div style="margin-bottom: 15px;">
+                <a href="${sanitizeHTML(pdfUrl)}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px var(--primary-glow);">
+                    <span>📄</span> View PDF Document ↗
+                </a>
+            </div>
+        `;
+    }
+    
+    let attachmentsHtml = '';
+    if (attachments.length > 0) {
+        attachmentsHtml = `
+            <h4 style="margin-top: 10px; color:var(--text-muted); margin-bottom:10px; font-size: 0.85rem; text-transform: uppercase;">Downloaded Files</h4>
+            <ul style="margin: 0; padding-left: 20px; color:var(--text-main); font-size: 0.9rem; line-height: 1.6;">
+                ${attachments.map(a => {
+                    const filename = typeof a === 'string' ? a.split('/').pop() : (a.file || 'Attachment');
+                    const href = typeof a === 'string' ? a : (a.file || '#');
+                    return `<li><a href="${sanitizeHTML(href)}" target="_blank" style="color:var(--primary); text-decoration:none; font-weight: 500; border-bottom: 1px dashed var(--primary-glow);">${sanitizeHTML(filename)}</a></li>`;
+                }).join('')}
             </ul>
+        `;
+    }
+    
+    return `
+        <div class="glass-panel" style="margin-bottom: 20px; padding: 20px; background: rgba(255,255,255,0.01); border: 1px solid var(--glass-border);">
+            <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:15px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Official Attachments</h4>
+            ${pdfBtnHtml}
+            ${attachmentsHtml}
         </div>
     `;
 }
 
 function renderMetadataWidget(event) {
-    if (!event.metadata) return '';
-    const latency = event.metadata.processing_latency_ms ? `${event.metadata.processing_latency_ms} ms` : 'N/A';
-    const sourceSystem = event.metadata.source_system || 'Unknown';
-    const confidence = event.metadata.confidence_score ? `${(event.metadata.confidence_score * 100).toFixed(1)}%` : '--';
+    const sourceSystem = event.metadata?.source_system || event.source || 'Unknown';
+    const confidence = event.metadata?.confidence_score ? `${(event.metadata.confidence_score * 100).toFixed(1)}%` : (event.confidence ? `${event.confidence}%` : '--');
+    const lifecycleStatus = event.metadata?.lifecycle_status || event.processing_state || 'Unknown';
+    const latency = event.metadata?.processing_latency_ms ? `${event.metadata.processing_latency_ms} ms` : 'N/A';
 
     return `
-        <div style="padding: 16px; background: rgba(0,0,0,0.1); border-radius: 8px; font-size: 0.85rem;">
-            <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:10px;">METADATA</h4>
-            <table style="width:100%; border-collapse: collapse; color:var(--text-main);">
-                <tr><td style="padding:4px 0; color:var(--text-muted);">Source System</td><td style="text-align:right;">${sanitizeHTML(sourceSystem)}</td></tr>
-                <tr><td style="padding:4px 0; color:var(--text-muted);">Processing Latency</td><td style="text-align:right;">${sanitizeHTML(latency)}</td></tr>
-                <tr><td style="padding:4px 0; color:var(--text-muted);">Confidence</td><td style="text-align:right;">${sanitizeHTML(confidence)}</td></tr>
-                <tr><td style="padding:4px 0; color:var(--text-muted);">Lifecycle Status</td><td style="text-align:right;">${sanitizeHTML(event.metadata.lifecycle_status || 'Unknown')}</td></tr>
+        <div class="glass-panel" style="padding: 20px; background: rgba(0,0,0,0.08); border: 1px solid var(--glass-border);">
+            <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:12px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Metadata</h4>
+            <table style="width:100%; border-collapse: collapse; color:var(--text-main); font-size: 0.9rem;">
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);"><td style="padding:8px 0; color:var(--text-muted);">Source System</td><td style="text-align:right; font-weight:500;">${sanitizeHTML(sourceSystem)}</td></tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);"><td style="padding:8px 0; color:var(--text-muted);">Processing Latency</td><td style="text-align:right; font-weight:500;">${sanitizeHTML(latency)}</td></tr>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);"><td style="padding:8px 0; color:var(--text-muted);">Confidence</td><td style="text-align:right; font-weight:500;">${sanitizeHTML(confidence)}</td></tr>
+                <tr><td style="padding:8px 0; color:var(--text-muted);">Lifecycle Status</td><td style="text-align:right; font-weight:500;">${sanitizeHTML(lifecycleStatus)}</td></tr>
             </table>
         </div>
     `;
 }
 
 function renderRelatedEventsWidget(event) {
-    if (!event.derived_data || !event.derived_data.related_events || event.derived_data.related_events.length === 0) {
+    const related = event.derived_data?.related_events || (event.related_events ? event.related_events.map(id => ({ event_id: id, relationship_type: 'Related' })) : []);
+    if (related.length === 0) {
         return `
-            <div style="padding: 16px; background: rgba(0,0,0,0.1); border-radius: 8px; font-size: 0.85rem;">
-                <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:10px;">RELATED EVENTS</h4>
-                <p style="color:var(--text-muted); margin:0;">No related events identified.</p>
+            <div class="glass-panel" style="padding: 20px; background: rgba(0,0,0,0.08); border: 1px solid var(--glass-border);">
+                <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:12px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Related Events</h4>
+                <p style="color:var(--text-muted); margin:0; font-size: 0.9rem; font-style: italic;">No related events identified.</p>
             </div>
         `;
     }
 
     return `
-        <div style="padding: 16px; background: rgba(0,0,0,0.1); border-radius: 8px; font-size: 0.85rem;">
-            <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:10px;">RELATED EVENTS</h4>
-            <ul style="margin:0; padding-left:20px; color:var(--text-main);">
-                ${event.derived_data.related_events.map(ev => `
+        <div class="glass-panel" style="padding: 20px; background: rgba(0,0,0,0.08); border: 1px solid var(--glass-border);">
+            <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:12px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Related Events</h4>
+            <ul style="margin:0; padding-left:20px; color:var(--text-main); font-size: 0.9rem; line-height: 1.6;">
+                ${related.map(ev => `
                     <li style="margin-bottom:4px;">
-                        <a href="#" class="related-event-trigger" data-event-id="${sanitizeHTML(ev.event_id)}" style="color:var(--primary); text-decoration:none;">${sanitizeHTML(ev.event_id)}</a>
-                        <span style="color:var(--text-muted); margin-left:4px;">(${sanitizeHTML(ev.relationship_type)})</span>
+                        <a href="#" class="related-event-trigger" data-event-id="${sanitizeHTML(ev.event_id)}" style="color:var(--primary); text-decoration:none; font-weight: 500; border-bottom: 1px dashed var(--primary-glow);">${sanitizeHTML(ev.event_id)}</a>
+                        <span style="color:var(--text-muted); margin-left:4px; font-size: 0.8rem;">(${sanitizeHTML(ev.relationship_type)})</span>
                     </li>
                 `).join('')}
             </ul>

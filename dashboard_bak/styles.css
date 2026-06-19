@@ -791,47 +791,124 @@ nav {
     flex: 1;
 }
 
+/* Custom Scrollbars */
+.macro-timeline::-webkit-scrollbar,
+.macro-pane-right::-webkit-scrollbar {
+    width: 6px;
+}
+.macro-timeline::-webkit-scrollbar-track,
+.macro-pane-right::-webkit-scrollbar-track {
+    background: transparent;
+}
+.macro-timeline::-webkit-scrollbar-thumb,
+.macro-pane-right::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: 3px;
+}
+.macro-timeline::-webkit-scrollbar-thumb:hover,
+.macro-pane-right::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
 .macro-event-card {
-    padding: 16px;
+    padding: 18px;
     text-align: left;
     cursor: pointer;
-    transition: all 0.3s ease;
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.015);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.macro-event-card:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--primary-glow);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .macro-event-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     align-items: center;
 }
 
 .macro-date {
     color: var(--text-muted);
     font-size: 0.85rem;
+    font-weight: 500;
 }
 
 .macro-event-card h3 {
-    margin: 0 0 8px 0;
+    margin: 0 0 10px 0;
     font-size: 1.1rem;
-    color: var(--glass-highlight);
+    font-weight: 650;
+    color: var(--text-main);
+    line-height: 1.45;
+    transition: color 0.2s;
+}
+
+.macro-event-card:hover h3 {
+    color: var(--primary);
 }
 
 .macro-event-card p {
     margin: 0;
-    color: var(--text-main);
-    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-size: 0.92rem;
     line-height: 1.5;
+}
+
+.macro-event-card:hover p {
+    color: var(--text-main);
 }
 
 .macro-event-card.selected {
     border-color: var(--primary);
     background: var(--glass-highlight);
-    box-shadow: 0 0 15px var(--primary-glow);
+    box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.macro-event-card.selected h3 {
+    color: var(--primary);
 }
 
 .macro-event-card:focus {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
+}
+
+/* Category Badge Specifics */
+.badge-press-releases {
+    background: rgba(59, 130, 246, 0.12) !important;
+    color: #2563eb !important;
+}
+.badge-notifications {
+    background: rgba(245, 158, 11, 0.12) !important;
+    color: #d97706 !important;
+}
+.badge-monetary-policy {
+    background: rgba(16, 185, 129, 0.12) !important;
+    color: #059669 !important;
+}
+
+body.dark-mode .badge-press-releases {
+    background: rgba(96, 165, 250, 0.15) !important;
+    color: #60a5fa !important;
+}
+body.dark-mode .badge-notifications {
+    background: rgba(251, 191, 36, 0.15) !important;
+    color: #fbbf24 !important;
+}
+body.dark-mode .badge-monetary-policy {
+    background: rgba(52, 211, 153, 0.15) !important;
+    color: #34d399 !important;
+}
+
+@keyframes float-globe {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
 }
 
 .macro-detail-header {

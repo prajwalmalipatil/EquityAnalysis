@@ -29,6 +29,8 @@ class DashboardViewModel:
     processing_state: str
     related_events: List[str] = field(default_factory=list)
     supersedes: Optional[str] = None
+    content: str = ""
+    ai_summary: Optional[str] = None
 
 
 @dataclass(frozen=True)

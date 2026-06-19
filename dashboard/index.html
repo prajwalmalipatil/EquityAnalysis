@@ -162,8 +162,10 @@
 
                         <!-- Right Pane: Detail View -->
                         <div class="macro-pane-right glass-panel">
-                            <div id="macro-detail-empty" style="display: flex; height: 100%; align-items: center; justify-content: center; color: var(--text-muted);">
-                                <h3>Select an event from the timeline to view details</h3>
+                            <div id="macro-detail-empty" style="display: flex; flex-direction: column; height: 100%; align-items: center; justify-content: center; text-align: center; padding: 40px; color: var(--text-muted);">
+                                <div class="empty-state-globe" style="font-size: 4.5rem; margin-bottom: 20px; filter: drop-shadow(0 0 20px var(--primary-glow)); animation: float-globe 4s ease-in-out infinite;">🌍</div>
+                                <h3 style="color: var(--text-main); font-weight: 600; margin-bottom: 12px; font-size: 1.35rem;">Macro Intelligence Explorer</h3>
+                                <p style="max-width: 440px; line-height: 1.6; font-size: 0.95rem;">Select an event from the timeline to analyze official announcement contents, view attached document files, review AI enriched summaries, and discover relationship transitions.</p>
                             </div>
                             <div id="macro-detail-content" style="display: none; flex-direction: column;">
                                 <!-- Populated by JS -->

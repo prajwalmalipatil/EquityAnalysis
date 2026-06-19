@@ -54,8 +54,10 @@ class GeminiProvider(AIProvider):
         ---END EVENT TEXT---
         """
         try:
-            resp = self.model.generate_content(prompt)
-            # Clean backticks if any
+            resp = self.model.generate_content(
+                prompt,
+                generation_config={"response_mime_type": "application/json"}
+            )
             clean_text = resp.text.strip().removeprefix('```json').removeprefix('```').removesuffix('```').strip()
             return json.loads(clean_text)
         except Exception as e:

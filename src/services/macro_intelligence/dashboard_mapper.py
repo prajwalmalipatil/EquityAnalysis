@@ -55,7 +55,9 @@ class DashboardMapper:
             themes=themes,
             processing_state=event.metadata.processing_state,
             related_events=event.metadata.related_event_ids or [],
-            supersedes=event.metadata.supersedes_event_id
+            supersedes=event.metadata.supersedes_event_id,
+            content=event.official_data.content or "",
+            ai_summary=event.derived_data.ai_summary if event.derived_data else None
         )
 
     @staticmethod
