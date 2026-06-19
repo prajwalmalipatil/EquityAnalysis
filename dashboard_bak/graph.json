@@ -1,18 +1,28 @@
 {
   "schema_version": "1",
-  "generated_at": "2026-06-19T04:55:22.425347Z",
+  "generated_at": "2026-06-19T05:03:49.427637Z",
   "pipeline_version": "1",
   "statistics": {
-    "node_count": 84,
-    "edge_count": 816,
+    "node_count": 85,
+    "edge_count": 818,
     "connected_components": 3,
-    "average_degree": 19.43,
+    "average_degree": 19.25,
     "relationship_distribution": {
-      "AMENDS": 588,
+      "AMENDS": 590,
       "WITHDRAWS": 228
     }
   },
   "nodes": [
+    {
+      "id": "f20cf024e6312533",
+      "type": "Event",
+      "label": "Result of the 3-day Variable Rate Repo (VRR) auction held on June 19, 2026",
+      "category": "Press Releases",
+      "metadata": {
+        "date": "2026-06-19T10:20:00+00:00",
+        "source": "RBI"
+      }
+    },
     {
       "id": "a8b75b1c365058dd",
       "type": "Event",
@@ -855,6 +865,24 @@
     }
   ],
   "edges": [
+    {
+      "id": "0dd3d73985db95a7",
+      "relationship_id": "4d22aab4bf403408",
+      "source": "74f2c2e100c55f55",
+      "target": "f20cf024e6312533",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "9ddabdcbc28145e0",
+      "relationship_id": "c6955898ad2324af",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "f20cf024e6312533",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
     {
       "id": "91fe423e5aef0fbb",
       "relationship_id": "9316be6a150595e3",
