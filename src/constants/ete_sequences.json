@@ -9,12 +9,12 @@
     "enabled": true
   },
   "AVE_WEEKLY": {
-    "sequence": ["LVLS", "HVHS"],
+    "sequence": ["LVLS", "HVHS", "LVLS", "HVHS"],
     "timeframes": ["weekly"],
     "enabled": true
   },
   "AVE_MONTHLY": {
-    "sequence": ["LVLS", "HVHS"],
+    "sequence": ["LVLS", "HVHS", "LVLS", "HVHS"],
     "timeframes": ["monthly"],
     "enabled": true
   }
