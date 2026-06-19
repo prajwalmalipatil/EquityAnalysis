@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-06-19T04:38:13.055127+00:00",
+  "generated_at": "2026-06-19T04:55:16.619975+00:00",
   "overall_metrics": {
-    "total_sequences": 9235,
-    "win_rate": 74.8502994011976,
-    "total_completed": 250,
+    "total_sequences": 9185,
+    "win_rate": 74.69879518072288,
+    "total_completed": 248,
     "total_failed": 84
   },
   "completions_daily": [
@@ -1608,22 +1608,6 @@
       "confidence": 55.9
     },
     {
-      "symbol": "NIFTYBANK",
-      "start_date": "2025-11-14",
-      "completion_date": "2025-11-21",
-      "trigger_pattern": "Bullish Impulse Convergence",
-      "t_vol": 157500.0,
-      "vol_surge_pct": 37.19512195121952,
-      "fwd_return_5b": 1.5033711385786892,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true,
-      "vol_score": 0.0,
-      "close_score": 0.9019518927444795,
-      "drift_score": 0.5363550515983825,
-      "confidence": 46.8
-    },
-    {
       "symbol": "POLICYBZR",
       "start_date": "2025-11-14",
       "completion_date": "2025-11-21",
@@ -2022,22 +2006,6 @@
       "close_score": 0.2624113475177333,
       "drift_score": 0.5514021732058022,
       "confidence": 21.5
-    },
-    {
-      "symbol": "NIFTYBANK",
-      "start_date": "2025-10-09",
-      "completion_date": "2025-10-16",
-      "trigger_pattern": "Contested Bearish Divergence",
-      "t_vol": 163000.0,
-      "vol_surge_pct": 38.13559322033899,
-      "fwd_return_5b": 1.141537585986233,
-      "win": true,
-      "sentiment": "Bullish",
-      "gauntlet_passed": true,
-      "vol_score": 0.12483610516872545,
-      "close_score": 0.24761402854810827,
-      "drift_score": 0.5346630033101224,
-      "confidence": 25.6
     },
     {
       "symbol": "HAL",
