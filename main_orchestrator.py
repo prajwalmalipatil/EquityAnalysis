@@ -6,7 +6,20 @@ from src.utils.observability import get_tenant_logger
 
 logger = get_tenant_logger("main-orchestrator")
 
+def load_env():
+    import os
+    from pathlib import Path
+    env_path = Path(__file__).resolve().parent / ".env"
+    if env_path.exists():
+        with open(env_path) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    key, val = line.split("=", 1)
+                    os.environ[key.strip()] = val.strip()
+
 def main():
+    load_env()
     parser = argparse.ArgumentParser(description="Pipeline Orchestrator (Phase A)")
     parser.add_argument("--folder", required=True, help="Folder containing CSV files")
     parser.add_argument("--workers", type=int, default=4, help="Number of parallel workers")

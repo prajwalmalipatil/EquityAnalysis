@@ -1,18 +1,28 @@
 {
   "schema_version": "1",
-  "generated_at": "2026-06-19T09:38:05.402585Z",
+  "generated_at": "2026-06-19T13:04:17.506665Z",
   "pipeline_version": "1",
   "statistics": {
-    "node_count": 88,
-    "edge_count": 824,
+    "node_count": 89,
+    "edge_count": 826,
     "connected_components": 3,
-    "average_degree": 18.73,
+    "average_degree": 18.56,
     "relationship_distribution": {
-      "AMENDS": 596,
+      "AMENDS": 598,
       "WITHDRAWS": 228
     }
   },
   "nodes": [
+    {
+      "id": "c31dab052044acad",
+      "type": "Event",
+      "label": "Government Stock - Full Auction Results",
+      "category": "Press Releases",
+      "metadata": {
+        "date": "2026-06-19T15:50:00+00:00",
+        "source": "RBI"
+      }
+    },
     {
       "id": "8d78b96ab2674225",
       "type": "Event",
@@ -895,6 +905,24 @@
     }
   ],
   "edges": [
+    {
+      "id": "c9f56be6e70c5165",
+      "relationship_id": "5ff0e28782ea2796",
+      "source": "74f2c2e100c55f55",
+      "target": "c31dab052044acad",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "5a91cfbcfc2751c8",
+      "relationship_id": "3bd36f31610436cc",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "c31dab052044acad",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
     {
       "id": "e01b1d8b68135cb5",
       "relationship_id": "db8681229200f50a",

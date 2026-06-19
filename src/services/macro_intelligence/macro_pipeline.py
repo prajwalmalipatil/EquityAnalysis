@@ -95,7 +95,20 @@ class MacroPipeline:
             logger.error("PIPELINE_EXECUTION_FAILED", extra={"error": str(e)})
             raise
 
+def load_env():
+    import os
+    from pathlib import Path
+    env_path = Path(__file__).resolve().parents[3] / ".env"
+    if env_path.exists():
+        with open(env_path) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    key, val = line.split("=", 1)
+                    os.environ[key.strip()] = val.strip()
+
 def run_macro_pipeline():
+    load_env()
     import os
     from pathlib import Path
     from src.services.macro_intelligence.config import load_config

@@ -177,26 +177,105 @@ async function fetchHistoryIndex() {
     try {
         const response = await fetch('./history/index.json');
         if (response.ok) {
-            const historyDates = await response.json();
-            const selector = document.getElementById('history-selector');
-            if (historyDates && historyDates.length > 0) {
-                historyDates.forEach(date => {
-                    const opt = document.createElement('option');
-                    opt.value = date;
-                    opt.textContent = date;
-                    selector.appendChild(opt);
-                });
-                selector.classList.remove('hidden');
+            let historyDates = await response.json();
+            const container = document.getElementById('history-dropdown-container');
+            const itemsContainer = document.getElementById('history-dropdown-items');
+            
+            if (historyDates && historyDates.length > 0 && container && itemsContainer) {
+                // Reverse list to show latest dates first
+                historyDates = [...historyDates].reverse();
                 
-                selector.addEventListener('change', (e) => {
-                    const selectedDate = e.target.value;
-                    fetchData(selectedDate);
+                // Reset content and add Latest Data first
+                itemsContainer.innerHTML = '<div class="dropdown-item selected" data-value="">Latest Data</div>';
+                
+                historyDates.forEach(date => {
+                    const item = document.createElement('div');
+                    item.className = 'dropdown-item';
+                    item.dataset.value = date;
+                    item.textContent = date;
+                    itemsContainer.appendChild(item);
                 });
+                
+                container.classList.remove('hidden');
+                setupSearchableDropdown();
             }
         }
     } catch (e) {
         console.log("No history index found.");
     }
+}
+
+function setupSearchableDropdown() {
+    const trigger = document.getElementById('history-dropdown-trigger');
+    const menu = document.getElementById('history-dropdown-menu');
+    const container = document.getElementById('history-dropdown-container');
+    const searchInput = document.getElementById('history-dropdown-search');
+    const selectedLabel = document.getElementById('selected-history-date');
+    
+    if (!trigger || !menu || !container) return;
+    
+    // Toggle menu
+    trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = container.classList.contains('open');
+        if (isOpen) {
+            container.classList.remove('open');
+            menu.classList.add('hidden');
+        } else {
+            container.classList.add('open');
+            menu.classList.remove('hidden');
+            if (searchInput) {
+                searchInput.value = '';
+                filterDropdownItems('');
+                searchInput.focus();
+            }
+        }
+    });
+    
+    // Handle item selection
+    container.addEventListener('click', (e) => {
+        const item = e.target.closest('.dropdown-item');
+        if (!item) return;
+        
+        e.stopPropagation();
+        const val = item.dataset.value;
+        selectedLabel.textContent = val ? val : 'Latest Data';
+        
+        container.querySelectorAll('.dropdown-item').forEach(el => el.classList.remove('selected'));
+        item.classList.add('selected');
+        
+        container.classList.remove('open');
+        menu.classList.add('hidden');
+        
+        fetchData(val);
+    });
+    
+    // Search filter input
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            filterDropdownItems(e.target.value);
+        });
+        searchInput.addEventListener('click', (e) => e.stopPropagation());
+    }
+    
+    // Click outside to close
+    document.addEventListener('click', () => {
+        container.classList.remove('open');
+        menu.classList.add('hidden');
+    });
+}
+
+function filterDropdownItems(query) {
+    const items = document.querySelectorAll('#history-dropdown-items .dropdown-item');
+    const q = query.toLowerCase().trim();
+    items.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        if (text.includes(q)) {
+            item.style.display = 'block';
+        } else {
+            item.style.display = 'none';
+        }
+    });
 }
 
 function setupNavigation() {
@@ -565,13 +644,21 @@ function renderMacroTimeline() {
     const sortOrder = workspaceState.sortOrder;
     
     let filtered = macroEvents.filter(evt => {
-        // Handle both old schema (flat) and new schema (nested)
         const title = (evt.official_data?.title || evt.title || '').toLowerCase();
         const content = (evt.derived_data?.ai_summary || evt.official_data?.content || evt.summary || '').toLowerCase();
         const eventId = (evt.event_id || '').toLowerCase();
         const category = evt.official_data?.category || evt.category || '';
         
-        if (searchStr && !title.includes(searchStr) && !content.includes(searchStr) && !eventId.includes(searchStr)) {
+        const rawDateStr = evt.official_data?.publication_date || evt.published_at || evt.published || '';
+        const localDateStr = rawDateStr ? new Date(rawDateStr).toLocaleDateString() : '';
+        const isoDateOnly = rawDateStr ? rawDateStr.substring(0, 10) : '';
+        const searchInputStr = searchStr.toLowerCase().trim();
+        
+        const dateMatches = rawDateStr.toLowerCase().includes(searchInputStr) || 
+                            localDateStr.toLowerCase().includes(searchInputStr) || 
+                            isoDateOnly.toLowerCase().includes(searchInputStr);
+        
+        if (searchStr && !title.includes(searchInputStr) && !content.includes(searchInputStr) && !eventId.includes(searchInputStr) && !dateMatches) {
             return false;
         }
         if (categoryFilter && category !== categoryFilter) {
@@ -588,8 +675,6 @@ function renderMacroTimeline() {
     
     timeline.innerHTML = '';
     
-    // Reset workspace selection state on re-render to ensure safety
-    // Usually in React we'd keep selection unless it's filtered out, but for simplicity:
     const currentlySelectedExists = filtered.some(e => e.event_id === workspaceState.selectedEventId);
     if (!currentlySelectedExists) {
         workspaceState.selectedEventId = null;
@@ -638,7 +723,7 @@ function renderMacroTimeline() {
 
         card.innerHTML = `
             <div class="macro-event-header" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
-                <span class="macro-date">${sanitizeHTML(pubDate)}</span>
+                <span class="macro-date" style="cursor:pointer; text-decoration:underline; text-decoration-style:dashed;" title="Click to filter timeline by this date">${sanitizeHTML(pubDate)}</span>
                 <span class="premium-badge ${categoryClass}">${sanitizeHTML(category)}</span>
                 <span class="premium-badge ${impactClass}">${sanitizeHTML(impactLabel)}</span>
                 <span class="premium-badge badge-strong" style="font-family:monospace; font-size:0.8em; opacity:0.7;">ID: ${sanitizeHTML(event.event_id || '---')}</span>
@@ -648,6 +733,21 @@ function renderMacroTimeline() {
             <p>${sanitizeHTML(summary.substring(0, 150))}${summary.length > 150 ? '...' : ''}</p>
         `;
         
+        // Setup Date Click Filter in Card
+        const dateSpan = card.querySelector('.macro-date');
+        if (dateSpan) {
+            dateSpan.addEventListener('click', (e) => {
+                e.stopPropagation(); // prevent card selection
+                const dateVal = pubDateStr ? pubDateStr.substring(0, 10) : '';
+                if (dateVal) {
+                    workspaceState.searchQuery = dateVal;
+                    const searchInput = document.getElementById('macro-search');
+                    if (searchInput) searchInput.value = dateVal;
+                    renderMacroTimeline();
+                }
+            });
+        }
+
         card.addEventListener('click', () => {
             selectMacroEvent(event.event_id);
         });
@@ -708,6 +808,21 @@ function renderMacroWorkspace() {
             </div>
         </div>
     `;
+    
+    // Setup Date Click Filter in Detailed View Header
+    const detailDateBadge = detailContent.querySelector('.macro-detail-date');
+    if (detailDateBadge) {
+        detailDateBadge.addEventListener('click', () => {
+            const rawDateStr = detailDateBadge.dataset.date;
+            if (rawDateStr) {
+                const dateVal = rawDateStr.substring(0, 10);
+                workspaceState.searchQuery = dateVal;
+                const searchInput = document.getElementById('macro-search');
+                if (searchInput) searchInput.value = dateVal;
+                renderMacroTimeline();
+            }
+        });
+    }
 }
 
 function renderHeaderWidget(event) {
@@ -732,7 +847,7 @@ function renderHeaderWidget(event) {
         <div class="macro-detail-header" style="border-bottom: 1px solid var(--glass-border); padding-bottom: 20px; margin-bottom: 20px;">
             <h2 style="font-size: 1.6rem; font-weight: 700; line-height: 1.4; color: var(--text-main); margin-bottom: 16px;">${sanitizeHTML(title)}</h2>
             <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-                <span class="premium-badge badge-label" style="background: rgba(255,255,255,0.05); color: var(--text-muted);">🗓️ ${sanitizeHTML(pubDate)}</span>
+                <span class="premium-badge badge-label macro-detail-date" data-date="${sanitizeHTML(pubDateStr)}" style="background: rgba(255,255,255,0.05); color: var(--text-muted); cursor: pointer; text-decoration: underline; text-decoration-style: dashed;" title="Click to filter timeline by this date">🗓️ ${sanitizeHTML(pubDate)}</span>
                 <span class="premium-badge ${categoryClass}">${sanitizeHTML(category)}</span>
                 <span class="premium-badge ${impactClass}">⚡ Impact: ${sanitizeHTML(impactLabel)}</span>
                 <span class="premium-badge badge-label" style="background: rgba(79, 70, 229, 0.1); color: var(--primary);">🏛️ ${sanitizeHTML(source)}</span>
@@ -750,23 +865,30 @@ function renderOverviewWidget(event) {
     return `
         <div class="glass-panel" style="margin-bottom: 20px; padding: 20px; background: rgba(255,255,255,0.01); border: 1px solid var(--glass-border);">
             <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:12px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Official Content / Abstract</h4>
-            <p style="line-height:1.7; color:var(--text-main); font-size: 0.95rem;">${sanitizeHTML(summary).replace(/\n/g, '<br>')}</p>
+            <p style="line-height:1.7; color:var(--text-main); font-size: 0.95rem; margin: 0;">${sanitizeHTML(summary).replace(/\n/g, '<br>')}</p>
         </div>
     `;
 }
 
 function renderAIInsightsWidget(event) {
     const aiSummary = event.derived_data?.ai_summary || event.ai_summary;
-    if (!aiSummary) return '';
-    
     const themes = event.derived_data?.themes || event.themes || [];
     const themesHtml = themes.map(t => `<span class="premium-badge badge-label" style="margin-right: 6px;">${sanitizeHTML(t)}</span>`).join('');
+    
+    if (!aiSummary) {
+        return `
+            <div class="glass-panel" style="margin-bottom: 20px; padding: 22px; background: rgba(255,255,255,0.005); border: 1px dashed var(--glass-border); border-left: 5px solid var(--text-muted); position: relative;">
+                <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:12px; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">✨ AI Enriched Summary</h4>
+                <p style="line-height:1.7; color:var(--text-muted); font-size: 0.95rem; font-style: italic; margin: 0;">AI enrichment summary is not available for this event.</p>
+            </div>
+        `;
+    }
     
     return `
         <div class="glass-panel" style="margin-bottom: 20px; padding: 22px; background: linear-gradient(135deg, rgba(124, 58, 237, 0.05), rgba(79, 70, 229, 0.05)); border: 1px solid rgba(124, 58, 237, 0.15); border-left: 5px solid var(--accent-color, var(--primary)); position: relative; box-shadow: 0 4px 20px rgba(124, 58, 237, 0.08);">
             <div style="position: absolute; top: 15px; right: 20px; font-size: 1.25rem; opacity: 0.8;">✨</div>
             <h4 style="margin-top: 0; color:var(--accent-color, var(--primary)); margin-bottom:12px; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">✨ AI Enriched Summary</h4>
-            <p style="line-height:1.7; color:var(--text-main); font-size: 0.95rem; font-weight: 450;">${sanitizeHTML(aiSummary).replace(/\n/g, '<br>')}</p>
+            <p style="line-height:1.7; color:var(--text-main); font-size: 0.95rem; font-weight: 450; margin: 0;">${sanitizeHTML(aiSummary).replace(/\n/g, '<br>')}</p>
             ${themes.length > 0 ? `<div style="margin-top:15px; display:flex; align-items:center; gap:8px;"><strong style="color:var(--text-muted); font-size: 0.85rem;">Themes:</strong> <div>${themesHtml}</div></div>` : ''}
         </div>
     `;
@@ -775,8 +897,6 @@ function renderAIInsightsWidget(event) {
 function renderAttachmentsWidget(event) {
     const attachments = event.official_data?.attachments || event.attachments || [];
     const pdfUrl = event.official_data?.pdf_url || event.pdf;
-    
-    if (attachments.length === 0 && !pdfUrl) return '';
     
     let pdfBtnHtml = '';
     if (pdfUrl) {
@@ -800,6 +920,15 @@ function renderAttachmentsWidget(event) {
                     return `<li><a href="${sanitizeHTML(href)}" target="_blank" style="color:var(--primary); text-decoration:none; font-weight: 500; border-bottom: 1px dashed var(--primary-glow);">${sanitizeHTML(filename)}</a></li>`;
                 }).join('')}
             </ul>
+        `;
+    }
+    
+    if (attachments.length === 0 && !pdfUrl) {
+        return `
+            <div class="glass-panel" style="margin-bottom: 20px; padding: 20px; background: rgba(255,255,255,0.01); border: 1px solid var(--glass-border);">
+                <h4 style="margin-top: 0; color:var(--text-muted); margin-bottom:10px; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Official Attachments</h4>
+                <p style="color:var(--text-muted); margin:0; font-size: 0.9rem; font-style: italic;">No official attachments or PDF documents available.</p>
+            </div>
         `;
     }
     
