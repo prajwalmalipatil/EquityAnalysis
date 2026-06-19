@@ -1,6 +1,6 @@
 {
   "schema_version": "2",
-  "generated_at": "2026-06-19T04:38:18.506322Z",
+  "generated_at": "2026-06-19T04:55:22.169553Z",
   "extraction_list": [
     "360ONE",
     "ABB",
@@ -138,7 +138,6 @@
     "NESTLEIND",
     "NHPC",
     "NIFTY50",
-    "NIFTYBANK",
     "NIFTYMIDCAP50",
     "NMDC",
     "NTPC",
@@ -393,7 +392,6 @@
     "HDFCAMC",
     "MOTHERSON",
     "RBLBANK",
-    "NIFTYBANK",
     "CGPOWER",
     "POLYCAB",
     "DLF",
@@ -483,7 +481,6 @@
     "SOLARINDS",
     "CYIENT",
     "MPHASIS",
-    "NIFTYBANK",
     "POLYCAB",
     "BLUESTARCO",
     "FORTIS",
@@ -512,18 +509,17 @@
     "SBICARD",
     "MPHASIS",
     "HAVELLS",
-    "NIFTYBANK",
     "ADANIGREEN",
     "TITAN",
     "PHOENIXLTD"
   ],
   "stage_statistics": {
-    "extraction_count": 208,
-    "vsa": 208,
+    "extraction_count": 207,
+    "vsa": 207,
     "trending": 48,
-    "anomaly": 17,
+    "anomaly": 16,
     "ticker": 0,
-    "triggers": 25,
+    "triggers": 24,
     "eigen_filter": 30,
     "monthly_eigen": 21,
     "weekly_eigen": 6
@@ -1992,9 +1988,34 @@
   },
   "ticker_alerts": [],
   "macro_intelligence": {
-    "last_event_at": "2026-06-19T09:00:00+00:00",
-    "total_events": 83,
+    "last_event_at": "2026-06-19T10:05:00+00:00",
+    "total_events": 84,
     "recent_events": [
+      {
+        "event_id": "a8b75b1c365058dd",
+        "title": "Result of Underwriting Auction conducted on June 19, 2026",
+        "published": "2026-06-19T10:05:00+00:00",
+        "display_date": "19 Jun 2026",
+        "category": "Press Releases",
+        "priority": "Informational",
+        "summary": "In the underwriting auction conducted on June 19, 2026, for Additional Competitive Underwriting (ACU) of the undernoted Government securities, the Reserve Bank of India has set the cut-off rate for underwriting commission payable to Primary Dealers as given below: Nomenclature of the Security Notified Amount (\u20b9 crore) Minimum Underwriting Commitment (MUC) Amount (\u20b9 crore) Additional Competitive Underwriting Amount Accepted (\u20b9 crore) Total Amount underwritten (\u20b9 crore) ACU Commission Cut-off rate (paise per \u20b9100) 6.03% GS 2029 11,000 5,502 5,498 11,000 0.50 6.68% GS 2033 11,000 5,502 5,498 11,000 0.38 7.24% GS 2055 5,000 2,520 2,480 5,000 0.59 7.50% GOI SGrB 2056 5,000 2,520 2,480 5,000 0.99 Auction for the sale of securities will be held on June 19, 2026. Ajit Prasad Deputy General Manager (Communications) Press Release: 2026-2027/491",
+        "confidence": 0,
+        "impact": "Neutral",
+        "pdf": null,
+        "badges": [
+          "Press Releases",
+          "Informational"
+        ],
+        "url": "https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=62969",
+        "source": "RBI",
+        "attachments": [],
+        "keywords": [],
+        "themes": [],
+        "processing_state": "NEW",
+        "related_events": [],
+        "supersedes": null,
+        "is_new_since_last_session": false
+      },
       {
         "event_id": "eb73f8dd5ea01ac9",
         "title": "Money Market Operations as on June 18, 2026",
@@ -2461,31 +2482,6 @@
           "Informational"
         ],
         "url": "https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=13508&Mode=0",
-        "source": "RBI",
-        "attachments": [],
-        "keywords": [],
-        "themes": [],
-        "processing_state": "NEW",
-        "related_events": [],
-        "supersedes": null,
-        "is_new_since_last_session": false
-      },
-      {
-        "event_id": "845925ec4d44b49f",
-        "title": "Reserve Bank of India (Non-Banking Financial Companies \u2013 Prudential Norms on Capital Adequacy) Third Amendment Directions, 2026",
-        "published": "2026-06-16T17:30:00+00:00",
-        "display_date": "16 Jun 2026",
-        "category": "Notifications",
-        "priority": "Informational",
-        "summary": "",
-        "confidence": 0,
-        "impact": "Neutral",
-        "pdf": null,
-        "badges": [
-          "Notifications",
-          "Informational"
-        ],
-        "url": "https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=13507&Mode=0",
         "source": "RBI",
         "attachments": [],
         "keywords": [],

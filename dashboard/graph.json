@@ -1,18 +1,28 @@
 {
   "schema_version": "1",
-  "generated_at": "2026-06-19T04:38:18.791168Z",
+  "generated_at": "2026-06-19T04:55:22.425347Z",
   "pipeline_version": "1",
   "statistics": {
-    "node_count": 83,
-    "edge_count": 814,
+    "node_count": 84,
+    "edge_count": 816,
     "connected_components": 3,
-    "average_degree": 19.61,
+    "average_degree": 19.43,
     "relationship_distribution": {
-      "AMENDS": 586,
+      "AMENDS": 588,
       "WITHDRAWS": 228
     }
   },
   "nodes": [
+    {
+      "id": "a8b75b1c365058dd",
+      "type": "Event",
+      "label": "Result of Underwriting Auction conducted on June 19, 2026",
+      "category": "Press Releases",
+      "metadata": {
+        "date": "2026-06-19T10:05:00+00:00",
+        "source": "RBI"
+      }
+    },
     {
       "id": "eb73f8dd5ea01ac9",
       "type": "Event",
@@ -845,6 +855,24 @@
     }
   ],
   "edges": [
+    {
+      "id": "91fe423e5aef0fbb",
+      "relationship_id": "9316be6a150595e3",
+      "source": "74f2c2e100c55f55",
+      "target": "a8b75b1c365058dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "43c2d981d6e50d26",
+      "relationship_id": "7ead11bc022c1f18",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "a8b75b1c365058dd",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
     {
       "id": "1091a14f2403fe6b",
       "relationship_id": "165057047adb87b3",
