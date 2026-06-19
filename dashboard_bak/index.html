@@ -105,10 +105,6 @@
                         <h3>Anomalies</h3>
                         <div class="stat-value" id="stat-anomaly">--</div>
                     </div>
-                    <div class="stat-card glass-panel clickable-card" id="card-triggers">
-                        <h3>Vol/Spread Triggers</h3>
-                        <div class="stat-value" id="stat-triggers">--</div>
-                    </div>
                 </section>
 
                 <div class="main-panels">
@@ -264,13 +260,156 @@
 
                     <!-- Sidebar alerts / Eigen -->
                     <aside class="side-panels">
-                        <div id="alerts-container" class="panel glass-panel">
+                        <div id="transition-insights" class="panel glass-panel">
                             <div class="panel-header">
-                                <h2>Ticker Alerts</h2>
+                                <h2>Transition Insights</h2>
                             </div>
-                            <ul id="alerts-list" class="alerts-list">
-                                <!-- Populated by JS -->
-                            </ul>
+                            <div class="eigen-stats">
+                                <div class="eigen-row" onclick="toggleTransitionTable('daily')">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span class="ete-timeframe-arrow" id="transition-arrow-daily" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        <span>Daily Transitions</span>
+                                    </div>
+                                    <span class="badge" id="transition-daily-count">--</span>
+                                </div>
+                                <div class="eigen-table-container" id="transition-table-daily" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>State</th>
+                                                <th>Stage</th>
+                                                <th>Confidence</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="transition-body-daily">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <div class="eigen-row" onclick="toggleTransitionTable('weekly')">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span class="ete-timeframe-arrow" id="transition-arrow-weekly" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        <span>Weekly Transitions</span>
+                                    </div>
+                                    <span class="badge" id="transition-weekly-count">--</span>
+                                </div>
+                                <div class="eigen-table-container" id="transition-table-weekly" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>State</th>
+                                                <th>Stage</th>
+                                                <th>Confidence</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="transition-body-weekly">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <div class="eigen-row" onclick="toggleTransitionTable('monthly')">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span class="ete-timeframe-arrow" id="transition-arrow-monthly" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        <span>Monthly Transitions</span>
+                                    </div>
+                                    <span class="badge" id="transition-monthly-count">--</span>
+                                </div>
+                                <div class="eigen-table-container" id="transition-table-monthly" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>State</th>
+                                                <th>Stage</th>
+                                                <th>Confidence</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="transition-body-monthly">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="replay-insights" class="panel glass-panel">
+                            <div class="panel-header">
+                                <h2>Replay Insights</h2>
+                            </div>
+                            <div class="eigen-stats">
+                                <div class="eigen-row" onclick="toggleReplayTable('daily')">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span class="ete-timeframe-arrow" id="replay-arrow-daily" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        <span>Daily Replays</span>
+                                    </div>
+                                    <span class="badge" id="replay-daily-count">--</span>
+                                </div>
+                                <div class="eigen-table-container" id="replay-table-daily" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Pattern</th>
+                                                <th>Win/Loss</th>
+                                                <th>Confidence</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="replay-body-daily">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <div class="eigen-row" onclick="toggleReplayTable('weekly')">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span class="ete-timeframe-arrow" id="replay-arrow-weekly" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        <span>Weekly Replays</span>
+                                    </div>
+                                    <span class="badge" id="replay-weekly-count">--</span>
+                                </div>
+                                <div class="eigen-table-container" id="replay-table-weekly" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Pattern</th>
+                                                <th>Win/Loss</th>
+                                                <th>Confidence</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="replay-body-weekly">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <div class="eigen-row" onclick="toggleReplayTable('monthly')">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span class="ete-timeframe-arrow" id="replay-arrow-monthly" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        <span>Monthly Replays</span>
+                                    </div>
+                                    <span class="badge" id="replay-monthly-count">--</span>
+                                </div>
+                                <div class="eigen-table-container" id="replay-table-monthly" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Pattern</th>
+                                                <th>Win/Loss</th>
+                                                <th>Confidence</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="replay-body-monthly">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                         
                         <div id="eigen" class="panel glass-panel">
@@ -279,7 +418,10 @@
                             </div>
                             <div class="eigen-stats">
                                 <div class="eigen-row" onclick="toggleEigenTable('daily')">
-                                    <span>Daily Matches</span>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span class="ete-timeframe-arrow" id="eigen-arrow-daily" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        <span>Daily Matches</span>
+                                    </div>
                                     <span class="badge" id="eigen-daily-count">--</span>
                                 </div>
                                 <div class="eigen-table-container" id="eigen-table-daily" style="display: none;">
@@ -302,7 +444,10 @@
                                 </div>
 
                                 <div class="eigen-row" onclick="toggleEigenTable('weekly')">
-                                    <span>Weekly Matches</span>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span class="ete-timeframe-arrow" id="eigen-arrow-weekly" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        <span>Weekly Matches</span>
+                                    </div>
                                     <span class="badge" id="eigen-weekly-count">--</span>
                                 </div>
                                 <div class="eigen-table-container" id="eigen-table-weekly" style="display: none;">
@@ -325,7 +470,10 @@
                                 </div>
 
                                 <div class="eigen-row" onclick="toggleEigenTable('monthly')">
-                                    <span>Monthly Matches</span>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span class="ete-timeframe-arrow" id="eigen-arrow-monthly" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        <span>Monthly Matches</span>
+                                    </div>
                                     <span class="badge" id="eigen-monthly-count">--</span>
                                 </div>
                                 <div class="eigen-table-container" id="eigen-table-monthly" style="display: none;">
