@@ -1,6 +1,6 @@
 {
   "schema_version": "2",
-  "generated_at": "2026-06-19T06:45:52.241657Z",
+  "generated_at": "2026-06-19T08:06:58.383752Z",
   "extraction_list": [
     "360ONE",
     "ABB",
@@ -1992,9 +1992,59 @@
   },
   "ticker_alerts": [],
   "macro_intelligence": {
-    "last_event_at": "2026-06-19T10:20:00+00:00",
-    "total_events": 85,
+    "last_event_at": "2026-06-19T12:30:00+00:00",
+    "total_events": 87,
     "recent_events": [
+      {
+        "event_id": "6b5c44d22c7b3a43",
+        "title": "Supervisory Data Quality Index for Scheduled Commercial Banks (March 2026)",
+        "published": "2026-06-19T12:30:00+00:00",
+        "display_date": "19 Jun 2026",
+        "category": "Publications",
+        "priority": "Informational",
+        "summary": "The Reserve Bank of India (RBI) has created a Supervisory Data Quality Index (sDQI) that measures data quality in terms of the Accuracy, Timeliness, Completeness and Consistency in the submission of returns and microdata for supervisory assessments. The objective of sDQI is to assess the adherence to the principles enunciated in the Master Direction on Filing of Supervisory Returns 2024 . The sDQI score of Scheduled Commercial Banks (SCBs) has decreased in March 2026 as compared to December 2025. Trends in sDQI Scores of SCBs Bank Group Dec-25 Mar-26 Accuracy Completeness Timeliness Consistency sDQI Score Accuracy Completeness Timeliness Consistency sDQI Score Scheduled Commercial Banks 87.9 95.8 92.7 87.0 90.9 86.8 96.4 92.1 87.4 90.7 Public Sector Banks 88.0 98.8 90.8 86.4 91.0 86.2 98.1 91.5 86.8 90.7 Private Sector Banks 87.2 97.6 90.1 87.4 90.6 85.4 95.5 88.9 87.5 89.3 Foreign Banks 88.3 92.9 94.4 87.1 90.7 87.8 95.7 94.6 87.8 91.4 Small Finance Banks 87.7 100.0 93.2 86.5 91.9 86.6 99.3 89.5 86.4 90.4 The distribution of the Overall sDQI Scores for all SCBs for the quarter ended March 2026 is given below. In March 2026, three entities scored below 80. Interpretation of scores Less than 70 Between 70 and 80 Between 80 and 90 More than 90 Major Concerns Needs Improvement Acceptable Good The trends in the parameters and in overall sDQI scores for SCBs is shown below. The sDQI for SCBs covers 87 SCBs and their key returns (viz. Return on Asset Liability and Off-Balance Sheet Exposures (ALE), Return on Asset Quality (RAQ), Return on Operating Results (ROR), Risk Based Supervision Return (RBS), Liquidity Return (LR), Return on Capital Adequacy (RCA), Central Repository of Information on Large Credits (CRILC) \u2013 Main) and microdata submitted for supervisory assessments. The broad methodological paper for sDQI is Annexed .",
+        "confidence": 0,
+        "impact": "Neutral",
+        "pdf": null,
+        "badges": [
+          "Publications",
+          "Informational"
+        ],
+        "url": "https://www.rbi.org.in/scripts/AnnualReportPublications.aspx?Id=23821",
+        "source": "RBI",
+        "attachments": [],
+        "keywords": [],
+        "themes": [],
+        "processing_state": "NEW",
+        "related_events": [],
+        "supersedes": null,
+        "is_new_since_last_session": false
+      },
+      {
+        "event_id": "9d83e684efd1111f",
+        "title": "Supervisory Data Quality Index for Scheduled Commercial Banks  (March 2026)",
+        "published": "2026-06-19T12:25:00+00:00",
+        "display_date": "19 Jun 2026",
+        "category": "Press Releases",
+        "priority": "Informational",
+        "summary": "The Reserve Bank of India (RBI) has released the Supervisory Data Quality Index (sDQI) for SCBs for March 2026 . It measures data quality in terms of the Accuracy, Timeliness, Completeness and Consistency in the submission of returns and microdata for supervisory assessments. The objective of sDQI is to assess the adherence to the principles enunciated in the Master Direction on Filing of Supervisory Returns 2024 . (Brij Raj) Chief General Manager Press Release: 2026-2027/493",
+        "confidence": 0,
+        "impact": "Neutral",
+        "pdf": null,
+        "badges": [
+          "Press Releases",
+          "Informational"
+        ],
+        "url": "https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=62971",
+        "source": "RBI",
+        "attachments": [],
+        "keywords": [],
+        "themes": [],
+        "processing_state": "NEW",
+        "related_events": [],
+        "supersedes": null,
+        "is_new_since_last_session": false
+      },
       {
         "event_id": "f20cf024e6312533",
         "title": "Result of the 3-day Variable Rate Repo (VRR) auction held on June 19, 2026",
@@ -2436,56 +2486,6 @@
           "Informational"
         ],
         "url": "https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=13510&Mode=0",
-        "source": "RBI",
-        "attachments": [],
-        "keywords": [],
-        "themes": [],
-        "processing_state": "NEW",
-        "related_events": [],
-        "supersedes": null,
-        "is_new_since_last_session": false
-      },
-      {
-        "event_id": "d90dbebda0d656dd",
-        "title": "Reserve Bank of India (Commercial Banks \u2013 Interest Rate on Deposits) Amendment Directions, 2026",
-        "published": "2026-06-17T17:55:00+00:00",
-        "display_date": "17 Jun 2026",
-        "category": "Notifications",
-        "priority": "Informational",
-        "summary": "RBI/2026-27/138 DOR.SOG(SPE).REC.117/13.03.00/2026-27 June 17, 2026 Reserve Bank of India (Commercial Banks \u2013 Interest Rate on Deposits) Amendment Directions, 2026 Please refer to the Reserve Bank of India (Commercial Banks \u2013 Interest Rate on Deposits) Directions, 2025 (hereinafter referred to as \u2018Directions\u2019), dated November 28, 2025. On a review, it has been decided to temporarily withdraw interest rate ceiling on fresh FCNR(B) deposits of 3-5 year tenors and restriction on interest rates on NRE deposits of 3 year and above tenors, including the deposits that are renewed upon maturity, from the date of this Amendment Directions till September 30, 2026. 2. Accordingly, in exercise of the powers conferred by Section 35A of the Banking Regulation Act,1949 and all other laws enabling the Reserve Bank India (RBI) in this regard, the RBI, being satisfied that it is necessary and expedient in public interest so to do, hereby, issues the Amendment Directions hereinafter specified. 3. These Amendment Directions shall be called the Reserve Bank of India (Commercial Banks \u2013 Interest Rate on Deposits) Amendment Directions, 2026. 4. These Amendment Directions shall come into effect from the date of issue. 5. These Amendment Directions shall modify the Directions, as under: (1) In Chapter IV on Rupee Deposits of Non-Residents, the paragraph 27(4) shall be amended as under: Interest rates on NRE / NRO deposits shall not be higher than those offered by the bank on comparable domestic rupee term deposits 1 . (2) In Chapter V on Foreign Currency Deposits, the paragraph 32(7) shall be amended as under: Period of Deposit Ceiling Rate One year to less than three years Overnight Alternative Reference Rate for the respective currency/ Swap plus 250 basis points Three years and above upto and including five years Overnight Alternative Reference Rate for the respective currency/ Swap plus 350 2 basis points (Dr. Sudarsana Sahoo) Chief General Manager 1 The said restriction with respect to interest rates offered on fresh NRE deposits mobilised by banks, including the deposits that are renewed upon maturity, for three years and above tenors, is temporarily withdrawn with effect from June 17, 2026, for the period until September 30, 2026. Any transfer from NRO accounts to NRE accounts shall not qualify for such exemption. 2 The interest rate ceiling applicable to fresh FCNR(B) deposits mobilised by banks, including the deposits that are renewed upon maturity, for three years and above-upto and including five years tenors, is temporarily withdrawn with effect from June 17, 2026, for the period until September 30, 2026.",
-        "confidence": 0,
-        "impact": "Neutral",
-        "pdf": null,
-        "badges": [
-          "Notifications",
-          "Informational"
-        ],
-        "url": "https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=13509&Mode=0",
-        "source": "RBI",
-        "attachments": [],
-        "keywords": [],
-        "themes": [],
-        "processing_state": "NEW",
-        "related_events": [],
-        "supersedes": null,
-        "is_new_since_last_session": false
-      },
-      {
-        "event_id": "db112b8298ebb2c9",
-        "title": "RBI to conduct 2-day Variable Rate Repo (VRR) auction under LAF on June 17, 2026",
-        "published": "2026-06-16T19:05:00+00:00",
-        "display_date": "16 Jun 2026",
-        "category": "Press Releases",
-        "priority": "Informational",
-        "summary": "",
-        "confidence": 0,
-        "impact": "Neutral",
-        "pdf": null,
-        "badges": [
-          "Press Releases",
-          "Informational"
-        ],
-        "url": "https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=62947",
         "source": "RBI",
         "attachments": [],
         "keywords": [],
