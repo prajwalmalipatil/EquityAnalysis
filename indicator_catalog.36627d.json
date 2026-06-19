@@ -1,0 +1,1 @@
+{"AVE_1":{"sequence":["LVLS","HVHS","LVLS","HVHS"],"enabled":false},"AVE_DAILY":{"sequence":["LVLS","HVHS","LVLS","HVHS"],"timeframes":["daily"],"enabled":true},"AVE_WEEKLY":{"sequence":["LVLS","HVHS"],"timeframes":["weekly"],"enabled":true},"AVE_MONTHLY":{"sequence":["LVLS","HVHS"],"timeframes":["monthly"],"enabled":true}}
