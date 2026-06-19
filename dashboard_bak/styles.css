@@ -791,48 +791,125 @@ nav {
     flex: 1;
 }
 
+/* Custom Scrollbars */
+.macro-timeline::-webkit-scrollbar,
+.macro-pane-right::-webkit-scrollbar {
+    width: 6px;
+}
+.macro-timeline::-webkit-scrollbar-track,
+.macro-pane-right::-webkit-scrollbar-track {
+    background: transparent;
+}
+.macro-timeline::-webkit-scrollbar-thumb,
+.macro-pane-right::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: 3px;
+}
+.macro-timeline::-webkit-scrollbar-thumb:hover,
+.macro-pane-right::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
 .macro-event-card {
-    padding: 16px;
+    padding: 18px;
     text-align: left;
     cursor: pointer;
-    transition: all 0.3s ease;
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.015);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     flex-shrink: 0;
+}
+
+.macro-event-card:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.04);
+    border-color: var(--primary-glow);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .macro-event-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     align-items: center;
 }
 
 .macro-date {
     color: var(--text-muted);
     font-size: 0.85rem;
+    font-weight: 500;
 }
 
 .macro-event-card h3 {
-    margin: 0 0 8px 0;
+    margin: 0 0 10px 0;
     font-size: 1.1rem;
+    font-weight: 650;
     color: var(--text-main);
+    line-height: 1.45;
+    transition: color 0.2s;
+}
+
+.macro-event-card:hover h3 {
+    color: var(--primary);
 }
 
 .macro-event-card p {
     margin: 0;
-    color: var(--text-main);
-    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-size: 0.92rem;
     line-height: 1.5;
+}
+
+.macro-event-card:hover p {
+    color: var(--text-main);
 }
 
 .macro-event-card.selected {
     border-color: var(--primary);
     background: var(--glass-highlight);
-    box-shadow: 0 0 15px var(--primary-glow);
+    box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.macro-event-card.selected h3 {
+    color: var(--primary);
 }
 
 .macro-event-card:focus {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
+}
+
+/* Category Badge Specifics */
+.badge-press-releases {
+    background: rgba(59, 130, 246, 0.12) !important;
+    color: #2563eb !important;
+}
+.badge-notifications {
+    background: rgba(245, 158, 11, 0.12) !important;
+    color: #d97706 !important;
+}
+.badge-monetary-policy {
+    background: rgba(16, 185, 129, 0.12) !important;
+    color: #059669 !important;
+}
+
+body.dark-mode .badge-press-releases {
+    background: rgba(96, 165, 250, 0.15) !important;
+    color: #60a5fa !important;
+}
+body.dark-mode .badge-notifications {
+    background: rgba(251, 191, 36, 0.15) !important;
+    color: #fbbf24 !important;
+}
+body.dark-mode .badge-monetary-policy {
+    background: rgba(52, 211, 153, 0.15) !important;
+    color: #34d399 !important;
+}
+
+@keyframes float-globe {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
 }
 
 .macro-detail-header {
@@ -1014,6 +1091,8 @@ body.dark-mode {
     
     --primary-glow: rgba(99, 102, 241, 0.4);
     --accent-color: #a78bfa;
+    --success: #34d399;
+    --danger: #f87171;
     
     background-image: 
         radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 30%),
@@ -1025,4 +1104,54 @@ body.dark-mode .rating-sell { background: rgba(248, 113, 113, 0.15); color: #f87
 body.dark-mode .rating-neutral { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; }
 body.dark-mode .sentiment.bullish { color: #34d399; }
 body.dark-mode .sentiment.bearish { color: #f87171; }
+
+/* Impact Borders and Glows for Timeline Cards */
+.macro-event-card.impact-bullish,
+.macro-event-card.impact-positive {
+    border-left: 4px solid var(--success) !important;
+}
+.macro-event-card.impact-bearish,
+.macro-event-card.impact-negative {
+    border-left: 4px solid var(--danger) !important;
+}
+.macro-event-card.impact-neutral {
+    border-left: 4px solid var(--text-muted) !important;
+}
+
+/* Hover & Selected states with subtle colored glow */
+.macro-event-card.impact-bullish:hover,
+.macro-event-card.impact-positive:hover,
+.macro-event-card.impact-bullish.selected,
+.macro-event-card.impact-positive.selected {
+    box-shadow: 0 0 15px rgba(5, 150, 105, 0.15);
+    border-color: rgba(5, 150, 105, 0.4);
+}
+
+.macro-event-card.impact-bearish:hover,
+.macro-event-card.impact-negative:hover,
+.macro-event-card.impact-bearish.selected,
+.macro-event-card.impact-negative.selected {
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.15);
+    border-color: rgba(220, 38, 38, 0.4);
+}
+
+/* Premium Badges for Impact */
+.badge-impact-bullish,
+.badge-impact-positive {
+    background: rgba(5, 150, 105, 0.1) !important;
+    color: var(--success) !important;
+    border: 1px solid rgba(5, 150, 105, 0.2) !important;
+}
+.badge-impact-bearish,
+.badge-impact-negative {
+    background: rgba(220, 38, 38, 0.1) !important;
+    color: var(--danger) !important;
+    border: 1px solid rgba(220, 38, 38, 0.2) !important;
+}
+.badge-impact-neutral {
+    background: rgba(100, 116, 139, 0.1) !important;
+    color: var(--text-muted) !important;
+    border: 1px solid rgba(100, 116, 139, 0.2) !important;
+}
+
 

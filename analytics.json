@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-19T08:34:24.747273Z",
+  "generated_at": "2026-06-19T09:38:05.196463Z",
   "pipeline_version": "2.1.0",
   "event_count": 88,
   "analytics": {
@@ -88,7 +88,7 @@
       "confidence_distribution": [
         {
           "label": "0-20",
-          "count": 9
+          "count": 10
         }
       ],
       "theme_frequency": [],
@@ -103,17 +103,17 @@
       "feed_availability": 1.0
     },
     "quality": {
-      "events_with_pdf": 0,
-      "events_missing_attachment": 88,
+      "events_with_pdf": 2,
+      "events_missing_attachment": 86,
       "missing_effective_date": 88,
-      "ai_enrichment_coverage": 0.10227272727272728,
+      "ai_enrichment_coverage": 0.11363636363636363,
       "validation_failures": 0,
       "avg_quality_score": 0.0
     },
     "coverage": {
-      "events_with_ai": 9,
-      "events_with_pdf": 0,
-      "events_with_attachments": 0,
+      "events_with_ai": 10,
+      "events_with_pdf": 2,
+      "events_with_attachments": 2,
       "events_with_effective_date": 0,
       "events_with_market_impact": 0
     }
