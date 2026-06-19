@@ -603,7 +603,8 @@ function renderMacroTimeline() {
     
     filtered.forEach(event => {
         const card = document.createElement('div');
-        card.className = 'macro-event-card glass-panel clickable-card';
+        const impact = (event.impact || 'Neutral').toLowerCase();
+        card.className = `macro-event-card glass-panel clickable-card impact-${impact}`;
         card.setAttribute('role', 'listitem');
         card.tabIndex = 0; // Make focusable
         
@@ -630,10 +631,16 @@ function renderMacroTimeline() {
         else if (category === 'Notifications') categoryClass = 'badge-notifications';
         else if (category === 'Monetary Policy') categoryClass = 'badge-monetary-policy';
 
+        const impactLabel = event.impact || 'Neutral';
+        let impactClass = 'badge-impact-neutral';
+        if (impactLabel === 'Bullish' || impactLabel === 'Positive') impactClass = 'badge-impact-bullish';
+        else if (impactLabel === 'Bearish' || impactLabel === 'Negative') impactClass = 'badge-impact-bearish';
+
         card.innerHTML = `
             <div class="macro-event-header" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
                 <span class="macro-date">${sanitizeHTML(pubDate)}</span>
                 <span class="premium-badge ${categoryClass}">${sanitizeHTML(category)}</span>
+                <span class="premium-badge ${impactClass}">${sanitizeHTML(impactLabel)}</span>
                 <span class="premium-badge badge-strong" style="font-family:monospace; font-size:0.8em; opacity:0.7;">ID: ${sanitizeHTML(event.event_id || '---')}</span>
                 ${isNewHtml}
             </div>
@@ -716,12 +723,18 @@ function renderHeaderWidget(event) {
     else if (category === 'Notifications') categoryClass = 'badge-notifications';
     else if (category === 'Monetary Policy') categoryClass = 'badge-monetary-policy';
 
+    const impactLabel = event.impact || 'Neutral';
+    let impactClass = 'badge-impact-neutral';
+    if (impactLabel === 'Bullish' || impactLabel === 'Positive') impactClass = 'badge-impact-bullish';
+    else if (impactLabel === 'Bearish' || impactLabel === 'Negative') impactClass = 'badge-impact-bearish';
+
     return `
         <div class="macro-detail-header" style="border-bottom: 1px solid var(--glass-border); padding-bottom: 20px; margin-bottom: 20px;">
             <h2 style="font-size: 1.6rem; font-weight: 700; line-height: 1.4; color: var(--text-main); margin-bottom: 16px;">${sanitizeHTML(title)}</h2>
             <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
                 <span class="premium-badge badge-label" style="background: rgba(255,255,255,0.05); color: var(--text-muted);">🗓️ ${sanitizeHTML(pubDate)}</span>
                 <span class="premium-badge ${categoryClass}">${sanitizeHTML(category)}</span>
+                <span class="premium-badge ${impactClass}">⚡ Impact: ${sanitizeHTML(impactLabel)}</span>
                 <span class="premium-badge badge-label" style="background: rgba(79, 70, 229, 0.1); color: var(--primary);">🏛️ ${sanitizeHTML(source)}</span>
                 <span class="premium-badge badge-strong" style="font-family: monospace;">ID: ${sanitizeHTML(event.event_id)}</span>
                 <a href="${sanitizeHTML(url)}" target="_blank" class="premium-badge" style="background: var(--primary-glow); color: var(--primary); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; transition: background 0.2s;">

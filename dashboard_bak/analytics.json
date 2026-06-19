@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-19T07:01:16.685005Z",
+  "generated_at": "2026-06-19T07:03:08.169568Z",
   "pipeline_version": "2.1.0",
   "event_count": 87,
   "analytics": {
@@ -103,8 +103,8 @@
       "feed_availability": 1.0
     },
     "quality": {
-      "events_with_pdf": 0,
-      "events_missing_attachment": 87,
+      "events_with_pdf": 1,
+      "events_missing_attachment": 86,
       "missing_effective_date": 87,
       "ai_enrichment_coverage": 0.10344827586206896,
       "validation_failures": 0,
@@ -112,8 +112,8 @@
     },
     "coverage": {
       "events_with_ai": 9,
-      "events_with_pdf": 0,
-      "events_with_attachments": 0,
+      "events_with_pdf": 1,
+      "events_with_attachments": 1,
       "events_with_effective_date": 0,
       "events_with_market_impact": 0
     }

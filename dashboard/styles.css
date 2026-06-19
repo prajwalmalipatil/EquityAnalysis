@@ -818,6 +818,7 @@ nav {
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.015);
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
 }
 
 .macro-event-card:hover {
@@ -1090,6 +1091,8 @@ body.dark-mode {
     
     --primary-glow: rgba(99, 102, 241, 0.4);
     --accent-color: #a78bfa;
+    --success: #34d399;
+    --danger: #f87171;
     
     background-image: 
         radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 30%),
@@ -1101,4 +1104,54 @@ body.dark-mode .rating-sell { background: rgba(248, 113, 113, 0.15); color: #f87
 body.dark-mode .rating-neutral { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; }
 body.dark-mode .sentiment.bullish { color: #34d399; }
 body.dark-mode .sentiment.bearish { color: #f87171; }
+
+/* Impact Borders and Glows for Timeline Cards */
+.macro-event-card.impact-bullish,
+.macro-event-card.impact-positive {
+    border-left: 4px solid var(--success) !important;
+}
+.macro-event-card.impact-bearish,
+.macro-event-card.impact-negative {
+    border-left: 4px solid var(--danger) !important;
+}
+.macro-event-card.impact-neutral {
+    border-left: 4px solid var(--text-muted) !important;
+}
+
+/* Hover & Selected states with subtle colored glow */
+.macro-event-card.impact-bullish:hover,
+.macro-event-card.impact-positive:hover,
+.macro-event-card.impact-bullish.selected,
+.macro-event-card.impact-positive.selected {
+    box-shadow: 0 0 15px rgba(5, 150, 105, 0.15);
+    border-color: rgba(5, 150, 105, 0.4);
+}
+
+.macro-event-card.impact-bearish:hover,
+.macro-event-card.impact-negative:hover,
+.macro-event-card.impact-bearish.selected,
+.macro-event-card.impact-negative.selected {
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.15);
+    border-color: rgba(220, 38, 38, 0.4);
+}
+
+/* Premium Badges for Impact */
+.badge-impact-bullish,
+.badge-impact-positive {
+    background: rgba(5, 150, 105, 0.1) !important;
+    color: var(--success) !important;
+    border: 1px solid rgba(5, 150, 105, 0.2) !important;
+}
+.badge-impact-bearish,
+.badge-impact-negative {
+    background: rgba(220, 38, 38, 0.1) !important;
+    color: var(--danger) !important;
+    border: 1px solid rgba(220, 38, 38, 0.2) !important;
+}
+.badge-impact-neutral {
+    background: rgba(100, 116, 139, 0.1) !important;
+    color: var(--text-muted) !important;
+    border: 1px solid rgba(100, 116, 139, 0.2) !important;
+}
+
 
