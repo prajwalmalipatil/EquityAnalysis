@@ -1,6 +1,6 @@
 {
   "schema_version": "2",
-  "generated_at": "2026-06-19T04:55:22.169553Z",
+  "generated_at": "2026-06-19T05:03:49.146378Z",
   "extraction_list": [
     "360ONE",
     "ABB",
@@ -138,6 +138,7 @@
     "NESTLEIND",
     "NHPC",
     "NIFTY50",
+    "NIFTYBANK",
     "NIFTYMIDCAP50",
     "NMDC",
     "NTPC",
@@ -392,6 +393,7 @@
     "HDFCAMC",
     "MOTHERSON",
     "RBLBANK",
+    "NIFTYBANK",
     "CGPOWER",
     "POLYCAB",
     "DLF",
@@ -481,6 +483,7 @@
     "SOLARINDS",
     "CYIENT",
     "MPHASIS",
+    "NIFTYBANK",
     "POLYCAB",
     "BLUESTARCO",
     "FORTIS",
@@ -509,17 +512,18 @@
     "SBICARD",
     "MPHASIS",
     "HAVELLS",
+    "NIFTYBANK",
     "ADANIGREEN",
     "TITAN",
     "PHOENIXLTD"
   ],
   "stage_statistics": {
-    "extraction_count": 207,
-    "vsa": 207,
+    "extraction_count": 208,
+    "vsa": 208,
     "trending": 48,
-    "anomaly": 16,
+    "anomaly": 17,
     "ticker": 0,
-    "triggers": 24,
+    "triggers": 25,
     "eigen_filter": 30,
     "monthly_eigen": 21,
     "weekly_eigen": 6
@@ -1988,9 +1992,34 @@
   },
   "ticker_alerts": [],
   "macro_intelligence": {
-    "last_event_at": "2026-06-19T10:05:00+00:00",
-    "total_events": 84,
+    "last_event_at": "2026-06-19T10:20:00+00:00",
+    "total_events": 85,
     "recent_events": [
+      {
+        "event_id": "f20cf024e6312533",
+        "title": "Result of the 3-day Variable Rate Repo (VRR) auction held on June 19, 2026",
+        "published": "2026-06-19T10:20:00+00:00",
+        "display_date": "19 Jun 2026",
+        "category": "Press Releases",
+        "priority": "Informational",
+        "summary": "Tenor 3-day Notified Amount (in \u20b9 crore) 1,00,000 Total amount of bids received (in \u20b9 crore) 16,750 Amount allotted (in \u20b9 crore) 16,750 Cut off Rate (%) 5.26 Weighted Average Rate (%) 5.26 Partial Allotment Percentage of bids received at cut off rate (%) NA Ajit Prasad Deputy General Manager (Communications) Press Release: 2026-2027/492",
+        "confidence": 0,
+        "impact": "Neutral",
+        "pdf": null,
+        "badges": [
+          "Press Releases",
+          "Informational"
+        ],
+        "url": "https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=62970",
+        "source": "RBI",
+        "attachments": [],
+        "keywords": [],
+        "themes": [],
+        "processing_state": "NEW",
+        "related_events": [],
+        "supersedes": null,
+        "is_new_since_last_session": false
+      },
       {
         "event_id": "a8b75b1c365058dd",
         "title": "Result of Underwriting Auction conducted on June 19, 2026",
@@ -2457,31 +2486,6 @@
           "Informational"
         ],
         "url": "https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=62947",
-        "source": "RBI",
-        "attachments": [],
-        "keywords": [],
-        "themes": [],
-        "processing_state": "NEW",
-        "related_events": [],
-        "supersedes": null,
-        "is_new_since_last_session": false
-      },
-      {
-        "event_id": "7a11e2fb1a6c9db4",
-        "title": "Reserve Bank of India (Small Finance Banks \u2013 Prudential Norms on Capital Adequacy) Sixth Amendment Directions, 2026",
-        "published": "2026-06-16T17:30:00+00:00",
-        "display_date": "16 Jun 2026",
-        "category": "Notifications",
-        "priority": "Informational",
-        "summary": "",
-        "confidence": 0,
-        "impact": "Neutral",
-        "pdf": null,
-        "badges": [
-          "Notifications",
-          "Informational"
-        ],
-        "url": "https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=13508&Mode=0",
         "source": "RBI",
         "attachments": [],
         "keywords": [],
