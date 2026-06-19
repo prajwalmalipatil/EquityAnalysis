@@ -1,6 +1,6 @@
 {
   "schema_version": "2",
-  "generated_at": "2026-06-19T08:45:45.856804Z",
+  "generated_at": "2026-06-19T11:10:53.266183Z",
   "extraction_list": [],
   "vsa_list": [],
   "trending_list": [],
@@ -25,9 +25,38 @@
   },
   "ticker_alerts": [],
   "macro_intelligence": {
-    "last_event_at": "2026-06-19T13:45:00+00:00",
-    "total_events": 88,
+    "last_event_at": "2026-06-19T15:50:00+00:00",
+    "total_events": 89,
     "recent_events": [
+      {
+        "event_id": "c31dab052044acad",
+        "title": "Government Stock - Full Auction Results",
+        "published": "2026-06-19T15:50:00+00:00",
+        "display_date": "19 Jun 2026",
+        "category": "Press Releases",
+        "priority": "Informational",
+        "summary": "The government's full auction of four tranches of Government Stocks (GS) totaling \u20b932,000 Crore was successful, with all notified amounts fully subscribed and no devolvement on primary dealers. The auction witnessed robust demand, as competitive bids significantly exceeded the offered amounts across all maturities (2029, 2033, 2055, 2056), indicating strong investor appetite and market confidence in government securities. The achieved cut-off and weighted average yields provide current market benchmarks for these specific maturities, reflecting prevailing interest rate expectations.",
+        "confidence": 0,
+        "impact": "Neutral",
+        "pdf": "https://rbidocs.rbi.org.in/rdocs/PressRelease/PDFs/PR495310C9C76107B4B04849ECC3DA7ACA941.PDF",
+        "badges": [
+          "Press Releases",
+          "Informational"
+        ],
+        "url": "https://www.rbi.org.in/scripts/BS_PressReleaseDisplay.aspx?prid=62973",
+        "source": "RBI",
+        "attachments": [
+          "/Users/prajwalmalipatil/Downloads/PrajwalPort/EquityAnalysis/dashboard/history/attachments/PR495310C9C76107B4B04849ECC3DA7ACA941.PDF"
+        ],
+        "keywords": [],
+        "themes": [],
+        "processing_state": "ENRICHED",
+        "related_events": [],
+        "supersedes": null,
+        "content": "(Amount in \u20b9 Crore) Auction Results 6.03% GS 2029 6.68% GS 2033 7.24% GS 2055 7.50% GOI SGrB 2056 I. Notified Amount 11,000 11,000 5,000 5,000 II. Competitive Bids Received (i) Number 106 167 153 94 (ii) Amount 37,549.000 33,246.000 13,911.500 13,810.160 III. Cut-off price / Yield 99.52 99.69 97.10 100.52 (YTM: 6.2300%) (YTM: 6.7373%) (YTM: 7.4847%) (YTM: 7.4551%) IV. Competitive Bids Accepted (i) Number 8 24 35 22 (ii) Amount 10,996.165 10,990.451 4,988.514 4,994.766 V. Partial Allotment Percentage of Competitive Bids 54.6165% 49.4395% 54.0976% 91.9869% (1 bid) (13 bids) (7 bids) (1 bid) VI. Weighted Average Price/Yield 99.62 99.71 97.17 100.59 (WAY: 6.1876%) (WAY: 6.7335%) (WAY: 7.4786%) (WAY: 7.4492%) VII. Non-Competitive Bids Received (i) Number 5 5 5 4 (ii) Amount 3.835 9.549 11.486 5.234 VIII. Non-Competitive Bids Accepted (i) Number 5 5 5 4 (ii) Amount 3.835 9.549 11.486 5.234 (iii) Partial Allotment Percentage IX. Underwriting Notified Amount 11,000 11,000 5,000 5,000 X. Amount of Underwriting accepted from primary dealers 11,000 11,000 5,000 5,000 XI. Devolvement on Primary Dealers NIL NIL NIL NIL Ajit Prasad Deputy General Manager (Communications) Press Release: 2026-2027/495",
+        "ai_summary": "The government's full auction of four tranches of Government Stocks (GS) totaling \u20b932,000 Crore was successful, with all notified amounts fully subscribed and no devolvement on primary dealers. The auction witnessed robust demand, as competitive bids significantly exceeded the offered amounts across all maturities (2029, 2033, 2055, 2056), indicating strong investor appetite and market confidence in government securities. The achieved cut-off and weighted average yields provide current market benchmarks for these specific maturities, reflecting prevailing interest rate expectations.",
+        "is_new_since_last_session": false
+      },
       {
         "event_id": "8d78b96ab2674225",
         "title": "Government Stock - Auction Results: Cut-off",
@@ -542,33 +571,6 @@
         "related_events": [],
         "supersedes": null,
         "content": "RBI/2026-27/141 DOR.SOG(SPE).REC.118/13.03.00/2026-27 June 17, 2026 Reserve Bank of India (Local Area Banks \u2013 Interest Rate on Deposits) Amendment Directions, 2026 Please refer to the Reserve Bank of India (Local Area Banks \u2013 Interest Rate on Deposits) Directions, 2025 (hereinafter referred to as \u2018Directions\u2019), dated November 28, 2025. On a review, it has been decided to temporarily withdraw interest rate ceiling on fresh FCNR(B) deposits of 3-5 year tenors and restriction on interest rates on NRE deposits of 3 year and above tenors, including the deposits that are renewed upon maturity, from the date of this Amendment Directions till September 30, 2026. 2. Accordingly, in exercise of the powers conferred by Section 35A of the Banking Regulation Act,1949 and all other laws enabling the Reserve Bank India (RBI) in this regard, the RBI, being satisfied that it is necessary and expedient in public interest so to do, hereby, issues the Amendment Directions hereinafter specified. 3. These Amendment Directions shall be called the Reserve Bank of India (Local Area Banks \u2013 Interest Rate on Deposits) Amendment Directions, 2026. 4. These Amendment Directions shall come into effect from the date of issue. 5. These Amendment Directions shall modify the Directions, as under: (1) In Chapter IV on Rupee Deposits of Non-Residents, the paragraph 26(4) shall be amended as under: Interest rates on NRE / NRO deposits shall not be higher than those offered by the bank on comparable domestic rupee term deposits 1 . (2) In Chapter V on Foreign Currency Deposits, the paragraph 31(7) shall be amended as under: Period of Deposit Ceiling Rate One year to less than three years Overnight Alternative Reference Rate for the respective currency/ Swap plus 250 basis points Three years and above upto and including five years Overnight Alternative Reference Rate for the respective currency/ Swap plus 350 2 basis points (Dr. Sudarsana Sahoo) Chief General Manager 1 The said restriction with respect to interest rates offered on fresh NRE deposits mobilised by banks, including the deposits that are renewed upon maturity, for three years and above tenors, is temporarily withdrawn with effect from June 17, 2026, for the period until September 30, 2026. Any transfer from NRO accounts to NRE accounts shall not qualify for such exemption. 2 The interest rate ceiling applicable to fresh FCNR(B) deposits mobilised by banks, including the deposits that are renewed upon maturity, for three years and above-upto and including five years tenors, is temporarily withdrawn with effect from June 17, 2026, for the period until September 30, 2026.",
-        "ai_summary": null,
-        "is_new_since_last_session": false
-      },
-      {
-        "event_id": "28fe13759d77bcf3",
-        "title": "Reserve Bank of India (Regional Rural Banks \u2013 Interest Rate on Deposits) Amendment Directions, 2026",
-        "published": "2026-06-17T18:05:00+00:00",
-        "display_date": "17 Jun 2026",
-        "category": "Notifications",
-        "priority": "Informational",
-        "summary": "RBI/2026-27/140 DOR.SOG(SPE).REC.120/13.03.00/2026-27 June 17, 2026 Reserve Bank of India (Regional Rural Banks \u2013 Interest Rate on Deposits) Amendment Directions, 2026 Please refer to the Reserve Bank of India (Regional Rural Banks \u2013 Interest Rate on Deposits) Directions, 2025 (hereinafter referred to as \u2018Directions\u2019), dated November 28, 2025. On a review, it has been decided to temporarily withdraw interest rate ceiling on fresh FCNR(B) deposits of 3-5 year tenors and restriction on interest rates on NRE deposits of 3 year and above tenors, including the deposits that are renewed upon maturity, from the date of this Amendment Directions till September 30, 2026. 2. Accordingly, in exercise of the powers conferred by Section 35A of the Banking Regulation Act,1949 and all other laws enabling the Reserve Bank India (RBI) in this regard, the RBI, being satisfied that it is necessary and expedient in public interest so to do, hereby, issues the Amendment Directions hereinafter specified. 3. These Amendment Directions shall be called the Reserve Bank of India (Regional Rural Banks \u2013 Interest Rate on Deposits) Amendment Directions, 2026. 4. These Amendment Directions shall come into effect from the date of issue. 5. These Amendment Directions shall modify the Directions, as under: (1) In Chapter IV on Rupee Deposits of Non-Residents, the paragraph 26(4) shall be amended as under: Interest rates on NRE / NRO deposits shall not be higher than those offered by the bank on comparable domestic rupee term deposits 1 . (2) In Chapter V on Foreign Currency Deposits, the paragraph 31(7) shall be amended as under: Period of Deposit Ceiling Rate One year to less than three years Overnight Alternative Reference Rate for the respective currency/ Swap plus 250 basis points Three years and above upto and including five years Overnight Alternative Reference Rate for the respective currency/ Swap plus 350 2 basis points (Dr. Sudarsana Sahoo) Chief General Manager 1 The said restriction with respect to interest rates offered on fresh NRE deposits mobilised by banks, including the deposits that are renewed upon maturity, for three years and above tenors, is temporarily withdrawn with effect from June 17, 2026, for the period until September 30, 2026. Any transfer from NRO accounts to NRE accounts shall not qualify for such exemption. 2 The interest rate ceiling applicable to fresh FCNR(B) deposits mobilised by banks, including the deposits that are renewed upon maturity, for three years and above-upto and including five years tenors, is temporarily withdrawn with effect from June 17, 2026, for the period until September 30, 2026.",
-        "confidence": 0,
-        "impact": "Neutral",
-        "pdf": null,
-        "badges": [
-          "Notifications",
-          "Informational"
-        ],
-        "url": "https://www.rbi.org.in/scripts/NotificationUser.aspx?Id=13511&Mode=0",
-        "source": "RBI",
-        "attachments": [],
-        "keywords": [],
-        "themes": [],
-        "processing_state": "NEW",
-        "related_events": [],
-        "supersedes": null,
-        "content": "RBI/2026-27/140 DOR.SOG(SPE).REC.120/13.03.00/2026-27 June 17, 2026 Reserve Bank of India (Regional Rural Banks \u2013 Interest Rate on Deposits) Amendment Directions, 2026 Please refer to the Reserve Bank of India (Regional Rural Banks \u2013 Interest Rate on Deposits) Directions, 2025 (hereinafter referred to as \u2018Directions\u2019), dated November 28, 2025. On a review, it has been decided to temporarily withdraw interest rate ceiling on fresh FCNR(B) deposits of 3-5 year tenors and restriction on interest rates on NRE deposits of 3 year and above tenors, including the deposits that are renewed upon maturity, from the date of this Amendment Directions till September 30, 2026. 2. Accordingly, in exercise of the powers conferred by Section 35A of the Banking Regulation Act,1949 and all other laws enabling the Reserve Bank India (RBI) in this regard, the RBI, being satisfied that it is necessary and expedient in public interest so to do, hereby, issues the Amendment Directions hereinafter specified. 3. These Amendment Directions shall be called the Reserve Bank of India (Regional Rural Banks \u2013 Interest Rate on Deposits) Amendment Directions, 2026. 4. These Amendment Directions shall come into effect from the date of issue. 5. These Amendment Directions shall modify the Directions, as under: (1) In Chapter IV on Rupee Deposits of Non-Residents, the paragraph 26(4) shall be amended as under: Interest rates on NRE / NRO deposits shall not be higher than those offered by the bank on comparable domestic rupee term deposits 1 . (2) In Chapter V on Foreign Currency Deposits, the paragraph 31(7) shall be amended as under: Period of Deposit Ceiling Rate One year to less than three years Overnight Alternative Reference Rate for the respective currency/ Swap plus 250 basis points Three years and above upto and including five years Overnight Alternative Reference Rate for the respective currency/ Swap plus 350 2 basis points (Dr. Sudarsana Sahoo) Chief General Manager 1 The said restriction with respect to interest rates offered on fresh NRE deposits mobilised by banks, including the deposits that are renewed upon maturity, for three years and above tenors, is temporarily withdrawn with effect from June 17, 2026, for the period until September 30, 2026. Any transfer from NRO accounts to NRE accounts shall not qualify for such exemption. 2 The interest rate ceiling applicable to fresh FCNR(B) deposits mobilised by banks, including the deposits that are renewed upon maturity, for three years and above-upto and including five years tenors, is temporarily withdrawn with effect from June 17, 2026, for the period until September 30, 2026.",
         "ai_summary": null,
         "is_new_since_last_session": false
       }

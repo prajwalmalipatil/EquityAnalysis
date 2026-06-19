@@ -62,9 +62,18 @@
             <header class="topbar glass-panel">
                 <h1>Dashboard Overview</h1>
                 <div style="display: flex; gap: 16px; align-items: center;">
-                    <select id="history-selector" class="history-select hidden">
-                        <option value="">Latest Data</option>
-                    </select>
+                    <div class="searchable-dropdown hidden" id="history-dropdown-container">
+                        <div class="dropdown-trigger glass-panel" id="history-dropdown-trigger">
+                            <span id="selected-history-date">Latest Data</span>
+                            <span class="dropdown-arrow">▼</span>
+                        </div>
+                        <div class="dropdown-menu glass-panel hidden" id="history-dropdown-menu">
+                            <input type="text" id="history-dropdown-search" placeholder="Search dates..." class="search-input">
+                            <div class="dropdown-items" id="history-dropdown-items">
+                                <div class="dropdown-item selected" data-value="">Latest Data</div>
+                            </div>
+                        </div>
+                    </div>
                     <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme">
                         <span class="theme-icon-light">☀️</span>
                         <span class="theme-icon-dark">🌙</span>
@@ -140,16 +149,16 @@
                                 <h2>Macro Intelligence</h2>
                                 <span class="badge" id="macro-count">--</span>
                             </div>
-                            <div class="macro-controls" style="display:flex; flex-direction:column; gap:10px; margin-bottom: 15px; padding: 15px 20px 0;">
-                                <input type="text" id="macro-search" placeholder="Search events (title, summary)..." class="search-input" style="padding: 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;">
+                            <div class="macro-controls">
+                                <input type="text" id="macro-search" placeholder="Search events (title, summary, date)..." class="search-input">
                                 <div style="display:flex; gap:10px;">
-                                    <select id="macro-category-filter" class="filter-select" style="flex:1; padding: 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;">
+                                    <select id="macro-category-filter" class="filter-select" style="flex:1;">
                                         <option value="">All Categories</option>
                                         <option value="Press Releases">Press Releases</option>
                                         <option value="Monetary Policy">Monetary Policy</option>
                                         <option value="Notifications">Notifications</option>
                                     </select>
-                                    <select id="macro-sort" class="filter-select" style="flex:1; padding: 8px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); color: white;">
+                                    <select id="macro-sort" class="filter-select" style="flex:1;">
                                         <option value="desc">Newest First</option>
                                         <option value="asc">Oldest First</option>
                                     </select>

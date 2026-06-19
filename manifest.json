@@ -1,22 +1,22 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-06-19T09:38:05.403111+00:00",
+  "generated_at": "2026-06-19T13:12:52.220694+00:00",
   "generator": "Macro Intelligence Pipeline",
   "pipeline_version": "2.1.0",
   "repository_version": "v1",
-  "event_count": 88,
+  "event_count": 89,
   "analytics_version": 1,
   "search_index_version": 1,
   "artifacts": {
     "dashboard": {
       "version": "2",
       "file": "data.json",
-      "record_count": 88
+      "record_count": 89
     },
     "analytics": {
       "version": "1",
       "file": "analytics.json",
-      "record_count": 88
+      "record_count": 89
     },
     "analytics_history": {
       "version": "1",
@@ -25,28 +25,28 @@
     "search": {
       "version": "1",
       "file": "search-index.json",
-      "record_count": 5799
+      "record_count": 5820
     },
     "relationships": {
       "version": "1",
       "file": "relationships.json",
-      "record_count": 824
+      "record_count": 826
     },
     "graph": {
       "version": "1",
       "file": "graph.json",
-      "record_count": 88
+      "record_count": 89
     }
   },
   "engine_version": "1.0",
-  "research_events": 206,
-  "active_sequences": 142,
+  "research_events": 299,
+  "active_sequences": 141,
   "completed_sequences": 0,
-  "failed_sequences": 29,
+  "failed_sequences": 63,
   "last_market_date": "2026-06-19",
   "files": {
-    "summary": "summary.53be18.json",
+    "summary": "summary.3cd14d.json",
     "indicator_catalog": "indicator_catalog.89447c.json",
-    "history_index": "history_index.604024.json"
+    "history_index": "history_index.7e4816.json"
   }
 }

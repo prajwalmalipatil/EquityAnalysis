@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-06-19T09:37:59.875944+00:00",
+  "generated_at": "2026-06-19T13:12:46.103944+00:00",
   "overall_metrics": {
-    "total_sequences": 9235,
+    "total_sequences": 9280,
     "win_rate": 74.8502994011976,
     "total_completed": 250,
     "total_failed": 84
