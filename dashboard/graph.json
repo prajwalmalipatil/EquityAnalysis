@@ -1,18 +1,28 @@
 {
   "schema_version": "1",
-  "generated_at": "2026-06-19T03:55:25.272402Z",
+  "generated_at": "2026-06-19T04:38:18.791168Z",
   "pipeline_version": "1",
   "statistics": {
-    "node_count": 82,
-    "edge_count": 812,
+    "node_count": 83,
+    "edge_count": 814,
     "connected_components": 3,
-    "average_degree": 19.8,
+    "average_degree": 19.61,
     "relationship_distribution": {
-      "AMENDS": 584,
+      "AMENDS": 586,
       "WITHDRAWS": 228
     }
   },
   "nodes": [
+    {
+      "id": "eb73f8dd5ea01ac9",
+      "type": "Event",
+      "label": "Money Market Operations as on June 18, 2026",
+      "category": "Press Releases",
+      "metadata": {
+        "date": "2026-06-19T09:00:00+00:00",
+        "source": "RBI"
+      }
+    },
     {
       "id": "71fdc6f61b0a1f00",
       "type": "Event",
@@ -835,6 +845,24 @@
     }
   ],
   "edges": [
+    {
+      "id": "1091a14f2403fe6b",
+      "relationship_id": "165057047adb87b3",
+      "source": "74f2c2e100c55f55",
+      "target": "eb73f8dd5ea01ac9",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
+    {
+      "id": "bb29c0a755449719",
+      "relationship_id": "f2e0f8c745240f32",
+      "source": "4b97d4b3cf2f9c48",
+      "target": "eb73f8dd5ea01ac9",
+      "weight": 0.4,
+      "relationship_type": "AMENDS",
+      "confidence": "LOW"
+    },
     {
       "id": "9a3115393cabe52e",
       "relationship_id": "f2bafcee8bb0217e",
