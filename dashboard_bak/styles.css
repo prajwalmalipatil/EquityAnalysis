@@ -523,6 +523,15 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    user-select: none;
+}
+.ete-stage-title:hover {
+    background-color: var(--primary-glow) !important;
+}
+.ete-stage-title:active {
+    transform: scale(0.995);
 }
 .ete-stage-count {
     background: var(--primary-glow);
