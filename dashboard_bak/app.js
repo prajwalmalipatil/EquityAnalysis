@@ -1157,10 +1157,11 @@ function renderETE(summaryData) {
 function toggleEteTable(timeframe) {
     const tableContainer = document.getElementById(`ete-table-${timeframe}`);
     if (tableContainer) {
-        if (tableContainer.style.display === 'none') {
-            tableContainer.style.display = 'block';
-        } else {
-            tableContainer.style.display = 'none';
+        const isHidden = tableContainer.style.display === 'none';
+        tableContainer.style.display = isHidden ? 'block' : 'none';
+        const arrow = document.getElementById(`ete-arrow-${timeframe}`);
+        if (arrow) {
+            arrow.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
         }
     }
 }
