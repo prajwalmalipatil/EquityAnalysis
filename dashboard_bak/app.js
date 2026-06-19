@@ -327,11 +327,39 @@ async function fetchData(date = '') {
         const analytics = analyticsRes && analyticsRes.ok ? await analyticsRes.json() : null;
         const manifest = manifestRes && manifestRes.ok ? await manifestRes.json() : null;
         
+        let eteSummary = null;
+        if (manifest && manifest.files && manifest.files.summary) {
+            try {
+                const eteSummaryRes = await fetch(`./${manifest.files.summary}`);
+                if (eteSummaryRes.ok) {
+                    eteSummary = await eteSummaryRes.json();
+                }
+            } catch (e) {
+                console.error("Failed to prefetch ETE summary for Overview insights", e);
+            }
+        }
+        
+        let backtestResults = null;
+        try {
+            const backtestRes = await fetch(`./backtest_results.json`);
+            if (backtestRes.ok) {
+                backtestResults = await backtestRes.json();
+            }
+        } catch (e) {
+            console.error("Failed to prefetch backtest results for Overview insights", e);
+        }
+        
         if (analytics) {
             data.analytics = analytics;
         }
         if (manifest) {
             data.manifest = manifest;
+        }
+        if (eteSummary) {
+            data.eteSummary = eteSummary;
+        }
+        if (backtestResults) {
+            data.backtestResults = backtestResults;
         }
 
         currentData = data;
@@ -503,34 +531,9 @@ function renderDashboard(data) {
     
     renderEigenTables(data);
 
-    // Render Alerts
-    const alertsList = document.getElementById('alerts-list');
-    alertsList.innerHTML = '';
-    let totalAlerts = 0;
-    if (data.ticker_alerts && data.ticker_alerts.length > 0) {
-        totalAlerts = data.ticker_alerts.length;
-        data.ticker_alerts.forEach(alert => {
-            const li = document.createElement('li');
-            li.innerHTML = `<strong>${sanitizeHTML(alert.symbol)}</strong>: ${sanitizeHTML(alert.pattern)} <br><small style="color:var(--text-muted); margin-top:4px; display:block;">${sanitizeHTML(alert.description)}</small>`;
-            alertsList.appendChild(li);
-        });
-    } else {
-        const li = document.createElement('li');
-        li.textContent = "No active alerts.";
-        li.style.background = 'transparent';
-        li.style.borderLeft = 'none';
-        li.style.color = 'var(--text-muted)';
-        alertsList.appendChild(li);
-    }
-    
-    const alertsHeader = document.querySelector('#alerts-container .panel-header');
-    if (alertsHeader) {
-        alertsHeader.innerHTML = `
-            <h2>Ticker Alerts 
-                <span class="premium-badge badge-strong">Total: ${totalAlerts}</span>
-            </h2>
-        `;
-    }
+    // Render Transition & Replay Insights
+    renderTransitionInsights(data.eteSummary);
+    renderReplayInsights(data.backtestResults);
 
     // Render Macro Intelligence
     const macroCount = document.getElementById('macro-count');
@@ -946,13 +949,126 @@ function renderEigenTables(data) {
 function toggleEigenTable(timeframe) {
     const tableContainer = document.getElementById(`eigen-table-${timeframe}`);
     if (tableContainer) {
-        if (tableContainer.style.display === 'none') {
-            tableContainer.style.display = 'block';
-        } else {
-            tableContainer.style.display = 'none';
+        const isHidden = tableContainer.style.display === 'none';
+        tableContainer.style.display = isHidden ? 'block' : 'none';
+        const arrow = document.getElementById(`eigen-arrow-${timeframe}`);
+        if (arrow) {
+            arrow.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
         }
     }
 }
+
+function renderTransitionInsights(eteSummary) {
+    const timeframes = ['daily', 'weekly', 'monthly'];
+    
+    timeframes.forEach(timeframe => {
+        const countEl = document.getElementById(`transition-${timeframe}-count`);
+        const tbody = document.getElementById(`transition-body-${timeframe}`);
+        if (!tbody || !countEl) return;
+        
+        tbody.innerHTML = '';
+        
+        let activeItems = [];
+        if (eteSummary && eteSummary.active) {
+            activeItems = eteSummary.active.filter(item => item.timeframe === timeframe);
+        }
+        
+        countEl.textContent = activeItems.length;
+        
+        if (activeItems.length > 0) {
+            activeItems.forEach(item => {
+                const tr = document.createElement('tr');
+                let stateClass = 'badge-label';
+                if (item.state === 'Completed') stateClass = 'badge-gap-up';
+                else if (item.state === 'Waiting') stateClass = 'badge-strong';
+                else if (item.state === 'Failed') stateClass = 'badge-gap-down';
+                else if (item.state === 'Triggered') stateClass = 'badge-label';
+                
+                tr.innerHTML = `
+                    <td class="symbol-cell">${sanitizeHTML(item.symbol)}</td>
+                    <td><span class="premium-badge ${stateClass}">${sanitizeHTML(item.state)}</span></td>
+                    <td>${sanitizeHTML(item.current_stage)}</td>
+                    <td>${(item.confidence !== undefined && item.confidence !== null) ? item.confidence.toFixed(1) + '%' : '--'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } else {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted)">No active transitions.</td></tr>`;
+        }
+    });
+}
+
+function renderReplayInsights(backtestResults) {
+    const timeframes = ['daily', 'weekly', 'monthly'];
+    
+    timeframes.forEach(timeframe => {
+        const countEl = document.getElementById(`replay-${timeframe}-count`);
+        const tbody = document.getElementById(`replay-body-${timeframe}`);
+        if (!tbody || !countEl) return;
+        
+        tbody.innerHTML = '';
+        
+        const key = `completions_${timeframe}`;
+        const items = backtestResults ? (backtestResults[key] || []) : [];
+        
+        countEl.textContent = items.length;
+        
+        if (items.length > 0) {
+            const sortedItems = [...items].sort((a, b) => new Date(b.completion_date || b.start_date).getTime() - new Date(a.completion_date || a.start_date).getTime());
+            const displayItems = sortedItems.slice(0, 10);
+            
+            displayItems.forEach(item => {
+                const tr = document.createElement('tr');
+                const winClass = item.win ? 'badge-gap-up' : 'badge-gap-down';
+                const winText = item.win ? 'WIN' : 'LOSS';
+                
+                tr.innerHTML = `
+                    <td class="symbol-cell">${sanitizeHTML(item.symbol)}</td>
+                    <td style="font-size: 0.8rem; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${sanitizeHTML(item.trigger_pattern)}">${sanitizeHTML(item.trigger_pattern)}</td>
+                    <td><span class="premium-badge ${winClass}">${winText}</span></td>
+                    <td>${(item.confidence !== undefined && item.confidence !== null) ? item.confidence.toFixed(1) + '%' : '--'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            if (items.length > 10) {
+                const moreTr = document.createElement('tr');
+                moreTr.innerHTML = `<td colspan="4" style="text-align:center; font-size:0.75rem; color:var(--text-muted); padding:4px;">+ ${items.length - 10} more replays</td>`;
+                tbody.appendChild(moreTr);
+            }
+        } else {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted)">No replays found.</td></tr>`;
+        }
+    });
+}
+
+function toggleTransitionTable(timeframe) {
+    const tableContainer = document.getElementById(`transition-table-${timeframe}`);
+    if (tableContainer) {
+        const isHidden = tableContainer.style.display === 'none';
+        tableContainer.style.display = isHidden ? 'block' : 'none';
+        const arrow = document.getElementById(`transition-arrow-${timeframe}`);
+        if (arrow) {
+            arrow.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
+        }
+    }
+}
+
+function toggleReplayTable(timeframe) {
+    const tableContainer = document.getElementById(`replay-table-${timeframe}`);
+    if (tableContainer) {
+        const isHidden = tableContainer.style.display === 'none';
+        tableContainer.style.display = isHidden ? 'block' : 'none';
+        const arrow = document.getElementById(`replay-arrow-${timeframe}`);
+        if (arrow) {
+            arrow.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
+        }
+    }
+}
+
+window.toggleTransitionTable = toggleTransitionTable;
+window.toggleReplayTable = toggleReplayTable;
+window.toggleEigenTable = toggleEigenTable;
 
 // ==========================================
 // Eigen Transition Engine (ETE) Integration
