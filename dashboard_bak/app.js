@@ -1107,7 +1107,7 @@ function renderETE(summaryData) {
                         <td class="symbol-cell">${sanitizeHTML(item.symbol)}</td>
                         <td><span class="premium-badge ${stateClass}">${sanitizeHTML(item.state)}</span></td>
                         <td>${sanitizeHTML(item.current_stage)}</td>
-                        <td>${item.confidence ? item.confidence.toFixed(1) + '%' : '--'}</td>
+                        <td>${(item.confidence !== undefined && item.confidence !== null) ? item.confidence.toFixed(1) + '%' : '--'}</td>
                         <td><button class="btn-small">View</button></td>
                     `;
                     
@@ -1161,7 +1161,7 @@ function openSequenceDrilldown(item) {
     html += `<div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
         <span class="premium-badge badge-strong">Symbol: ${sanitizeHTML(item.symbol)}</span>
         <span class="premium-badge badge-label">Timeframe: ${sanitizeHTML(item.timeframe)}</span>
-        <span class="premium-badge badge-gap-up">Confidence: ${item.confidence ? item.confidence.toFixed(1) + '%' : '--'}</span>
+        <span class="premium-badge badge-gap-up">Confidence: ${(item.confidence !== undefined && item.confidence !== null) ? item.confidence.toFixed(1) + '%' : '--'}</span>
     </div>`;
 
     html += `<div class="sequence-timeline" style="border-left: 2px solid var(--accent-color); padding-left: 20px; margin-left: 10px;">`;
