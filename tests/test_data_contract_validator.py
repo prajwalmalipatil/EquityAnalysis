@@ -23,6 +23,7 @@ def test_valid_contracts(test_dir):
         "research_events": 100,
         "active_sequences": 1,
         "completed_sequences": 0,
+        "failed_sequences": 0,
         "last_market_date": "2023-01-01",
         "files": {
             "summary": "summary.123456.json"

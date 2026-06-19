@@ -16,6 +16,7 @@ def test_manifest_publisher_merge(tmp_path):
         "research_events": 12,
         "active_sequences": 3,
         "completed_sequences": 5,
+        "failed_sequences": 2,
         "last_market_date": "2026-06-16",
         "files": {
             "summary": "summary.123456.json",
@@ -60,6 +61,7 @@ def test_manifest_publisher_merge(tmp_path):
     assert merged_data["research_events"] == 12
     assert merged_data["active_sequences"] == 3
     assert merged_data["completed_sequences"] == 5
+    assert merged_data["failed_sequences"] == 2
     assert merged_data["last_market_date"] == "2026-06-16"
     assert merged_data["files"] == {
         "summary": "summary.123456.json",

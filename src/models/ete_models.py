@@ -85,6 +85,7 @@ class DashboardManifest(BaseModel):
     research_events: int
     active_sequences: int
     completed_sequences: int
+    failed_sequences: int = 0
     last_market_date: str
     files: Dict[str, str]
 

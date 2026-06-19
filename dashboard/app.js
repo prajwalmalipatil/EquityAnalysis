@@ -979,6 +979,7 @@ async function fetchETEManifest(date = '') {
             headerStats.innerHTML = `
                 <span class="premium-badge badge-strong">Active: ${manifest.active_sequences || 0}</span>
                 <span class="premium-badge badge-gap-up">Completed: ${manifest.completed_sequences || 0}</span>
+                <span class="premium-badge badge-gap-down">Failed/Expired: ${manifest.failed_sequences || 0}</span>
                 <span class="premium-badge badge-label">Events: ${manifest.research_events || 0}</span>
             `;
         }
@@ -1015,7 +1016,11 @@ async function fetchETESummary(summaryFile) {
 }
 
 function renderETE(summaryData) {
-    const allItems = [...(summaryData.active || []), ...(summaryData.completed || [])];
+    const allItems = [
+        ...(summaryData.active || []),
+        ...(summaryData.completed || []),
+        ...(summaryData.failed || [])
+    ];
     
     // Reset counts
     document.getElementById('ete-daily-count').textContent = '0';
@@ -1027,7 +1032,8 @@ function renderETE(summaryData) {
         { id: 'T+1', name: 'Stage T+1: LVLS Transition' },
         { id: 'T+2', name: 'Stage T+2: HVHS Transition' },
         { id: 'T+3', name: 'Stage T+3: LVLS Transition' },
-        { id: 'Completed', name: 'Completed Sequences' }
+        { id: 'Completed', name: 'Completed Sequences' },
+        { id: 'Failed', name: 'Failed / Expired Sequences' }
     ];
     
     ['daily', 'weekly', 'monthly'].forEach(timeframe => {
@@ -1047,8 +1053,10 @@ function renderETE(summaryData) {
             const stageItems = items.filter(item => {
                 if (stage.id === 'Completed') {
                     return item.current_stage === 'Completed' || item.state === 'Completed';
+                } else if (stage.id === 'Failed') {
+                    return item.current_stage === 'Failed' || item.state === 'Failed' || item.state === 'Expired';
                 } else {
-                    return item.current_stage === stage.id && item.state !== 'Completed';
+                    return item.current_stage === stage.id && item.state !== 'Completed' && item.state !== 'Failed' && item.state !== 'Expired';
                 }
             });
             

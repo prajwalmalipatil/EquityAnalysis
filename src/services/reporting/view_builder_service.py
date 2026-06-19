@@ -192,6 +192,7 @@ class ViewBuilderService:
             research_events=sum(len(s.events) for s in sequences.values()),
             active_sequences=len(summary_data["active"]),
             completed_sequences=len(summary_data["completed"]),
+            failed_sequences=len(summary_data["failed"]),
             last_market_date=datetime.now(timezone.utc).strftime("%Y-%m-%d"),
             files=files_manifest
         )

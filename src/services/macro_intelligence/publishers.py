@@ -81,7 +81,7 @@ class ManifestPublisher:
         manifest_dict = asdict(manifest_view_model)
         
         # Merge ETE keys if present in existing manifest to prevent clobbering ETE UI tab
-        ete_keys = ["engine_version", "research_events", "active_sequences", "completed_sequences", "last_market_date", "files"]
+        ete_keys = ["engine_version", "research_events", "active_sequences", "completed_sequences", "failed_sequences", "last_market_date", "files"]
         for key in ete_keys:
             if key in existing_data:
                 if key == "files" and isinstance(existing_data["files"], dict):
