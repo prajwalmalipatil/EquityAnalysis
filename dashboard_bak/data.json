@@ -1,6 +1,6 @@
 {
   "schema_version": "2",
-  "generated_at": "2026-06-19T13:12:51.970604Z",
+  "generated_at": "2026-06-21T11:23:03.697297Z",
   "extraction_list": [
     "360ONE",
     "ABB",
@@ -488,7 +488,6 @@
     "IREDA",
     "MARICO",
     "AMBUJACEM",
-    "NIFTYMIDCAP50",
     "LICHSGFIN",
     "UNIONBANK",
     "BANKBARODA",
@@ -498,7 +497,6 @@
     "IEX",
     "HDFCBANK",
     "HINDZINC",
-    "NIFTYBANK",
     "TITAGARH",
     "CAMS",
     "INDIGO",
@@ -507,27 +505,26 @@
   "triggers_list": [
     "AMBUJACEM",
     "TATAMOTORS",
+    "NIFTYMIDCAP50",
     "SBILIFE",
     "KFINTECH",
     "ICICIBANK",
     "BRITANNIA",
-    "NIFTY50",
     "ASTRAL",
     "VOLTAS",
     "HINDALCO",
     "HAVELLS",
     "HFCL",
-    "HINDZINC",
-    "NIFTYBANK"
+    "HINDZINC"
   ],
   "stage_statistics": {
     "extraction_count": 208,
     "vsa": 208,
     "trending": 56,
-    "anomaly": 23,
+    "anomaly": 21,
     "ticker": 1,
-    "triggers": 14,
-    "eigen_filter": 30,
+    "triggers": 13,
+    "eigen_filter": 31,
     "monthly_eigen": 21,
     "weekly_eigen": 6
   },
@@ -758,15 +755,6 @@
       "label": "Mixed Trend"
     },
     {
-      "symbol": "M&M",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
       "symbol": "BANDHANBNK",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
@@ -848,34 +836,16 @@
       "label": "Cautious Bearish"
     },
     {
+      "symbol": "M&M",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
       "symbol": "KOTAKBANK",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "INDHOTEL",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "TORNTPHARM",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "TATACHEM",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bearish",
@@ -893,7 +863,7 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "IOC",
+      "symbol": "TORNTPHARM",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bearish",
@@ -902,7 +872,7 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "JSWSTEEL",
+      "symbol": "NIFTY50",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bearish",
@@ -920,25 +890,43 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "ONGC",
+      "symbol": "JSWSTEEL",
       "monthly_sentiment": "None",
-      "weekly_sentiment": "Bearish",
-      "daily_sentiment": "None",
-      "score_pct": -35,
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "IOC",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "TATACHEM",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "INDHOTEL",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
       "stars": 2,
       "label": "Cautious Bearish"
     },
     {
       "symbol": "NESTLEIND",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bearish",
-      "daily_sentiment": "None",
-      "score_pct": -35,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "MAXHEALTH",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bearish",
       "daily_sentiment": "None",
@@ -956,11 +944,20 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "ADANIENT",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
+      "symbol": "MAXHEALTH",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bearish",
       "daily_sentiment": "None",
-      "score_pct": -40,
+      "score_pct": -35,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "ONGC",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bearish",
+      "daily_sentiment": "None",
+      "score_pct": -35,
       "stars": 2,
       "label": "Cautious Bearish"
     },
@@ -984,6 +981,15 @@
     },
     {
       "symbol": "TVSMOTOR",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "ADANIENT",
       "monthly_sentiment": "Bearish",
       "weekly_sentiment": "None",
       "daily_sentiment": "None",
@@ -1274,6 +1280,22 @@
         "vol_delta_pct": 21.6,
         "t_vol": 15040336,
         "t1_vol": 12373677
+      },
+      {
+        "symbol": "NIFTY50",
+        "gap_dir": "Gap-Down",
+        "close_band": "Strong",
+        "label": "Contested Bearish Divergence",
+        "sentiment": "Bearish",
+        "t_open": 23991.19921875,
+        "t_close": 24013.099609375,
+        "t_spread": 145.298828125,
+        "t_cp": 0.7653,
+        "t1_cp": 0.8605,
+        "delta_cp": -0.0952,
+        "vol_delta_pct": 31.7,
+        "t_vol": 447900,
+        "t1_vol": 340000
       },
       {
         "symbol": "GMRAIRPORT",
