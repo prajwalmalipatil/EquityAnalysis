@@ -1,6 +1,6 @@
 from enum import Enum
 from pydantic import BaseModel
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Union
 
 class ETEState(str, Enum):
     TRIGGERED = "Triggered"
@@ -76,10 +76,11 @@ class SequenceSummary(BaseModel):
     state: ETEState
     current_stage: str
     confidence: float
+    trigger_date: Optional[str] = None
     progress: List[Dict[str, Any]]
 
 class DashboardManifest(BaseModel):
-    schema_version: str
+    schema_version: Union[str, int]
     engine_version: str
     generated_at: str
     research_events: int

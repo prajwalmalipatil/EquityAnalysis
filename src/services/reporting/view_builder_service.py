@@ -109,6 +109,7 @@ class ViewBuilderService:
                 state=seq.state,
                 current_stage=f"T+{seq.current_stage_index}" if seq.state != ETEState.COMPLETED else "Completed",
                 confidence=seq.confidence_score,
+                trigger_date=seq.trigger_date,
                 progress=seq.events
             ).model_dump()
 
