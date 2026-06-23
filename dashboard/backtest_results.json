@@ -1,12 +1,28 @@
 {
-  "generated_at": "2026-06-23T03:42:45.379091+00:00",
+  "generated_at": "2026-06-23T14:09:07.841688+00:00",
   "overall_metrics": {
-    "total_sequences": 9228,
-    "win_rate": 74.92447129909365,
-    "total_completed": 248,
-    "total_failed": 83
+    "total_sequences": 9252,
+    "win_rate": 74.77477477477478,
+    "total_completed": 249,
+    "total_failed": 84
   },
   "completions_daily": [
+    {
+      "symbol": "TATACONSUM",
+      "start_date": "2026-06-09",
+      "completion_date": "2026-06-16",
+      "trigger_pattern": "Bearish Impulse Convergence",
+      "t_vol": 2202915.0,
+      "vol_surge_pct": 190.84457764516384,
+      "fwd_return_5b": -2.3963215138385476,
+      "win": true,
+      "sentiment": "Bearish",
+      "gauntlet_passed": true,
+      "vol_score": 0.0,
+      "close_score": 0.7897897897897895,
+      "drift_score": 0.8410718410718425,
+      "confidence": 48.4
+    },
     {
       "symbol": "COLPAL",
       "start_date": "2026-06-03",
