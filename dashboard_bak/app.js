@@ -1365,6 +1365,13 @@ function renderETE(summaryData) {
                 }
             });
             
+            // Sort sequences: latest trigger_date first
+            stageItems.sort((a, b) => {
+                const dateA = a.trigger_date || (a.progress && a.progress[0] ? a.progress[0].timestamp : '');
+                const dateB = b.trigger_date || (b.progress && b.progress[0] ? b.progress[0].timestamp : '');
+                return dateB.localeCompare(dateA) || a.symbol.localeCompare(b.symbol);
+            });
+            
             // Create section container
             const section = document.createElement('div');
             section.className = 'ete-stage-section';
@@ -1404,6 +1411,7 @@ function renderETE(summaryData) {
                     <thead>
                         <tr>
                             <th>Symbol</th>
+                            <th>Trigger Date</th>
                             <th>State</th>
                             <th>Stage</th>
                             <th>Confidence</th>
@@ -1424,8 +1432,11 @@ function renderETE(summaryData) {
                     else if (item.state === 'Failed') stateClass = 'badge-gap-down';
                     else if (item.state === 'Triggered') stateClass = 'badge-label';
                     
+                    const triggerDate = item.trigger_date || (item.progress && item.progress[0] ? item.progress[0].timestamp.split('T')[0] : '--');
+                    
                     tr.innerHTML = `
                         <td class="symbol-cell">${sanitizeHTML(item.symbol)}</td>
+                        <td>${sanitizeHTML(triggerDate)}</td>
                         <td><span class="premium-badge ${stateClass}">${sanitizeHTML(item.state)}</span></td>
                         <td>${sanitizeHTML(item.current_stage)}</td>
                         <td>${(item.confidence !== undefined && item.confidence !== null) ? item.confidence.toFixed(1) + '%' : '--'}</td>
