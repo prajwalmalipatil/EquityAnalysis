@@ -1,6 +1,6 @@
 {
   "schema_version": "2",
-  "generated_at": "2026-06-25T13:47:01.512150Z",
+  "generated_at": "2026-06-26T13:40:41.140905Z",
   "extraction_list": [
     "360ONE",
     "ABB",
@@ -518,6 +518,7 @@
     "IREDA",
     "LUPIN",
     "APOLLOHOSP",
+    "NIFTYMIDCAP50",
     "KFINTECH",
     "UNIONBANK",
     "IDEA",
@@ -541,7 +542,7 @@
     "trending": 53,
     "anomaly": 28,
     "ticker": 2,
-    "triggers": 27,
+    "triggers": 28,
     "eigen_filter": 33,
     "monthly_eigen": 21,
     "weekly_eigen": 37
