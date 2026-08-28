@@ -610,6 +610,24 @@ function renderDashboard(data) {
     
     renderEigenTables(data);
 
+    // Render Volume Trap Stats
+    const vtDaily = data.volume_trap_filters?.daily?.length || 0;
+    const vtWeekly = data.volume_trap_filters?.weekly?.length || 0;
+    const vtMonthly = data.volume_trap_filters?.monthly?.length || 0;
+    const vtTotal = vtDaily + vtWeekly + vtMonthly;
+    
+    const vtStatEl = document.getElementById('stat-volume-trap');
+    if (vtStatEl) vtStatEl.textContent = vtTotal;
+    
+    const vtDailyCount = document.getElementById('vt-daily-count');
+    const vtWeeklyCount = document.getElementById('vt-weekly-count');
+    const vtMonthlyCount = document.getElementById('vt-monthly-count');
+    if (vtDailyCount) vtDailyCount.textContent = vtDaily;
+    if (vtWeeklyCount) vtWeeklyCount.textContent = vtWeekly;
+    if (vtMonthlyCount) vtMonthlyCount.textContent = vtMonthly;
+    
+    renderVolumeTrapTables(data);
+
     // Render Transition & Replay Insights
     renderTransitionInsights(data.eteSummary);
     renderReplayInsights(data.backtestResults);
@@ -991,6 +1009,7 @@ function setupClickableCards() {
     const cardVsa = document.getElementById('card-vsa');
     const cardTrending = document.getElementById('card-trending');
     const cardEigen = document.getElementById('card-eigen');
+    const cardVolumeTrap = document.getElementById('card-volume-trap');
     const cardAnomaly = document.getElementById('card-anomaly');
     const cardTriggers = document.getElementById('card-triggers');
 
@@ -1004,6 +1023,11 @@ function setupClickableCards() {
         const eigenNav = document.querySelector('.nav-item[href="#eigen"]');
         if (eigenNav) eigenNav.click();
         else switchTab('eigen');
+    });
+
+    if (cardVolumeTrap) cardVolumeTrap.addEventListener('click', () => {
+        const vtSection = document.getElementById('volume-trap');
+        if (vtSection) vtSection.scrollIntoView({ behavior: 'smooth' });
     });
 }
 
@@ -1141,6 +1165,47 @@ function toggleEigenTable(timeframe) {
         const isHidden = tableContainer.style.display === 'none';
         tableContainer.style.display = isHidden ? 'block' : 'none';
         const arrow = document.getElementById(`eigen-arrow-${timeframe}`);
+        if (arrow) {
+            arrow.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
+        }
+    }
+}
+
+function renderVolumeTrapTables(data) {
+    const timeframes = ['daily', 'weekly', 'monthly'];
+    
+    timeframes.forEach(timeframe => {
+        const tbody = document.getElementById(`vt-body-${timeframe}`);
+        if (!tbody) return;
+        
+        tbody.innerHTML = '';
+        const items = data.volume_trap_filters?.[timeframe] || [];
+        
+        if (items.length > 0) {
+            items.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="symbol-cell">${item.symbol}</td>
+                    <td class="sentiment ${getSentimentClass(item.sentiment || '')}">${item.sentiment || 'None'}</td>
+                    <td>${item.vol_delta_pct !== undefined ? item.vol_delta_pct + '%' : '--'}</td>
+                    <td>${item.spread_delta_pct !== undefined ? item.spread_delta_pct + '%' : '--'}</td>
+                    <td>${item.body_ratio !== undefined ? item.body_ratio.toFixed(4) : '--'}</td>
+                    <td>${item.t_cp !== undefined ? item.t_cp.toFixed(4) : '--'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } else {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted)">No matches found.</td></tr>`;
+        }
+    });
+}
+
+function toggleVolumeTrapTable(timeframe) {
+    const tableContainer = document.getElementById(`vt-table-${timeframe}`);
+    if (tableContainer) {
+        const isHidden = tableContainer.style.display === 'none';
+        tableContainer.style.display = isHidden ? 'block' : 'none';
+        const arrow = document.getElementById(`vt-arrow-${timeframe}`);
         if (arrow) {
             arrow.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
         }
