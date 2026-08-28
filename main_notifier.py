@@ -104,7 +104,7 @@ def _render_vt_text_table(items: List[Dict], timeframe_label: str) -> str:
     if not items:
         return ""
     lines = [
-        f"  📅 {timeframe_label} ({len(items)} stocks):",
+        f"  📅 {timeframe_label} ({len(items)} stock{'s' if len(items) > 1 else ''}):",
         f"  {'SYMBOL':<12} {'SENTIMENT':<10} {'VOL Δ%':>10} {'SPREAD Δ%':>10} {'BODY RATIO':>12}",
         f"  {'-'*56}"
     ]

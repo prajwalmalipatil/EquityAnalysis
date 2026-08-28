@@ -143,6 +143,32 @@ class TestNotifier(unittest.TestCase):
         self.assertEqual(_format_volume_trap_email_html(empty_vt), "")
         self.assertEqual(_format_volume_trap_email_text(empty_vt), "")
 
+    def test_volume_trap_text_singular_plural_formatting(self):
+        """Verify singular '1 stock' vs plural 'N stocks' formatting in plain-text email."""
+        from main_notifier import _format_volume_trap_email_text
+
+        # Test single stock (singular '1 stock')
+        single_vt = {
+            "daily": [{"symbol": "RELIANCE", "sentiment": "Bullish", "vol_delta_pct": 50.0, "spread_delta_pct": -20.0, "body_ratio": 0.1}],
+            "weekly": [],
+            "monthly": []
+        }
+        text_single = _format_volume_trap_email_text(single_vt)
+        self.assertIn("📅 Daily (1 stock):", text_single)
+        self.assertNotIn("📅 Daily (1 stocks):", text_single)
+
+        # Test multiple stocks (plural '2 stocks')
+        multi_vt = {
+            "daily": [
+                {"symbol": "RELIANCE", "sentiment": "Bullish", "vol_delta_pct": 50.0, "spread_delta_pct": -20.0, "body_ratio": 0.1},
+                {"symbol": "TCS", "sentiment": "Bearish", "vol_delta_pct": 20.0, "spread_delta_pct": -10.0, "body_ratio": 0.2}
+            ],
+            "weekly": [],
+            "monthly": []
+        }
+        text_multi = _format_volume_trap_email_text(multi_vt)
+        self.assertIn("📅 Daily (2 stocks):", text_multi)
+
 
 if __name__ == "__main__":
     unittest.main()
