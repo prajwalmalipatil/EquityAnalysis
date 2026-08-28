@@ -241,6 +241,10 @@ Every new post-VSA filter follows this standard 5-layer sequence:
 - Non-Eigen filters (such as Volume Trap) are merged into `ConsensusEngineService` as supplemental signals (`_populate_supplemental_signals()`).
 - Signals only fill slots where the symbol/timeframe is `"None"`, preventing double-counting while expanding universe coverage.
 
+### 11.6 Detailed Email Reporting Pattern
+- Filter sections in `main_notifier.py` must include both a summary badge header (total counts, Bullish/Bearish breakdown) and detailed tabular views for each populated timeframe (Daily, Weekly, Monthly).
+- Tables must show key filter metrics (`Symbol`, `Sentiment` badge, `Vol Δ%`, `Spread Δ%`, `Body Ratio`) in clean responsive HTML with an ASCII fallback in plain-text reports.
+
 ---
 
 ## Final Checklist

@@ -97,5 +97,53 @@ class TestNotifier(unittest.TestCase):
         self.assertEqual(html_written.count("Master Directions"), 1)
         self.assertIn("Unique Press Release", html_written)
 
+    def test_volume_trap_email_formatting_html_and_text(self):
+        """Verify Volume Trap HTML and plain-text table rendering functions."""
+        from main_notifier import _format_volume_trap_email_html, _format_volume_trap_email_text
+
+        mock_vt = {
+            "daily": [
+                {"symbol": "RELIANCE", "sentiment": "Bullish", "vol_delta_pct": 45.2, "spread_delta_pct": -28.4, "body_ratio": 0.1245},
+                {"symbol": "TCS", "sentiment": "Bearish", "vol_delta_pct": 22.0, "spread_delta_pct": -15.2, "body_ratio": 0.2500}
+            ],
+            "weekly": [
+                {"symbol": "INFY", "sentiment": "Bullish", "vol_delta_pct": 55.0, "spread_delta_pct": -30.0, "body_ratio": 0.0890}
+            ],
+            "monthly": []
+        }
+
+        html = _format_volume_trap_email_html(mock_vt)
+        text = _format_volume_trap_email_text(mock_vt)
+
+        # HTML assertions
+        self.assertIn("Volume Trap Filter Insights", html)
+        self.assertIn("3</strong> stocks detected across timeframes", html)
+        self.assertIn("▲ Bullish: 2", html)
+        self.assertIn("▼ Bearish: 1", html)
+        self.assertIn("RELIANCE", html)
+        self.assertIn("TCS", html)
+        self.assertIn("INFY", html)
+        self.assertIn("+45.2%", html)
+        self.assertIn("-28.4%", html)
+        self.assertIn("0.1245", html)
+
+        # Text assertions
+        self.assertIn("Volume Trap Filter Insights: 3 stocks detected", text)
+        self.assertIn("RELIANCE", text)
+        self.assertIn("TCS", text)
+        self.assertIn("INFY", text)
+        self.assertIn("+45.2%", text)
+        self.assertIn("0.1245", text)
+
+    def test_volume_trap_empty_filters(self):
+        """Verify Volume Trap returns empty string when no stocks qualify."""
+        from main_notifier import _format_volume_trap_email_html, _format_volume_trap_email_text
+
+        empty_vt = {"daily": [], "weekly": [], "monthly": []}
+        self.assertEqual(_format_volume_trap_email_html(empty_vt), "")
+        self.assertEqual(_format_volume_trap_email_text(empty_vt), "")
+
+
 if __name__ == "__main__":
     unittest.main()
+
