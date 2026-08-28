@@ -85,6 +85,47 @@ def main():
     except Exception as e:
         logger.warning("FAILED_TO_LOAD_MACRO_FOR_EMAIL", extra={"error": str(e)})
 
+    # Extract Volume Trap Filter summary from data.json
+    volume_trap_html = ""
+    volume_trap_text = ""
+    try:
+        data_path = Path("dashboard/data.json")
+        if data_path.exists():
+            with open(data_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                vt_filters = data.get("volume_trap_filters", {})
+                daily_vt = vt_filters.get("daily", [])
+                weekly_vt = vt_filters.get("weekly", [])
+                monthly_vt = vt_filters.get("monthly", [])
+                total_vt = len(daily_vt) + len(weekly_vt) + len(monthly_vt)
+
+                if total_vt > 0:
+                    all_vt = daily_vt + weekly_vt + monthly_vt
+                    bullish_count = sum(1 for v in all_vt if v.get("sentiment") == "Bullish")
+                    bearish_count = sum(1 for v in all_vt if v.get("sentiment") == "Bearish")
+
+                    volume_trap_html = f"""
+                    <div style="background-color: #334155; padding: 20px; border-radius: 8px; margin: 30px 0; border-left: 4px solid #2dd4bf;">
+                        <h3 style="color: #2dd4bf; margin-top: 0;">🎯 Volume Trap Filter</h3>
+                        <p style="color: #cbd5e1; margin: 0;">
+                            <strong>{total_vt}</strong> stocks detected across timeframes
+                            (Daily: {len(daily_vt)}, Weekly: {len(weekly_vt)}, Monthly: {len(monthly_vt)})
+                        </p>
+                        <p style="color: #94a3b8; margin: 8px 0 0 0; font-size: 14px;">
+                            <span style="color: #4ade80;">▲ Bullish: {bullish_count}</span> &nbsp;|&nbsp;
+                            <span style="color: #f87171;">▼ Bearish: {bearish_count}</span>
+                        </p>
+                    </div>
+                    """
+
+                    volume_trap_text = (
+                        f"\nVolume Trap Filter: {total_vt} stocks detected "
+                        f"(Daily: {len(daily_vt)}, Weekly: {len(weekly_vt)}, Monthly: {len(monthly_vt)})"
+                        f"\n  Bullish: {bullish_count}, Bearish: {bearish_count}\n"
+                    )
+    except Exception as e:
+        logger.warning("FAILED_TO_LOAD_VOLUME_TRAP_FOR_EMAIL", extra={"error": str(e)})
+
     html_report = f"""
     <html>
       <body style="font-family: Arial, sans-serif; background-color: #0f172a; color: #f8fafc; padding: 20px;">
@@ -96,6 +137,8 @@ def main():
           </p>
           
           {macro_html}
+          
+          {volume_trap_html}
           
           <div style="text-align: center; margin: 40px 0;">
             <a href="{dashboard_url}" style="background-color: #0ea5e9; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: bold; display: inline-block; box-shadow: 0 4px 6px rgba(14,165,233,0.3);">
@@ -115,6 +158,7 @@ def main():
 The automated pipeline has completed processing data for {date_str}.
 Detailed analysis including VSA, EigenFilters, Consensus Ratings, and Macro Intelligence are now live on your interactive dashboard.
 {macro_text}
+{volume_trap_text}
 View your Interactive Dashboard here:
 {dashboard_url}
 

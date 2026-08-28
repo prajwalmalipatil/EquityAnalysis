@@ -53,5 +53,66 @@ class TestDataAggregator(unittest.TestCase):
         expected_extraction = ["SBIN", "TATASTEEL", "TCS"]
         self.assertEqual(lists["extraction"], expected_extraction)
 
+    def test_get_weekly_volume_trap_details_boundary_rounding(self):
+        """Regression test for Finding 1: Ensure body ratio just below 0.30 (e.g. 0.29996) is extracted."""
+        import pandas as pd
+        from src.constants import vsa_constants as const
+
+        filter_dir = self.test_dir / const.WEEKLY_VOLUME_TRAP_FILTER_DIR_NAME
+        filter_dir.mkdir(parents=True)
+
+        dates = pd.date_range("2026-06-01", periods=10, freq="B")
+        df = pd.DataFrame({
+            "Date": dates,
+            "Open": [100.0] * 5 + [100.0] * 5,
+            "High": [300.0] * 5 + [200.0] * 5,
+            "Low": [100.0] * 5 + [100.0] * 5,
+            # Week 1 close = 200, Week 2 close = 129.996 (Spread=100, Body=29.996 -> Body/Spread=0.29996 < 0.30)
+            "Close": [200.0] * 5 + [100.0] * 4 + [129.996],
+            "Volume": [200] * 5 + [400] * 5,
+        })
+
+        file_path = filter_dir / "TEST_VSA.xlsx"
+        with pd.ExcelWriter(file_path) as writer:
+            df.to_excel(writer, sheet_name="VSA_Analysis", index=False)
+
+        aggregator = DataAggregator(self.test_dir)
+        details = aggregator.get_weekly_volume_trap_details("TEST")
+        self.assertIsNotNone(details, "Stock with body ratio 0.29996 should not be dropped by rounding")
+        self.assertEqual(details["symbol"], "TEST")
+        self.assertAlmostEqual(details["body_ratio"], 0.3, places=3)
+        self.assertEqual(details["sentiment"], "Bearish")
+
+    def test_get_monthly_volume_trap_details_boundary_rounding(self):
+        """Regression test for Finding 1 (Monthly): Ensure body ratio just below 0.30 is extracted."""
+        import pandas as pd
+        from src.constants import vsa_constants as const
+
+        filter_dir = self.test_dir / const.MONTHLY_VOLUME_TRAP_FILTER_DIR_NAME
+        filter_dir.mkdir(parents=True)
+
+        # 2 completed months (e.g. 2026-05 and 2026-06)
+        dates_m1 = pd.date_range("2026-05-01", "2026-05-15", freq="B")
+        dates_m2 = pd.date_range("2026-06-01", "2026-06-15", freq="B")
+        dates = dates_m1.append(dates_m2)
+
+        df = pd.DataFrame({
+            "Date": dates,
+            "Open": [100.0] * len(dates_m1) + [100.0] * len(dates_m2),
+            "High": [300.0] * len(dates_m1) + [200.0] * len(dates_m2),
+            "Low": [100.0] * len(dates_m1) + [100.0] * len(dates_m2),
+            "Close": [200.0] * len(dates_m1) + [100.0] * (len(dates_m2) - 1) + [129.996],
+            "Volume": [100] * len(dates_m1) + [200] * len(dates_m2),
+        })
+
+        file_path = filter_dir / "MONTHLY_TEST_VSA.xlsx"
+        with pd.ExcelWriter(file_path) as writer:
+            df.to_excel(writer, sheet_name="VSA_Analysis", index=False)
+
+        aggregator = DataAggregator(self.test_dir)
+        details = aggregator.get_monthly_volume_trap_details("MONTHLY_TEST")
+        self.assertIsNotNone(details, "Monthly stock with body ratio 0.29996 should not be dropped")
+        self.assertEqual(details["symbol"], "MONTHLY_TEST")
+
 if __name__ == "__main__":
     unittest.main()

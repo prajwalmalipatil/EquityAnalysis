@@ -87,6 +87,28 @@ class TestProcessorService(unittest.TestCase):
                 service.finalize_run()
                 self.assertTrue(mock_publish.called)
 
+    def test_main_processor_distribution_constants(self):
+        """Regression test for Finding 2: Ensure all filter directories use centralized constants."""
+        from src.constants import vsa_constants as const
+
+        self.assertEqual(const.AGE_AGAIN_FILTER_DIR_NAME, "AgeAgainFilter")
+        self.assertEqual(const.VOLUME_TRAP_FILTER_DIR_NAME, "VolumeTrapFilter")
+        self.assertEqual(const.WEEKLY_VOLUME_TRAP_FILTER_DIR_NAME, "WeeklyVolumeTrapFilter")
+        self.assertEqual(const.MONTHLY_VOLUME_TRAP_FILTER_DIR_NAME, "MonthlyVolumeTrapFilter")
+
+        # Verify main_processor can glob AgeAgainFilter and VolumeTrapFilter without error
+        with tempfile.TemporaryDirectory() as tmpdir:
+            p = Path(tmpdir)
+            (p / const.AGE_AGAIN_FILTER_DIR_NAME).mkdir()
+            (p / const.AGE_AGAIN_FILTER_DIR_NAME / "TEST_VSA.xlsx").touch()
+            (p / const.VOLUME_TRAP_FILTER_DIR_NAME).mkdir()
+            (p / const.VOLUME_TRAP_FILTER_DIR_NAME / "TEST_VSA.xlsx").touch()
+
+            age_again_files = list((p / const.AGE_AGAIN_FILTER_DIR_NAME).glob("*.xlsx"))
+            volume_trap_files = list((p / const.VOLUME_TRAP_FILTER_DIR_NAME).glob("*.xlsx"))
+            self.assertEqual(len(age_again_files), 1)
+            self.assertEqual(len(volume_trap_files), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

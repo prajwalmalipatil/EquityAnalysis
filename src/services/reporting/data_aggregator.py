@@ -8,6 +8,10 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import List, Dict, Optional
 from src.constants import vsa_constants as const
+from src.services.vsa.monthly_eigen_filter_service import MonthlyEigenFilterService
+from src.services.vsa.monthly_volume_trap_filter_service import MonthlyVolumeTrapFilterService
+from src.services.vsa.weekly_eigen_filter_service import WeeklyEigenFilterService
+from src.services.vsa.weekly_volume_trap_filter_service import WeeklyVolumeTrapFilterService
 from src.utils.observability import get_tenant_logger
 
 logger = get_tenant_logger("data-aggregator")
@@ -32,7 +36,10 @@ class DataAggregator:
             "triggers": self._count_files(const.TRIGGERS_DIR_NAME),
             "eigen_filter": self._count_files(const.EIGEN_FILTER_DIR_NAME),
             "monthly_eigen": self._count_files(const.MONTHLY_EIGEN_FILTER_DIR_NAME),
-            "weekly_eigen": self._count_files(const.WEEKLY_EIGEN_FILTER_DIR_NAME)
+            "weekly_eigen": self._count_files(const.WEEKLY_EIGEN_FILTER_DIR_NAME),
+            "volume_trap": self._count_files(const.VOLUME_TRAP_FILTER_DIR_NAME),
+            "weekly_volume_trap": self._count_files(const.WEEKLY_VOLUME_TRAP_FILTER_DIR_NAME),
+            "monthly_volume_trap": self._count_files(const.MONTHLY_VOLUME_TRAP_FILTER_DIR_NAME),
         }
 
     def get_symbol_lists(self) -> Dict[str, List[str]]:
@@ -46,7 +53,10 @@ class DataAggregator:
             "triggers": self._get_symbols(const.TRIGGERS_DIR_NAME),
             "eigen_filter": self._get_symbols(const.EIGEN_FILTER_DIR_NAME),
             "monthly_eigen": self._get_symbols(const.MONTHLY_EIGEN_FILTER_DIR_NAME),
-            "weekly_eigen": self._get_symbols(const.WEEKLY_EIGEN_FILTER_DIR_NAME)
+            "weekly_eigen": self._get_symbols(const.WEEKLY_EIGEN_FILTER_DIR_NAME),
+            "volume_trap": self._get_symbols(const.VOLUME_TRAP_FILTER_DIR_NAME),
+            "weekly_volume_trap": self._get_symbols(const.WEEKLY_VOLUME_TRAP_FILTER_DIR_NAME),
+            "monthly_volume_trap": self._get_symbols(const.MONTHLY_VOLUME_TRAP_FILTER_DIR_NAME),
         }
 
     def get_ticker_details(self, symbol: str) -> Optional[Dict]:
@@ -178,44 +188,14 @@ class DataAggregator:
         }
 
     def get_weekly_eigen_details(self, symbol: str) -> Optional[Dict]:
-        """Extracts Weekly EigenFilter classification details from a processed Excel file.
-        
-        Consolidates daily data into completed weekly candles (the current
-        in-progress week is excluded) and extracts the latest two completed
-        weeks for comparison metrics.
-        """
+        """Extracts Weekly EigenFilter classification details from a processed Excel file."""
         df = self._read_latest(const.WEEKLY_EIGEN_FILTER_DIR_NAME, symbol)
-        if df is None or "Date" not in df.columns:
+        if df is None:
             return None
 
-        df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
-        df = df.dropna(subset=["Date"]).sort_values("Date").reset_index(drop=True)
-        df["YearWeek"] = df["Date"].dt.strftime("%G-W%V")
-
-        # Exclude the current in-progress week — only completed weeks are valid
-        now_ist = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
-        current_period = now_ist.strftime("%G-W%V")
-        df = df[df["YearWeek"] < current_period]
-        if df.empty:
+        weekly = WeeklyEigenFilterService._consolidate_to_weekly(df)
+        if weekly is None or len(weekly) < 2:
             return None
-
-        weekly = df.groupby("YearWeek").agg(
-            Open=("Open", "first"),
-            High=("High", "max"),
-            Low=("Low", "min"),
-            Close=("Close", "last"),
-            Volume=("Volume", "sum"),
-        ).reset_index().sort_values("YearWeek").reset_index(drop=True)
-
-        if len(weekly) < 2:
-            return None
-
-        weekly["Spread"] = weekly["High"] - weekly["Low"]
-        weekly["Close_Position"] = weekly.apply(
-            lambda r: (r["Close"] - r["Low"]) / r["Spread"]
-            if r["Spread"] > 0 else 0.5,
-            axis=1,
-        )
 
         latest, prev = weekly.iloc[-1], weekly.iloc[-2]
         t_open = float(latest["Open"])
@@ -268,44 +248,14 @@ class DataAggregator:
         }
 
     def get_monthly_eigen_details(self, symbol: str) -> Optional[Dict]:
-        """Extracts Monthly EigenFilter classification details from a processed Excel file.
-        
-        Consolidates daily data into completed monthly candles (the current
-        in-progress month is excluded) and extracts the latest two completed
-        months for comparison metrics.
-        """
+        """Extracts Monthly EigenFilter classification details from a processed Excel file."""
         df = self._read_latest(const.MONTHLY_EIGEN_FILTER_DIR_NAME, symbol)
-        if df is None or "Date" not in df.columns:
+        if df is None:
             return None
 
-        df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
-        df = df.dropna(subset=["Date"]).sort_values("Date").reset_index(drop=True)
-        df["YearMonth"] = df["Date"].dt.to_period("M")
-
-        # Exclude the current in-progress month — only completed months are valid
-        now_ist = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
-        current_period = pd.Period(now_ist.strftime("%Y-%m"), freq="M")
-        df = df[df["YearMonth"] < current_period]
-        if df.empty:
+        monthly = MonthlyEigenFilterService._consolidate_to_monthly(df)
+        if monthly is None or len(monthly) < 2:
             return None
-
-        monthly = df.groupby("YearMonth").agg(
-            Open=("Open", "first"),
-            High=("High", "max"),
-            Low=("Low", "min"),
-            Close=("Close", "last"),
-            Volume=("Volume", "sum"),
-        ).reset_index().sort_values("YearMonth").reset_index(drop=True)
-
-        if len(monthly) < 2:
-            return None
-
-        monthly["Spread"] = monthly["High"] - monthly["Low"]
-        monthly["Close_Position"] = monthly.apply(
-            lambda r: (r["Close"] - r["Low"]) / r["Spread"]
-            if r["Spread"] > 0 else 0.5,
-            axis=1,
-        )
 
         latest, prev = monthly.iloc[-1], monthly.iloc[-2]
         t_open = float(latest["Open"])
@@ -355,6 +305,127 @@ class DataAggregator:
             "delta_cp": delta_cp, "vol_delta_pct": vol_delta,
             "t_vol": t_vol, "t1_vol": t1_vol,
             "latest_month": latest_month, "prev_month": prev_month,
+        }
+
+    def get_volume_trap_details(self, symbol: str) -> Optional[Dict]:
+        """Extracts daily Volume Trap classification details from a processed Excel file."""
+        df = self._read_latest(const.VOLUME_TRAP_FILTER_DIR_NAME, symbol)
+        if df is None or len(df) < 2:
+            return None
+
+        latest, prev = df.iloc[-1], df.iloc[-2]
+        t_vol = int(latest.get("Volume", 0))
+        t1_vol = int(prev.get("Volume", 0))
+        t_spread = float(latest.get("Spread", 0))
+        t1_spread = float(prev.get("Spread", 0))
+        t_open = float(latest.get("Open", 0))
+        t_close = float(latest.get("Close", 0))
+        t_cp = float(latest.get("Close_Position", 0.5))
+
+        if t1_vol <= 0 or t_spread <= 0:
+            return None
+
+        vol_pct = round(((t_vol - t1_vol) / max(t1_vol, 1)) * 100, 1)
+        spread_pct = round(((t_spread - t1_spread) / max(t1_spread, 0.01)) * 100, 1)
+        body_ratio = round(abs(t_close - t_open) / t_spread, 4) if t_spread > 0 else 0.0
+        sentiment = "Bullish" if t_cp >= const.VOLUME_TRAP_SENTIMENT_MIDPOINT else "Bearish"
+
+        return {
+            "symbol": symbol, "sentiment": sentiment,
+            "label": f"{sentiment} Volume Trap",
+            "vol_delta_pct": vol_pct, "spread_delta_pct": spread_pct,
+            "body_ratio": body_ratio, "t_cp": round(t_cp, 4),
+            "t_open": t_open, "t_close": t_close,
+            "t_vol": t_vol, "t1_vol": t1_vol,
+            "t_spread": t_spread, "t1_spread": t1_spread,
+        }
+
+    def get_weekly_volume_trap_details(self, symbol: str) -> Optional[Dict]:
+        """Extracts Weekly Volume Trap details by consolidating daily data into weekly candles."""
+        df = self._read_latest(const.WEEKLY_VOLUME_TRAP_FILTER_DIR_NAME, symbol)
+        if df is None:
+            return None
+
+        weekly = WeeklyVolumeTrapFilterService._consolidate_to_weekly(df)
+        if weekly is None or len(weekly) < 2:
+            return None
+
+        latest, prev = weekly.iloc[-1], weekly.iloc[-2]
+        t_vol = int(latest["Volume"])
+        t1_vol = int(prev["Volume"])
+        t_spread = float(latest["Spread"])
+        t1_spread = float(prev["Spread"])
+        t_open = float(latest["Open"])
+        t_close = float(latest["Close"])
+        t_cp = float(latest["Close_Position"])
+
+        if t1_vol <= 0 or t_spread <= 0 or t_vol <= t1_vol or t_spread >= t1_spread:
+            return None
+
+        # Check body threshold on unrounded values to avoid premature rounding rejections
+        body = abs(t_close - t_open)
+        if body >= const.VOLUME_TRAP_BODY_RATIO_THRESHOLD * t_spread:
+            return None
+
+        body_ratio = round(body / t_spread, 4) if t_spread > 0 else 0.0
+        vol_pct = round(((t_vol - t1_vol) / max(t1_vol, 1)) * 100, 1)
+        spread_pct = round(((t_spread - t1_spread) / max(t1_spread, 0.01)) * 100, 1)
+        sentiment = "Bullish" if t_cp >= const.VOLUME_TRAP_SENTIMENT_MIDPOINT else "Bearish"
+
+        return {
+            "symbol": symbol, "sentiment": sentiment,
+            "label": f"{sentiment} Volume Trap",
+            "vol_delta_pct": vol_pct, "spread_delta_pct": spread_pct,
+            "body_ratio": body_ratio, "t_cp": round(t_cp, 4),
+            "t_open": t_open, "t_close": t_close,
+            "t_vol": t_vol, "t1_vol": t1_vol,
+            "t_spread": t_spread, "t1_spread": t1_spread,
+            "latest_week": str(latest["YearWeek"]),
+            "prev_week": str(prev["YearWeek"]),
+        }
+
+    def get_monthly_volume_trap_details(self, symbol: str) -> Optional[Dict]:
+        """Extracts Monthly Volume Trap details by consolidating daily data into monthly candles."""
+        df = self._read_latest(const.MONTHLY_VOLUME_TRAP_FILTER_DIR_NAME, symbol)
+        if df is None:
+            return None
+
+        monthly = MonthlyVolumeTrapFilterService._consolidate_to_monthly(df)
+        if monthly is None or len(monthly) < 2:
+            return None
+
+        latest, prev = monthly.iloc[-1], monthly.iloc[-2]
+        t_vol = int(latest["Volume"])
+        t1_vol = int(prev["Volume"])
+        t_spread = float(latest["Spread"])
+        t1_spread = float(prev["Spread"])
+        t_open = float(latest["Open"])
+        t_close = float(latest["Close"])
+        t_cp = float(latest["Close_Position"])
+
+        if t1_vol <= 0 or t_spread <= 0 or t_vol <= t1_vol or t_spread >= t1_spread:
+            return None
+
+        # Check body threshold on unrounded values to avoid premature rounding rejections
+        body = abs(t_close - t_open)
+        if body >= const.VOLUME_TRAP_BODY_RATIO_THRESHOLD * t_spread:
+            return None
+
+        body_ratio = round(body / t_spread, 4) if t_spread > 0 else 0.0
+        vol_pct = round(((t_vol - t1_vol) / max(t1_vol, 1)) * 100, 1)
+        spread_pct = round(((t_spread - t1_spread) / max(t1_spread, 0.01)) * 100, 1)
+        sentiment = "Bullish" if t_cp >= const.VOLUME_TRAP_SENTIMENT_MIDPOINT else "Bearish"
+
+        return {
+            "symbol": symbol, "sentiment": sentiment,
+            "label": f"{sentiment} Volume Trap",
+            "vol_delta_pct": vol_pct, "spread_delta_pct": spread_pct,
+            "body_ratio": body_ratio, "t_cp": round(t_cp, 4),
+            "t_open": t_open, "t_close": t_close,
+            "t_vol": t_vol, "t1_vol": t1_vol,
+            "t_spread": t_spread, "t1_spread": t1_spread,
+            "latest_month": str(latest["YearMonth"]),
+            "prev_month": str(prev["YearMonth"]),
         }
 
     def get_consensus_details(self) -> List[Dict]:

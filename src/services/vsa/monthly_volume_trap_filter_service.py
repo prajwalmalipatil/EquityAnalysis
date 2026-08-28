@@ -1,0 +1,186 @@
+"""
+monthly_volume_trap_filter_service.py
+Consolidates daily OHLCV data into monthly candles and applies
+Volume Trap analysis on the monthly timeframe.
+"""
+
+import shutil
+import pandas as pd
+from datetime import datetime, timezone, timedelta
+from pathlib import Path
+from typing import List, Optional
+
+from src.constants import vsa_constants as const
+from src.models.vsa_models import VolumeTrapClassification
+from src.utils.observability import get_tenant_logger
+
+logger = get_tenant_logger("monthly-volume-trap-filter-service")
+
+MIN_MONTHS_REQUIRED = 2
+
+
+class MonthlyVolumeTrapFilterService:
+    """
+    Consolidates daily data into monthly OHLCV candles, then applies
+    the Volume Trap classification logic on the monthly timeframe.
+    """
+
+    def __init__(self, base_dir: Path):
+        self.base_dir = base_dir
+        self.results_dir = base_dir / const.RESULTS_DIR_NAME
+        self.monthly_trap_dir = base_dir / const.MONTHLY_VOLUME_TRAP_FILTER_DIR_NAME
+        self.monthly_trap_dir.mkdir(parents=True, exist_ok=True)
+
+    def consolidate_and_classify(self) -> List[VolumeTrapClassification]:
+        """Main entry: reads each Results/ Excel, consolidates to monthly, classifies."""
+        if not self.results_dir.exists():
+            logger.warning("MONTHLY_VOLUME_TRAP_RESULTS_DIR_MISSING",
+                           extra={"path": str(self.results_dir)})
+            return []
+
+        results: List[VolumeTrapClassification] = []
+        for xlsx_path in sorted(self.results_dir.glob("*.xlsx")):
+            classification = self._process_single_file(xlsx_path)
+            if classification is None:
+                continue
+            shutil.copy(xlsx_path, self.monthly_trap_dir)
+            results.append(classification)
+
+        self._log_summary(results)
+        return results
+
+    def _process_single_file(self, path: Path) -> Optional[VolumeTrapClassification]:
+        """Reads daily data, consolidates to monthly, evaluates Volume Trap conditions."""
+        try:
+            df = pd.read_excel(path, sheet_name="VSA_Analysis")
+        except (OSError, ValueError):
+            return None
+
+        monthly_df = self._consolidate_to_monthly(df)
+        if monthly_df is None or len(monthly_df) < MIN_MONTHS_REQUIRED:
+            return None
+
+        symbol = path.stem.replace("_VSA", "")
+        latest = monthly_df.iloc[-1]
+        prev = monthly_df.iloc[-2]
+        return self._evaluate_monthly(symbol, latest, prev)
+
+    @staticmethod
+    def _consolidate_to_monthly(df: pd.DataFrame) -> Optional[pd.DataFrame]:
+        """Aggregates daily OHLCV rows into completed monthly candles.
+
+        The current in-progress month is always excluded to prevent
+        partial-period bias. Only fully completed calendar months are
+        included in the consolidation.
+
+        Monthly candle rules:
+          Open   = first daily open of the month
+          High   = max daily high of the month
+          Low    = min daily low of the month
+          Close  = last daily close of the month
+          Volume = sum of daily volumes for the month
+          Spread = High - Low (of the monthly candle)
+          Close_Position = (Close - Low) / Spread
+        """
+        if "Date" not in df.columns:
+            return None
+
+        df = df.copy()
+        df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+        df = df.dropna(subset=["Date"])
+        if df.empty:
+            return None
+
+        df = df.sort_values("Date").reset_index(drop=True)
+        df["YearMonth"] = df["Date"].dt.to_period("M")
+
+        # Exclude the current in-progress month — only completed months are valid
+        now_ist = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)
+        current_period = pd.Period(now_ist.strftime("%Y-%m"), freq="M")
+        df = df[df["YearMonth"] < current_period]
+        if df.empty:
+            return None
+
+        monthly = df.groupby("YearMonth").agg(
+            Open=("Open", "first"),
+            High=("High", "max"),
+            Low=("Low", "min"),
+            Close=("Close", "last"),
+            Volume=("Volume", "sum"),
+        ).reset_index()
+
+        monthly["Spread"] = monthly["High"] - monthly["Low"]
+        monthly["Close_Position"] = monthly.apply(
+            lambda r: (r["Close"] - r["Low"]) / r["Spread"]
+            if r["Spread"] > 0 else 0.5,
+            axis=1,
+        )
+        monthly = monthly.sort_values("YearMonth").reset_index(drop=True)
+        return monthly
+
+    def _evaluate_monthly(
+        self, symbol: str, latest: pd.Series, prev: pd.Series
+    ) -> Optional[VolumeTrapClassification]:
+        """Applies Volume Trap conditions on monthly candle data."""
+        t_vol = float(latest.get("Volume", 0))
+        t1_vol = float(prev.get("Volume", 0))
+        t_spread = float(latest.get("Spread", 0))
+        t1_spread = float(prev.get("Spread", 0))
+
+        # Guard clause
+        if t1_vol <= 0 or t1_spread <= 0 or t_spread <= 0:
+            return None
+
+        # Condition 1: Volume surge
+        if t_vol <= t1_vol:
+            return None
+
+        # Condition 2: Spread contraction
+        if t_spread >= t1_spread:
+            return None
+
+        t_open = float(latest.get("Open", 0))
+        t_close = float(latest.get("Close", 0))
+        
+        # Condition 3: Close near open (small body)
+        body_size = abs(t_close - t_open)
+        if body_size >= const.VOLUME_TRAP_BODY_RATIO_THRESHOLD * t_spread:
+            return None
+
+        t_cp = float(latest.get("Close_Position", 0.5))
+        
+        if t_cp >= const.VOLUME_TRAP_SENTIMENT_MIDPOINT:
+            sentiment = "Bullish"
+        else:
+            sentiment = "Bearish"
+            
+        label = f"{sentiment} Volume Trap"
+        body_ratio = body_size / t_spread
+        volume_pct = ((t_vol - t1_vol) / t1_vol) * 100
+        spread_pct = ((t_spread - t1_spread) / t1_spread) * 100
+
+        return VolumeTrapClassification(
+            symbol=symbol,
+            label=label,
+            sentiment=sentiment,
+            t_volume=int(t_vol),
+            t1_volume=int(t1_vol),
+            volume_pct=volume_pct,
+            t_spread=t_spread,
+            t1_spread=t1_spread,
+            spread_pct=spread_pct,
+            body_ratio=body_ratio,
+            t_close=t_close,
+            t_open=t_open,
+            t_close_position=t_cp,
+        )
+
+    @staticmethod
+    def _log_summary(results: List[VolumeTrapClassification]) -> None:
+        """Logs summary counts by sentiment."""
+        bullish = [r for r in results if r.sentiment == "Bullish"]
+        bearish = [r for r in results if r.sentiment == "Bearish"]
+        logger.info(
+            f"MONTHLY_VOLUME_TRAP_FILTER_COMPLETE: {len(results)} stocks qualified "
+            f"(Bullish: {len(bullish)}, Bearish: {len(bearish)})"
+        )

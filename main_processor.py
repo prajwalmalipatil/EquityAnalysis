@@ -11,6 +11,7 @@ import multiprocessing
 from pathlib import Path
 from typing import List
 
+from src.constants import vsa_constants as const
 from src.services.vsa.processor_service import VSAProcessorService
 from src.utils.observability import get_tenant_logger
 
@@ -88,15 +89,18 @@ def main():
         logger.info(f"  Confirmation Rate: {(s['confirmed']/s['total_signals'])*100:.1f}%")
 
     # Pattern Distribution Summary
-    trending_count = len(list((input_folder / "Trending").glob("*.xlsx")))
-    anomaly_count = len(list((input_folder / "Anomaly").glob("*.xlsx")))
-    ticker_count = len(list((input_folder / "Ticker").glob("*.xlsx")))
-    trigger_count = len(list((input_folder / "Triggers").glob("*.xlsx")))
-    effort_count = len(list((input_folder / "Efforts").glob("*.xlsx")))
-    eigen_count = len(list((input_folder / "EigenFilter").glob("*.xlsx")))
-    age_again_count = len(list((input_folder / "AgeAgain").glob("*.xlsx")))
-    monthly_eigen_count = len(list((input_folder / "MonthlyEigenFilter").glob("*.xlsx")))
-    weekly_eigen_count = len(list((input_folder / "WeeklyEigenFilter").glob("*.xlsx")))
+    trending_count = len(list((input_folder / const.TRENDING_DIR_NAME).glob("*.xlsx")))
+    anomaly_count = len(list((input_folder / const.ANOMALY_DIR_NAME).glob("*.xlsx")))
+    ticker_count = len(list((input_folder / const.TICKER_DIR_NAME).glob("*.xlsx")))
+    trigger_count = len(list((input_folder / const.TRIGGERS_DIR_NAME).glob("*.xlsx")))
+    effort_count = len(list((input_folder / const.EFFORTS_DIR_NAME).glob("*.xlsx")))
+    eigen_count = len(list((input_folder / const.EIGEN_FILTER_DIR_NAME).glob("*.xlsx")))
+    age_again_count = len(list((input_folder / const.AGE_AGAIN_FILTER_DIR_NAME).glob("*.xlsx")))
+    monthly_eigen_count = len(list((input_folder / const.MONTHLY_EIGEN_FILTER_DIR_NAME).glob("*.xlsx")))
+    weekly_eigen_count = len(list((input_folder / const.WEEKLY_EIGEN_FILTER_DIR_NAME).glob("*.xlsx")))
+    volume_trap_count = len(list((input_folder / const.VOLUME_TRAP_FILTER_DIR_NAME).glob("*.xlsx")))
+    weekly_volume_trap_count = len(list((input_folder / const.WEEKLY_VOLUME_TRAP_FILTER_DIR_NAME).glob("*.xlsx")))
+    monthly_volume_trap_count = len(list((input_folder / const.MONTHLY_VOLUME_TRAP_FILTER_DIR_NAME).glob("*.xlsx")))
 
     logger.info("\nFOLDER DISTRIBUTION:")
     logger.info(f"  Trending:    {trending_count} files")
@@ -108,6 +112,9 @@ def main():
     logger.info(f"  AgeAgain:    {age_again_count} files")
     logger.info(f"  MonthlyEigen: {monthly_eigen_count} files")
     logger.info(f"  WeeklyEigen: {weekly_eigen_count} files")
+    logger.info(f"  VolumeTrap:  {volume_trap_count} files")
+    logger.info(f"  WeeklyVolumeTrap: {weekly_volume_trap_count} files")
+    logger.info(f"  MonthlyVolumeTrap: {monthly_volume_trap_count} files")
     logger.info("="*60)
     logger.info("✅ VSA Analysis Run Finished Successfully")
 

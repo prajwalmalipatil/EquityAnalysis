@@ -17,7 +17,10 @@ from .consensus_engine_service import ConsensusEngineService
 from .eigen_filter_service import EigenFilterService
 from .eigen_transition_engine_service import EigenTransitionEngineService
 from .monthly_eigen_filter_service import MonthlyEigenFilterService
+from .monthly_volume_trap_filter_service import MonthlyVolumeTrapFilterService
+from .volume_trap_filter_service import VolumeTrapFilterService
 from .weekly_eigen_filter_service import WeeklyEigenFilterService
+from .weekly_volume_trap_filter_service import WeeklyVolumeTrapFilterService
 
 logger = get_tenant_logger("vsa-pattern-router")
 
@@ -51,7 +54,7 @@ class VSAPatternRouter:
         pass
 
     def run_filters(self) -> Dict[str, Any]:
-        """Runs the four Eigen/Age filters and consensus engine."""
+        """Runs the Eigen, VolumeTrap, Age filters and consensus engine."""
         eigen_results = EigenFilterService(self.output_base).scan_and_classify()
         logger.info(f"POST_PROCESS: EigenFilter Classified {len(eigen_results)} symbols")
 
@@ -72,8 +75,34 @@ class VSAPatternRouter:
             f"POST_PROCESS: WeeklyEigenFilter Classified {len(weekly_eigen_results)} symbols"
         )
 
+        volume_trap_results = VolumeTrapFilterService(
+            self.output_base
+        ).scan_and_classify()
+        logger.info(
+            f"POST_PROCESS: VolumeTrapFilter Classified {len(volume_trap_results)} symbols"
+        )
+
+        weekly_volume_trap_results = WeeklyVolumeTrapFilterService(
+            self.output_base
+        ).consolidate_and_classify()
+        logger.info(
+            f"POST_PROCESS: WeeklyVolumeTrapFilter Classified "
+            f"{len(weekly_volume_trap_results)} symbols"
+        )
+
+        monthly_volume_trap_results = MonthlyVolumeTrapFilterService(
+            self.output_base
+        ).consolidate_and_classify()
+        logger.info(
+            f"POST_PROCESS: MonthlyVolumeTrapFilter Classified "
+            f"{len(monthly_volume_trap_results)} symbols"
+        )
+
         consensus_results = ConsensusEngineService(self.output_base).compute_consensus(
-            eigen_results, weekly_eigen_results, monthly_eigen_results
+            eigen_results, weekly_eigen_results, monthly_eigen_results,
+            volume_trap_daily=volume_trap_results,
+            volume_trap_weekly=weekly_volume_trap_results,
+            volume_trap_monthly=monthly_volume_trap_results,
         )
         logger.info(
             f"POST_PROCESS: ConsensusEngine Computed {len(consensus_results)} consensus ratings"
@@ -84,6 +113,9 @@ class VSAPatternRouter:
             "weekly": weekly_eigen_results,
             "monthly": monthly_eigen_results,
             "consensus": consensus_results,
+            "volume_trap": volume_trap_results,
+            "weekly_volume_trap": weekly_volume_trap_results,
+            "monthly_volume_trap": monthly_volume_trap_results,
         }
 
     def run_ete(

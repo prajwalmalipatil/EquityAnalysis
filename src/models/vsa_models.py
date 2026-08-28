@@ -86,3 +86,25 @@ class AgeAgainClassification:
     t_close: float
     t_open: float
     t_close_position: float
+
+
+@dataclass
+class VolumeTrapClassification:
+    """Classifies a stock's volume-trap stall pattern (Volume Trap Filter).
+
+    Detects candles where volume surges but price barely moves — close stays
+    near the open within a configurable body-ratio threshold.
+    """
+    symbol: str
+    label: str           # "Bullish Volume Trap" or "Bearish Volume Trap"
+    sentiment: str       # "Bullish" or "Bearish"
+    t_volume: int
+    t1_volume: int       # T2 volume (previous bar)
+    volume_pct: float    # (T1_vol - T2_vol) / T2_vol * 100
+    t_spread: float
+    t1_spread: float     # T2 spread
+    spread_pct: float    # (T1_spread - T2_spread) / T2_spread * 100
+    body_ratio: float    # |Close - Open| / Spread
+    t_close: float
+    t_open: float
+    t_close_position: float

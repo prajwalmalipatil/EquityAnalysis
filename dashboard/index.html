@@ -110,6 +110,10 @@
                         <h3>Eigen Filter</h3>
                         <div class="stat-value highlight-text" id="stat-eigen">--</div>
                     </div>
+                    <div class="stat-card glass-panel clickable-card" id="card-volume-trap">
+                        <h3>Volume Trap</h3>
+                        <div class="stat-value highlight-text" id="stat-volume-trap">--</div>
+                    </div>
                     <div class="stat-card glass-panel clickable-card" id="card-anomaly">
                         <h3>Anomalies</h3>
                         <div class="stat-value" id="stat-anomaly">--</div>
@@ -501,6 +505,89 @@
                                             </tr>
                                         </thead>
                                         <tbody id="eigen-body-monthly">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Volume Trap Insights -->
+                        <div id="volume-trap" class="panel glass-panel">
+                            <div class="panel-header">
+                                <h2>🎯 Volume Trap Insights</h2>
+                            </div>
+                            <div class="eigen-stats">
+                                <div class="eigen-row" onclick="toggleVolumeTrapTable('daily')">
+                                    <span class="ete-timeframe-label">
+                                        <span class="ete-timeframe-arrow" id="vt-arrow-daily" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        📅 Daily
+                                    </span>
+                                    <span class="badge" id="vt-daily-count">--</span>
+                                </div>
+                                <div class="eigen-table-container" id="vt-table-daily" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Sentiment</th>
+                                                <th>Vol Δ%</th>
+                                                <th>Spread Δ%</th>
+                                                <th>Body Ratio</th>
+                                                <th>Close Pos</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="vt-body-daily">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="eigen-row" onclick="toggleVolumeTrapTable('weekly')">
+                                    <span class="ete-timeframe-label">
+                                        <span class="ete-timeframe-arrow" id="vt-arrow-weekly" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        📅 Weekly
+                                    </span>
+                                    <span class="badge" id="vt-weekly-count">--</span>
+                                </div>
+                                <div class="eigen-table-container" id="vt-table-weekly" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Sentiment</th>
+                                                <th>Vol Δ%</th>
+                                                <th>Spread Δ%</th>
+                                                <th>Body Ratio</th>
+                                                <th>Close Pos</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="vt-body-weekly">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="eigen-row" onclick="toggleVolumeTrapTable('monthly')">
+                                    <span class="ete-timeframe-label">
+                                        <span class="ete-timeframe-arrow" id="vt-arrow-monthly" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        📅 Monthly
+                                    </span>
+                                    <span class="badge" id="vt-monthly-count">--</span>
+                                </div>
+                                <div class="eigen-table-container" id="vt-table-monthly" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Sentiment</th>
+                                                <th>Vol Δ%</th>
+                                                <th>Spread Δ%</th>
+                                                <th>Body Ratio</th>
+                                                <th>Close Pos</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="vt-body-monthly">
                                             <!-- Populated by JS -->
                                         </tbody>
                                     </table>

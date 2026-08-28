@@ -12,7 +12,7 @@ from typing import List, Dict, Optional
 
 from src.constants import vsa_constants as const
 from src.models.consensus_models import ConsensusRating
-from src.models.vsa_models import EigenClassification
+from src.models.vsa_models import EigenClassification, VolumeTrapClassification
 from src.utils.observability import get_tenant_logger
 
 logger = get_tenant_logger("consensus-engine-service")
@@ -34,27 +34,39 @@ def _score_sentiment(sentiment: str, weight: float) -> float:
 
 class ConsensusEngineService:
     """
-    Reads EigenFilter classifications across Daily, Weekly, and Monthly 
+    Reads EigenFilter and VolumeTrap classifications across Daily, Weekly, and Monthly 
     timeframes and computes a weighted consensus score and rating.
     """
 
     def __init__(self, base_dir: Path):
         self.base_dir = base_dir
-        self.daily_dir = base_dir / const.EIGEN_FILTER_DIR_NAME
-        self.weekly_dir = base_dir / const.WEEKLY_EIGEN_FILTER_DIR_NAME
-        self.monthly_dir = base_dir / const.MONTHLY_EIGEN_FILTER_DIR_NAME
-        
         self.consensus_dir = base_dir / const.CONSENSUS_RESULTS_DIR_NAME
         self.consensus_dir.mkdir(parents=True, exist_ok=True)
 
-    def compute_consensus(self, daily_results: List[EigenClassification], weekly_results: List[EigenClassification], monthly_results: List[EigenClassification]) -> List[ConsensusRating]:
-        """Calculates ratings based on provided classification results and exports them."""
+    def compute_consensus(
+        self,
+        daily_results: List[EigenClassification],
+        weekly_results: List[EigenClassification],
+        monthly_results: List[EigenClassification],
+        volume_trap_daily: Optional[List[VolumeTrapClassification]] = None,
+        volume_trap_weekly: Optional[List[VolumeTrapClassification]] = None,
+        volume_trap_monthly: Optional[List[VolumeTrapClassification]] = None,
+    ) -> List[ConsensusRating]:
+        """Calculates ratings from Eigen + VolumeTrap signals and exports them."""
         # 1. Gather all available signals
         symbols_data: Dict[str, Dict[str, str]] = {}
         
         self._populate_signals(daily_results, "daily", symbols_data)
         self._populate_signals(weekly_results, "weekly", symbols_data)
         self._populate_signals(monthly_results, "monthly", symbols_data)
+
+        # Merge VolumeTrap as supplemental — only fills gaps where Eigen has no signal
+        if volume_trap_daily:
+            self._populate_supplemental_signals(volume_trap_daily, "daily", symbols_data)
+        if volume_trap_weekly:
+            self._populate_supplemental_signals(volume_trap_weekly, "weekly", symbols_data)
+        if volume_trap_monthly:
+            self._populate_supplemental_signals(volume_trap_monthly, "monthly", symbols_data)
         
         if not symbols_data:
             logger.info("No signals found across any timeframe to generate consensus.")
@@ -83,6 +95,24 @@ class ConsensusEngineService:
                     "monthly": "None"
                 }
             symbols_data[r.symbol][timeframe] = r.sentiment
+
+    def _populate_supplemental_signals(
+        self,
+        results: List[VolumeTrapClassification],
+        timeframe: str,
+        symbols_data: Dict[str, Dict[str, str]],
+    ) -> None:
+        """Merges VolumeTrap signals as supplemental — only fills gaps where Eigen has no signal."""
+        for r in results:
+            if r.symbol not in symbols_data:
+                symbols_data[r.symbol] = {
+                    "daily": "None",
+                    "weekly": "None",
+                    "monthly": "None",
+                }
+            # Only fill if Eigen didn't already provide a signal for this timeframe
+            if symbols_data[r.symbol][timeframe] == "None":
+                symbols_data[r.symbol][timeframe] = r.sentiment
 
     def _evaluate_symbol(self, symbol: str, signals: Dict[str, str]) -> Optional[ConsensusRating]:
         """Calculates the weighted score and assigns the star rating/label."""

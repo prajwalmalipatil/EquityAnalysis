@@ -210,6 +210,39 @@ Fetch ALL tenant-specific config from **workspace-council** per-request. Never c
 
 ---
 
+## 11. VSA Filter Implementation Pattern & Data Integrity (Project-Specific)
+
+### 11.1 Filter Lifecycle Checklist
+Every new post-VSA filter follows this standard 5-layer sequence:
+
+| Layer | Files to Modify/Create | Action |
+|-------|----------------------|--------|
+| Constants | `src/constants/vsa_constants.py` | Add `{FILTER}_DIR_NAME`, `WEEKLY_{FILTER}_DIR_NAME`, `MONTHLY_{FILTER}_DIR_NAME` + configurable thresholds |
+| Models | `src/models/vsa_models.py` | Add `{Filter}Classification` dataclass with `symbol`, `label`, `sentiment` + filter-specific metrics |
+| Services | `src/services/vsa/{filter}_service.py` (x3) | Daily: scan `Results/`, copy to filter dir. Weekly/Monthly: consolidate completed periods then classify |
+| Pipeline | `processor_service.py`, `pattern_router_service.py`, `consensus_engine_service.py` | Register dirs, wire execution, merge signals supplementally |
+| Reporting | `data_aggregator.py`, `json_publisher.py`, `main_notifier.py`, `main_processor.py` | Aggregate, publish JSON, email section, distribution logging |
+| Dashboard | `index.html`, `app.js` | Stat card + expandable timeframe tables (reuses existing `.eigen-row` / `.eigen-table-container` CSS) |
+
+### 11.2 Candle Consolidation Pattern
+- **Weekly candles**: Group by `df["Date"].dt.strftime("%G-W%V")`, **exclude current in-progress week** (`%G-W%V < current_period`).
+- **Monthly candles**: Group by `df["Date"].dt.to_period("M")`, **exclude current in-progress month** (`%Y-%m < current_period`).
+- **Aggregation**: `Open=first`, `High=max`, `Low=min`, `Close=last`, `Volume=sum`.
+- **Derived metrics**: Always recalculate `Spread = High - Low` and `Close_Position = (Close - Low) / Spread`.
+- **DRY Principle**: `DataAggregator` must reuse `Weekly{Filter}Service._consolidate_to_weekly` and `Monthly{Filter}Service._consolidate_to_monthly` instead of duplicating groupby code.
+
+### 11.3 Aggregator & Reporting Precision Invariant
+- **No Premature Rounding in Condition Checks**: When verifying if a stock in a filter folder meets reporting thresholds, always compare raw unrounded variables against thresholds (`body >= THRESHOLD * spread`). Only format with `round(..., 4)` after condition validation.
+
+### 11.4 Centralized Constants Invariant
+- All CLI utilities, logging functions, and routers must reference folder paths via `const.{DIR_NAME}` from `vsa_constants.py`. Never hardcode directory strings (e.g., `"AgeAgain"`, `"Trending"`).
+
+### 11.5 Supplemental Consensus Blending
+- Non-Eigen filters (such as Volume Trap) are merged into `ConsensusEngineService` as supplemental signals (`_populate_supplemental_signals()`).
+- Signals only fill slots where the symbol/timeframe is `"None"`, preventing double-counting while expanding universe coverage.
+
+---
+
 ## Final Checklist
 
 Before submitting:

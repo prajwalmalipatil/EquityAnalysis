@@ -53,6 +53,28 @@ class JSONPublisher:
             "monthly": monthly_eigen
         }
 
+        # Gather volume trap details
+        daily_vt = []
+        for sym in symbol_data.get("volume_trap", []):
+            details = self.aggregator.get_volume_trap_details(sym)
+            if details: daily_vt.append(details)
+
+        weekly_vt = []
+        for sym in symbol_data.get("weekly_volume_trap", []):
+            details = self.aggregator.get_weekly_volume_trap_details(sym)
+            if details: weekly_vt.append(details)
+
+        monthly_vt = []
+        for sym in symbol_data.get("monthly_volume_trap", []):
+            details = self.aggregator.get_monthly_volume_trap_details(sym)
+            if details: monthly_vt.append(details)
+
+        volume_trap_filters = {
+            "daily": daily_vt,
+            "weekly": weekly_vt,
+            "monthly": monthly_vt
+        }
+
         # Gather ticker alerts
         ticker_alerts = []
         for sym in symbol_data.get("ticker", []):
@@ -123,6 +145,7 @@ class JSONPublisher:
             "stage_statistics": stats,
             "consensus": consensus,
             "eigen_filters": eigen_filters,
+            "volume_trap_filters": volume_trap_filters,
             "ticker_alerts": ticker_alerts,
             "macro_intelligence": macro_intelligence
         }
