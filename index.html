@@ -114,6 +114,10 @@
                         <h3>Volume Trap</h3>
                         <div class="stat-value highlight-text" id="stat-volume-trap">--</div>
                     </div>
+                    <div class="stat-card glass-panel clickable-card" id="card-age-again">
+                        <h3>AgeAgain</h3>
+                        <div class="stat-value highlight-text" id="stat-age-again">--</div>
+                    </div>
                     <div class="stat-card glass-panel clickable-card" id="card-anomaly">
                         <h3>Anomalies</h3>
                         <div class="stat-value" id="stat-anomaly">--</div>
@@ -588,6 +592,86 @@
                                             </tr>
                                         </thead>
                                         <tbody id="vt-body-monthly">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AgeAgain Insights -->
+                        <div id="age-again" class="panel glass-panel">
+                            <div class="panel-header">
+                                <h2>⚡ AgeAgain Insights</h2>
+                            </div>
+                            <div class="eigen-stats">
+                                <div class="eigen-row" onclick="toggleAgeAgainTable('daily')">
+                                    <span class="ete-timeframe-label">
+                                        <span class="ete-timeframe-arrow" id="aa-arrow-daily" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        📅 Daily
+                                    </span>
+                                    <span class="badge" id="aa-daily-count">--</span>
+                                </div>
+                                <div class="eigen-table-container" id="aa-table-daily" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Scenario</th>
+                                                <th>Vol Δ%</th>
+                                                <th>Spread Δ%</th>
+                                                <th>Close Pos</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="aa-body-daily">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="eigen-row" onclick="toggleAgeAgainTable('weekly')">
+                                    <span class="ete-timeframe-label">
+                                        <span class="ete-timeframe-arrow" id="aa-arrow-weekly" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        📅 Weekly
+                                    </span>
+                                    <span class="badge" id="aa-weekly-count">--</span>
+                                </div>
+                                <div class="eigen-table-container" id="aa-table-weekly" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Scenario</th>
+                                                <th>Vol Δ%</th>
+                                                <th>Spread Δ%</th>
+                                                <th>Close Pos</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="aa-body-weekly">
+                                            <!-- Populated by JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="eigen-row" onclick="toggleAgeAgainTable('monthly')">
+                                    <span class="ete-timeframe-label">
+                                        <span class="ete-timeframe-arrow" id="aa-arrow-monthly" style="transition: transform 0.2s ease; display: inline-block;">►</span>
+                                        📅 Monthly
+                                    </span>
+                                    <span class="badge" id="aa-monthly-count">--</span>
+                                </div>
+                                <div class="eigen-table-container" id="aa-table-monthly" style="display: none;">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Scenario</th>
+                                                <th>Vol Δ%</th>
+                                                <th>Spread Δ%</th>
+                                                <th>Close Pos</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="aa-body-monthly">
                                             <!-- Populated by JS -->
                                         </tbody>
                                     </table>

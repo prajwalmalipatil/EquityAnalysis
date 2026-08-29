@@ -628,6 +628,24 @@ function renderDashboard(data) {
     
     renderVolumeTrapTables(data);
 
+    // Render AgeAgain Stats
+    const aaDaily = data.age_again_filters?.daily?.length || 0;
+    const aaWeekly = data.age_again_filters?.weekly?.length || 0;
+    const aaMonthly = data.age_again_filters?.monthly?.length || 0;
+    const aaTotal = aaDaily + aaWeekly + aaMonthly;
+
+    const aaStatEl = document.getElementById('stat-age-again');
+    if (aaStatEl) aaStatEl.textContent = aaTotal;
+
+    const aaDailyCount = document.getElementById('aa-daily-count');
+    const aaWeeklyCount = document.getElementById('aa-weekly-count');
+    const aaMonthlyCount = document.getElementById('aa-monthly-count');
+    if (aaDailyCount) aaDailyCount.textContent = aaDaily;
+    if (aaWeeklyCount) aaWeeklyCount.textContent = aaWeekly;
+    if (aaMonthlyCount) aaMonthlyCount.textContent = aaMonthly;
+
+    renderAgeAgainTables(data);
+
     // Render Transition & Replay Insights
     renderTransitionInsights(data.eteSummary);
     renderReplayInsights(data.backtestResults);
@@ -1010,6 +1028,7 @@ function setupClickableCards() {
     const cardTrending = document.getElementById('card-trending');
     const cardEigen = document.getElementById('card-eigen');
     const cardVolumeTrap = document.getElementById('card-volume-trap');
+    const cardAgeAgain = document.getElementById('card-age-again');
     const cardAnomaly = document.getElementById('card-anomaly');
     const cardTriggers = document.getElementById('card-triggers');
 
@@ -1028,6 +1047,11 @@ function setupClickableCards() {
     if (cardVolumeTrap) cardVolumeTrap.addEventListener('click', () => {
         const vtSection = document.getElementById('volume-trap');
         if (vtSection) vtSection.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    if (cardAgeAgain) cardAgeAgain.addEventListener('click', () => {
+        const aaSection = document.getElementById('age-again');
+        if (aaSection) aaSection.scrollIntoView({ behavior: 'smooth' });
     });
 }
 
@@ -1206,6 +1230,48 @@ function toggleVolumeTrapTable(timeframe) {
         const isHidden = tableContainer.style.display === 'none';
         tableContainer.style.display = isHidden ? 'block' : 'none';
         const arrow = document.getElementById(`vt-arrow-${timeframe}`);
+        if (arrow) {
+            arrow.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
+        }
+    }
+}
+
+function renderAgeAgainTables(data) {
+    const timeframes = ['daily', 'weekly', 'monthly'];
+    
+    timeframes.forEach(timeframe => {
+        const tbody = document.getElementById(`aa-body-${timeframe}`);
+        if (!tbody) return;
+        
+        tbody.innerHTML = '';
+        const items = data.age_again_filters?.[timeframe] || [];
+        
+        if (items.length > 0) {
+            items.forEach(item => {
+                const tr = document.createElement('tr');
+                const badgeClass = item.sentiment === 'Bullish' ? 'badge-gap-up' : 'badge-gap-down';
+                const labelText = item.label || item.scenario || 'Anomaly';
+                tr.innerHTML = `
+                    <td class="symbol-cell">${sanitizeHTML(item.symbol)}</td>
+                    <td><span class="premium-badge ${badgeClass}">${sanitizeHTML(labelText)}</span></td>
+                    <td>${item.vol_delta_pct !== undefined ? item.vol_delta_pct + '%' : '--'}</td>
+                    <td>${item.spread_delta_pct !== undefined ? item.spread_delta_pct + '%' : '--'}</td>
+                    <td>${item.t_cp !== undefined ? item.t_cp.toFixed(4) : '--'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } else {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted)">No matches found.</td></tr>`;
+        }
+    });
+}
+
+function toggleAgeAgainTable(timeframe) {
+    const tableContainer = document.getElementById(`aa-table-${timeframe}`);
+    if (tableContainer) {
+        const isHidden = tableContainer.style.display === 'none';
+        tableContainer.style.display = isHidden ? 'block' : 'none';
+        const arrow = document.getElementById(`aa-arrow-${timeframe}`);
         if (arrow) {
             arrow.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
         }
