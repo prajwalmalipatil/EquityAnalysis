@@ -99,11 +99,11 @@ class VolumeTrapClassification:
     label: str           # "Bullish Volume Trap" or "Bearish Volume Trap"
     sentiment: str       # "Bullish" or "Bearish"
     t_volume: int
-    t1_volume: int       # T2 volume (previous bar)
-    volume_pct: float    # (T1_vol - T2_vol) / T2_vol * 100
+    t1_volume: int       # T-1 volume (previous bar)
+    volume_pct: float    # (T_vol - T1_vol) / T1_vol * 100
     t_spread: float
-    t1_spread: float     # T2 spread
-    spread_pct: float    # (T1_spread - T2_spread) / T2_spread * 100
+    t1_spread: float     # T-1 spread (previous bar)
+    spread_pct: float    # (T_spread - T1_spread) / T1_spread * 100
     body_ratio: float    # |Close - Open| / Spread
     t_close: float
     t_open: float

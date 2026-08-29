@@ -8,8 +8,10 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import List, Dict, Optional
 from src.constants import vsa_constants as const
+from src.services.vsa.monthly_age_again_filter_service import MonthlyAgeAgainFilterService
 from src.services.vsa.monthly_eigen_filter_service import MonthlyEigenFilterService
 from src.services.vsa.monthly_volume_trap_filter_service import MonthlyVolumeTrapFilterService
+from src.services.vsa.weekly_age_again_filter_service import WeeklyAgeAgainFilterService
 from src.services.vsa.weekly_eigen_filter_service import WeeklyEigenFilterService
 from src.services.vsa.weekly_volume_trap_filter_service import WeeklyVolumeTrapFilterService
 from src.utils.observability import get_tenant_logger
@@ -40,6 +42,9 @@ class DataAggregator:
             "volume_trap": self._count_files(const.VOLUME_TRAP_FILTER_DIR_NAME),
             "weekly_volume_trap": self._count_files(const.WEEKLY_VOLUME_TRAP_FILTER_DIR_NAME),
             "monthly_volume_trap": self._count_files(const.MONTHLY_VOLUME_TRAP_FILTER_DIR_NAME),
+            "age_again": self._count_files(const.AGE_AGAIN_FILTER_DIR_NAME),
+            "weekly_age_again": self._count_files(const.WEEKLY_AGE_AGAIN_FILTER_DIR_NAME),
+            "monthly_age_again": self._count_files(const.MONTHLY_AGE_AGAIN_FILTER_DIR_NAME),
         }
 
     def get_symbol_lists(self) -> Dict[str, List[str]]:
@@ -57,6 +62,9 @@ class DataAggregator:
             "volume_trap": self._get_symbols(const.VOLUME_TRAP_FILTER_DIR_NAME),
             "weekly_volume_trap": self._get_symbols(const.WEEKLY_VOLUME_TRAP_FILTER_DIR_NAME),
             "monthly_volume_trap": self._get_symbols(const.MONTHLY_VOLUME_TRAP_FILTER_DIR_NAME),
+            "age_again": self._get_symbols(const.AGE_AGAIN_FILTER_DIR_NAME),
+            "weekly_age_again": self._get_symbols(const.WEEKLY_AGE_AGAIN_FILTER_DIR_NAME),
+            "monthly_age_again": self._get_symbols(const.MONTHLY_AGE_AGAIN_FILTER_DIR_NAME),
         }
 
     def get_ticker_details(self, symbol: str) -> Optional[Dict]:
@@ -165,7 +173,23 @@ class DataAggregator:
         t_vol = int(latest.get("Volume", 0))
         t1_vol = int(prev.get("Volume", 0))
 
-        gap_dir = "Gap-Up" if t_open > t1_close_val else "Gap-Down"
+        if t_vol <= t1_vol or t1_vol <= 0:
+            return None
+
+        is_extreme_close = (
+            t_cp <= const.EIGEN_CLOSE_LOWER_BAND or t_cp >= const.EIGEN_CLOSE_UPPER_BAND
+        )
+        if not is_extreme_close:
+            return None
+
+        gap_dir = None
+        if t_open > t1_close_val and t_cp >= t1_cp:
+            gap_dir = "Gap-Up"
+        elif t_open < t1_close_val and t_cp <= t1_cp:
+            gap_dir = "Gap-Down"
+        if gap_dir is None:
+            return None
+
         close_band = "Strong" if t_cp >= const.EIGEN_CLOSE_UPPER_BAND else "Weak"
         delta_cp = round(t_cp - t1_cp, 4)
         vol_delta = round(((t_vol - t1_vol) / max(t1_vol, 1)) * 100, 1)
@@ -322,12 +346,16 @@ class DataAggregator:
         t_close = float(latest.get("Close", 0))
         t_cp = float(latest.get("Close_Position", 0.5))
 
-        if t1_vol <= 0 or t_spread <= 0:
+        if t1_vol <= 0 or t_spread <= 0 or t1_spread <= 0 or t_vol <= t1_vol or t_spread >= t1_spread:
+            return None
+
+        body = abs(t_close - t_open)
+        if body >= const.VOLUME_TRAP_BODY_RATIO_THRESHOLD * t_spread:
             return None
 
         vol_pct = round(((t_vol - t1_vol) / max(t1_vol, 1)) * 100, 1)
         spread_pct = round(((t_spread - t1_spread) / max(t1_spread, 0.01)) * 100, 1)
-        body_ratio = round(abs(t_close - t_open) / t_spread, 4) if t_spread > 0 else 0.0
+        body_ratio = round(body / t_spread, 4) if t_spread > 0 else 0.0
         sentiment = "Bullish" if t_cp >= const.VOLUME_TRAP_SENTIMENT_MIDPOINT else "Bearish"
 
         return {
@@ -424,6 +452,162 @@ class DataAggregator:
             "t_open": t_open, "t_close": t_close,
             "t_vol": t_vol, "t1_vol": t1_vol,
             "t_spread": t_spread, "t1_spread": t1_spread,
+            "latest_month": str(latest["YearMonth"]),
+            "prev_month": str(prev["YearMonth"]),
+        }
+
+    def get_age_again_details(self, symbol: str) -> Optional[Dict]:
+        """Extracts daily AgeAgain classification details from a processed Excel file."""
+        df = self._read_latest(const.AGE_AGAIN_FILTER_DIR_NAME, symbol)
+        if df is None or len(df) < 2:
+            return None
+
+        latest, prev = df.iloc[-1], df.iloc[-2]
+        t_vol = int(latest.get("Volume", 0))
+        t1_vol = int(prev.get("Volume", 0))
+        t_spread = float(latest.get("Spread", 0))
+        t1_spread = float(prev.get("Spread", 0))
+        t_open = float(latest.get("Open", 0))
+        t_close = float(latest.get("Close", 0))
+        t_cp = float(latest.get("Close_Position", 0.5))
+
+        if t1_vol <= 0 or t1_spread <= 0 or t_spread <= 0:
+            return None
+
+        if t_vol > t1_vol and t_spread < t1_spread:
+            scenario = "Vol_Surge_Spread_Contraction"
+            label = "Absorption Signal"
+            sentiment = "Bullish"
+        elif t_vol < t1_vol and t_spread > t1_spread:
+            scenario = "Vol_Drop_Spread_Expansion"
+            label = "Effort Without Result"
+            sentiment = "Bearish"
+        else:
+            return None
+
+        vol_pct = round(((t_vol - t1_vol) / max(t1_vol, 1)) * 100, 1)
+        spread_pct = round(((t_spread - t1_spread) / max(t1_spread, 0.01)) * 100, 1)
+
+        return {
+            "symbol": symbol,
+            "scenario": scenario,
+            "label": label,
+            "sentiment": sentiment,
+            "vol_delta_pct": vol_pct,
+            "spread_delta_pct": spread_pct,
+            "t_cp": round(t_cp, 4),
+            "t_open": t_open,
+            "t_close": t_close,
+            "t_vol": t_vol,
+            "t1_vol": t1_vol,
+            "t_spread": t_spread,
+            "t1_spread": t1_spread,
+        }
+
+    def get_weekly_age_again_details(self, symbol: str) -> Optional[Dict]:
+        """Extracts Weekly AgeAgain details by consolidating daily data into weekly candles."""
+        df = self._read_latest(const.WEEKLY_AGE_AGAIN_FILTER_DIR_NAME, symbol)
+        if df is None:
+            return None
+
+        weekly = WeeklyAgeAgainFilterService._consolidate_to_weekly(df)
+        if weekly is None or len(weekly) < 2:
+            return None
+
+        latest, prev = weekly.iloc[-1], weekly.iloc[-2]
+        t_vol = int(latest["Volume"])
+        t1_vol = int(prev["Volume"])
+        t_spread = float(latest["Spread"])
+        t1_spread = float(prev["Spread"])
+        t_open = float(latest["Open"])
+        t_close = float(latest["Close"])
+        t_cp = float(latest["Close_Position"])
+
+        if t1_vol <= 0 or t1_spread <= 0 or t_spread <= 0:
+            return None
+
+        if t_vol > t1_vol and t_spread < t1_spread:
+            scenario = "Vol_Surge_Spread_Contraction"
+            label = "Absorption Signal"
+            sentiment = "Bullish"
+        elif t_vol < t1_vol and t_spread > t1_spread:
+            scenario = "Vol_Drop_Spread_Expansion"
+            label = "Effort Without Result"
+            sentiment = "Bearish"
+        else:
+            return None
+
+        vol_pct = round(((t_vol - t1_vol) / max(t1_vol, 1)) * 100, 1)
+        spread_pct = round(((t_spread - t1_spread) / max(t1_spread, 0.01)) * 100, 1)
+
+        return {
+            "symbol": symbol,
+            "scenario": scenario,
+            "label": label,
+            "sentiment": sentiment,
+            "vol_delta_pct": vol_pct,
+            "spread_delta_pct": spread_pct,
+            "t_cp": round(t_cp, 4),
+            "t_open": t_open,
+            "t_close": t_close,
+            "t_vol": t_vol,
+            "t1_vol": t1_vol,
+            "t_spread": t_spread,
+            "t1_spread": t1_spread,
+            "latest_week": str(latest["YearWeek"]),
+            "prev_week": str(prev["YearWeek"]),
+        }
+
+    def get_monthly_age_again_details(self, symbol: str) -> Optional[Dict]:
+        """Extracts Monthly AgeAgain details by consolidating daily data into monthly candles."""
+        df = self._read_latest(const.MONTHLY_AGE_AGAIN_FILTER_DIR_NAME, symbol)
+        if df is None:
+            return None
+
+        monthly = MonthlyAgeAgainFilterService._consolidate_to_monthly(df)
+        if monthly is None or len(monthly) < 2:
+            return None
+
+        latest, prev = monthly.iloc[-1], monthly.iloc[-2]
+        t_vol = int(latest["Volume"])
+        t1_vol = int(prev["Volume"])
+        t_spread = float(latest["Spread"])
+        t1_spread = float(prev["Spread"])
+        t_open = float(latest["Open"])
+        t_close = float(latest["Close"])
+        t_cp = float(latest["Close_Position"])
+
+        if t1_vol <= 0 or t1_spread <= 0 or t_spread <= 0:
+            return None
+
+        if t_vol > t1_vol and t_spread < t1_spread:
+            scenario = "Vol_Surge_Spread_Contraction"
+            label = "Absorption Signal"
+            sentiment = "Bullish"
+        elif t_vol < t1_vol and t_spread > t1_spread:
+            scenario = "Vol_Drop_Spread_Expansion"
+            label = "Effort Without Result"
+            sentiment = "Bearish"
+        else:
+            return None
+
+        vol_pct = round(((t_vol - t1_vol) / max(t1_vol, 1)) * 100, 1)
+        spread_pct = round(((t_spread - t1_spread) / max(t1_spread, 0.01)) * 100, 1)
+
+        return {
+            "symbol": symbol,
+            "scenario": scenario,
+            "label": label,
+            "sentiment": sentiment,
+            "vol_delta_pct": vol_pct,
+            "spread_delta_pct": spread_pct,
+            "t_cp": round(t_cp, 4),
+            "t_open": t_open,
+            "t_close": t_close,
+            "t_vol": t_vol,
+            "t1_vol": t1_vol,
+            "t_spread": t_spread,
+            "t1_spread": t1_spread,
             "latest_month": str(latest["YearMonth"]),
             "prev_month": str(prev["YearMonth"]),
         }

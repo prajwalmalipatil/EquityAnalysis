@@ -80,3 +80,27 @@ def test_json_publisher_validation_blocker(clean_dirs):
     with patch("src.services.macro_intelligence.query_service.MacroQueryService.get_all_events", return_value=[invalid_event]):
         with pytest.raises(ValueError, match="Release Blocker: Mock ID found"):
             publisher.publish()
+
+
+def test_json_publisher_includes_age_again_filters(clean_dirs):
+    """Verify that published data.json includes age_again_filters with daily/weekly/monthly keys."""
+    output_dir = clean_dirs / "dashboard"
+    output_dir.mkdir(parents=True)
+    output_file = output_dir / "data.json"
+
+    publisher = JSONPublisher(clean_dirs, output_file)
+    publisher.publish()
+
+    assert output_file.exists()
+    with open(output_file, 'r') as f:
+        data = json.load(f)
+
+    assert "age_again_filters" in data
+    assert "daily" in data["age_again_filters"]
+    assert "weekly" in data["age_again_filters"]
+    assert "monthly" in data["age_again_filters"]
+
+    assert "volume_trap_filters" in data
+    assert "daily" in data["volume_trap_filters"]
+    assert "weekly" in data["volume_trap_filters"]
+    assert "monthly" in data["volume_trap_filters"]

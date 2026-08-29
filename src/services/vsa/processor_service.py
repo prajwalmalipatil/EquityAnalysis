@@ -50,6 +50,8 @@ class VSAProcessorService:
             const.EFFORTS_DIR_NAME,
             const.EIGEN_FILTER_DIR_NAME,
             const.AGE_AGAIN_FILTER_DIR_NAME,
+            const.WEEKLY_AGE_AGAIN_FILTER_DIR_NAME,
+            const.MONTHLY_AGE_AGAIN_FILTER_DIR_NAME,
             const.VOLUME_TRAP_FILTER_DIR_NAME,
             const.WEEKLY_VOLUME_TRAP_FILTER_DIR_NAME,
             const.MONTHLY_VOLUME_TRAP_FILTER_DIR_NAME,

@@ -5,14 +5,13 @@ Synthesizes Daily, Weekly, and Monthly EigenFilter signals into a single
 institutional-grade consensus rating using a 40/35/25 weighting model.
 """
 
-import shutil
 import pandas as pd
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Union, Any
 
 from src.constants import vsa_constants as const
 from src.models.consensus_models import ConsensusRating
-from src.models.vsa_models import EigenClassification, VolumeTrapClassification
+from src.models.vsa_models import EigenClassification, VolumeTrapClassification, AgeAgainClassification
 from src.utils.observability import get_tenant_logger
 
 logger = get_tenant_logger("consensus-engine-service")
@@ -34,7 +33,7 @@ def _score_sentiment(sentiment: str, weight: float) -> float:
 
 class ConsensusEngineService:
     """
-    Reads EigenFilter and VolumeTrap classifications across Daily, Weekly, and Monthly 
+    Reads EigenFilter, VolumeTrap, and AgeAgain classifications across Daily, Weekly, and Monthly 
     timeframes and computes a weighted consensus score and rating.
     """
 
@@ -51,8 +50,11 @@ class ConsensusEngineService:
         volume_trap_daily: Optional[List[VolumeTrapClassification]] = None,
         volume_trap_weekly: Optional[List[VolumeTrapClassification]] = None,
         volume_trap_monthly: Optional[List[VolumeTrapClassification]] = None,
+        age_again_daily: Optional[List[AgeAgainClassification]] = None,
+        age_again_weekly: Optional[List[AgeAgainClassification]] = None,
+        age_again_monthly: Optional[List[AgeAgainClassification]] = None,
     ) -> List[ConsensusRating]:
-        """Calculates ratings from Eigen + VolumeTrap signals and exports them."""
+        """Calculates ratings from Eigen + VolumeTrap + AgeAgain signals and exports them."""
         # 1. Gather all available signals
         symbols_data: Dict[str, Dict[str, str]] = {}
         
@@ -67,6 +69,14 @@ class ConsensusEngineService:
             self._populate_supplemental_signals(volume_trap_weekly, "weekly", symbols_data)
         if volume_trap_monthly:
             self._populate_supplemental_signals(volume_trap_monthly, "monthly", symbols_data)
+
+        # Merge AgeAgain as supplemental — fills gaps where neither Eigen nor VolumeTrap has a signal
+        if age_again_daily:
+            self._populate_supplemental_signals(age_again_daily, "daily", symbols_data)
+        if age_again_weekly:
+            self._populate_supplemental_signals(age_again_weekly, "weekly", symbols_data)
+        if age_again_monthly:
+            self._populate_supplemental_signals(age_again_monthly, "monthly", symbols_data)
         
         if not symbols_data:
             logger.info("No signals found across any timeframe to generate consensus.")
@@ -98,11 +108,11 @@ class ConsensusEngineService:
 
     def _populate_supplemental_signals(
         self,
-        results: List[VolumeTrapClassification],
+        results: Union[List[VolumeTrapClassification], List[AgeAgainClassification], List[Any]],
         timeframe: str,
         symbols_data: Dict[str, Dict[str, str]],
     ) -> None:
-        """Merges VolumeTrap signals as supplemental — only fills gaps where Eigen has no signal."""
+        """Merges supplemental signals — only fills gaps where no prior signal exists."""
         for r in results:
             if r.symbol not in symbols_data:
                 symbols_data[r.symbol] = {
@@ -110,7 +120,7 @@ class ConsensusEngineService:
                     "weekly": "None",
                     "monthly": "None",
                 }
-            # Only fill if Eigen didn't already provide a signal for this timeframe
+            # Only fill if prior filters didn't already provide a signal for this timeframe
             if symbols_data[r.symbol][timeframe] == "None":
                 symbols_data[r.symbol][timeframe] = r.sentiment
 
@@ -151,7 +161,7 @@ class ConsensusEngineService:
             star = 1
             label = "Strong Sell"
         else:
-            # Fallback
+            # Defensive: mathematically unreachable with current weights, but guards against future model changes
             star = 3
             label = "Mixed Trend"
 

@@ -75,6 +75,28 @@ class JSONPublisher:
             "monthly": monthly_vt
         }
 
+        # Gather age again details
+        daily_aa = []
+        for sym in symbol_data.get("age_again", []):
+            details = self.aggregator.get_age_again_details(sym)
+            if details: daily_aa.append(details)
+
+        weekly_aa = []
+        for sym in symbol_data.get("weekly_age_again", []):
+            details = self.aggregator.get_weekly_age_again_details(sym)
+            if details: weekly_aa.append(details)
+
+        monthly_aa = []
+        for sym in symbol_data.get("monthly_age_again", []):
+            details = self.aggregator.get_monthly_age_again_details(sym)
+            if details: monthly_aa.append(details)
+
+        age_again_filters = {
+            "daily": daily_aa,
+            "weekly": weekly_aa,
+            "monthly": monthly_aa
+        }
+
         # Gather ticker alerts
         ticker_alerts = []
         for sym in symbol_data.get("ticker", []):
@@ -146,6 +168,7 @@ class JSONPublisher:
             "consensus": consensus,
             "eigen_filters": eigen_filters,
             "volume_trap_filters": volume_trap_filters,
+            "age_again_filters": age_again_filters,
             "ticker_alerts": ticker_alerts,
             "macro_intelligence": macro_intelligence
         }

@@ -88,5 +88,37 @@ class TestConsensusEngine(unittest.TestCase):
         self.assertEqual(_score_sentiment("Neutral", 10.0), 0.0)
         self.assertEqual(_score_sentiment("None", 10.0), 0.0)
 
+    def test_age_again_supplemental_signal(self):
+        """Verify that AgeAgain acts as a supplemental signal when Eigen is missing."""
+        from src.models.vsa_models import AgeAgainClassification
+
+        service = ConsensusEngineService(self.test_dir)
+
+        # No Eigen signals for SYMBOL_AA
+        daily_eigen = []
+        weekly_eigen = []
+        monthly_eigen = []
+
+        aa_daily = [AgeAgainClassification(
+            symbol="SYMBOL_AA", scenario="Vol_Surge_Spread_Contraction",
+            label="Absorption Signal", sentiment="Bullish",
+            t_volume=2000, t1_volume=1000, volume_pct=100.0,
+            t_spread=10.0, t1_spread=20.0, spread_pct=-50.0,
+            t_close=110.0, t_open=100.0, t_close_position=0.8
+        )]
+
+        ratings = service.compute_consensus(
+            daily_eigen, weekly_eigen, monthly_eigen,
+            age_again_daily=aa_daily
+        )
+        self.assertEqual(len(ratings), 1)
+        r = ratings[0]
+        self.assertEqual(r.symbol, "SYMBOL_AA")
+        self.assertEqual(r.daily_sentiment, "Bullish")
+        self.assertEqual(r.daily_score, 25.0)
+        self.assertEqual(r.score_percentage, 25.0)
+        self.assertEqual(r.consensus_label, "Cautious Bullish")
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -92,6 +92,8 @@ class TestProcessorService(unittest.TestCase):
         from src.constants import vsa_constants as const
 
         self.assertEqual(const.AGE_AGAIN_FILTER_DIR_NAME, "AgeAgainFilter")
+        self.assertEqual(const.WEEKLY_AGE_AGAIN_FILTER_DIR_NAME, "WeeklyAgeAgainFilter")
+        self.assertEqual(const.MONTHLY_AGE_AGAIN_FILTER_DIR_NAME, "MonthlyAgeAgainFilter")
         self.assertEqual(const.VOLUME_TRAP_FILTER_DIR_NAME, "VolumeTrapFilter")
         self.assertEqual(const.WEEKLY_VOLUME_TRAP_FILTER_DIR_NAME, "WeeklyVolumeTrapFilter")
         self.assertEqual(const.MONTHLY_VOLUME_TRAP_FILTER_DIR_NAME, "MonthlyVolumeTrapFilter")
@@ -101,12 +103,20 @@ class TestProcessorService(unittest.TestCase):
             p = Path(tmpdir)
             (p / const.AGE_AGAIN_FILTER_DIR_NAME).mkdir()
             (p / const.AGE_AGAIN_FILTER_DIR_NAME / "TEST_VSA.xlsx").touch()
+            (p / const.WEEKLY_AGE_AGAIN_FILTER_DIR_NAME).mkdir()
+            (p / const.WEEKLY_AGE_AGAIN_FILTER_DIR_NAME / "TEST_VSA.xlsx").touch()
+            (p / const.MONTHLY_AGE_AGAIN_FILTER_DIR_NAME).mkdir()
+            (p / const.MONTHLY_AGE_AGAIN_FILTER_DIR_NAME / "TEST_VSA.xlsx").touch()
             (p / const.VOLUME_TRAP_FILTER_DIR_NAME).mkdir()
             (p / const.VOLUME_TRAP_FILTER_DIR_NAME / "TEST_VSA.xlsx").touch()
 
             age_again_files = list((p / const.AGE_AGAIN_FILTER_DIR_NAME).glob("*.xlsx"))
+            weekly_age_again_files = list((p / const.WEEKLY_AGE_AGAIN_FILTER_DIR_NAME).glob("*.xlsx"))
+            monthly_age_again_files = list((p / const.MONTHLY_AGE_AGAIN_FILTER_DIR_NAME).glob("*.xlsx"))
             volume_trap_files = list((p / const.VOLUME_TRAP_FILTER_DIR_NAME).glob("*.xlsx"))
             self.assertEqual(len(age_again_files), 1)
+            self.assertEqual(len(weekly_age_again_files), 1)
+            self.assertEqual(len(monthly_age_again_files), 1)
             self.assertEqual(len(volume_trap_files), 1)
 
 

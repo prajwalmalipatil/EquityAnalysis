@@ -16,9 +16,11 @@ from .age_again_filter_service import AgeAgainFilterService
 from .consensus_engine_service import ConsensusEngineService
 from .eigen_filter_service import EigenFilterService
 from .eigen_transition_engine_service import EigenTransitionEngineService
+from .monthly_age_again_filter_service import MonthlyAgeAgainFilterService
 from .monthly_eigen_filter_service import MonthlyEigenFilterService
 from .monthly_volume_trap_filter_service import MonthlyVolumeTrapFilterService
 from .volume_trap_filter_service import VolumeTrapFilterService
+from .weekly_age_again_filter_service import WeeklyAgeAgainFilterService
 from .weekly_eigen_filter_service import WeeklyEigenFilterService
 from .weekly_volume_trap_filter_service import WeeklyVolumeTrapFilterService
 
@@ -60,6 +62,22 @@ class VSAPatternRouter:
 
         age_again_results = AgeAgainFilterService(self.output_base).scan_and_classify()
         logger.info(f"POST_PROCESS: AgeAgain Classified {len(age_again_results)} symbols")
+
+        weekly_age_again_results = WeeklyAgeAgainFilterService(
+            self.output_base
+        ).consolidate_and_classify()
+        logger.info(
+            f"POST_PROCESS: WeeklyAgeAgainFilter Classified "
+            f"{len(weekly_age_again_results)} symbols"
+        )
+
+        monthly_age_again_results = MonthlyAgeAgainFilterService(
+            self.output_base
+        ).consolidate_and_classify()
+        logger.info(
+            f"POST_PROCESS: MonthlyAgeAgainFilter Classified "
+            f"{len(monthly_age_again_results)} symbols"
+        )
 
         monthly_eigen_results = MonthlyEigenFilterService(
             self.output_base
@@ -103,6 +121,9 @@ class VSAPatternRouter:
             volume_trap_daily=volume_trap_results,
             volume_trap_weekly=weekly_volume_trap_results,
             volume_trap_monthly=monthly_volume_trap_results,
+            age_again_daily=age_again_results,
+            age_again_weekly=weekly_age_again_results,
+            age_again_monthly=monthly_age_again_results,
         )
         logger.info(
             f"POST_PROCESS: ConsensusEngine Computed {len(consensus_results)} consensus ratings"
@@ -116,6 +137,9 @@ class VSAPatternRouter:
             "volume_trap": volume_trap_results,
             "weekly_volume_trap": weekly_volume_trap_results,
             "monthly_volume_trap": monthly_volume_trap_results,
+            "age_again": age_again_results,
+            "weekly_age_again": weekly_age_again_results,
+            "monthly_age_again": monthly_age_again_results,
         }
 
     def run_ete(

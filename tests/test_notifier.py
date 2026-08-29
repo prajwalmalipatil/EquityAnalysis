@@ -169,6 +169,60 @@ class TestNotifier(unittest.TestCase):
         text_multi = _format_volume_trap_email_text(multi_vt)
         self.assertIn("📅 Daily (2 stocks):", text_multi)
 
+    def test_age_again_formatting_html_and_text(self):
+        """Verify AgeAgain structural anomaly HTML and text generation."""
+        from main_notifier import _format_age_again_email_html, _format_age_again_email_text
+
+        mock_aa = {
+            "daily": [
+                {"symbol": "INFY", "sentiment": "Bullish", "label": "Absorption Signal", "vol_delta_pct": 80.5, "spread_delta_pct": -30.2, "t_cp": 0.85},
+            ],
+            "weekly": [
+                {"symbol": "HDFC", "sentiment": "Bearish", "label": "Effort Without Result", "vol_delta_pct": -40.0, "spread_delta_pct": 65.0, "t_cp": 0.20},
+            ],
+            "monthly": []
+        }
+
+        html = _format_age_again_email_html(mock_aa)
+        text = _format_age_again_email_text(mock_aa)
+
+        # HTML assertions
+        self.assertIn("AgeAgain Structural Anomaly Insights", html)
+        self.assertIn("2</strong> stocks detected across timeframes", html)
+        self.assertIn("▲ Absorption: 1", html)
+        self.assertIn("▼ Effort w/o Result: 1", html)
+        self.assertIn("INFY", html)
+        self.assertIn("HDFC", html)
+        self.assertIn("+80.5%", html)
+        self.assertIn("+65.0%", html)
+
+        # Text assertions
+        self.assertIn("AgeAgain Structural Anomaly Insights: 2 stocks detected", text)
+        self.assertIn("INFY", text)
+        self.assertIn("HDFC", text)
+        self.assertIn("+80.5%", text)
+
+    def test_age_again_empty_filters(self):
+        """Verify AgeAgain returns empty string when no stocks qualify."""
+        from main_notifier import _format_age_again_email_html, _format_age_again_email_text
+
+        empty_aa = {"daily": [], "weekly": [], "monthly": []}
+        self.assertEqual(_format_age_again_email_html(empty_aa), "")
+        self.assertEqual(_format_age_again_email_text(empty_aa), "")
+
+    def test_age_again_text_singular_plural_formatting(self):
+        """Verify singular '1 stock' vs plural 'N stocks' formatting for AgeAgain."""
+        from main_notifier import _format_age_again_email_text
+
+        single_aa = {
+            "daily": [{"symbol": "INFY", "sentiment": "Bullish", "vol_delta_pct": 50.0, "spread_delta_pct": -20.0, "t_cp": 0.7}],
+            "weekly": [],
+            "monthly": []
+        }
+        text_single = _format_age_again_email_text(single_aa)
+        self.assertIn("📅 Daily (1 stock):", text_single)
+        self.assertNotIn("📅 Daily (1 stocks):", text_single)
+
 
 if __name__ == "__main__":
     unittest.main()
