@@ -398,5 +398,10 @@
     "date": "2026-10-01",
     "events": 89,
     "business_score": 0.0
+  },
+  {
+    "date": "2026-10-02",
+    "events": 89,
+    "business_score": 0.0
   }
 ]
