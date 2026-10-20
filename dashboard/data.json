@@ -1,6 +1,6 @@
 {
   "schema_version": "2",
-  "generated_at": "2026-10-19T17:52:36.634699Z",
+  "generated_at": "2026-10-20T16:01:08.705344Z",
   "extraction_list": [
     "360ONE",
     "ABB",
@@ -454,10 +454,10 @@
   "anomaly_list": [
     "SBILIFE",
     "ASIANPAINT",
-    "NIFTYBANK",
     "OFSS",
     "IRCTC",
     "BAJAJFINSV",
+    "NIFTY50",
     "CUMMINSIND",
     "INDHOTEL",
     "EXIDEIND",
@@ -477,7 +477,6 @@
     "ICICIPRULI",
     "PERSISTENT",
     "VBL",
-    "NIFTYMIDCAP50",
     "MPHASIS",
     "DIXON",
     "BHARTIARTL",
@@ -489,6 +488,7 @@
     "COALINDIA",
     "MOTHERSON",
     "DMART",
+    "NIFTYBANK",
     "UNITDSPR",
     "NTPC",
     "POLYCAB",
@@ -499,6 +499,7 @@
     "OBEROIRLTY",
     "SOLARINDS",
     "BAJAJFINSV",
+    "NIFTY50",
     "LICI",
     "HCLTECH",
     "RECLTD",
@@ -559,16 +560,16 @@
     "extraction_count": 208,
     "vsa": 208,
     "trending": 28,
-    "anomaly": 30,
+    "anomaly": 29,
     "ticker": 33,
-    "triggers": 70,
-    "eigen_filter": 21,
+    "triggers": 72,
+    "eigen_filter": 20,
     "monthly_eigen": 39,
     "weekly_eigen": 30,
     "volume_trap": 8,
     "weekly_volume_trap": 23,
     "monthly_volume_trap": 9,
-    "age_again": 85,
+    "age_again": 86,
     "weekly_age_again": 69,
     "monthly_age_again": 93
   },
@@ -583,7 +584,7 @@
       "label": "Strong Buy"
     },
     {
-      "symbol": "COFORGE",
+      "symbol": "SBILIFE",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "None",
@@ -592,7 +593,16 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "SBILIFE",
+      "symbol": "ADANIPORTS",
+      "monthly_sentiment": "Bullish",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "None",
+      "score_pct": 75,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "COFORGE",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "None",
@@ -619,11 +629,11 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "ADANIPORTS",
+      "symbol": "RECLTD",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "Bullish",
-      "daily_sentiment": "None",
-      "score_pct": 75,
+      "daily_sentiment": "Bearish",
+      "score_pct": 50,
       "stars": 4,
       "label": "Cautious Bullish"
     },
@@ -646,7 +656,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "RECLTD",
+      "symbol": "MARICO",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "Bearish",
@@ -664,34 +674,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "MARICO",
-      "monthly_sentiment": "Bullish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "Bearish",
-      "score_pct": 50,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "BAJFINANCE",
-      "monthly_sentiment": "Bullish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": 40,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "RVNL",
-      "monthly_sentiment": "Bullish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": 40,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "BSE",
+      "symbol": "PFC",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "None",
       "daily_sentiment": "None",
@@ -709,6 +692,33 @@
       "label": "Cautious Bullish"
     },
     {
+      "symbol": "INDIGO",
+      "monthly_sentiment": "Bullish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": 40,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "BAJFINANCE",
+      "monthly_sentiment": "Bullish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": 40,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "BSE",
+      "monthly_sentiment": "Bullish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": 40,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
       "symbol": "BLUESTARCO",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "None",
@@ -718,7 +728,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "INDIGO",
+      "symbol": "RVNL",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "None",
       "daily_sentiment": "None",
@@ -736,11 +746,20 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "PFC",
-      "monthly_sentiment": "Bullish",
-      "weekly_sentiment": "None",
+      "symbol": "TATACHEM",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bullish",
       "daily_sentiment": "None",
-      "score_pct": 40,
+      "score_pct": 35,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "CROMPTON",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "None",
+      "score_pct": 35,
       "stars": 4,
       "label": "Cautious Bullish"
     },
@@ -754,25 +773,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "HINDALCO",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "None",
-      "score_pct": 35,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
       "symbol": "GAIL",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "None",
-      "score_pct": 35,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "SAMMAANCAP",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "None",
@@ -799,7 +800,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "CROMPTON",
+      "symbol": "SAMMAANCAP",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "None",
@@ -808,7 +809,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "TATACHEM",
+      "symbol": "HINDALCO",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "None",
@@ -835,7 +836,7 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "KFINTECH",
+      "symbol": "UNIONBANK",
       "monthly_sentiment": "Bearish",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "Bullish",
@@ -853,11 +854,29 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "UNIONBANK",
+      "symbol": "KFINTECH",
       "monthly_sentiment": "Bearish",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "Bullish",
       "score_pct": 20,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "ALKEM",
+      "monthly_sentiment": "Bullish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": 15,
+      "stars": 4,
+      "label": "Cautious Bullish"
+    },
+    {
+      "symbol": "VBL",
+      "monthly_sentiment": "Bullish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": 15,
       "stars": 4,
       "label": "Cautious Bullish"
     },
@@ -880,60 +899,6 @@
       "label": "Cautious Bullish"
     },
     {
-      "symbol": "VBL",
-      "monthly_sentiment": "Bullish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": 15,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "ALKEM",
-      "monthly_sentiment": "Bullish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": 15,
-      "stars": 4,
-      "label": "Cautious Bullish"
-    },
-    {
-      "symbol": "AXISBANK",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "Bearish",
-      "score_pct": 10,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
-      "symbol": "MANKIND",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "Bearish",
-      "score_pct": 10,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
-      "symbol": "HEROMOTOCO",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "Bearish",
-      "score_pct": 10,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
-      "symbol": "DIVISLAB",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "Bearish",
-      "score_pct": 10,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
       "symbol": "RELIANCE",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bullish",
@@ -943,43 +908,7 @@
       "label": "Mixed Trend"
     },
     {
-      "symbol": "HCLTECH",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "Bearish",
-      "score_pct": 10,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
-      "symbol": "NTPC",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "Bearish",
-      "score_pct": 10,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
-      "symbol": "OBEROIRLTY",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "Bearish",
-      "score_pct": 10,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
-      "symbol": "LICI",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "Bearish",
-      "score_pct": 10,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
-      "symbol": "BHARTIARTL",
+      "symbol": "DIVISLAB",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "Bearish",
@@ -1006,7 +935,34 @@
       "label": "Mixed Trend"
     },
     {
+      "symbol": "AXISBANK",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "Bearish",
+      "score_pct": 10,
+      "stars": 3,
+      "label": "Mixed Trend"
+    },
+    {
       "symbol": "GRASIM",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "Bearish",
+      "score_pct": 10,
+      "stars": 3,
+      "label": "Mixed Trend"
+    },
+    {
+      "symbol": "HEROMOTOCO",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "Bearish",
+      "score_pct": 10,
+      "stars": 3,
+      "label": "Mixed Trend"
+    },
+    {
+      "symbol": "HCLTECH",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "Bearish",
@@ -1024,7 +980,52 @@
       "label": "Mixed Trend"
     },
     {
-      "symbol": "UPL",
+      "symbol": "BHARTIARTL",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "Bearish",
+      "score_pct": 10,
+      "stars": 3,
+      "label": "Mixed Trend"
+    },
+    {
+      "symbol": "LICI",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "Bearish",
+      "score_pct": 10,
+      "stars": 3,
+      "label": "Mixed Trend"
+    },
+    {
+      "symbol": "NTPC",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "Bearish",
+      "score_pct": 10,
+      "stars": 3,
+      "label": "Mixed Trend"
+    },
+    {
+      "symbol": "OBEROIRLTY",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "Bearish",
+      "score_pct": 10,
+      "stars": 3,
+      "label": "Mixed Trend"
+    },
+    {
+      "symbol": "MANKIND",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "Bearish",
+      "score_pct": 10,
+      "stars": 3,
+      "label": "Mixed Trend"
+    },
+    {
+      "symbol": "NHPC",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "Bearish",
       "daily_sentiment": "None",
@@ -1033,7 +1034,7 @@
       "label": "Mixed Trend"
     },
     {
-      "symbol": "NHPC",
+      "symbol": "UPL",
       "monthly_sentiment": "Bullish",
       "weekly_sentiment": "Bearish",
       "daily_sentiment": "None",
@@ -1060,88 +1061,7 @@
       "label": "Mixed Trend"
     },
     {
-      "symbol": "SUPREMEIND",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "None",
-      "score_pct": -5,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
-      "symbol": "ASIANPAINT",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "None",
-      "score_pct": -5,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
-      "symbol": "INDHOTEL",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "None",
-      "score_pct": -5,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
       "symbol": "CGPOWER",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "None",
-      "score_pct": -5,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
-      "symbol": "KPITTECH",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "None",
-      "score_pct": -5,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
-      "symbol": "SYNGENE",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "None",
-      "score_pct": -5,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
-      "symbol": "SBIN",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "None",
-      "score_pct": -5,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
-      "symbol": "INFY",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "None",
-      "score_pct": -5,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
-      "symbol": "HAVELLS",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "None",
-      "score_pct": -5,
-      "stars": 3,
-      "label": "Mixed Trend"
-    },
-    {
-      "symbol": "TATASTEEL",
       "monthly_sentiment": "Bearish",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "None",
@@ -1160,6 +1080,87 @@
     },
     {
       "symbol": "TCS",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "None",
+      "score_pct": -5,
+      "stars": 3,
+      "label": "Mixed Trend"
+    },
+    {
+      "symbol": "TATASTEEL",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "None",
+      "score_pct": -5,
+      "stars": 3,
+      "label": "Mixed Trend"
+    },
+    {
+      "symbol": "SYNGENE",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "None",
+      "score_pct": -5,
+      "stars": 3,
+      "label": "Mixed Trend"
+    },
+    {
+      "symbol": "SUPREMEIND",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "None",
+      "score_pct": -5,
+      "stars": 3,
+      "label": "Mixed Trend"
+    },
+    {
+      "symbol": "ASIANPAINT",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "None",
+      "score_pct": -5,
+      "stars": 3,
+      "label": "Mixed Trend"
+    },
+    {
+      "symbol": "HAVELLS",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "None",
+      "score_pct": -5,
+      "stars": 3,
+      "label": "Mixed Trend"
+    },
+    {
+      "symbol": "INDHOTEL",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "None",
+      "score_pct": -5,
+      "stars": 3,
+      "label": "Mixed Trend"
+    },
+    {
+      "symbol": "INFY",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "None",
+      "score_pct": -5,
+      "stars": 3,
+      "label": "Mixed Trend"
+    },
+    {
+      "symbol": "KPITTECH",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "None",
+      "score_pct": -5,
+      "stars": 3,
+      "label": "Mixed Trend"
+    },
+    {
+      "symbol": "SBIN",
       "monthly_sentiment": "Bearish",
       "weekly_sentiment": "Bullish",
       "daily_sentiment": "None",
@@ -1204,79 +1205,16 @@
       "label": "Cautious Bearish"
     },
     {
+      "symbol": "PNBHOUSING",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
       "symbol": "BHEL",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "NBCC",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "ABCAPITAL",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "PAGEIND",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "PHOENIXLTD",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "ICICIGI",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "MUTHOOTFIN",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "NCC",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "KALYANKJIL",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bearish",
@@ -1294,70 +1232,34 @@
       "label": "Cautious Bearish"
     },
     {
+      "symbol": "PATANJALI",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "PHOENIXLTD",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "TRENT",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
       "symbol": "LUPIN",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "PRESTIGE",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "SOLARINDS",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "UNITDSPR",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "VEDL",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "PNBHOUSING",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "GMRAIRPORT",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -25,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "PAYTM",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bearish",
@@ -1375,7 +1277,7 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "PATANJALI",
+      "symbol": "VEDL",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bearish",
@@ -1384,11 +1286,164 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "TRENT",
+      "symbol": "UNITDSPR",
       "monthly_sentiment": "None",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bearish",
       "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "SOLARINDS",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "PRESTIGE",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "ICICIGI",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "NCC",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "ABCAPITAL",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "GMRAIRPORT",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "MUTHOOTFIN",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "KALYANKJIL",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "NBCC",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "PAGEIND",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "PAYTM",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -25,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "CAMS",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "Bearish",
+      "score_pct": -30,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "BAJAJFINSV",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "Bearish",
+      "score_pct": -30,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "SUNPHARMA",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "Bearish",
+      "score_pct": -30,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "SUZLON",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "Bearish",
+      "score_pct": -30,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "ASHOKLEY",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "Bearish",
+      "score_pct": -30,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "HAL",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bullish",
+      "daily_sentiment": "Bearish",
+      "score_pct": -30,
       "stars": 2,
       "label": "Cautious Bearish"
     },
@@ -1411,15 +1466,6 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "CAMS",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "Bearish",
-      "score_pct": -30,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
       "symbol": "MAXHEALTH",
       "monthly_sentiment": "Bearish",
       "weekly_sentiment": "Bullish",
@@ -1429,61 +1475,7 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "ASHOKLEY",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "Bearish",
-      "score_pct": -30,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "BAJAJFINSV",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "Bearish",
-      "score_pct": -30,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "SUZLON",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "Bearish",
-      "score_pct": -30,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "SUNPHARMA",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "Bearish",
-      "score_pct": -30,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "HAL",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bullish",
-      "daily_sentiment": "Bearish",
-      "score_pct": -30,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "ULTRACEMCO",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bearish",
-      "daily_sentiment": "None",
-      "score_pct": -35,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "NYKAA",
+      "symbol": "MCX",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bearish",
       "daily_sentiment": "None",
@@ -1501,6 +1493,24 @@
       "label": "Cautious Bearish"
     },
     {
+      "symbol": "NYKAA",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bearish",
+      "daily_sentiment": "None",
+      "score_pct": -35,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "ULTRACEMCO",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bearish",
+      "daily_sentiment": "None",
+      "score_pct": -35,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
       "symbol": "CUMMINSIND",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bearish",
@@ -1510,277 +1520,7 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "MCX",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bearish",
-      "daily_sentiment": "None",
-      "score_pct": -35,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "TITAN",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "ADANIENT",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "BPCL",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "ASTRAL",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "LICHSGFIN",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "BRITANNIA",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "DLF",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "WIPRO",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "FEDERALBNK",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
       "symbol": "HDFCLIFE",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "LAURUSLABS",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "LTIM",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "JINDALSTEL",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "INDIANB",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "IGL",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "HDFCAMC",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "COLPAL",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "DALBHARAT",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "DELHIVERY",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "DIXON",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "FORTIS",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "SBICARD",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "TATACONSUM",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "TECHM",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "MARUTI",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "KEI",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "MPHASIS",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "MFSL",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "OFSS",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "None",
-      "score_pct": -40,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "NIFTYBANK",
       "monthly_sentiment": "Bearish",
       "weekly_sentiment": "None",
       "daily_sentiment": "None",
@@ -1807,6 +1547,159 @@
       "label": "Cautious Bearish"
     },
     {
+      "symbol": "DELHIVERY",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "BPCL",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "DALBHARAT",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "FEDERALBNK",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "BRITANNIA",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "DLF",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "COLPAL",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "ASTRAL",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "ADANIENT",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "MARUTI",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "TITAN",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "LAURUSLABS",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "INDIANB",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "TECHM",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "TATACONSUM",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "SBICARD",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "LICHSGFIN",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
       "symbol": "NESTLEIND",
       "monthly_sentiment": "Bearish",
       "weekly_sentiment": "None",
@@ -1816,11 +1709,101 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "BANKINDIA",
+      "symbol": "LTIM",
       "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bearish",
-      "daily_sentiment": "Bullish",
-      "score_pct": -50,
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "WIPRO",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "JINDALSTEL",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "KEI",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "IGL",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "HDFCAMC",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "MFSL",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "OFSS",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "MPHASIS",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "FORTIS",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "DIXON",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "None",
+      "score_pct": -40,
       "stars": 2,
       "label": "Cautious Bearish"
     },
@@ -1834,7 +1817,7 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "NIFTY50",
+      "symbol": "BANKINDIA",
       "monthly_sentiment": "Bearish",
       "weekly_sentiment": "Bearish",
       "daily_sentiment": "Bullish",
@@ -1844,24 +1827,6 @@
     },
     {
       "symbol": "AUROPHARMA",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bearish",
-      "daily_sentiment": "Bearish",
-      "score_pct": -60,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "IRCTC",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bearish",
-      "daily_sentiment": "Bearish",
-      "score_pct": -60,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "IEX",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bearish",
       "daily_sentiment": "Bearish",
@@ -1888,15 +1853,6 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "MOTHERSON",
-      "monthly_sentiment": "None",
-      "weekly_sentiment": "Bearish",
-      "daily_sentiment": "Bearish",
-      "score_pct": -60,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
       "symbol": "HFCL",
       "monthly_sentiment": "None",
       "weekly_sentiment": "Bearish",
@@ -1906,115 +1862,34 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "UNOMINDA",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
+      "symbol": "IRCTC",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bearish",
       "daily_sentiment": "Bearish",
-      "score_pct": -65,
+      "score_pct": -60,
       "stars": 2,
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "PGEL",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
+      "symbol": "MOTHERSON",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bearish",
       "daily_sentiment": "Bearish",
-      "score_pct": -65,
+      "score_pct": -60,
       "stars": 2,
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "APOLLOHOSP",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
+      "symbol": "IEX",
+      "monthly_sentiment": "None",
+      "weekly_sentiment": "Bearish",
       "daily_sentiment": "Bearish",
-      "score_pct": -65,
+      "score_pct": -60,
       "stars": 2,
       "label": "Cautious Bearish"
     },
     {
       "symbol": "ETERNAL",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -65,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "IDFCFIRSTB",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -65,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "PERSISTENT",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -65,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "NMDC",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -65,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "NAUKRI",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -65,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "YESBANK",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -65,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "TORNTPOWER",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -65,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "AMBER",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -65,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "BEL",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -65,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "CANBK",
       "monthly_sentiment": "Bearish",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bearish",
@@ -2032,7 +1907,7 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "TATATECH",
+      "symbol": "PGEL",
       "monthly_sentiment": "Bearish",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bearish",
@@ -2041,25 +1916,7 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "POLYCAB",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -65,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "SRF",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "None",
-      "daily_sentiment": "Bearish",
-      "score_pct": -65,
-      "stars": 2,
-      "label": "Cautious Bearish"
-    },
-    {
-      "symbol": "PIDILITIND",
+      "symbol": "IDFCFIRSTB",
       "monthly_sentiment": "Bearish",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bearish",
@@ -2077,7 +1934,88 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "TVSMOTOR",
+      "symbol": "NAUKRI",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -65,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "PIDILITIND",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -65,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "NIFTYBANK",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -65,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "BEL",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -65,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "POLYCAB",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -65,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "APOLLOHOSP",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -65,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "NMDC",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -65,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "AMBER",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -65,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "PERSISTENT",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -65,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "YESBANK",
       "monthly_sentiment": "Bearish",
       "weekly_sentiment": "None",
       "daily_sentiment": "Bearish",
@@ -2095,38 +2033,56 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "BAJAJ-AUTO",
+      "symbol": "SRF",
       "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bearish",
-      "daily_sentiment": "None",
-      "score_pct": -75,
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -65,
       "stars": 2,
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "CONCOR",
+      "symbol": "TATATECH",
       "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bearish",
-      "daily_sentiment": "None",
-      "score_pct": -75,
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -65,
       "stars": 2,
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "CDSL",
+      "symbol": "UNOMINDA",
       "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bearish",
-      "daily_sentiment": "None",
-      "score_pct": -75,
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -65,
       "stars": 2,
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "ICICIBANK",
+      "symbol": "TORNTPOWER",
       "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bearish",
-      "daily_sentiment": "None",
-      "score_pct": -75,
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -65,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "TVSMOTOR",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -65,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "CANBK",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "None",
+      "daily_sentiment": "Bearish",
+      "score_pct": -65,
       "stars": 2,
       "label": "Cautious Bearish"
     },
@@ -2149,43 +2105,43 @@
       "label": "Cautious Bearish"
     },
     {
-      "symbol": "BANKBARODA",
+      "symbol": "CONCOR",
       "monthly_sentiment": "Bearish",
       "weekly_sentiment": "Bearish",
-      "daily_sentiment": "Bearish",
-      "score_pct": -100,
-      "stars": 1,
-      "label": "Strong Sell"
+      "daily_sentiment": "None",
+      "score_pct": -75,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "ICICIBANK",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bearish",
+      "daily_sentiment": "None",
+      "score_pct": -75,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "BAJAJ-AUTO",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bearish",
+      "daily_sentiment": "None",
+      "score_pct": -75,
+      "stars": 2,
+      "label": "Cautious Bearish"
+    },
+    {
+      "symbol": "CDSL",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bearish",
+      "daily_sentiment": "None",
+      "score_pct": -75,
+      "stars": 2,
+      "label": "Cautious Bearish"
     },
     {
       "symbol": "MANAPPURAM",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bearish",
-      "daily_sentiment": "Bearish",
-      "score_pct": -100,
-      "stars": 1,
-      "label": "Strong Sell"
-    },
-    {
-      "symbol": "ONGC",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bearish",
-      "daily_sentiment": "Bearish",
-      "score_pct": -100,
-      "stars": 1,
-      "label": "Strong Sell"
-    },
-    {
-      "symbol": "ZYDUSLIFE",
-      "monthly_sentiment": "Bearish",
-      "weekly_sentiment": "Bearish",
-      "daily_sentiment": "Bearish",
-      "score_pct": -100,
-      "stars": 1,
-      "label": "Strong Sell"
-    },
-    {
-      "symbol": "TIINDIA",
       "monthly_sentiment": "Bearish",
       "weekly_sentiment": "Bearish",
       "daily_sentiment": "Bearish",
@@ -2203,7 +2159,52 @@
       "label": "Strong Sell"
     },
     {
+      "symbol": "NIFTY50",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bearish",
+      "daily_sentiment": "Bearish",
+      "score_pct": -100,
+      "stars": 1,
+      "label": "Strong Sell"
+    },
+    {
+      "symbol": "ONGC",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bearish",
+      "daily_sentiment": "Bearish",
+      "score_pct": -100,
+      "stars": 1,
+      "label": "Strong Sell"
+    },
+    {
+      "symbol": "TIINDIA",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bearish",
+      "daily_sentiment": "Bearish",
+      "score_pct": -100,
+      "stars": 1,
+      "label": "Strong Sell"
+    },
+    {
       "symbol": "SHRIRAMFIN",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bearish",
+      "daily_sentiment": "Bearish",
+      "score_pct": -100,
+      "stars": 1,
+      "label": "Strong Sell"
+    },
+    {
+      "symbol": "BANKBARODA",
+      "monthly_sentiment": "Bearish",
+      "weekly_sentiment": "Bearish",
+      "daily_sentiment": "Bearish",
+      "score_pct": -100,
+      "stars": 1,
+      "label": "Strong Sell"
+    },
+    {
+      "symbol": "ZYDUSLIFE",
       "monthly_sentiment": "Bearish",
       "weekly_sentiment": "Bearish",
       "daily_sentiment": "Bearish",
@@ -2245,22 +2246,6 @@
         "vol_delta_pct": 21.7,
         "t_vol": 11815153,
         "t1_vol": 9709322
-      },
-      {
-        "symbol": "NIFTY50",
-        "gap_dir": "Gap-Up",
-        "close_band": "Strong",
-        "label": "Bullish Impulse Convergence",
-        "sentiment": "Bullish",
-        "t_open": 23065.099609375,
-        "t_close": 23146.150390625,
-        "t_spread": 236.048828125,
-        "t_cp": 0.9843,
-        "t1_cp": 0.8591,
-        "delta_cp": 0.1253,
-        "vol_delta_pct": 5.6,
-        "t_vol": 391600,
-        "t1_vol": 370800
       },
       {
         "symbol": "SONACOMS",
@@ -4548,6 +4533,21 @@
         "t1_spread": 52.80000000000018
       },
       {
+        "symbol": "NIFTYBANK",
+        "scenario": "Vol_Drop_Spread_Expansion",
+        "label": "Effort Without Result",
+        "sentiment": "Bearish",
+        "vol_delta_pct": -8.7,
+        "spread_delta_pct": 19.3,
+        "t_cp": 0.2841,
+        "t_open": 55827.44921875,
+        "t_close": 55488.1015625,
+        "t_vol": 522400,
+        "t1_vol": 572300,
+        "t_spread": 552.59765625,
+        "t1_spread": 463.25
+      },
+      {
         "symbol": "UNITDSPR",
         "scenario": "Vol_Drop_Spread_Expansion",
         "label": "Effort Without Result",
@@ -4699,18 +4699,18 @@
       },
       {
         "symbol": "NIFTY50",
-        "scenario": "Vol_Surge_Spread_Contraction",
-        "label": "Absorption Signal",
-        "sentiment": "Bullish",
-        "vol_delta_pct": 5.6,
-        "spread_delta_pct": -43.7,
-        "t_cp": 0.9843,
-        "t_open": 23065.099609375,
-        "t_close": 23146.150390625,
-        "t_vol": 391600,
-        "t1_vol": 370800,
-        "t_spread": 236.048828125,
-        "t1_spread": 419.0
+        "scenario": "Vol_Drop_Spread_Expansion",
+        "label": "Effort Without Result",
+        "sentiment": "Bearish",
+        "vol_delta_pct": -27.0,
+        "spread_delta_pct": 39.9,
+        "t_cp": 0.1331,
+        "t_open": 23150.849609375,
+        "t_close": 22888.94921875,
+        "t_vol": 285800,
+        "t1_vol": 391600,
+        "t_spread": 330.25,
+        "t1_spread": 236.048828125
       },
       {
         "symbol": "LICI",
@@ -5407,15 +5407,15 @@
         "scenario": "Vol_Drop_Spread_Expansion",
         "label": "Effort Without Result",
         "sentiment": "Bearish",
-        "vol_delta_pct": -34.5,
-        "spread_delta_pct": 3.4,
-        "t_cp": 0.7251,
-        "t_open": 16960.80078125,
-        "t_close": 16946.30078125,
-        "t_vol": 613800,
-        "t1_vol": 937700,
-        "t_spread": 172.3984375,
-        "t1_spread": 166.701171875
+        "vol_delta_pct": -32.3,
+        "spread_delta_pct": 40.3,
+        "t_cp": 0.1666,
+        "t_open": 16927.5,
+        "t_close": 16767.849609375,
+        "t_vol": 415400,
+        "t1_vol": 613800,
+        "t_spread": 241.8984375,
+        "t1_spread": 172.3984375
       },
       {
         "symbol": "AUROPHARMA",
