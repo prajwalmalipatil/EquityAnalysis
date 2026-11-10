@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "generated_at": "2026-11-06T18:30:02.608853+00:00",
+  "generated_at": "2026-11-09T21:46:12.080818+00:00",
   "generator": "Macro Intelligence Pipeline",
   "pipeline_version": "2.1.0",
   "repository_version": "v1",
@@ -39,14 +39,14 @@
     }
   },
   "engine_version": "1.0",
-  "research_events": 34754,
-  "active_sequences": 126,
-  "completed_sequences": 499,
-  "failed_sequences": 11974,
-  "last_market_date": "2026-11-06",
+  "research_events": 35009,
+  "active_sequences": 229,
+  "completed_sequences": 504,
+  "failed_sequences": 12019,
+  "last_market_date": "2026-11-09",
   "files": {
-    "summary": "summary.e87f1c.json",
+    "summary": "summary.19a35d.json",
     "indicator_catalog": "indicator_catalog.89447c.json",
-    "history_index": "history_index.dcfd58.json"
+    "history_index": "history_index.98f03d.json"
   }
 }
