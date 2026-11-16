@@ -89,6 +89,31 @@ class AgeAgainClassification:
 
 
 @dataclass
+class GapMomentumClassification:
+    """Classifies a volume + spread expansion day that confirms its opening gap.
+
+    T expands on both volume and spread versus T-1, opens beyond the T-1 close
+    and closes further in the gap direction (green after gap-up, red after gap-down).
+    """
+    symbol: str
+    scenario: str        # "Gap_Up_Green_Close" or "Gap_Down_Red_Close"
+    label: str           # Human-readable scenario name
+    sentiment: str       # "Bullish" or "Bearish"
+    signal_date: str     # Trading day T (YYYY-MM-DD), "" if unknown
+    t_open: float
+    t_close: float
+    t1_close: float
+    gap_pct: float       # (T_open - T1_close) / T1_close * 100
+    change_pct: float    # (T_close - T1_close) / T1_close * 100
+    t_volume: int
+    t1_volume: int
+    volume_pct: float    # (T_vol - T1_vol) / T1_vol * 100
+    t_spread: float
+    t1_spread: float
+    spread_pct: float    # (T_spread - T1_spread) / T1_spread * 100
+
+
+@dataclass
 class VolumeTrapClassification:
     """Classifies a stock's volume-trap stall pattern (Volume Trap Filter).
 

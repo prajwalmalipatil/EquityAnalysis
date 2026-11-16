@@ -97,6 +97,14 @@ class JSONPublisher:
             "monthly": monthly_aa
         }
 
+        # Gather gap momentum details (daily timeframe only)
+        daily_gm = []
+        for sym in symbol_data.get("gap_momentum", []):
+            details = self.aggregator.get_gap_momentum_details(sym)
+            if details: daily_gm.append(details)
+
+        gap_momentum_filters = {"daily": daily_gm}
+
         # Gather ticker alerts
         ticker_alerts = []
         for sym in symbol_data.get("ticker", []):
@@ -169,6 +177,7 @@ class JSONPublisher:
             "eigen_filters": eigen_filters,
             "volume_trap_filters": volume_trap_filters,
             "age_again_filters": age_again_filters,
+            "gap_momentum_filters": gap_momentum_filters,
             "ticker_alerts": ticker_alerts,
             "macro_intelligence": macro_intelligence
         }

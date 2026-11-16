@@ -8,6 +8,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import List, Dict, Optional
 from src.constants import vsa_constants as const
+from src.services.vsa.gap_momentum_filter_service import GapMomentumFilterService
 from src.services.vsa.monthly_age_again_filter_service import MonthlyAgeAgainFilterService
 from src.services.vsa.monthly_eigen_filter_service import MonthlyEigenFilterService
 from src.services.vsa.monthly_volume_trap_filter_service import MonthlyVolumeTrapFilterService
@@ -45,6 +46,7 @@ class DataAggregator:
             "age_again": self._count_files(const.AGE_AGAIN_FILTER_DIR_NAME),
             "weekly_age_again": self._count_files(const.WEEKLY_AGE_AGAIN_FILTER_DIR_NAME),
             "monthly_age_again": self._count_files(const.MONTHLY_AGE_AGAIN_FILTER_DIR_NAME),
+            "gap_momentum": self._count_files(const.GAP_MOMENTUM_FILTER_DIR_NAME),
         }
 
     def get_symbol_lists(self) -> Dict[str, List[str]]:
@@ -65,6 +67,7 @@ class DataAggregator:
             "age_again": self._get_symbols(const.AGE_AGAIN_FILTER_DIR_NAME),
             "weekly_age_again": self._get_symbols(const.WEEKLY_AGE_AGAIN_FILTER_DIR_NAME),
             "monthly_age_again": self._get_symbols(const.MONTHLY_AGE_AGAIN_FILTER_DIR_NAME),
+            "gap_momentum": self._get_symbols(const.GAP_MOMENTUM_FILTER_DIR_NAME),
         }
 
     def get_ticker_details(self, symbol: str) -> Optional[Dict]:
@@ -455,6 +458,17 @@ class DataAggregator:
             "latest_month": str(latest["YearMonth"]),
             "prev_month": str(prev["YearMonth"]),
         }
+
+    def get_gap_momentum_details(self, symbol: str) -> Optional[Dict]:
+        """Extracts Gap Momentum (volume + spread expansion with confirmed gap) details."""
+        df = self._read_latest(const.GAP_MOMENTUM_FILTER_DIR_NAME, symbol)
+        if df is None:
+            return None
+
+        classification = GapMomentumFilterService.classify_frame(symbol, df)
+        if classification is None:
+            return None
+        return GapMomentumFilterService.to_details(classification)
 
     def get_age_again_details(self, symbol: str) -> Optional[Dict]:
         """Extracts daily AgeAgain classification details from a processed Excel file."""
