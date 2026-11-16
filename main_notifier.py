@@ -2,8 +2,9 @@
 main_notifier.py
 Sends the daily Gap Momentum Analysis email.
 
-The email carries one thing only: the Gap Momentum signals of the latest session,
-read from the `gap_momentum_filters` block of dashboard/data.json.
+The email carries the Gap Momentum signals of the latest session and the Gap-Up
+Rejection watch (failed gap-up follow-through, tracked for ten sessions), read from
+the `gap_momentum_filters` and `gap_up_rejection_filters` blocks of dashboard/data.json.
 """
 
 import argparse
@@ -18,6 +19,11 @@ from src.clients.smtp_client import SMTPClient
 from src.services.reporting.gap_momentum_email_renderer import (
     render_gap_momentum_html,
     render_gap_momentum_text,
+)
+from src.services.reporting.gap_up_rejection_email_renderer import (
+    count_new,
+    render_gap_up_rejection_html,
+    render_gap_up_rejection_text,
 )
 from src.utils.observability import get_tenant_logger
 
@@ -59,7 +65,14 @@ def build_email(data: Dict, run_date: str) -> Tuple[str, str, str]:
         f'<p style="color: #fbbf24; text-align: center; font-size: 14px; margin: 30px 0;">{UNAVAILABLE_MESSAGE}</p>')
     section_text = render_gap_momentum_text(filters) or f"\n{UNAVAILABLE_MESSAGE}\n"
 
-    subject = f"{EMAIL_TITLE} - {session} | {count} signal{'' if count == 1 else 's'} | V² Money"
+    # Gap-Up Rejection watch; renders nothing when the block is absent from data.json.
+    rejections = data.get("gap_up_rejection_filters")
+    section_html += render_gap_up_rejection_html(rejections)
+    section_text += render_gap_up_rejection_text(rejections)
+    new_rejections = count_new(rejections)
+
+    subject = (f"{EMAIL_TITLE} - {session} | {count} signal{'' if count == 1 else 's'} | "
+               f"{new_rejections} new rejection{'' if new_rejections == 1 else 's'} | V² Money")
     html_body = f"""
     <html>
       <body style="font-family: Arial, sans-serif; background-color: #0f172a; color: #f8fafc; padding: 20px;">
