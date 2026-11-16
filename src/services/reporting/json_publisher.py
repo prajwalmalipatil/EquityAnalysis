@@ -105,6 +105,14 @@ class JSONPublisher:
 
         gap_momentum_filters = {"daily": daily_gm}
 
+        # Gather gap-up rejection setups (new today plus those still being tracked)
+        daily_gr = []
+        for sym in symbol_data.get("gap_up_rejection", []):
+            details = self.aggregator.get_gap_up_rejection_details(sym)
+            if details: daily_gr.append(details)
+
+        gap_up_rejection_filters = {"daily": daily_gr}
+
         # Gather ticker alerts
         ticker_alerts = []
         for sym in symbol_data.get("ticker", []):
@@ -178,6 +186,7 @@ class JSONPublisher:
             "volume_trap_filters": volume_trap_filters,
             "age_again_filters": age_again_filters,
             "gap_momentum_filters": gap_momentum_filters,
+            "gap_up_rejection_filters": gap_up_rejection_filters,
             "ticker_alerts": ticker_alerts,
             "macro_intelligence": macro_intelligence
         }
