@@ -32,7 +32,7 @@ jobs:
         pip install -r requirements.txt
 
     - name: Clean Data Directory
-      run: mkdir -p equity_data && rm -rf equity_data/*.csv equity_data/Results/* equity_data/Trending/* equity_data/Anomaly/* equity_data/Ticker/* equity_data/Triggers/* equity_data/EigenFilter/* equity_data/AgeAgainFilter/* equity_data/MonthlyEigenFilter/* equity_data/WeeklyEigenFilter/* equity_data/ConsensusResults/*
+      run: mkdir -p equity_data && rm -rf equity_data/*.csv equity_data/Results/* equity_data/Trending/* equity_data/Anomaly/* equity_data/Ticker/* equity_data/Triggers/* equity_data/EigenFilter/* equity_data/AgeAgainFilter/* equity_data/GapMomentumFilter/* equity_data/MonthlyEigenFilter/* equity_data/WeeklyEigenFilter/* equity_data/ConsensusResults/*
 
     - name: "Run Stage 1: Extraction"
       id: extraction
@@ -87,6 +87,7 @@ jobs:
           equity_data/Anomaly/
           equity_data/EigenFilter/
           equity_data/AgeAgainFilter/
+          equity_data/GapMomentumFilter/
           equity_data/MonthlyEigenFilter/
           equity_data/WeeklyEigenFilter/
           equity_data/ConsensusResults/

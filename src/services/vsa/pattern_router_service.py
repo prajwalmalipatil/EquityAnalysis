@@ -15,6 +15,7 @@ from src.utils.observability import get_tenant_logger
 from .age_again_filter_service import AgeAgainFilterService
 from .consensus_engine_service import ConsensusEngineService
 from .eigen_filter_service import EigenFilterService
+from .gap_momentum_filter_service import GapMomentumFilterService
 from .eigen_transition_engine_service import EigenTransitionEngineService
 from .monthly_age_again_filter_service import MonthlyAgeAgainFilterService
 from .monthly_eigen_filter_service import MonthlyEigenFilterService
@@ -79,6 +80,9 @@ class VSAPatternRouter:
             f"{len(monthly_age_again_results)} symbols"
         )
 
+        gap_momentum_results = GapMomentumFilterService(self.output_base).scan_and_classify()
+        logger.info(f"POST_PROCESS: GapMomentum Classified {len(gap_momentum_results)} symbols")
+
         monthly_eigen_results = MonthlyEigenFilterService(
             self.output_base
         ).consolidate_and_classify()
@@ -140,6 +144,7 @@ class VSAPatternRouter:
             "age_again": age_again_results,
             "weekly_age_again": weekly_age_again_results,
             "monthly_age_again": monthly_age_again_results,
+            "gap_momentum": gap_momentum_results,
         }
 
     def run_ete(

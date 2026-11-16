@@ -5,6 +5,10 @@ import json
 from pathlib import Path
 from datetime import datetime
 from src.clients.smtp_client import SMTPClient
+from src.services.reporting.gap_momentum_email_renderer import (
+    render_gap_momentum_html,
+    render_gap_momentum_text,
+)
 from src.utils.observability import get_tenant_logger
 
 from typing import List, Dict
@@ -363,6 +367,11 @@ def main():
     age_again_html = _format_age_again_email_html(aa_filters) if aa_filters else ""
     age_again_text = _format_age_again_email_text(aa_filters) if aa_filters else ""
 
+    # Extract Gap Momentum details from loaded data (None when the block is absent)
+    gm_filters = data.get("gap_momentum_filters")
+    gap_momentum_html = render_gap_momentum_html(gm_filters)
+    gap_momentum_text = render_gap_momentum_text(gm_filters)
+
     html_report = f"""
     <html>
       <body style="font-family: Arial, sans-serif; background-color: #0f172a; color: #f8fafc; padding: 20px;">
@@ -378,6 +387,8 @@ def main():
           {volume_trap_html}
           
           {age_again_html}
+          
+          {gap_momentum_html}
           
           <div style="text-align: center; margin: 40px 0;">
             <a href="{dashboard_url}" style="background-color: #0ea5e9; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: bold; display: inline-block; box-shadow: 0 4px 6px rgba(14,165,233,0.3);">
@@ -399,6 +410,7 @@ Detailed analysis including VSA, EigenFilters, Consensus Ratings, and Macro Inte
 {macro_text}
 {volume_trap_text}
 {age_again_text}
+{gap_momentum_text}
 View your Interactive Dashboard here:
 {dashboard_url}
 
