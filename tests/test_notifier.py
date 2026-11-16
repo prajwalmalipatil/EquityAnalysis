@@ -1,229 +1,74 @@
+import sys
 import unittest
-from unittest.mock import patch, MagicMock
-from pathlib import Path
-import json
+from unittest.mock import MagicMock, patch
+
+from main_notifier import UNAVAILABLE_MESSAGE, build_email, main, session_date
+
+GAP_MOMENTUM = {"daily": [
+    {"symbol": "UPCO", "sentiment": "Bullish", "signal_date": "2026-06-02", "t1_close": 100.0,
+     "t_open": 102.0, "t_close": 106.0, "gap_pct": 2.0, "change_pct": 6.0,
+     "volume_pct": 100.0, "spread_pct": 60.0},
+    {"symbol": "DOWNCO", "sentiment": "Bearish", "signal_date": "2026-06-02", "t1_close": 100.0,
+     "t_open": 98.0, "t_close": 94.0, "gap_pct": -2.0, "change_pct": -6.0,
+     "volume_pct": 250.0, "spread_pct": 40.0},
+]}
+# Sections the email used to carry; none of them may appear any more.
+OTHER_SECTIONS = {
+    "macro_intelligence": {"recent_events": [{"title": "Unique Press Release", "summary": "x.", "processing_state": "NEW"}]},
+    "volume_trap_filters": {"daily": [{"symbol": "TRAPCO", "sentiment": "Bullish"}], "weekly": [], "monthly": []},
+    "age_again_filters": {"daily": [{"symbol": "AGECO", "sentiment": "Bearish"}], "weekly": [], "monthly": []},
+}
+
 
 class TestNotifier(unittest.TestCase):
-    def test_notifier_near_duplicate_filter(self):
-        """Verify that main_notifier deduplication correctly handles near duplicate titles."""
-        # Simple standalone recreation of the main_notifier helper logic to assert correctness
-        def clean_title(t: str) -> set:
-            fillers = {"rbi", "issues", "announces", "to", "on", "for", "a", "an", "the", "and", "of", "in", "with", "under"}
-            words = [w for w in t.lower().split() if w.isalnum()]
-            return set(w for w in words if w not in fillers)
+    def test_email_contains_only_gap_momentum(self):
+        subject, html, text = build_email({**OTHER_SECTIONS, "gap_momentum_filters": GAP_MOMENTUM}, "2026-06-03")
+        self.assertEqual(subject, "Gap Momentum Analysis - 2026-06-02 | 2 signals | V² Money")
+        for body in (html, text):
+            self.assertIn("UPCO", body)
+            self.assertIn("DOWNCO", body)
+            self.assertIn("Session 2026-06-02", body)
+            for removed in ("Unique Press Release", "TRAPCO", "AGECO", "Macro", "Volume Trap", "AgeAgain", "Dashboard"):
+                self.assertNotIn(removed, body)
 
-        def is_duplicate(t1: str, t2: str) -> bool:
-            s1 = clean_title(t1)
-            s2 = clean_title(t2)
-            if not s1 or not s2:
-                return False
-            common = s1.intersection(s2)
-            overlap = len(common) / min(len(s1), len(s2))
-            return overlap >= 0.7
+    def test_no_signals_still_reports_the_session(self):
+        subject, html, text = build_email({"gap_momentum_filters": {"daily": []}}, "2026-06-03")
+        self.assertEqual(subject, "Gap Momentum Analysis - 2026-06-03 | 0 signals | V² Money")
+        self.assertIn("No stocks met the criteria", html)
+        self.assertIn("No stocks met the criteria", text)
 
-        # Case 1: Identical phrase besides filler word and casing
-        self.assertTrue(is_duplicate(
-            "RBI Issues Master Directions on Authorisation to operate a Payment System",
-            "Master Directions on Authorisation to operate a Payment System"
-        ))
+    def test_missing_block_is_stated_not_hidden(self):
+        _, html, text = build_email({}, "2026-06-03")
+        self.assertIn(UNAVAILABLE_MESSAGE, html)
+        self.assertIn(UNAVAILABLE_MESSAGE, text)
 
-        # Case 2: Near duplicate announcements
-        self.assertTrue(is_duplicate(
-            "RBI Announces Special Liquidity Facility for Mutual Funds",
-            "Special Liquidity Facility for Mutual Funds"
-        ))
+    def test_session_date_uses_latest_signal_date(self):
+        self.assertEqual(session_date(GAP_MOMENTUM, "2026-06-03"), "2026-06-02")
+        self.assertEqual(session_date(None, "2026-06-03"), "2026-06-03")
 
-        # Case 3: Totally different announcements
-        self.assertFalse(is_duplicate(
-            "RBI Announces Special Liquidity Facility for Mutual Funds",
-            "RBI Issues Master Directions on Authorisation to operate a Payment System"
-        ))
-
-    @patch("main_notifier.SMTPClient")
     @patch("main_notifier.Path")
-    @patch("main_notifier.open")
-    def test_notifier_reads_flat_properties_and_sends(self, mock_open, mock_path_class, mock_smtp_client_class):
-        """Verify main_notifier loads and maps flat schema properties from data.json correctly."""
-        from main_notifier import main
-        import sys
-        
-        # Mock Path.exists to return True for dashboard/data.json
+    @patch("main_notifier.load_dashboard_data", return_value={"gap_momentum_filters": GAP_MOMENTUM})
+    def test_report_only_writes_preview_without_sending(self, _mock_load, mock_path_class):
         mock_path = MagicMock()
-        mock_path.exists.return_value = True
         mock_path_class.return_value = mock_path
-        
-        # Mock data.json content matching flat DashboardViewModel format
-        mock_data = {
-            "macro_intelligence": {
-                "recent_events": [
-                    {
-                        "event_id": "event1",
-                        "title": "RBI Issues Master Directions on Authorisation to operate a Payment System",
-                        "summary": "This is a summary of the master directions.",
-                        "processing_state": "NEW"
-                    },
-                    {
-                        "event_id": "event2",
-                        "title": "Master Directions on Authorisation to operate a Payment System",
-                        "summary": "This is a duplicate summary.",
-                        "processing_state": "NEW"
-                    },
-                    {
-                        "event_id": "event3",
-                        "title": "Unique Press Release",
-                        "summary": "This is a unique announcement.",
-                        "processing_state": "NEW"
-                    }
-                ]
-            }
-        }
-        
-        mock_file = MagicMock()
-        mock_open.return_value.__enter__.return_value = mock_file
-        
-        with patch("json.load", return_value=mock_data):
-            # Run in report-only mode so it doesn't need actual credentials
-            with patch.object(sys, "argv", ["main_notifier.py", "--report-only"]):
-                main()
-                
-        # Assert local_report_preview.html is written with deduplicated macro events
-        mock_path.write_text.assert_called_once()
-        html_written = mock_path.write_text.call_args[0][0]
-        
-        # "RBI Issues..." and "Master Directions..." are near-duplicates, so only one should be written.
-        # "Unique Press Release" is unique, so it should be written.
-        self.assertIn("RBI Issues Master Directions on Authorisation to operate a Payment System", html_written)
-        # It should only appear once (in the first item's title)
-        self.assertEqual(html_written.count("Master Directions"), 1)
-        self.assertIn("Unique Press Release", html_written)
+        with patch("main_notifier.SMTPClient") as mock_smtp, patch.object(sys, "argv", ["main_notifier.py", "--report-only"]):
+            main()
+        mock_smtp.assert_not_called()
+        self.assertIn("UPCO", mock_path.write_text.call_args[0][0])
 
-    def test_volume_trap_email_formatting_html_and_text(self):
-        """Verify Volume Trap HTML and plain-text table rendering functions."""
-        from main_notifier import _format_volume_trap_email_html, _format_volume_trap_email_text
-
-        mock_vt = {
-            "daily": [
-                {"symbol": "RELIANCE", "sentiment": "Bullish", "vol_delta_pct": 45.2, "spread_delta_pct": -28.4, "body_ratio": 0.1245},
-                {"symbol": "TCS", "sentiment": "Bearish", "vol_delta_pct": 22.0, "spread_delta_pct": -15.2, "body_ratio": 0.2500}
-            ],
-            "weekly": [
-                {"symbol": "INFY", "sentiment": "Bullish", "vol_delta_pct": 55.0, "spread_delta_pct": -30.0, "body_ratio": 0.0890}
-            ],
-            "monthly": []
-        }
-
-        html = _format_volume_trap_email_html(mock_vt)
-        text = _format_volume_trap_email_text(mock_vt)
-
-        # HTML assertions
-        self.assertIn("Volume Trap Filter Insights", html)
-        self.assertIn("3</strong> stocks detected across timeframes", html)
-        self.assertIn("▲ Bullish: 2", html)
-        self.assertIn("▼ Bearish: 1", html)
-        self.assertIn("RELIANCE", html)
-        self.assertIn("TCS", html)
-        self.assertIn("INFY", html)
-        self.assertIn("+45.2%", html)
-        self.assertIn("-28.4%", html)
-        self.assertIn("0.1245", html)
-
-        # Text assertions
-        self.assertIn("Volume Trap Filter Insights: 3 stocks detected", text)
-        self.assertIn("RELIANCE", text)
-        self.assertIn("TCS", text)
-        self.assertIn("INFY", text)
-        self.assertIn("+45.2%", text)
-        self.assertIn("0.1245", text)
-
-    def test_volume_trap_empty_filters(self):
-        """Verify Volume Trap returns empty string when no stocks qualify."""
-        from main_notifier import _format_volume_trap_email_html, _format_volume_trap_email_text
-
-        empty_vt = {"daily": [], "weekly": [], "monthly": []}
-        self.assertEqual(_format_volume_trap_email_html(empty_vt), "")
-        self.assertEqual(_format_volume_trap_email_text(empty_vt), "")
-
-    def test_volume_trap_text_singular_plural_formatting(self):
-        """Verify singular '1 stock' vs plural 'N stocks' formatting in plain-text email."""
-        from main_notifier import _format_volume_trap_email_text
-
-        # Test single stock (singular '1 stock')
-        single_vt = {
-            "daily": [{"symbol": "RELIANCE", "sentiment": "Bullish", "vol_delta_pct": 50.0, "spread_delta_pct": -20.0, "body_ratio": 0.1}],
-            "weekly": [],
-            "monthly": []
-        }
-        text_single = _format_volume_trap_email_text(single_vt)
-        self.assertIn("📅 Daily (1 stock):", text_single)
-        self.assertNotIn("📅 Daily (1 stocks):", text_single)
-
-        # Test multiple stocks (plural '2 stocks')
-        multi_vt = {
-            "daily": [
-                {"symbol": "RELIANCE", "sentiment": "Bullish", "vol_delta_pct": 50.0, "spread_delta_pct": -20.0, "body_ratio": 0.1},
-                {"symbol": "TCS", "sentiment": "Bearish", "vol_delta_pct": 20.0, "spread_delta_pct": -10.0, "body_ratio": 0.2}
-            ],
-            "weekly": [],
-            "monthly": []
-        }
-        text_multi = _format_volume_trap_email_text(multi_vt)
-        self.assertIn("📅 Daily (2 stocks):", text_multi)
-
-    def test_age_again_formatting_html_and_text(self):
-        """Verify AgeAgain structural anomaly HTML and text generation."""
-        from main_notifier import _format_age_again_email_html, _format_age_again_email_text
-
-        mock_aa = {
-            "daily": [
-                {"symbol": "INFY", "sentiment": "Bullish", "label": "Absorption Signal", "vol_delta_pct": 80.5, "spread_delta_pct": -30.2, "t_cp": 0.85},
-            ],
-            "weekly": [
-                {"symbol": "HDFC", "sentiment": "Bearish", "label": "Effort Without Result", "vol_delta_pct": -40.0, "spread_delta_pct": 65.0, "t_cp": 0.20},
-            ],
-            "monthly": []
-        }
-
-        html = _format_age_again_email_html(mock_aa)
-        text = _format_age_again_email_text(mock_aa)
-
-        # HTML assertions
-        self.assertIn("AgeAgain Structural Anomaly Insights", html)
-        self.assertIn("2</strong> stocks detected across timeframes", html)
-        self.assertIn("▲ Absorption: 1", html)
-        self.assertIn("▼ Effort w/o Result: 1", html)
-        self.assertIn("INFY", html)
-        self.assertIn("HDFC", html)
-        self.assertIn("+80.5%", html)
-        self.assertIn("+65.0%", html)
-
-        # Text assertions
-        self.assertIn("AgeAgain Structural Anomaly Insights: 2 stocks detected", text)
-        self.assertIn("INFY", text)
-        self.assertIn("HDFC", text)
-        self.assertIn("+80.5%", text)
-
-    def test_age_again_empty_filters(self):
-        """Verify AgeAgain returns empty string when no stocks qualify."""
-        from main_notifier import _format_age_again_email_html, _format_age_again_email_text
-
-        empty_aa = {"daily": [], "weekly": [], "monthly": []}
-        self.assertEqual(_format_age_again_email_html(empty_aa), "")
-        self.assertEqual(_format_age_again_email_text(empty_aa), "")
-
-    def test_age_again_text_singular_plural_formatting(self):
-        """Verify singular '1 stock' vs plural 'N stocks' formatting for AgeAgain."""
-        from main_notifier import _format_age_again_email_text
-
-        single_aa = {
-            "daily": [{"symbol": "INFY", "sentiment": "Bullish", "vol_delta_pct": 50.0, "spread_delta_pct": -20.0, "t_cp": 0.7}],
-            "weekly": [],
-            "monthly": []
-        }
-        text_single = _format_age_again_email_text(single_aa)
-        self.assertIn("📅 Daily (1 stock):", text_single)
-        self.assertNotIn("📅 Daily (1 stocks):", text_single)
+    @patch.dict("os.environ", {"SENDER_EMAIL": "sender@example.com", "SENDER_PASSWORD": "test-password"})
+    @patch("main_notifier.load_dashboard_data", return_value={"gap_momentum_filters": GAP_MOMENTUM})
+    def test_send_passes_gap_momentum_subject_and_bodies(self, _mock_load):
+        with patch("main_notifier.SMTPClient") as mock_smtp, \
+                patch.object(sys, "argv", ["main_notifier.py", "--to", "reader@example.com"]):
+            mock_smtp.return_value.send_email.return_value = True
+            main()
+        kwargs = mock_smtp.return_value.send_email.call_args.kwargs
+        self.assertEqual(kwargs["recipient_email"], "reader@example.com")
+        self.assertTrue(kwargs["subject"].startswith("Gap Momentum Analysis - 2026-06-02"))
+        self.assertIn("UPCO", kwargs["html_body"])
+        self.assertIn("DOWNCO", kwargs["text_body"])
 
 
 if __name__ == "__main__":
     unittest.main()
-
