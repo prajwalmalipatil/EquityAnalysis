@@ -239,6 +239,7 @@ def scorecard(tables: Dict[str, Dict]) -> pd.DataFrame:
 
 # ─────────────────────────────────── main ─────────────────────────────────────
 def run(data_dir: Path, symbols: List[str], out_path: Path) -> None:
+    from backtest_gap_momentum_t1_path import SETUPS, path_tables
     from backtest_gap_momentum_t1_report import write_workbook  # presentation kept separate
 
     universe, _ = load_universe(data_dir, symbols)
@@ -263,6 +264,7 @@ def run(data_dir: Path, symbols: List[str], out_path: Path) -> None:
         "stocks": len(universe), "stock_days": len(all_bars), "signals": int((all_bars["Signal"] != "").sum()),
         "signals_with_t1": len(signals), "first_date": all_bars["Date"].min(), "last_date": all_bars["Date"].max(),
         "frequency": frequency_table(events), "scorecard": scorecard(tables),
+        "paths": {setup.key: path_tables(all_bars, setup) for setup in SETUPS},
     }
     out_path.parent.mkdir(parents=True, exist_ok=True)
     write_workbook(out_path, signals, tables, meta)
@@ -273,6 +275,9 @@ def run(data_dir: Path, symbols: List[str], out_path: Path) -> None:
     for pattern in PATTERNS:
         print(pattern)
         print(tables[pattern]["behaviour"].round(2).to_string(index=False))
+    for setup in SETUPS:
+        for name in ("summary", "returns", "first_touch", "behaviour", "gap", "month"):
+            print(meta["paths"][setup.key][name].round(2).to_string(index=False))
     print(f"Workbook written to {out_path}")
 
 

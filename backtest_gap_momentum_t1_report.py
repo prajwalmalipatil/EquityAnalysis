@@ -193,6 +193,12 @@ def write_workbook(out_path: Path, signals: pd.DataFrame, tables: Dict[str, Dict
         positions, row = _write_chart_data(ws_data, row, pattern, _chart_frames(tables[pattern]))
         _tear_sheet(wb, pattern, tables[pattern], ws_data, positions, meta)
 
+    from backtest_gap_momentum_t1_path import SETUPS, add_path_sheets
+    path_sheets = []
+    for setup in SETUPS:
+        names, row = add_path_sheets(wb, meta["paths"][setup.key], setup, ws_data, row, meta)
+        path_sheets += names
+
     columns = ["Symbol", "Date", "Signal", "Pattern", "Gap %", "Volume x T-1", "Spread x T-1", "High", "Low", "Close",
                "T+1 Date", "T+1 Open", "T+1 High", "T+1 Low", "T+1 Close", "T+1 Gap %", "T+1 Gap Size",
                "Gap Filled", "Gap Held", "Closed Green", "Broke T Range", "Open to High %", "Open to Low %",
@@ -204,6 +210,6 @@ def write_workbook(out_path: Path, signals: pd.DataFrame, tables: Dict[str, Dict
     _data_sheet(wb, "T+1 Trades", trades.sort_values(["T Date", "Symbol"]),
                 "Every Gap Momentum signal with its T+1 session. Returns are raw price moves from the T+1 open. Blank = not available yet.")
 
-    order = ["Summary"] + PATTERNS + ["T+1 Trades", "Chart Data"]
+    order = ["Summary"] + PATTERNS + path_sheets + ["T+1 Trades", "Chart Data"]
     wb._sheets = [wb[name] for name in order]
     wb.save(out_path)
