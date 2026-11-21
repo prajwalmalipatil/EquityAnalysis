@@ -159,3 +159,32 @@ class GapUpRejectionClassification:
     max_gain_pct: float           # highest high since the trigger vs T+1 close
     max_drawdown_pct: float       # lowest low since the trigger vs T+1 close
     above_signal_close: bool      # last close still above the T close
+
+
+@dataclass
+class GapUpExpansionClassification:
+    """A Gap-Up Continuation signal whose next session opened higher with a wider spread.
+
+    T is the Gap-Up Continuation day and T+1 the trigger day. The setup is followed
+    for a fixed number of sessions after the trigger, measured from the T+1 close.
+    """
+    symbol: str
+    label: str
+    status: str                   # "New" on the trigger day, "Tracking" afterwards
+    signal_date: str              # Day T (YYYY-MM-DD)
+    trigger_date: str             # Day T+1 (YYYY-MM-DD)
+    sessions_since_trigger: int   # 0 on the trigger day
+    signal_close: float           # T close
+    trigger_open: float           # T+1 open
+    trigger_close: float          # T+1 close, the reference price for tracking
+    gap_pct: float                # (T+1 open - T close) / T close * 100
+    trigger_change_pct: float     # (T+1 close - T+1 open) / T+1 open * 100
+    last_close: float
+    return_pct: float             # (last close - T+1 close) / T+1 close * 100
+    max_gain_pct: float           # highest high since the trigger vs T+1 close
+    max_drawdown_pct: float       # lowest low since the trigger vs T+1 close
+    above_signal_close: bool      # last close still above the T close
+    signal_spread: float          # T high - low
+    trigger_spread: float         # T+1 high - low
+    spread_ratio: float           # T+1 spread / T spread (always > 1)
+    trigger_candle: str           # "Green", "Red" or "Doji"

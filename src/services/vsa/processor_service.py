@@ -53,6 +53,7 @@ class VSAProcessorService:
             const.WEEKLY_AGE_AGAIN_FILTER_DIR_NAME,
             const.MONTHLY_AGE_AGAIN_FILTER_DIR_NAME,
             const.GAP_MOMENTUM_FILTER_DIR_NAME,
+            const.GAP_UP_EXPANSION_FILTER_DIR_NAME,
             const.GAP_UP_REJECTION_FILTER_DIR_NAME,
             const.VOLUME_TRAP_FILTER_DIR_NAME,
             const.WEEKLY_VOLUME_TRAP_FILTER_DIR_NAME,

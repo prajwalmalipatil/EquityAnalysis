@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import List, Dict, Optional
 from src.constants import vsa_constants as const
 from src.services.vsa.gap_momentum_filter_service import GapMomentumFilterService
+from src.services.vsa.gap_up_expansion_filter_service import GapUpExpansionFilterService
 from src.services.vsa.gap_up_rejection_filter_service import GapUpRejectionFilterService
 from src.services.vsa.monthly_age_again_filter_service import MonthlyAgeAgainFilterService
 from src.services.vsa.monthly_eigen_filter_service import MonthlyEigenFilterService
@@ -48,6 +49,7 @@ class DataAggregator:
             "weekly_age_again": self._count_files(const.WEEKLY_AGE_AGAIN_FILTER_DIR_NAME),
             "monthly_age_again": self._count_files(const.MONTHLY_AGE_AGAIN_FILTER_DIR_NAME),
             "gap_momentum": self._count_files(const.GAP_MOMENTUM_FILTER_DIR_NAME),
+            "gap_up_expansion": self._count_files(const.GAP_UP_EXPANSION_FILTER_DIR_NAME),
             "gap_up_rejection": self._count_files(const.GAP_UP_REJECTION_FILTER_DIR_NAME),
         }
 
@@ -70,6 +72,7 @@ class DataAggregator:
             "weekly_age_again": self._get_symbols(const.WEEKLY_AGE_AGAIN_FILTER_DIR_NAME),
             "monthly_age_again": self._get_symbols(const.MONTHLY_AGE_AGAIN_FILTER_DIR_NAME),
             "gap_momentum": self._get_symbols(const.GAP_MOMENTUM_FILTER_DIR_NAME),
+            "gap_up_expansion": self._get_symbols(const.GAP_UP_EXPANSION_FILTER_DIR_NAME),
             "gap_up_rejection": self._get_symbols(const.GAP_UP_REJECTION_FILTER_DIR_NAME),
         }
 
@@ -472,6 +475,17 @@ class DataAggregator:
         if classification is None:
             return None
         return GapMomentumFilterService.to_details(classification)
+
+    def get_gap_up_expansion_details(self, symbol: str) -> Optional[Dict]:
+        """Extracts Gap-Up Expansion (gap-up signal, higher open, wider spread) tracking details."""
+        df = self._read_latest(const.GAP_UP_EXPANSION_FILTER_DIR_NAME, symbol)
+        if df is None:
+            return None
+
+        classification = GapUpExpansionFilterService.classify_frame(symbol, df)
+        if classification is None:
+            return None
+        return GapUpExpansionFilterService.to_details(classification)
 
     def get_gap_up_rejection_details(self, symbol: str) -> Optional[Dict]:
         """Extracts Gap-Up Rejection (gap-up signal, higher open, red close) tracking details."""

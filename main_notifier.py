@@ -2,9 +2,11 @@
 main_notifier.py
 Sends the daily Gap Momentum Analysis email.
 
-The email carries the Gap Momentum signals of the latest session and the Gap-Up
-Rejection watch (failed gap-up follow-through, tracked for ten sessions), read from
-the `gap_momentum_filters` and `gap_up_rejection_filters` blocks of dashboard/data.json.
+The email carries, top to bottom:
+  1. Gap Momentum signals of the latest session     (`gap_momentum_filters`)
+  2. Gap-Up Expansion watch, tracked for 10 sessions (`gap_up_expansion_filters`)
+  3. Gap-Up Rejection watch, tracked for 10 sessions (`gap_up_rejection_filters`)
+all read from dashboard/data.json.
 """
 
 import argparse
@@ -19,6 +21,10 @@ from src.clients.smtp_client import SMTPClient
 from src.services.reporting.gap_momentum_email_renderer import (
     render_gap_momentum_html,
     render_gap_momentum_text,
+)
+from src.services.reporting.gap_up_expansion_email_renderer import (
+    render_gap_up_expansion_html,
+    render_gap_up_expansion_text,
 )
 from src.services.reporting.gap_up_rejection_email_renderer import (
     count_new,
@@ -65,13 +71,19 @@ def build_email(data: Dict, run_date: str) -> Tuple[str, str, str]:
         f'<p style="color: #fbbf24; text-align: center; font-size: 14px; margin: 30px 0;">{UNAVAILABLE_MESSAGE}</p>')
     section_text = render_gap_momentum_text(filters) or f"\n{UNAVAILABLE_MESSAGE}\n"
 
-    # Gap-Up Rejection watch; renders nothing when the block is absent from data.json.
+    # Gap-Up watches; each renders nothing when its block is absent from data.json.
+    expansions = data.get("gap_up_expansion_filters")
+    section_html += render_gap_up_expansion_html(expansions)
+    section_text += render_gap_up_expansion_text(expansions)
+    new_expansions = count_new(expansions)
+
     rejections = data.get("gap_up_rejection_filters")
     section_html += render_gap_up_rejection_html(rejections)
     section_text += render_gap_up_rejection_text(rejections)
     new_rejections = count_new(rejections)
 
     subject = (f"{EMAIL_TITLE} - {session} | {count} signal{'' if count == 1 else 's'} | "
+               f"{new_expansions} new expansion{'' if new_expansions == 1 else 's'} | "
                f"{new_rejections} new rejection{'' if new_rejections == 1 else 's'} | V² Money")
     html_body = f"""
     <html>
