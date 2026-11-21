@@ -23,7 +23,7 @@ OTHER_SECTIONS = {
 class TestNotifier(unittest.TestCase):
     def test_email_contains_only_gap_momentum(self):
         subject, html, text = build_email({**OTHER_SECTIONS, "gap_momentum_filters": GAP_MOMENTUM}, "2026-06-03")
-        self.assertEqual(subject, "Gap Momentum Analysis - 2026-06-02 | 2 signals | 0 new rejections | V² Money")
+        self.assertEqual(subject, "Gap Momentum Analysis - 2026-06-02 | 2 signals | 0 new expansions | 0 new rejections | V² Money")
         for body in (html, text):
             self.assertIn("UPCO", body)
             self.assertIn("DOWNCO", body)
@@ -33,7 +33,7 @@ class TestNotifier(unittest.TestCase):
 
     def test_no_signals_still_reports_the_session(self):
         subject, html, text = build_email({"gap_momentum_filters": {"daily": []}}, "2026-06-03")
-        self.assertEqual(subject, "Gap Momentum Analysis - 2026-06-03 | 0 signals | 0 new rejections | V² Money")
+        self.assertEqual(subject, "Gap Momentum Analysis - 2026-06-03 | 0 signals | 0 new expansions | 0 new rejections | V² Money")
         self.assertIn("No stocks met the criteria", html)
         self.assertIn("No stocks met the criteria", text)
 
@@ -50,6 +50,17 @@ class TestNotifier(unittest.TestCase):
         for body in (html, text):
             self.assertIn("Gap-Up Rejection Watch", body)
             self.assertLess(body.index("UPCO"), body.index("FADECO"))
+
+    def test_sections_are_ordered_momentum_expansion_rejection(self):
+        expansions = {"daily": [{"symbol": "WIDECO", "status": "New", "sessions_since_trigger": 0, "spread_ratio": 1.4}]}
+        rejections = {"daily": [{"symbol": "FADECO", "status": "New", "sessions_since_trigger": 0, "gap_pct": 1.0}]}
+        subject, html, text = build_email({"gap_momentum_filters": GAP_MOMENTUM, "gap_up_expansion_filters": expansions,
+                                           "gap_up_rejection_filters": rejections}, "2026-06-03")
+        self.assertIn("| 1 new expansion | 1 new rejection |", subject)
+        for body in (html, text):
+            self.assertIn("Gap-Up Expansion Watch", body)
+            self.assertLess(body.index("UPCO"), body.index("WIDECO"))
+            self.assertLess(body.index("WIDECO"), body.index("FADECO"))
 
     def test_session_date_uses_latest_signal_date(self):
         self.assertEqual(session_date(GAP_MOMENTUM, "2026-06-03"), "2026-06-02")
