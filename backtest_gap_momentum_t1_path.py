@@ -6,6 +6,8 @@ followed by a T+1 session that opened above the close of T.
   HIGHER_OPEN        entry at the T+1 open, path T+1 ... T+10
   HIGHER_OPEN_RED    T+1 also closed red (close below its open); that is only known at
                      the T+1 close, so entry is the T+1 close and the path is T+2 ... T+11
+  HIGHER_OPEN_WIDE   T+1 also had a wider spread (High - Low) than T; also only known at
+                     the T+1 close, so entry is the T+1 close and the path is T+2 ... T+11
 
 Each setup is compared with every stock-day that met the same T+1 conditions without
 needing a signal (the baseline). Only events with all ten sessions available are used,
@@ -46,6 +48,7 @@ class PathSetup:
     entry_column: str        # T+1 price used as entry: "Open" or "Close"
     first_day: int           # first session of the path, as an offset from T
     red_t1: bool             # require T+1 to close below its open
+    wider_t1: bool = False   # require T+1 spread (High - Low) above the T spread
 
     @property
     def entry(self) -> str:
@@ -69,7 +72,16 @@ HIGHER_OPEN_RED = PathSetup(
     banner="GAP-UP SIGNAL ON T, T+1 OPENED HIGHER BUT CLOSED RED  |  NEXT 10 SESSIONS FROM THE T+1 CLOSE",
     entry_column="Close", first_day=2, red_t1=True,
 )
-SETUPS = [HIGHER_OPEN, HIGHER_OPEN_RED]
+HIGHER_OPEN_WIDE = PathSetup(
+    key="higher_open_wide", sheet="Gap-Up T+1 Wide High 10D", trades_sheet="Gap-Up T+1 Wide High Paths",
+    setup_label="Gap-Up signal, T+1 opened higher, wider spread",
+    base_label="Baseline: any day, T+1 opened higher, wider spread",
+    banner="GAP-UP SIGNAL ON T, T+1 OPENED HIGHER WITH A WIDER SPREAD  |  NEXT 10 SESSIONS FROM THE T+1 CLOSE",
+    entry_column="Close", first_day=2, red_t1=False, wider_t1=True,
+)
+SETUPS = [HIGHER_OPEN, HIGHER_OPEN_RED, HIGHER_OPEN_WIDE]
+SPREAD_BINS = [1.0, 1.25, 1.5, 2.0, np.inf]
+SPREAD_LABELS = ["1.0 - 1.25x", "1.25 - 1.5x", "1.5 - 2x", "> 2x"]
 
 
 # ────────────────────────────── data preparation ──────────────────────────────
@@ -78,12 +90,16 @@ def build_paths(all_bars: pd.DataFrame, setup: PathSetup) -> pd.DataFrame:
     bars = all_bars.sort_values(["Symbol", "Date"]).reset_index(drop=True)
     by_stock = bars.groupby("Symbol", sort=False)
     t1_open, t1_close = by_stock["Open"].shift(-1), by_stock["Close"].shift(-1)
+    t_spread = bars["High"] - bars["Low"]
+    t1_spread = by_stock["High"].shift(-1) - by_stock["Low"].shift(-1)
     entry = t1_open if setup.entry_column == "Open" else t1_close
 
     paths = bars[["Symbol", "Date", "Signal", "Close", "Gap %"]].copy()
     paths["T+1 Date"], paths["T+1 Open"], paths["T+1 Close"] = by_stock["Date"].shift(-1), t1_open, t1_close
     paths["T+1 Gap %"] = (t1_open / bars["Close"] - 1) * 100
     paths["T+1 Open to Close %"] = (t1_close / t1_open - 1) * 100
+    paths["T+1 Spread x T"] = t1_spread / t_spread
+    paths["T+1 Candle"] = np.select([t1_close > t1_open, t1_close < t1_open], ["Green", "Red"], default="Doji")
     paths["T Close vs Entry %"] = (bars["Close"] / entry - 1) * 100
     for i, session in enumerate(SESSIONS):
         for prefix, column in (("C", "Close"), ("H", "High"), ("L", "Low")):
@@ -92,11 +108,14 @@ def build_paths(all_bars: pd.DataFrame, setup: PathSetup) -> pd.DataFrame:
     keep = (t1_open > bars["Close"]) & paths[C[-1]].notna()
     if setup.red_t1:
         keep &= t1_close < t1_open
+    if setup.wider_t1:
+        keep &= (t_spread > 0) & (t1_spread > t_spread)
     paths = paths[keep].reset_index(drop=True)
 
     highs, lows = paths[H].to_numpy(), paths[L].to_numpy()
     paths["Max Gain %"], paths["Max Drawdown %"] = highs.max(axis=1), lows.min(axis=1)
     paths["Peak Session"], paths["Trough Session"] = highs.argmax(axis=1) + 1, lows.argmin(axis=1) + 1
+    paths["T+1 Spread Size"] = pd.cut(paths["T+1 Spread x T"], SPREAD_BINS, labels=SPREAD_LABELS)
     paths["T+1 Gap Size"] = pd.cut(paths["T+1 Gap %"], GAP_BINS, labels=GAP_LABELS, include_lowest=True)
     paths["Month"] = paths["T+1 Date"].dt.strftime("%Y-%m")
     return paths
@@ -183,6 +202,7 @@ def summary_table(trades: pd.DataFrame, base: pd.DataFrame, setup: PathSetup) ->
         rows.append({
             "Cohort": label, "Paths": len(frame), "Trade Days": frame["T+1 Date"].nunique(),
             "Avg T+1 Gap %": frame["T+1 Gap %"].mean(), "Avg T+1 Open to Close %": frame["T+1 Open to Close %"].mean(),
+            "Avg T+1 Spread x T": frame["T+1 Spread x T"].mean(), "T+1 Closed Green %": (frame["T+1 Candle"] == "Green").mean() * 100,
             f"Mean {last} Return %": final.mean(), f"Median {last} Return %": final.median(),
             "Win Rate %": (final > 0).mean() * 100,
             "Avg Max Gain %": frame["Max Gain %"].mean(), "Avg Max Drawdown %": frame["Max Drawdown %"].mean(),
@@ -212,7 +232,7 @@ def distribution_table(trades: pd.DataFrame, base: pd.DataFrame, setup: PathSetu
 
 def trade_paths(trades: pd.DataFrame, setup: PathSetup) -> pd.DataFrame:
     out = trades[["Symbol", "Date", "Close", "Gap %", "T+1 Date", "T+1 Open", "T+1 Close", "T+1 Gap %",
-                  "T+1 Open to Close %", "T+1 Gap Size"] + C + ["Max Gain %", "Max Drawdown %"]].copy()
+                  "T+1 Open to Close %", "T+1 Spread x T", "T+1 Candle", "T+1 Gap Size"] + C + ["Max Gain %", "Max Drawdown %"]].copy()
     out["Peak Day"] = trades["Peak Session"].map(dict(zip(SESSIONS, setup.days)))
     out["Trough Day"] = trades["Trough Session"].map(dict(zip(SESSIONS, setup.days)))
     names = {"Date": "T Date", "Close": "T Close", "Gap %": "T Gap %", **{c: f"Cum {d} %" for c, d in zip(C, setup.days)}}
@@ -229,6 +249,7 @@ def path_tables(all_bars: pd.DataFrame, setup: PathSetup) -> Dict[str, pd.DataFr
         "behaviour": behaviour_table(trades, base, setup), "extremes": extremes_table(trades, base, setup),
         "first_touch": first_touch_table(trades, base, setup), "distribution": distribution_table(trades, base, setup),
         "gap": grouped_table(trades, "T+1 Gap Size", setup), "month": grouped_table(trades, "Month", setup),
+        "candle": grouped_table(trades, "T+1 Candle", setup), "spread": grouped_table(trades, "T+1 Spread Size", setup),
         "best": listing.nlargest(TOP_TRADES, final).reset_index(drop=True),
         "worst": listing.nsmallest(TOP_TRADES, final).reset_index(drop=True),
         "trades": listing,
@@ -314,10 +335,15 @@ def add_path_sheets(wb: Workbook, tables: Dict[str, pd.DataFrame], setup: PathSe
         ws.add_chart(chart, f"{get_column_letter(anchor_col)}{row + (index // 2) * CHART_ROWS}")
     row += CHART_ROWS * ((len(charts) + 1) // 2) + 1
 
-    row = _table(ws, row, "7. By size of the T+1 opening gap", tables["gap"])
-    row = _table(ws, row, "8. Stability by month of entry", tables["month"])
-    row = _table(ws, row, f"9. Best {TOP_TRADES} paths by {last} return", tables["best"])
-    _table(ws, row, f"10. Worst {TOP_TRADES} paths by {last} return", tables["worst"])
+    sections = [("By size of the T+1 opening gap", tables["gap"])]
+    if setup.wider_t1:
+        sections += [("By T+1 candle colour", tables["candle"]),
+                     ("By T+1 spread relative to the T spread", tables["spread"])]
+    sections += [("Stability by month of entry", tables["month"]),
+                 (f"Best {TOP_TRADES} paths by {last} return", tables["best"]),
+                 (f"Worst {TOP_TRADES} paths by {last} return", tables["worst"])]
+    for number, (title, table) in enumerate(sections, start=7):
+        row = _table(ws, row, f"{number}. {title}", table)
     ws.freeze_panes = "B3"
 
     _data_sheet(wb, setup.trades_sheet, tables["trades"],
